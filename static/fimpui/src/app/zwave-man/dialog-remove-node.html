@@ -1,0 +1,8 @@
+<h1 mat-dialog-title> Remove node </h1>
+<mat-dialog-content>
+<p>Operation is in progress ...</p>
+<div *ngFor="let message of messages">{{message}}</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+<button mat-raised-button color="warn" (click)="stopExclusion()" >Stop and close</button>
+</mat-dialog-actions>

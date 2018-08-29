@@ -1,0 +1,26 @@
+{
+  "services": {
+    "name": "basic",
+    "label":"Generic basic",
+    "description":"Meaning of basic service can vary from device to device . It's generic and most simple way to interact with a device"
+    "interfaces": [{
+      "type":"out",
+      "name":"evt.lvl.report",
+      "label":"Generic level report",
+      "value_type":"int",
+      "description":"Reports level over numeric value"
+    },{
+      "type":"in",
+      "name":"cmd.lvl.set",
+      "label":"Set generic basic value",
+      "value_type":"int",
+      "description":"Sets level using numeric value"
+    },{
+      "type":"in",
+      "name":"cmd.lvl.get_report",
+      "label":"Request basic value",
+      "value_type":"null",
+      "description":""
+    }]
+  }
+}

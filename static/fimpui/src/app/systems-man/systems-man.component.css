@@ -1,0 +1,18 @@
+.systems-man {
+    padding: 20px;
+    
+  }
+  .example-card {
+    width: 700px;
+  }
+  
+  .example-header-image {
+    background-size: cover;
+  }
+  
+  .open-chip {
+    color: green
+  }
+  md-chip {
+    cursor: pointer;
+  }

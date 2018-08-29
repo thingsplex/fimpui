@@ -1,0 +1,21 @@
+.app-content {
+  padding: 20px;
+  min-width: 1100px;
+}
+
+.mat-column-time {
+  flex: 0 0 100px;
+}
+
+.mat-column-topic {
+  flex: 0 0 470px;
+}
+
+.mat-column-service {
+  flex: 0 0 150px;
+}
+
+.mat-column-msgType {
+  flex: 0 0 200px;
+}
+

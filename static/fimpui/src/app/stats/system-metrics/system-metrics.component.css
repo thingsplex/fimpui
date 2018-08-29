@@ -1,0 +1,18 @@
+.mat-column-name {
+    flex: 0 0 500px;
+  }
+.mat-column-count {
+    flex: 0 0 70px;
+}
+.mat-column-rate1m {
+    flex: 0 0 100px;
+}
+.mat-column-rate5m {
+    flex: 0 0 100px;
+}
+.mat-column-rate15m {
+    flex: 0 0 100px;
+}
+.mat-column-meanRate {
+    flex: 0 0 100px;
+}

@@ -1,0 +1,153 @@
+{
+  "__topic__":"pt:j1/mt:evt/rt:ad/rn:virt/ad:1",
+  "ctime": "2017-10-16T15:32:07+0200",
+  "props": {},
+  "serv": "virtual-ad",
+  "tags": [],
+  "type": "evt.thing.inclusion_report",
+  "val": {
+    "address": "1",
+    "category": "UNKNOWN ",
+    "comm_tech": "virt",
+    "device_id": "",
+    "hw_ver": "1",
+    "is_sensor": "0",
+    "manufacturer_id": "fhome",
+    "power_source": "ac",
+    "product_hash": "virt-x-1",
+    "product_id": "x-1",
+    "product_name": "Virtual switch X-1",
+    "prop_set": {},
+    "services": [
+      {
+        "address": "/rt:dev/rn:virt/ad:1/sv:basic/ad:1",
+        "groups": [
+          "ch_0"
+        ],
+        "interfaces": [
+          {
+            "intf_t": "out",
+            "msg_t": "evt.lvl.report",
+            "val_t": "int",
+            "ver": "1"
+          },
+          {
+            "intf_t": "in",
+            "msg_t": "cmd.lvl.set",
+            "val_t": "int",
+            "ver": "1"
+          },
+          {
+            "intf_t": "in",
+            "msg_t": "cmd.lvl.get_report",
+            "val_t": "null",
+            "ver": "1"
+          }
+        ],
+        "location": "",
+        "name": "basic",
+        "prop_set_ref": null,
+        "props": {
+          "is_secure": false,
+          "is_unsecure": true
+        }
+      },
+      {
+        "address": "/rt:dev/rn:virt/ad:1/sv:out_bin_switch/ad:1",
+        "groups": [
+          "ch_0"
+        ],
+        "interfaces": [
+          {
+            "intf_t": "out",
+            "msg_t": "evt.binary.report",
+            "val_t": "bool",
+            "ver": "1"
+          },
+          {
+            "intf_t": "in",
+            "msg_t": "cmd.binary.set",
+            "val_t": "bool",
+            "ver": "1"
+          },
+          {
+            "intf_t": "in",
+            "msg_t": "cmd.binary.get_report",
+            "val_t": "null",
+            "ver": "1"
+          }
+        ],
+        "location": "",
+        "name": "out_bin_switch",
+        "prop_set_ref": null,
+        "props": {
+          "is_secure": false,
+          "is_unsecure": true
+        }
+      },
+      {
+        "address": "/rt:dev/rn:virt/ad:1/sv:out_lvl_switch/ad:1",
+        "groups": [
+          "ch_0"
+        ],
+        "interfaces": [
+          {
+            "intf_t": "out",
+            "msg_t": "evt.lvl.report",
+            "val_t": "int",
+            "ver": "1"
+          },
+          {
+            "intf_t": "in",
+            "msg_t": "cmd.lvl.set",
+            "val_t": "int",
+            "ver": "1"
+          },
+          {
+            "intf_t": "in",
+            "msg_t": "cmd.lvl.start",
+            "val_t": "string",
+            "ver": "1"
+          },
+          {
+            "intf_t": "in",
+            "msg_t": "cmd.lvl.stop",
+            "val_t": "null",
+            "ver": "1"
+          },
+          {
+            "intf_t": "in",
+            "msg_t": "cmd.lvl.get_report",
+            "val_t": "null",
+            "ver": "1"
+          },
+          {
+            "intf_t": "in",
+            "msg_t": "cmd.binary.set",
+            "val_t": "bool",
+            "ver": "1"
+          },
+          {
+            "intf_t": "out",
+            "msg_t": "evt.binary.report",
+            "val_t": "bool",
+            "ver": "1"
+          }
+        ],
+        "location": "",
+        "name": "out_lvl_switch",
+        "prop_set_ref": "nif_0",
+        "props": {
+          "is_secure": false,
+          "is_unsecure": true,
+          "max_lvl": 100,
+          "min_lvl": 0
+        }
+      }
+    ],
+    "sw_ver": "256",
+    "tech_specific_props": {},
+    "wakeup_interval": "-1"
+  },
+  "val_t": "object"
+}

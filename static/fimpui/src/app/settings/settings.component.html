@@ -1,0 +1,62 @@
+<div class="settings">
+ <mat-card class="settings-card">
+    <mat-card-header>
+     <mat-card-title><h3>Settings</h3></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+    <mat-input-container>
+        <input #host matInput placeholder="Hostname" [value] = "fimpService.mqttSeviceOptions.hostname" >
+    </mat-input-container>
+    <mat-input-container>
+        <input #port matInput type="number" placeholder="Port" [value] = "fimpService.mqttSeviceOptions.port" >
+    </mat-input-container>
+    <mat-input-container>
+      <input #port matInput  placeholder="Username" [value] = "fimpService.mqttSeviceOptions.username" >
+    </mat-input-container>
+    <mat-input-container>
+      <input #port matInput  placeholder="Password" [value] = "fimpService.mqttSeviceOptions.password" >
+    </mat-input-container>
+    <mat-input-container>
+      <input #port matInput  placeholder="Global topic prefix" [value] = "fimpService.mqttSeviceOptions.gloabalTopicPrefix" >
+    </mat-input-container>
+   
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="accent" (click)="save(host.value,port.value)">Save</button>
+    </mat-card-actions>
+    <p>Connection status: {{connStatus}}</p>
+ 
+  </mat-card>
+ </div> 
+  <mat-card class="settings-card">
+    <mat-card-header>
+     <mat-card-title><h3>Api</h3></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Registry API :</p>
+      <p><a href="/fimp/api/registry/things">GET /fimp/api/registry/things - List of things from regitry</a></p>
+      <p><a href="/fimp/api/registry/services">GET /fimp/api/registry/services - List of services from regitry</a></p>
+      <p><a href="/fimp/api/registry/interfaces">GET /fimp/api/registry/interfaces - List of interfaces from regitry</a></p>
+      <p><a href="/fimp/api/registry/locations">GET /fimp/api/registry/locations - List of locations from regitry</a></p>
+      <p><a href="">GET /fimp/api/registry/thing/:tech/:address - Thing by address and technology</a></p>
+      <p><a href="">GET /fimp/api/registry/clear_all - Clear registry</a></p>
+      <p><a href="">PUT /fimp/api/registry/thing - Upsert thing</a></p>
+      <p>Vinculum API :</p>
+      <p><a href="/fimp/vinculum/devices">GET /fimp/vinculum/devices - Get list of devices from Core</a></p>
+      <p><a href="/fimp/api/vinculum/areas">GET /fimp/api/vinculum/areas - Get list of areas from Core</a></p>
+      <p><a href="/fimp/api/vinculum/shortcuts">GET /fimp/api/vinculum/shortcuts - Get list of shortcuts from Core</a></p>
+      <p><a href="/fimp/vinculum/import_to_registry">GET /fimp/vinculum/import_to_registry - Import devices and locations from CORE to FIMP registry</a></p>
+      <p>Flow  API :</p>
+      <p><a href="/fimp/flow/list">GET /fimp/flow/list - Get list of Flows </a></p>
+      <p><a href="">GET /fimp/flow/definition/:id - Get single Flow definition by Id </a></p>
+      <p><a href="/fimp/flow/context/:id">GET /fimp/flow/context/:id - Get Flow flow context by Flow Id </a></p>
+      <p><a href="">POST /fimp/flow/definition/:id - Upsert Flow definition </a></p>
+      <p><a href="">DELETE /fimp/flow/definition/:id - Delete Flow </a></p>
+      <p>Global settings </p>
+      <p><a href="/fimp/api/configs">GET /fimp/api/configs - Get global configs</a></p>
+      <p><a href="/fimp/fr/upload-log-snapshot">GET /fimp/fr/upload-log-snapshot - Upload log snapshots to cloud storage </a></p>
+     
+    </mat-card-content>
+    
+  </mat-card>
+

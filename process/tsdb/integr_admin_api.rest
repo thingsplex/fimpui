@@ -1,0 +1,225 @@
+GET http://localhost:5015/blackflowint/influxdb/api/proc/1
+
+###
+
+GET http://localhost:5016/blackflowint/influxdb/api/proc/monitoring
+
+###
+
+POST http://localhost:5015/blackflowint/influxdb/api/proc/2/ctl
+content-type: application/json
+
+{
+    "Action":"stop"
+}
+
+###
+
+POST http://localhost:5016/blackflowint/influxdb/api/proc/1/ctl
+content-type: application/json
+
+{
+    "Action":"start"
+}
+
+###
+
+PUT http://localhost:5015/blackflowint/influxdb/api/proc
+content-type: application/json
+
+{
+    "Name": "New project",
+    "MqttBrokerAddr": "tcp://localhost:1883",
+    "MqttClientID": "bf-env-test-2",
+    "MqttBrokerUsername": "",
+    "MqttBrokerPassword": "",
+    "InfluxAddr": "http://localhost:8086",
+    "InfluxUsername": "",
+    "InfluxPassword": "",
+    "InfluxDB": "iotmsg_test",
+    "BatchMaxSize": 1000,
+    "SaveInterval": 1000,
+    "Autostart":true,
+    "Filters": [
+      {
+        "ID": 1,
+        "Name": "",
+        "Topic": "",
+        "Domain": "",
+        "MsgType": "",
+        "MsgClass": "sensor",
+        "MsgSubClass": "",
+        "Negation": false,
+        "LinkedFilterBooleanOperation": "",
+        "LinkedFilterID": 0,
+        "IsAtomic": true,
+        "Tags": null,
+        "MeasurementName": "",
+        "InMemory": false
+      },
+      {
+        "ID": 2,
+        "Name": "",
+        "Topic": "",
+        "Domain": "",
+        "MsgType": "",
+        "MsgClass": "binary",
+        "MsgSubClass": "",
+        "Negation": false,
+        "LinkedFilterBooleanOperation": "",
+        "LinkedFilterID": 0,
+        "IsAtomic": true,
+        "Tags": null,
+        "MeasurementName": "",
+        "InMemory": false
+      }
+    ],
+    "Selectors": [
+      {
+        "ID": 1,
+        "Topic": "*/jim1/evt*",
+        "InMemory": false
+      }
+    ],
+    "Measurements": [
+      {
+        "Name": "sensor",
+        "RetentionPolicyName": "bf_sensor",
+        "RetentionPolicyDuration": "8w"
+      },
+      {
+        "Name": "level",
+        "RetentionPolicyName": "bf_level",
+        "RetentionPolicyDuration": "8w"
+      },
+      {
+        "Name": "binary",
+        "RetentionPolicyName": "bf_binary",
+        "RetentionPolicyDuration": "8w"
+      },
+      {
+        "Name": "default",
+        "RetentionPolicyName": "bf_default",
+        "RetentionPolicyDuration": "8w"
+      }
+    ]
+  }
+###
+
+PUT http://localhost:5015/blackflowint/influxdb/api/proc
+content-type: application/json
+
+{
+    "Name": "New project",
+    "MqttBrokerAddr": "tcp://localhost:1883",
+    "MqttClientID": "bf-env-test-5",
+    "MqttBrokerUsername": "",
+    "MqttBrokerPassword": "",
+    "InfluxAddr": "http://localhost:8086",
+    "InfluxUsername": "",
+    "InfluxPassword": "",
+    "InfluxDB": "iotmsg_test",
+    "BatchMaxSize": 1000,
+    "SaveInterval": 1000,
+    "Filters": [],
+    "Selectors": [],
+    "Measurements": [],
+    "Autostart":false,
+  }
+
+###
+
+DELETE http://localhost:5015/blackflowint/influxdb/api/proc/0
+
+###
+
+POST http://localhost:5015/blackflowint/influxdb/api/proc/0/ctl
+content-type: application/json
+
+{
+    "Action":"state"
+}
+
+###
+
+POST http://localhost:5015/blackflowint/influxdb/api/proc/2
+content-type: application/json
+
+{
+    "ID":2,
+    "Name": "Updated project",
+    "MqttBrokerAddr": "tcp://localhost:1883",
+    "MqttClientID": "bf-env-test-2",
+    "MqttBrokerUsername": "",
+    "MqttBrokerPassword": "",
+    "InfluxAddr": "http://localhost:8086",
+    "InfluxUsername": "",
+    "InfluxPassword": "",
+    "InfluxDB": "iotmsg_test",
+    "BatchMaxSize": 1000,
+    "SaveInterval": 1000,
+    "Autostart":true,
+    "Filters": [
+      {
+        "ID": 1,
+        "Name": "",
+        "Topic": "",
+        "Domain": "",
+        "MsgType": "",
+        "MsgClass": "sensor",
+        "MsgSubClass": "",
+        "Negation": false,
+        "LinkedFilterBooleanOperation": "",
+        "LinkedFilterID": 0,
+        "IsAtomic": true,
+        "Tags": null,
+        "MeasurementName": "",
+        "InMemory": false
+      },
+      {
+        "ID": 2,
+        "Name": "",
+        "Topic": "",
+        "Domain": "",
+        "MsgType": "",
+        "MsgClass": "binary",
+        "MsgSubClass": "",
+        "Negation": false,
+        "LinkedFilterBooleanOperation": "",
+        "LinkedFilterID": 0,
+        "IsAtomic": true,
+        "Tags": null,
+        "MeasurementName": "",
+        "InMemory": false
+      }
+    ],
+    "Selectors": [
+      {
+        "ID": 1,
+        "Topic": "*/jim1/evt*",
+        "InMemory": false
+      }
+    ],
+    "Measurements": [
+      {
+        "Name": "sensor",
+        "RetentionPolicyName": "bf_sensor",
+        "RetentionPolicyDuration": "8w"
+      },
+      {
+        "Name": "level",
+        "RetentionPolicyName": "bf_level",
+        "RetentionPolicyDuration": "8w"
+      },
+      {
+        "Name": "binary",
+        "RetentionPolicyName": "bf_binary",
+        "RetentionPolicyDuration": "8w"
+      },
+      {
+        "Name": "default",
+        "RetentionPolicyName": "bf_default",
+        "RetentionPolicyDuration": "8w"
+      }
+    ]
+  }

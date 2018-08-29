@@ -1,0 +1,23 @@
+<div style="margin: 20px">
+    <mat-select placeholder="Location" style="width:350px" [(ngModel)]="selectedLocationId" >
+                <mat-option *ngFor="let location of locations" [value]="location.id">{{ location.alias }} ({{location.type}}) </mat-option>
+    </mat-select>
+    <p>        
+    <mat-select #serviceInput placeholder="Service" style="width:350px" [(ngModel)]="selectedService" (change)="onServiceSelected()" >
+        <mat-option *ngFor="let service of fimpServiceList" [value]="service.name" >{{ service.label }} ({{service.name}}) </mat-option>
+    </mat-select>
+    </p>
+    <mat-nav-list>
+            <mat-list-item *ngFor="let service of services">
+              <p mat-line >{{ service.alias }} at {{ service.location_alias }} ({{service.groups}}) </p>
+              <p mat-line >
+                 <mat-select #serviceInput placeholder="Interface" style="width:300px"  [(ngModel)]="selectedInterface" (change)="onInterfaceSelected(service)"  >
+                     <span *ngFor="let intf of service.interfaces">
+                        <mat-option *ngIf="msgFlowDirection == intf.intf_t"  [value]="intf.msg_t" >{{intf.msg_t}} </mat-option>
+                     </span>
+                 </mat-select>      
+              </p>
+            </mat-list-item>
+    </mat-nav-list>
+ </div>
+ 

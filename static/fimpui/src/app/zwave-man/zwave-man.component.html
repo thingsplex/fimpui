@@ -1,0 +1,204 @@
+
+<nav mat-tab-nav-bar>
+  <a mat-tab-link active [routerLink]="['/zwave-man']" >Z-Wave</a>
+  <a mat-tab-link active [routerLink]="['/zigbee-man']" >ZigBee</a>
+  <a mat-tab-link [routerLink]="['/ikea-man']" >Ikea Tradfri</a>
+  <a mat-tab-link [routerLink]="['/systems-man']" >Systems</a>
+</nav>
+
+<div class="zwave-man">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <!--<div mat-card-avatar class="example-header-image"></div>-->
+      <mat-card-title><h3>Z-Wave network manager</h3></mat-card-title>
+      <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
+    </mat-card-header>
+    <mat-card-content>
+          <table>
+
+          <thead><tr>
+            <th style="width: 70px">Node Id</th>
+            <th style="width: 150px">Product hash</th>
+            <th style="width:300px">Product name</th>
+            <th style="width: 300px">Alias</th>
+            <th style="width: 75px">Power</th>
+            <th style="width: 70px">Status</th>
+            <th >Actions</th></tr> </thead>
+          <tbody>
+         <tr *ngFor="let node of nodes">
+           <td> {{node.address}}</td>
+           <td> {{node.hash}}</td>
+           <td> {{node.product_name}}</td>
+           <td> {{node.alias}}</td>
+           <td>
+             <mat-icon *ngIf="node.power_source=='ac'" >power</mat-icon>
+             <mat-icon *ngIf="node.power_source=='battery'" >battery_std</mat-icon>
+           </td>
+           <td>
+                <mat-icon *ngIf="node.status=='OK'" style="color: #27ae60">done</mat-icon>
+                <mat-icon *ngIf="node.status=='NO_PING'" >done</mat-icon>
+                <mat-icon *ngIf="node.status=='NO_RESP'" style="color: red">error_outline</mat-icon>
+                <mat-icon *ngIf="node.status=='UP'" style="color: #27ae60">thumb_up</mat-icon>
+                <mat-icon *ngIf="node.status=='DOWN'" style="color: red">thumb_down</mat-icon>
+                <mat-icon *ngIf="node.status=='SLEEP'" >history</mat-icon>
+           </td>
+           <td  >
+             <mat-chip-list>
+             <mat-chip class="open-chip" [routerLink]="['/thing-view','zw',node.address]">Services</mat-chip>
+             <mat-form-field style="width: 140px;height:30px; margin-left: 10px">
+                 <mat-select  [(value)]="selectedCommand" placeholder="Select command">
+                   <mat-option value="ping"> Ping </mat-option>
+                   <mat-option value="template"> Show template </mat-option>
+                   <mat-option value="update"> Update </mat-option>
+                   <mat-option value="delete"> Delete </mat-option>
+                   <mat-option value="replace"> Replace </mat-option>
+                 </mat-select>
+             </mat-form-field>
+             <mat-chip color="warn" (click)="runCommand(node)">Run</mat-chip>
+
+             </mat-chip-list>
+          </td>
+          </tr>
+          </tbody>
+         </table>
+     <p>Adapter state: {{zwAdState}}</p>
+     <p>Incl proc state: {{inclProcState}}</p>
+     <p>Enabled global non-secure incl.: {{globalNonSecureInclMode}}</p>
+     <p>Last error : {{errorMsg}}</p>
+     <mat-progress-bar  [mode]="progressBarMode" ></mat-progress-bar>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button (click)="addDevice()" color="primary" > Add device</button>
+      <button mat-raised-button (click)="removeDevice()" color="warn" >Exclude device</button>
+      <button mat-raised-button (click)="reloadNodes()">Reload list</button>
+      <button mat-raised-button (click)="topology.hidden = !topology.hidden" >Network stats</button>
+      <button mat-raised-button (click)="settings.hidden = !settings.hidden" >Advanced</button>
+      <br/>
+      <div #topology hidden >
+        <p>
+          <button mat-raised-button color="accent" (click)="requestRSSI()">Get background RSSI</button>
+          <ng-container *ngIf="rssiReport">
+            Channel 1 : {{ rssiReport.ch1 }} Channel 2 : {{ rssiReport.ch2 }}
+          </ng-container>
+        </p>
+        <p>
+        <button mat-raised-button color="accent" (click)="requestImaStats()">Reload</button>
+        <button mat-raised-button color="accent" (click)="resetImaStats()">Reset</button></p>
+        <button mat-raised-button color="accent" (click)="pingNetwork()">Ping all nodes in the network </button>
+        <table>
+
+          <thead>
+            <tr>
+              <th style="width: 70px">Node Id</th>
+              <th style="width: 150px">Alias</th>
+              <th style="width: 50px">Power</th>
+              <th style="width: 70px">Status</th>
+              <th style="width: 70px">Tx count</th>
+              <th style="width: 70px">Err count</th>
+              <th style="width: 70px">Route change</th>
+              <th style="width: 70px">Has LWR</th>
+              <th style="width: 100px">LWR speed (kbps)</th>
+              <th style=" width: 250px">Last working route (LWR)</th>
+              <th style=" width: 400px">Neighbors</th>
+
+            </tr> </thead>
+          <tbody>
+          <tr *ngFor="let node of networkStats">
+            <td> {{node.node_id}}</td>
+            <td> {{node.alias}}</td>
+            <td>
+              <mat-icon *ngIf="node.power_source=='ac'" >power</mat-icon>
+              <mat-icon *ngIf="node.power_source=='battery'" >battery_std</mat-icon>
+            </td>
+            <td>
+              <mat-icon *ngIf="node.status=='OK'" style="color: #27ae60">done</mat-icon>
+              <mat-icon *ngIf="node.status=='NO_PING'" >done</mat-icon>
+              <mat-icon *ngIf="node.status=='NO_RESP'" style="color: red">error_outline</mat-icon>
+              <mat-icon *ngIf="node.status=='UP'" style="color: green">thumb_up</mat-icon>
+              <mat-icon *ngIf="node.status=='DOWN'" style="color: red">thumb_down</mat-icon>
+              <mat-icon *ngIf="node.status=='SLEEP'" >history</mat-icon>
+            </td>
+            <td> {{node.tx_count}}</td>
+            <td> {{node.err_count}}</td>
+            <td> {{node.route_change}}</td>
+            <td> <mat-icon *ngIf="node.lwr.has_lwr" style="color: green">done</mat-icon> <mat-icon *ngIf="!node.lwr.has_lwr" style="color: red">error_outline</mat-icon> </td>
+            <td> {{node.lwr.link_sp}}</td>
+            <td> GW(1) ->
+              <span *ngIf="node.lwr.has_lwr" >
+                <span *ngIf="node.lwr.r1!=0" >{{node.lwr.r1}} -> </span>
+                <span *ngIf="node.lwr.r2!=0" >{{node.lwr.r2}} -> </span>
+                <span *ngIf="node.lwr.r3!=0" >{{node.lwr.r3}} -> </span>
+                <span *ngIf="node.lwr.r4!=0" >{{node.lwr.r4}} -> </span>
+                {{ node.node_id }}
+              </span>
+            </td>
+            <td>
+              <span *ngFor="let  nbl of node.nb_info">
+                {{ nbl.node_id }},
+              </span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+
+        <div id="zwnetwork" style="width: 100%;height: 1000px"></div>
+        <button mat-raised-button color="accent" (click)="stopSimulation()">Stop</button>
+
+
+      </div>
+
+      <div #settings hidden >
+        <p>Advanced settings </p>
+
+        <div> Ping device:
+          <mat-input-container >
+            <input matInput #pingFromInput placeholder="from node">
+          </mat-input-container>
+          <mat-input-container >
+            <input matInput #pingToInput placeholder="to node">
+          </mat-input-container>
+          <mat-input-container style="width:50px">
+            <input matInput #txLevelInput placeholder="lvl">
+          </mat-input-container>
+          <button mat-raised-button (click)="pingNode(pingFromInput.value,pingToInput.value,txLevelInput.value)">Ping</button>
+          <p>Result : {{ pingResult }} </p>
+        </div>
+
+
+
+        <button mat-raised-button color="accent" (click)="restartAdapter()">Restart adapter </button>
+        <button mat-raised-button color="accent" (click)="updateNetwork()">Start network update </button>
+        <button mat-raised-button color="accent" (click)="pingNetwork()">Ping all nodes in the network </button>
+        <button mat-raised-button color="accent" (click)="cleanUpNetwork()">Run network cleanup </button>
+       <p> <button mat-raised-button color="warn" (click)="resetNetwork()">Z-Wave network reset </button> </p>
+       <p>
+        <button mat-raised-button  (click)="setGatewayMode('enableGlobalForceNonSecure')">Enable global non-secure inclusion</button>
+        <button mat-raised-button  (click)="setGatewayMode('disableGlobalForceNonSecure')">Disable global non-secure inclusion</button>
+      </p>
+      <p>
+         <button mat-raised-button  (click)="requestAllInclusionReports()">Request inclusion reports for all nodes</button>
+      </p>
+       <p>
+         <button mat-raised-button  (click)="downloadTemplatesFromCloud()">Download all stable templates from cloud </button>
+         <button mat-raised-button  (click)="uploadCacheToCloud()">Upload unstable templates into cloud </button>
+       </p>
+         <h4>FH templates</h4>
+         <mat-list>
+           <mat-list-item *ngFor="let temp of localTemplates" (click)="openTemplateEditor(temp.file_name,'stable')" > {{temp.alias}} ( {{temp.file_name}} ) </mat-list-item>
+         </mat-list>
+
+         <h4>Discovered templates (cache)</h4>
+         <mat-list>
+           <mat-list-item *ngFor="let temp of localTemplatesCache" (click)="openTemplateEditor(temp.file_name,'cache')" >  {{temp.alias}} ( {{temp.file_name}} ) </mat-list-item>
+         </mat-list>
+         <p>
+            <button mat-raised-button  (click)="loadLocalTemplates()">Reload</button>
+         </p>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+
+</div>
+
+

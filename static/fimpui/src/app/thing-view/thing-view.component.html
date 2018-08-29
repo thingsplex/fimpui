@@ -1,0 +1,107 @@
+   <div class="thing-view">
+ <mat-card class="example-card">
+ <mat-card-header style="margin-bottom: 15px" >
+     <button mat-raised-button [routerLink]="['/zwave-man']">  <mat-icon>chevron_left</mat-icon>  <mat-icon>network_check</mat-icon> Network manager </button>
+ </mat-card-header>
+ <mat-card-content >
+    
+  <h3>Thing:</h3>
+       <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span *ngIf="thing.alias">
+                {{ thing.alias }} 
+              </span>
+              <span *ngIf="!thing.alias">
+                  {{ thing.productName  }} 
+                </span> 
+            </mat-panel-title>
+            <mat-panel-description>
+                    Address: {{ thing.commTech  }}:{{ thing.address }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <table>
+              <tr><td><b>Alias:</b></td><td> {{ thing.alias }} </td> </tr>
+              <tr><td><b>Location:</b></td><td> {{ thing.locationAlias }} </td> </tr>
+              <tr><td><b>Address:</b></td><td> {{ thing.address }} </td> </tr>
+              <tr><td><b>ProductName:</b></td><td> {{ thing.productName  }} </td> </tr>
+              <tr><td><b>Comunication tech:</b></td><td> {{ thing.commTech  }} </td> </tr>
+              <tr><td><b>Product hash:</b></td><td> {{ thing.productHash  }} </td> </tr>
+              <tr><td><b>Manufacturer Id:</b></td><td> {{ thing.manufacturerId }} </td> </tr>
+              <tr><td><b>Product Id:</b></td><td> {{ thing.productId }} </td> </tr>
+              <tr><td><b>Device Id:</b></td><td> {{ thing.deviceId }} </td> </tr>
+              <tr><td><b>Category:</b></td><td> {{ thing.category }} </td> </tr>
+              <tr><td><b>Hardware version:</b></td><td> {{ thing.hwVersion }} </td> </tr>
+              <tr><td><b>Software version:</b></td><td> {{ thing.swVersion }} </td> </tr>
+              <tr><td><b>Power source:</b></td><td> {{ thing.powerSource }} </td> </tr>
+              <tr><td><b>Wakeup interval:</b></td><td> {{ thing.wakeupInterval }} </td> </tr>
+              <tr><td><b>Security:</b></td><td> {{ thing.security }} </td> </tr>
+          </table>
+           
+          <button mat-raised-button style="margin-top: 15px;" (click)="getReport(thing.commTech,thing.address)">Sync with adapter</button>
+        </mat-expansion-panel>
+  
+  <h3>Services:</h3>
+  <div>
+        <div *ngFor="let row of thing.services" style="margin: 10px">
+            <mat-card class="example-card">
+                <mat-card-header>
+               <mat-card-title><h3>{{row.name}}</h3></mat-card-title>
+               <mat-card-subtitle>Group : {{row.groups}}</mat-card-subtitle>
+               </mat-card-header>
+               <mat-card-content>
+               <p matLine><b>Address: </b>{{row.address}}</p>
+               <p matLine><b>Enabled: </b>{{row.enabled}}</p>
+               <p matLine><b>Secure : </b>{{row.props.is_secure}} <b>Unsecure : </b>{{row.props.is_unsecure}} </p>
+               <p matLine *ngIf="row.props.sup_units"> <b>Supported units:</b> {{row.props.sup_units}} </p>
+               <p matLine *ngIf="row.props.sup_events"><b>Supported events:</b> {{row.props.sup_events}} </p>
+               <p matLine *ngIf="row.props.sup_setpoints"><b>Supported setpoints:</b> {{row.props.sup_setpoints}} </p>
+               <p matLine *ngIf="row.props.sup_states"><b>Supported states:</b> {{row.props.sup_states}} </p>
+               <p matLine *ngIf="row.props.sup_tstates"><b>Supported target states:</b> {{row.props.sup_tstates}} </p>
+               <p matLine *ngIf="row.props.sup_modes"><b>Supported modes:</b> {{row.props.sup_modes}} </p>
+               <p matLine *ngIf="row.props.sup_scenes"><b>Supported scenes:</b> {{row.props.sup_scenes}} </p>
+               <p matLine *ngIf="row.props.sup_components"><b>Supported components:</b> {{row.props.sup_components}} </p>
+               <p  matLine *ngIf="row.props.sup_notiftypes"><b>Supported notif. types:</b> {{row.props.sup_notiftypes}} </p>
+               
+               <mat-expansion-panel *ngIf="row.name=='dev_sys'">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      More...
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                
+                  <table  matLine>
+                      <tr><th>type</th><th>msg</th><th>val. type</th><th ></th> </tr>
+                      <tr *ngFor="let intf of row.interfaces">
+                        <td>{{ intf.type }}</td>
+                        <td>{{ intf.msgType }}</td>
+                        <td>{{ intf.valueType }}</td>
+                        <td><thing-intf-ui [intf]="intf" [msgType]="intf.msgType" [addr]="row.address" [service]="row.name" > </thing-intf-ui></td>
+                      </tr>
+                    </table>
+                
+                </mat-expansion-panel>
+
+               <table *ngIf="row.name!='dev_sys'"  matLine>
+                 <tr><th>type</th><th>msg</th><th>val. type</th><th ></th> </tr>
+                 <tr *ngFor="let intf of row.interfaces">
+                   <td>{{ intf.type }}</td>
+                   <td>{{ intf.msgType }}</td>
+                   <td>{{ intf.valueType }}</td>
+                   <td><thing-intf-ui [intf]="intf" [msgType]="intf.msgType" [addr]="row.address" [service]="row.name" > </thing-intf-ui></td>
+                 </tr>
+               </table>
+
+
+
+              </mat-card-content>
+            </mat-card>   
+    </div>
+
+</div>
+
+</mat-card-content>
+ </mat-card>
+ </div>     
+     
+

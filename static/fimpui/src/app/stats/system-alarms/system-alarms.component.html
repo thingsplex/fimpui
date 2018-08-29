@@ -1,0 +1,63 @@
+<nav mat-tab-nav-bar>
+  <a mat-tab-link [routerLink]="['/stats/event-log']" >System events</a>
+  <a mat-tab-link [routerLink]="['/stats/system-metrics']" >System metrics</a>
+  <a mat-tab-link active [routerLink]="['/stats/system-alarms']" >System alarms</a>
+  <a mat-tab-link [routerLink]="['/stats/tsdb-config']" >Time series config</a>
+</nav>
+
+<br/>
+
+<div class="table-container mat-elevation-z8">
+  <div class="example-header">
+
+  </div>
+
+  <mat-table #table [dataSource]="dataSource" matSort>
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+    <!-- Progress Column -->
+    <ng-container cdkColumnDef="name">
+      <mat-header-cell  *cdkHeaderCellDef> Name </mat-header-cell>
+      <mat-cell  *cdkCellDef="let row"> {{row.name}} </mat-cell>
+    </ng-container>
+    <ng-container cdkColumnDef="service">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>  Service </mat-header-cell>
+      <mat-cell *cdkCellDef="let row" > {{row.serv}} </mat-cell>
+    </ng-container>
+    <ng-container cdkColumnDef="address">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Address</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.device_address}} </mat-cell>
+    </ng-container>
+    <ng-container cdkColumnDef="event">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Event</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.description}} </mat-cell>
+    </ng-container>
+    <ng-container cdkColumnDef="power-source">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Power source</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.power_source}} </mat-cell>
+    </ng-container>
+    <ng-container cdkColumnDef="last-contact">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last contact</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.last_wakeup}} </mat-cell>
+    </ng-container>
+
+    <ng-container cdkColumnDef="is-smoke-sensor">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Is smoke sensor</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.is_smoke_sensor}} </mat-cell>
+    </ng-container>
+
+    <ng-container cdkColumnDef="trans-nr">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Trans. nr.</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.transmission_nr}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *cdkRowDef="let row; columns: displayedColumns ;"></mat-row>
+  </mat-table>
+
+<div style="width:100%;height:60px">&nbsp; </div>
+
+
+</div>

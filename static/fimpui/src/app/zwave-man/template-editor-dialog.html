@@ -1,0 +1,245 @@
+<h1 mat-dialog-title> Template </h1>
+<mat-dialog-content>
+<h3>Product name</h3>
+<mat-input-container class="node-label-field" style="width: 400px">
+        <input matInput [(ngModel)]="template.alias" placeholder="Name" >
+</mat-input-container>
+<p><mat-input-container class="node-label-field" style="width: 400px">
+        <input matInput [(ngModel)]="template.comment" placeholder="Comment" >
+    </mat-input-container>
+</p>
+<p><mat-input-container class="node-label-field" style="width: 400px">
+        <input matInput [(ngModel)]="template.docs_ref" placeholder="Documentation reference" >
+    </mat-input-container>
+</p>
+<p>
+<mat-input-container class="node-label-field" style="width: 200px">
+        <input matInput type="number" [(ngModel)]="template.wakeup_interval" placeholder="Wakeup interval(sec)" >
+</mat-input-container>
+</p>
+<h3>Device auto configuration</h3>
+    <mat-list>
+        <mat-list-item ><h4>Auto associations </h4></mat-list-item>
+        <mat-list-item *ngFor="let assoc of template.auto_configs.assoc">
+            <mat-input-container class="node-label-field">
+                        <input matInput type="number" [(ngModel)]="assoc.group" placeholder="group" >
+            </mat-input-container>
+            <button mat-raised-button color="primary" (click)="deleteAssoc(assoc)">Delete</button>
+       </mat-list-item>
+    </mat-list>
+    <button mat-raised-button color="primary" (click)="addNewAssoc()">Add new group</button>
+    <mat-list>
+            <mat-list-item ><h4>Auto configurations </h4></mat-list-item>
+            <mat-list-item *ngFor="let config of template.auto_configs.configs">
+                <mat-input-container class="node-label-field">
+                            <input matInput type="number" [(ngModel)]="config.key" placeholder="Param id" >
+                </mat-input-container>
+                <mat-input-container class="node-label-field">
+                            <input matInput type="number" [(ngModel)]="config.value" placeholder="Value" >
+                </mat-input-container>
+                <mat-input-container class="node-label-field">
+                            <input matInput type="number" [(ngModel)]="config.size" placeholder="Size (1,2,4) " >
+                </mat-input-container>
+                <mat-input-container class="node-label-field">
+                        <input matInput type="text" [(ngModel)]="config.comment" placeholder="Comment " >
+                </mat-input-container>
+                <button mat-raised-button color="primary" (click)="deleteConfig(config)">Delete</button>
+           </mat-list-item>
+     </mat-list>
+     <button mat-raised-button color="primary" (click)="addNewConfig()">Add new config</button>
+
+<h3>Basic CC mapping</h3>
+        <mat-list>
+               <mat-list-item *ngFor="let serv of template.dev_custom.basic_mapping">
+                        <mat-input-container class="node-label-field" style="width: 50px">
+                                        <input matInput type="number" [(ngModel)]="serv.endp" placeholder="Endpoint id" >
+                        </mat-input-container>
+                        <mat-input-container class="node-label-field" style="width: 50px">
+                                        <input matInput type="number" [(ngModel)]="serv.basic_value" placeholder="Basic value" >
+                        </mat-input-container>
+                        <mat-input-container class="node-label-field">
+                                        <input matInput type="text" [(ngModel)]="serv.service" placeholder="Service" >
+                        </mat-input-container>
+                        <mat-input-container class="node-label-field">
+                                        <input matInput type="text" [(ngModel)]="serv.msg_type" placeholder="Message type" >
+                        </mat-input-container>
+                        <mat-input-container class="node-label-field" style="width:85px">
+                                        <input matInput type="text" [(ngModel)]="serv.fimp_value.val_t" placeholder="Fimp value type" >
+                        </mat-input-container>
+                        <mat-input-container class="node-label-field">
+                                        <input matInput type="text" [(ngModel)]="serv.fimp_value.val" placeholder="Fimp value" >
+                        </mat-input-container>
+                        <div style="margin-bottom: 15px;width:155px" >
+                                <mat-checkbox [(ngModel)]="serv.is_get_report_cmd" >Get Report Cmd</mat-checkbox>
+                        </div>
+                        <div style="margin-bottom: 15px;width:120px" >
+                                <mat-checkbox [(ngModel)]="serv.map_range" > Full range </mat-checkbox>
+                          </div>
+                        <mat-input-container class="node-label-field" style="width: 40px">
+                                        <input matInput type="number" [(ngModel)]="serv.min" placeholder="Min" >
+                        </mat-input-container>
+                        <mat-input-container class="node-label-field" style="width: 40px">
+                                        <input matInput type="number" [(ngModel)]="serv.max" placeholder="Max" >
+                        </mat-input-container>
+                        <mat-input-container class="node-label-field">
+                                <input matInput type="text" [(ngModel)]="serv.comment" placeholder="Comment " >
+                        </mat-input-container>
+                        <button mat-raised-button color="primary" (click)="deleteBasicMapping(serv)">Delete</button>
+                </mat-list-item>
+         </mat-list>
+         <button mat-raised-button color="primary" (click)="addNewBasicMapping()">Add basic mapping</button>
+
+  <h3>Binary Switch CC mapping</h3>
+  <mat-list>
+    <mat-list-item *ngFor="let serv of template.dev_custom.bin_switch_mapping">
+      <mat-input-container class="node-label-field" style="width: 50px">
+        <input matInput type="number" [(ngModel)]="serv.endp" placeholder="Endpoint id" >
+      </mat-input-container>
+
+      <mat-radio-group [(ngModel)]="serv.cc_value">
+        <mat-radio-button  [value]="true" >On (true) </mat-radio-button>
+        <mat-radio-button  [value]="false" >Off (true) </mat-radio-button>
+      </mat-radio-group>
+
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.service" placeholder="Service" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.msg_type" placeholder="Message type" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field" style="width:85px">
+        <input matInput type="text" [(ngModel)]="serv.fimp_value.val_t" placeholder="Fimp value type" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.fimp_value.val" placeholder="Fimp value" >
+      </mat-input-container>
+      <div style="margin-bottom: 15px;width:155px" >
+        <mat-checkbox [(ngModel)]="serv.is_get_report_cmd" >Get Report Cmd</mat-checkbox>
+      </div>
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.comment" placeholder="Comment " >
+      </mat-input-container>
+      <button mat-raised-button color="primary" (click)="deleteBinarySwitchMapping(serv)">Delete</button>
+    </mat-list-item>
+  </mat-list>
+  <button mat-raised-button color="primary" (click)="addNewBinarySwitchMapping()">Add binary switch mapping</button>
+
+
+  <h3>Scene Activation CC mapping</h3>
+  <mat-list>
+    <mat-list-item *ngFor="let serv of template.dev_custom.scene_activation_mapping">
+      <mat-input-container class="node-label-field" style="width: 50px">
+        <input matInput type="number" [(ngModel)]="serv.endp" placeholder="Endpoint id" >
+      </mat-input-container>
+
+
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.cc_value" placeholder="Scene name" >
+      </mat-input-container>
+
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.service" placeholder="Service" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.msg_type" placeholder="Message type" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field" style="width:85px">
+        <input matInput type="text" [(ngModel)]="serv.fimp_value.val_t" placeholder="Fimp value type" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.fimp_value.val" placeholder="Fimp value" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.location" placeholder="Location(optional)" >
+      </mat-input-container>
+      <div style="margin-bottom: 15px;width:155px ;margin-right: 5px" >
+        <mat-checkbox [(ngModel)]="serv.is_get_report_cmd" >Get Report Cmd</mat-checkbox>
+      </div>
+      <mat-input-container class="node-label-field">
+        <input matInput type="text" [(ngModel)]="serv.comment" placeholder="Comment " >
+      </mat-input-container>
+      <button mat-raised-button color="primary" (click)="deleteSceneActivationMapping(serv)">Delete</button>
+    </mat-list-item>
+  </mat-list>
+  <button mat-raised-button color="primary" (click)="addNewSceneActivationMapping()">Add scene activation mapping</button>
+
+
+<h3>Service grouping</h3>
+<mat-list>
+        <mat-list-item *ngFor="let serv of template.dev_custom.service_grouping">
+            <mat-input-container class="node-label-field">
+                        <input matInput type="number" [(ngModel)]="serv.endp" placeholder="Endpoint id" >
+            </mat-input-container>
+            <mat-input-container class="node-label-field">
+                        <input matInput type="text" [(ngModel)]="serv.service" placeholder="Service name" >
+            </mat-input-container>
+            <mat-input-container class="node-label-field">
+                        <input matInput type="text" [(ngModel)]="serv.group" placeholder="Group (ch_0)" >
+            </mat-input-container>
+            <mat-input-container class="node-label-field">
+                    <input matInput type="text" [(ngModel)]="serv.comment" placeholder="Comment " >
+            </mat-input-container>
+            <button mat-raised-button color="primary" (click)="deleteServiceGrouping(serv)">Delete</button>
+       </mat-list-item>
+ </mat-list>
+ <button mat-raised-button color="primary" (click)="addNewServiceGrouping()">Add group</button>
+
+ <h3>Service customization</h3>
+ <mat-list>
+         <mat-list-item *ngFor="let serv of template.dev_custom.service_fields">
+             <mat-input-container class="node-label-field">
+                         <input matInput type="number" [(ngModel)]="serv.endp" placeholder="Endpoint id" >
+             </mat-input-container>
+             <mat-input-container class="node-label-field">
+                         <input matInput type="text" [(ngModel)]="serv.service" placeholder="Service name" >
+             </mat-input-container>
+             <div style="margin-bottom: 15px;width:120px" >
+                <mat-checkbox [(ngModel)]="serv.enabled" > Is enabled </mat-checkbox>
+             </div>
+             <mat-input-container class="node-label-field">
+                     <input matInput type="text" [(ngModel)]="serv.comment" placeholder="Comment " >
+             </mat-input-container>
+             <button mat-raised-button color="primary" (click)="deleteServiceFieldCustomization(serv)">Delete</button>
+        </mat-list-item>
+  </mat-list>
+  <button mat-raised-button color="primary" (click)="addNewServiceFieldCustomization()">Add service customization</button>
+
+ <h3>Custom service descriptor</h3>
+ <mat-list>
+     <mat-list-item *ngFor="let serv of template.dev_custom.service_descriptor" style="height: 170px" >
+                    <mat-input-container class="node-label-field">
+                                <input matInput type="number" [(ngModel)]="serv.endp" placeholder="Endpoint id" >
+                    </mat-input-container>
+                    <mat-select #nodeIdInput style="width: 120px;margin-right: 10px;margin-left:10px" class="value-selector" placeholder="Operation"[(ngModel)]="serv.operation" >
+                                <mat-option value = "add" > Add </mat-option>
+                                <mat-option value = "replace" > Replace </mat-option>
+                    </mat-select>
+
+                    <json-input style="width:500px" [label] = "'Service descriptor'" [inputType]="'textarea'"  [(jData)]="serv.descriptor"></json-input>
+
+                    <button mat-raised-button color="primary" (click)="deleteServiceDescriptor(serv)">Delete</button>
+
+     </mat-list-item>
+ </mat-list>
+
+ <button mat-raised-button color="primary" (click)="addNewServiceDescriptor()">Add service</button>
+
+ <p></p>
+ <br/>
+  <div #source hidden >
+      <mat-input-container   style="width: 100%">
+      <textarea class="sourceEditor" mat-autosize [(ngModel)]="templateStr"  minRows="6" matInput #payloadInput placeholder="Source" > </textarea>
+      </mat-input-container>
+      <br/>
+      <button mat-raised-button (click)="saveSource()" >Save</button>
+  </div>
+
+</mat-dialog-content>
+<mat-dialog-actions >
+<button mat-raised-button  (click)="saveTemplate()" >Save</button>
+<button mat-raised-button  (click)="templateOperation('move')" >Move to stable</button>
+<button mat-raised-button  (click)="templateOperation('upload')" >Upload to cloud (stage)</button>
+<button mat-raised-button color="warn" (click)="deleteTemplate()" >Delete</button>
+<button mat-raised-button mat-dialog-close>Close</button>
+<button mat-raised-button (click)="source.hidden = !source.hidden;showSource()" >Show source</button>
+</mat-dialog-actions>

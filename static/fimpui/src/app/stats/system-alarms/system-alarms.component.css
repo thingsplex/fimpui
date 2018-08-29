@@ -1,0 +1,15 @@
+.mat-column-name {
+    flex: 0 0 200px;
+  }
+.mat-column-service {
+    flex: 0 0 100px;
+}
+.mat-column-address {
+    flex: 0 0 100px;
+}
+.mat-column-event {
+    flex: 0 0 150px;
+}
+.mat-column-last-contact {
+    flex: 0 0 250px;
+}

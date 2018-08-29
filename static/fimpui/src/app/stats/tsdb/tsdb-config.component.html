@@ -1,0 +1,175 @@
+<nav mat-tab-nav-bar>
+  <a mat-tab-link [routerLink]="['/stats/event-log']" >System events</a>
+  <a mat-tab-link [routerLink]="['/stats/system-metrics']" >System metrics</a>
+  <a mat-tab-link active [routerLink]="['/stats/tsdb-config']" >Time series config</a>
+</nav>
+
+<br/>
+
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title><h3>List of processes </h3></mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item *ngFor="let proc of procList" ><b> Name :</b> {{proc.ProcName}} <b>State</b> : {{ proc.State }} </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
+
+
+<mat-card>
+    <mat-card-header>
+      <!--<div mat-card-avatar class="example-header-image"></div>-->
+      <mat-card-title><h3>Time series integration process configurator</h3></mat-card-title>
+      <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
+    </mat-card-header>
+    <mat-card-content *ngIf="procData">
+      <div  class="tsdb-config-card">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Process name" [(ngModel)]="procData.Name" >
+      </mat-form-field>
+      <p>
+      <mat-form-field class="example-full-width">
+        <input  matInput placeholder="Mqtt broker host" [(ngModel)]="procData.MqttBrokerAddr" >
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+          <input  matInput placeholder="username" [(ngModel)]="procData.MqttBrokerUsername" >
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+          <input  matInput placeholder="password" [(ngModel)]="procData.MqttBrokerPassword" >
+      </mat-form-field>
+      </p>
+
+        <p>
+          <mat-form-field class="example-full-width">
+            <input  matInput placeholder="InfluxDB host" [(ngModel)]="procData.InfluxAddr" >
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input  matInput placeholder="username" [(ngModel)]="procData.InfluxUsername" >
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input  matInput placeholder="password" [(ngModel)]="procData.InfluxPassword" >
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="example-full-width">
+            <input  matInput placeholder="DB name" [(ngModel)]="procData.InfluxDB" >
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input  matInput placeholder="batch size" [(ngModel)]="procData.BatchMaxSize" >
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input  matInput placeholder="batch save interval" [(ngModel)]="procData.SaveInterval" >
+          </mat-form-field>
+        </p>
+        <div style="margin-bottom: 5px;margin-top: 10px" >
+          <mat-checkbox [(ngModel)]="procData.Autostart" >Autostart</mat-checkbox>
+        </div>
+      </div>
+      <div style="margin-top: 10px">
+        <button mat-raised-button (click)="procCtrl('save',1)"> Save </button>
+        <button mat-raised-button (click)="procCtrl('start',1)"> Start </button>
+        <button mat-raised-button (click)="procCtrl('stop',1)"> Stop </button>
+      </div>
+      <mat-card style="margin-top: 20px;">
+        <mat-card-header>
+          <mat-card-title> <h3>Selectors</h3></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list>
+            <mat-list-item *ngFor="let sel of procData.Selectors">
+              <mat-form-field class="form-full-width">
+                <input  matInput placeholder="Topic" [(ngModel)]="sel.Topic" >
+              </mat-form-field>
+
+              <button *ngIf="sel.ID==-1" class="delete-button" mat-raised-button (click)="saveSelector(sel)"> Save</button>
+              <button class="delete-button" mat-raised-button (click)="removeSelector(sel.ID)"> Delete</button>
+            </mat-list-item>
+            </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button (click)="addSelector()"> Add </button>
+        </mat-card-actions>
+      </mat-card>
+
+
+      <mat-card style="margin-top: 20px;">
+        <mat-card-header>
+          <mat-card-title> <h3>Filters</h3></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list>
+          <mat-list-item *ngFor="let sel of procData.Filters">
+            <mat-form-field class="form-filters">
+              <input  matInput placeholder="Name" [(ngModel)]="sel.Name" >
+            </mat-form-field>
+            <p>
+            </p>
+            <div>
+              <mat-form-field style="width:200px">
+                <input  matInput placeholder="Topic" [(ngModel)]="sel.Topic" >
+              </mat-form-field>
+            <mat-form-field class="form-filters">
+              <input  matInput placeholder="Service" [(ngModel)]="sel.Service" >
+            </mat-form-field>
+            <mat-form-field class="form-filters">
+                <input  matInput placeholder="MsgType" [(ngModel)]="sel.MsgType" >
+            </mat-form-field>
+
+            </div>
+            <p>
+              -->>
+              <mat-form-field class="form-filters">
+                <input  matInput placeholder="Measuremen Id" [(ngModel)]="sel.MeasurementID" >
+              </mat-form-field>
+            </p>
+            <button *ngIf="sel.ID==-1" class="delete-button" mat-raised-button (click)="saveFilter(sel)"> Save</button>
+            <button class="delete-button" mat-raised-button (click)="removeFilter(sel.ID)"> Delete</button>
+          </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button (click)="addFilter()"> Add </button>
+        </mat-card-actions>
+      </mat-card>
+
+
+      <mat-card style="margin-top: 20px;">
+        <mat-card-header>
+          <mat-card-title> <h3>Measurements</h3></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list>
+            <mat-list-item *ngFor="let sel of procData.Measurements">
+              <mat-form-field class="form-filters">
+                <input  matInput placeholder="Id" [(ngModel)]="sel.ID" >
+              </mat-form-field>
+                <mat-form-field style="width:200px">
+                  <input  matInput placeholder="Name" [(ngModel)]="sel.Name" >
+                </mat-form-field>
+                <mat-form-field class="form-filters">
+                  <input  matInput placeholder="Retention duration" [(ngModel)]="sel.RetentionPolicyDuration" >
+                </mat-form-field>
+                <div style="margin-bottom: 5px;margin-top: 10px" >
+                  <mat-checkbox [(ngModel)]="sel.UseServiceAsMeasurementName" >Use service as name</mat-checkbox>
+                </div>
+              <button *ngIf="sel.IsNew" class="delete-button" mat-raised-button (click)="saveMeasurement(sel)"> Save</button>
+              <button class="delete-button" mat-raised-button (click)="removeMeasurement(sel.ID)"> Delete</button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button (click)="addMeasurement()"> Add </button>
+        </mat-card-actions>
+      </mat-card>
+
+    </mat-card-content>
+</mat-card>
+
+
+
+
+
+

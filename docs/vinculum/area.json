@@ -1,0 +1,34 @@
+{
+  "msg": {
+    "data": {
+      "errors": null,
+      "param": {
+        "area": [
+          {
+            "id": 1,
+            "name": "Main",
+            "props": {},
+            "type": "common"
+          },
+          {
+            "id": 2,
+            "name": "Test",
+            "props": {},
+            "type": "sdu"
+          },
+          {
+            "id": 3,
+            "name": "Office",
+            "props": {},
+            "type": "sdu"
+          }
+        ]
+      },
+      "requestId": 3,
+      "success": true
+    },
+    "dst": "chat",
+    "type": "response"
+  },
+  "ver": "sevenOfNine"
+}

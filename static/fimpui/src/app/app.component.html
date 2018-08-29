@@ -1,0 +1,49 @@
+<!--<mat-menu #appMenu="matMenu">
+  <button mat-menu-item> Settings </button>
+  <button mat-menu-item> Help </button>
+</mat-menu>-->
+<mat-toolbar color="primary">
+    <span>Thingsplex <small> v{{version}}</small></span>
+    <span class="spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+       <button mat-menu-item [routerLink]="['zwave-man']">
+        <mat-icon>network_check</mat-icon>
+        <span>Z-Wave manager</span>
+      </button>
+      <button mat-menu-item [routerLink]="['settings']">
+        <mat-icon>build</mat-icon>
+        <span>Settings</span>
+      </button>
+      <button mat-menu-item [routerLink]="['flight-recorder']">
+        <mat-icon>build</mat-icon>
+        <span>Flight recorder</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>devices_other</mat-icon>
+        <span>Things browser</span>
+      </button>
+    </mat-menu>
+</mat-toolbar>
+
+<nav mat-tab-nav-bar>
+<a mat-tab-link [routerLink]="['/registry/things/*/*']" >Registry</a> 
+<a mat-tab-link [routerLink]="['/flow/overview']" >Flow</a>
+<a mat-tab-link [routerLink]="['/zwave-man']" >Adapters</a>
+<a mat-tab-link [routerLink]="['/stats/event-log']" >Stats</a>
+<a mat-tab-link [routerLink]="['timeline']" >Message stream</a>
+</nav>
+
+<mat-sidenav-container class="example-container">
+<router-outlet ></router-outlet>
+
+ <mat-sidenav #sidenav class="example-sidenav">
+   <timeline></timeline>
+</mat-sidenav>
+
+  
+
+</mat-sidenav-container>
+

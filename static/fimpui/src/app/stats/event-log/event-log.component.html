@@ -1,0 +1,61 @@
+<nav mat-tab-nav-bar>
+    <a mat-tab-link active [routerLink]="['/stats/event-log']" >System events</a>
+    <a mat-tab-link [routerLink]="['/stats/system-metrics']" >System metrics</a>
+    <a mat-tab-link [routerLink]="['/stats/system-alarms']" >System alarms</a>
+    <a mat-tab-link [routerLink]="['/stats/tsdb-config']" >Time series config</a>
+</nav>
+
+  <br/>
+
+  <events-per-device-chart *ngIf = "dataSource.aggrErrorsByDevice.length>0" [events] = "dataSource.aggrErrorsByDevice"></events-per-device-chart>
+
+  <div class="table-container mat-elevation-z8">
+    <div class="example-header">
+
+    </div>
+    <button mat-raised-button (click)="dropDb()">Clear all events</button>
+    <mat-table #table [dataSource]="dataSource">
+
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+
+      <!-- Progress Column -->
+      <ng-container cdkColumnDef="id">
+        <mat-header-cell  *cdkHeaderCellDef> ID </mat-header-cell>
+        <mat-cell  *cdkCellDef="let row"> {{row.ID}} </mat-cell>
+      </ng-container>
+      <ng-container cdkColumnDef="timestamp">
+        <mat-header-cell *cdkHeaderCellDef> Time </mat-header-cell>
+        <mat-cell *cdkCellDef="let row"> {{row.Timestamp| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+      </ng-container>
+       <ng-container cdkColumnDef="resourceType">
+        <mat-header-cell *cdkHeaderCellDef> Resource type </mat-header-cell>
+        <mat-cell *cdkCellDef="let row">{{row.ResourceType}} </mat-cell>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container cdkColumnDef="address">
+        <mat-header-cell *cdkHeaderCellDef> Address </mat-header-cell>
+        <mat-cell *cdkCellDef="let row"> <a routerLink="/fimp/thing-view-addr/{{row.ThingAddress}}"> {{row.ThingAddress}}</a> </mat-cell>
+      </ng-container>
+      <ng-container cdkColumnDef="code">
+        <mat-header-cell *cdkHeaderCellDef> Code </mat-header-cell>
+        <mat-cell *cdkCellDef="let row">{{row.Value}}</mat-cell>
+      </ng-container>
+      <ng-container cdkColumnDef="msg">
+          <mat-header-cell *cdkHeaderCellDef> Msg </mat-header-cell>
+          <mat-cell *cdkCellDef="let row">{{row.Msg}}</mat-cell>
+      </ng-container>
+      <ng-container cdkColumnDef="errSource">
+          <mat-header-cell *cdkHeaderCellDef> Source </mat-header-cell>
+          <mat-cell *cdkCellDef="let row">{{row.ErrorSource}} </mat-cell>
+      </ng-container>
+
+
+      <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *cdkRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+  <div style="width:100%;height:60px">&nbsp; </div>
+
+  </div>

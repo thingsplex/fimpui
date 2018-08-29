@@ -1,0 +1,20 @@
+<div style="padding-left:35px;">
+        <div><strong>Topic :</strong> {{fimpMsg.topic}}</div>
+        <div><strong>Service :</strong> {{fimpMsg.service}}</div>
+        <div><strong>Interface :</strong> {{fimpMsg.mtype}}</div>
+        <ng-container *ngIf="service">
+          <div><strong>Service name :</strong> {{service.alias}}</div>
+          <div><strong>Location name :</strong> {{service.location_alias}}</div>
+        </ng-container>
+
+        <div><strong>Message :</strong></div>
+        <mat-input-container   style="width: 100%">
+          <textarea style="height: 170px" matInput [(ngModel)]="fimpMsg.raw" > </textarea>
+        </mat-input-container>
+        <div style="padding: 10px;overflow-x:scroll;max-height: 90%">
+          <button mat-raised-button (click)="parentComp.copyToMqttClient(fimpMsg.topic,fimpMsg.raw)" >Copy to MQTT client</button>
+          <button mat-raised-button (click)="parentComp.sendMessage(fimpMsg.topic,fimpMsg.raw)" >Resend</button>
+          <button mat-raised-button (click)="close()" >Close</button>
+        </div>
+</div>
+

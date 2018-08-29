@@ -1,0 +1,212 @@
+{
+  "msg": {
+    "data": {
+      "errors": null,
+      "param": {
+        "house": {
+          "learning": null,
+          "mode": "home",
+          "time": "2017-07-17T14:50:50Z",
+          "uptime": 1119884166
+        },
+        "room": [
+          {
+            "client": {"name": "Alex Living room"},
+            "id": 1,
+            "param": {
+              "heating": {
+                "actuator": false,
+                "desired": 23,
+                "power": "off",
+                "target": 23
+              },
+              "lighting": {},
+              "security": {
+                "mode": null
+              },
+              "sensors": [],
+              "shading": {
+              },
+              "triggers": {
+                "magnetHeat": 19,
+                "motionLight": {
+                  "all": {
+                    "devices": {
+                      "1": "on"
+                    },
+                    "enabled": true,
+                    "timeout": null
+                  },
+                  "sleep": {
+                    "devices": {
+                      "1": null
+                    },
+                    "enabled": true,
+                    "timeout": null
+                  }
+                }
+              }
+            },
+            "type": "living"
+          },
+          {
+            "client": {
+            },
+            "id": 2,
+            "param": {
+              "heating": {
+                "actuator": false,
+                "desired": 23,
+                "power": "off",
+                "target": 23
+              },
+              "lighting": {},
+              "security": {
+                "mode": null
+              },
+              "sensors": [],
+              "shading": {
+              },
+              "triggers": {
+                "magnetHeat": 19,
+                "motionLight": {
+                  "all": {
+                    "devices": {
+                    },
+                    "enabled": true,
+                    "timeout": null
+                  },
+                  "sleep": {
+                    "devices": {},
+                    "enabled": true,
+                    "timeout": null
+                  }
+                }
+              }
+            },
+            "type": "kitchen"
+          },
+          {
+            "client": {
+            },
+            "id": 3,
+            "param": {
+              "heating": {
+                "actuator": false,
+                "desired": 23,
+                "power": "off",
+                "target": 23
+              },
+              "lighting": {
+              },
+              "security": {
+                "mode": null
+              },
+              "sensors": [],
+              "shading": {
+              },
+              "triggers": {
+                "magnetHeat": 19,
+                "motionLight": {
+                  "all": {
+                    "devices": {
+                    },
+                    "enabled": true,
+                    "timeout": null
+                  },
+                  "sleep": {
+                    "devices": {},
+                    "enabled": true,
+                    "timeout": null
+                  }
+                }
+              }
+            },
+            "type": "bath"
+          },
+          {
+            "client": {
+            },
+            "id": 4,
+            "param": {
+              "heating": {
+                "actuator": false,
+                "desired": 23,
+                "power": "off",
+                "target": 23
+              },
+              "lighting": {
+              },
+              "security": {
+                "mode": null
+              },
+              "sensors": [],
+              "shading": {
+              },
+              "triggers": {
+                "magnetHeat": 19,
+                "motionLight": {
+                  "all": {
+                    "devices": {
+                    },
+                    "enabled": true,
+                    "timeout": null
+                  },
+                  "sleep": {
+                    "devices": {},
+                    "enabled": false,
+                    "timeout": null
+                  }
+                }
+              }
+            },
+            "type": "bed"
+          },
+          {
+            "client": {
+            },
+            "id": 5,
+            "param": {
+              "heating": {
+                "actuator": false,
+                "desired": 23,
+                "power": "off",
+                "target": 23
+              },
+              "lighting": {
+              },
+              "security": {
+                "mode": null
+              },
+              "sensors": [],
+              "shading": {
+              },
+              "triggers": {
+                "magnetHeat": 19,
+                "motionLight": {
+                  "all": {
+                    "devices": {
+                    },
+                    "enabled": true,
+                    "timeout": null
+                  },
+                  "sleep": {
+                    "devices": {},
+                    "enabled": true,
+                    "timeout": null
+                  }
+                }
+              }
+            },
+            "type": "entrance"
+          }
+        ]
+      },
+      "requestId": 1,
+      "success": true
+    },
+    "dst": "chat",
+    "type": "response"
+  },
+  "ver": "sevenOfNine"
+}

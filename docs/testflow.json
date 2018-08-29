@@ -1,0 +1,80 @@
+{
+  "Id": "testflow",
+  "Name": "Test flow",
+  "Nodes": [
+    {
+      "Id": "1",
+      "Type": "trigger",
+      "Label": "Button trigger 1",
+      "SuccessTransition": "1.1",
+      "TimeoutTransition": "",
+      "ErrorTransition": "",
+      "Address": "pt:j1/mt:evt/rt:dev/rn:test/ad:1/sv:sensor_lumin/ad:199_0",
+      "Service": "sensor_lumin",
+      "ServiceInterface": "evt.sensor.report",
+      "Config": null
+    },
+    {
+      "Id": "1.1",
+      "Type": "if",
+      "Label": "IF node",
+      "SuccessTransition": "",
+      "TimeoutTransition": "",
+      "ErrorTransition": "",
+      "Address": "",
+      "Service": "",
+      "ServiceInterface": "",
+      "Config": {
+        "Expression": [
+          {
+            "Operand": "gt",
+            "Value": 100,
+            "ValueType": "int",
+            "BooleanOperator": ""
+          }
+        ],
+        "TrueTransition": "2",
+        "FalseTransition": "3"
+      }
+    },
+    {
+      "Id": "2",
+      "Type": "wait",
+      "Label": "Waiting",
+      "SuccessTransition": "4",
+      "TimeoutTransition": "",
+      "ErrorTransition": "",
+      "Config": 200
+    },
+    {
+      "Id": "4",
+      "Type": "action",
+      "Label": "Bulb 1.Room light intensity is \u003e 100 lux",
+      "SuccessTransition": "",
+      "TimeoutTransition": "",
+      "ErrorTransition": "",
+      "Address": "pt:j1/mt:cmd/rt:dev/rn:test/ad:1/sv:out_bin_switch/ad:200_0",
+      "Service": "out_bin_switch",
+      "ServiceInterface": "cmd.binary.set",
+      "Config": {
+        "Value": true,
+        "ValueType": "bool"
+      }
+    },
+    {
+      "Id": "3",
+      "Type": "action",
+      "Label": "Bulb 2.Room light intensity is \u003c 100 lux",
+      "SuccessTransition": "",
+      "TimeoutTransition": "",
+      "ErrorTransition": "",
+      "Address": "pt:j1/mt:cmd/rt:dev/rn:test/ad:1/sv:out_bin_switch/ad:200_0",
+      "Service": "out_bin_switch",
+      "ServiceInterface": "cmd.binary.set",
+      "Config": {
+        "Value": true,
+        "ValueType": "bool"
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+
+
+<nav mat-tab-nav-bar>
+    <a mat-tab-link [routerLink]="['/zwave-man']" >Z-Wave</a>
+    <a mat-tab-link active [routerLink]="['/zigbee-man']" >ZigBee</a>
+    <a mat-tab-link [routerLink]="['/ikea-man']" >Ikea Tradfri</a>
+    <a mat-tab-link [routerLink]="['/systems-man']" >Systems</a>
+</nav>
+<div class="systems-man">
+<mat-card class="example-card">
+    <mat-card-header>
+  <mat-card-title> <h3> System adapter managment </h3> </mat-card-title>
+  <mat-card-subtitle> Connect or disconnect a system adapter to FH </mat-card-subtitle>
+    </mat-card-header>
+  <mat-card-content>
+    <mat-input-container class="example-full-width">
+            <input #service matInput placeholder="service">
+    </mat-input-container>
+    <p>
+    <mat-input-container class="example-full-width">
+        <input #systemIdInput matInput placeholder="id" [(ngModel)]= "systemId" >
+    </mat-input-container>
+    <mat-input-container class="example-full-width">
+        <input #addressInput matInput placeholder="address" [(ngModel)]="address" >
+      </mat-input-container>
+    <mat-input-container class="example-full-width">
+            <input #securityKeyInput matInput placeholder="securityKey" [(ngModel)]="securityKey">
+    </mat-input-container>
+    </p>
+  </mat-card-content>
+    <mat-card-actions>
+    <button mat-raised-button (click)="getConnParams(service.value)" >Get connection parameters</button>
+    <button mat-raised-button (click)="connect(service.value,systemIdInput.value,securityKeyInput.value,addressInput.value)" >Connect</button>
+    <button mat-raised-button (click)="sync(service.value)" >Synchronize</button>
+    <button mat-raised-button (click)="disconnect(service.value)" >Disconnect</button>
+    </mat-card-actions>
+</mat-card>
+</div>

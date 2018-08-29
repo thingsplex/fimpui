@@ -1,0 +1,46 @@
+{
+  "msg": {
+    "data": {
+      "cmd": "set",
+      "component": "device",
+      "id": 22,
+      "param": {
+        "_fimp": {
+          "adapter": "zwave-ad",
+          "address": "21",
+          "group": "ch_0"
+        },
+        "client": {
+          "name": "Aeotec - LED Bulb - ZW098-C55 - Secure"
+        },
+        "functionality": "lighting",
+        "id": 22,
+        "lrn": true,
+        "model": "zw_134_3_98",
+        "modelAlias": "Aeotec - LED Bulb - ZW098-C55 - Secure",
+        "param": {
+          "color": [
+            0,
+            0,
+            255,
+            243,
+            8
+          ],
+          "dimValue": 100,
+          "power": "on",
+          "timestamp": "2018-07-11 18:17:26 +0200",
+          "zwaveConfigParameters": []
+        },
+        "problem": false,
+        "room": 1,
+        "supports": [
+          "clear",
+          "poll"
+        ]
+      }
+    },
+    "dst": "clients",
+    "type": "notify"
+  },
+  "ver": "sevenOfNine"
+}

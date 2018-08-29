@@ -1,0 +1,12 @@
+.thing-view {
+  padding: 5px;
+  min-width: 850px;
+}
+
+.example-header-image {
+  background-size: cover;
+}
+
+.mat-grid-tile .mat-figure {
+    align-items:top;
+}

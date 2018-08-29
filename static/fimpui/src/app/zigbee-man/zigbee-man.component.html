@@ -1,0 +1,39 @@
+<nav mat-tab-nav-bar>
+  <a mat-tab-link [routerLink]="['/zwave-man']" >Z-Wave</a>
+  <a mat-tab-link active [routerLink]="['/zigbee-man']" >ZigBee</a>
+  <a mat-tab-link [routerLink]="['/ikea-man']" >Ikea Tradfri</a>
+  <a mat-tab-link [routerLink]="['/systems-man']" >Systems</a>
+
+</nav>
+<div class="zigbee-man">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <!--<div mat-card-avatar class="example-header-image"></div>-->
+      <mat-card-title><h3>Zigbee network manager</h3></mat-card-title>
+      <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
+    </mat-card-header>
+    <mat-card-content>
+          <table>
+          <thead><tr><th style="width: 70px">Node</th>
+          <th style="width: 250px">Alias</th><th></th></tr> </thead>
+          <tbody>
+         <tr *ngFor="let node of nodes">
+          <td> {{node.address}}</td> <td> {{node.alias}} </td>
+           <td>
+            <mat-chip-list>
+             <mat-chip class="open-chip" [routerLink]="['/thing-view','zigbee',node.address]">Services</mat-chip>
+             <mat-chip color="warn" (click)="generateExclusionReport(node.address)">Delete</mat-chip>
+            </mat-chip-list>
+           </td>
+          </tr>
+          </tbody>
+         </table>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button (click)="addDevice()" color="primary" > Add device</button>
+      <button mat-raised-button (click)="removeDevice()" color="warn" > Exclude device</button>
+      <button mat-raised-button (click)="reloadZigbeeDevices()" color="primary" >Reload list</button>
+   </mat-card-actions>
+  </mat-card>
+
+</div>

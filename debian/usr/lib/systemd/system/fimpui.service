@@ -1,0 +1,15 @@
+[Unit]
+Description=FimpUI
+
+[Service]
+Environment=GOOGLE_APPLICATION_CREDENTIALS=/opt/thingsplex/storage.json
+Type=simple
+ExecStart=/opt/thingsplex/thingsplex
+User=fimp
+WorkingDirectory=/opt/thingsplex
+Restart=on-failure
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,50 @@
+<div class="flight-recorder">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <!--<div mat-card-avatar class="example-header-image"></div>-->
+      <mat-card-title><h3>Report a bug</h3></mat-card-title>
+      <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field>
+        <input #hostAliasInput matInput placeholder="Hub Alias" value = "{{hostAlias}}" >
+      </mat-form-field>
+       <p>The filese will be uploaded to google cloud as a singe snapshot:</p>
+       <table>
+       <tbody>
+       <tr *ngFor="let log of reportLogFiles">
+       <td> {{ log }} </td>
+       </tr>
+       <div *ngIf="cmdResult">
+         <p>Cmd result : </p>
+         <pre>{{cmdResult.result}}</pre>
+         <p>Cmd error : {{cmdResult.error}}</p>
+       </div>
+       </tbody>
+       </table>
+       <p> Log size limit is set to {{ reportLogMaxSize }} bytes .   </p>
+      <div>
+        <mat-form-field style="width: 400px">
+          <input #fileFullPathInput matInput placeholder="File full path" >
+        </mat-form-field>
+        <button mat-raised-button color="accent" (click)="uploadFileToCloud(hostAliasInput.value,fileFullPathInput.value)"> Upload file to the cloud</button>
+      </div>
+      <div>
+        <mat-form-field style="width: 400px">
+          <input #cmdInput matInput placeholder="Run cmd" >
+        </mat-form-field>
+        <button mat-raised-button color="accent" (click)="runCommand(cmdInput.value)"> Run command</button>
+        <div>
+          <p>Cmd log : </p>
+          <p *ngFor="let log of cmdLog" >{{log}}</p>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="accent" (click)="uploadLogSnapshot(hostAliasInput.value)"> Upload system logs </button>
+   </mat-card-actions>
+
+
+  </mat-card>
+
+</div>

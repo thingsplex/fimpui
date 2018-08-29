@@ -1,0 +1,716 @@
+{"msg": {
+    "data": {
+      "errors": null,
+      "param": {
+        "device": [
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "16",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Fibaro EYE"
+            },
+            "functionality": null,
+            "id": 2,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "batteryLevel": "ok",
+              "batteryPercentage": 100,
+              "illuminance": 0,
+              "presence": false,
+              "temperature": 25,
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": 6
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "18",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Table lamp"
+            },
+            "functionality": "lighting",
+            "id": 3,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off",
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": 6
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "19",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Office lights"
+            },
+            "functionality": "lighting",
+            "id": 4,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "energy": 46.5200004577637,
+              "power": "off",
+              "wattage": 0,
+              "zwaveConfigParameters": []
+            },
+            "problem": true,
+            "room": 6
+          },
+          {
+            "_fimp": {
+              "adapter": "ikea-ad",
+              "address": "65537",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "Sofa lamp 2"
+            },
+            "functionality": "lighting",
+            "id": 5,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 50,
+              "power": "on"
+            },
+            "problem": false,
+            "room": 1
+          },
+          {
+            "_fimp": {
+              "adapter": "ikea-ad",
+              "address": "65538",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "Sofa lamp 1"
+            },
+            "functionality": "lighting",
+            "id": 6,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 49,
+              "power": "on"
+            },
+            "problem": false,
+            "room": 1
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "20",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Siren"
+            },
+            "functionality": "appliance",
+            "id": 7,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off",
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": 4
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "21",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Fibaro Eye"
+            },
+            "functionality": null,
+            "id": 8,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "batteryLevel": "ok",
+              "batteryPercentage": 100,
+              "illuminance": 22,
+              "presence": false,
+              "temperature": 24.2000007629395,
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": 5
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "22",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Fibaro Eye"
+            },
+            "functionality": null,
+            "id": 9,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "batteryLevel": "ok",
+              "batteryPercentage": 100,
+              "illuminance": 0,
+              "presence": false,
+              "temperature": 23.6000003814697,
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": 4
+          },
+          {
+            "_fimp": {
+              "adapter": "ikea-ad",
+              "address": "65546",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "White cloud"
+            },
+            "functionality": "lighting",
+            "id": 10,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 17,
+              "power": "on"
+            },
+            "problem": false,
+            "room": 7
+          },
+          {
+            "_fimp": {
+              "adapter": "ikea-ad",
+              "address": "65543",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "Hallway bulb 1"
+            },
+            "functionality": "lighting",
+            "id": 11,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 48,
+              "power": "on"
+            },
+            "problem": false,
+            "room": 5
+          },
+          {
+            "_fimp": {
+              "adapter": "ikea-ad",
+              "address": "65544",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "Hallway bulb 2"
+            },
+            "functionality": "lighting",
+            "id": 12,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 44,
+              "power": "off"
+            },
+            "problem": false,
+            "room": 5
+          },
+          {
+            "_fimp": {
+              "adapter": "ikea-ad",
+              "address": "65545",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "Hallway bulb 3"
+            },
+            "functionality": "lighting",
+            "id": 13,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 50,
+              "power": "on"
+            },
+            "problem": false,
+            "room": 5
+          },
+          {
+            "_fimp": {
+              "adapter": "ikea-ad",
+              "address": "65541",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "Led panel 2nd floor"
+            },
+            "functionality": "lighting",
+            "id": 14,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 37,
+              "power": "on"
+            },
+            "problem": false,
+            "room": 8
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "27",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Unknown 1"
+            },
+            "functionality": null,
+            "id": 15,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": null
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "27",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "2nd floor lamp 1"
+            },
+            "functionality": "lighting",
+            "id": 16,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off"
+            },
+            "problem": true,
+            "room": 8
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "27",
+              "group": "ch_2"
+            },
+            "client": {
+              "name": "Unknown2"
+            },
+            "functionality": "lighting",
+            "id": 17,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off"
+            },
+            "problem": false,
+            "room": null
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "28",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Relay config ch"
+            },
+            "functionality": null,
+            "id": 18,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": 9
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "28",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "2nd floor lamp"
+            },
+            "functionality": "lighting",
+            "id": 19,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off"
+            },
+            "problem": true,
+            "room": 8
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "28",
+              "group": "ch_2"
+            },
+            "client": {
+              "name": "Relay 2nd chanel"
+            },
+            "functionality": "appliance",
+            "id": 20,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off"
+            },
+            "problem": false,
+            "room": 8
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_0"
+            },
+            "client": {},
+            "functionality": null,
+            "id": 21,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "supportedModes": [
+                "off",
+                "heat",
+                "auto",
+                "aux_heat"
+              ],
+              "targetTemperature": 11,
+              "temperature": null,
+              "thermostatMode": "auto",
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": null
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_1"
+            },
+            "client": {
+              "name": "Entrance button 1"
+            },
+            "functionality": "appliance",
+            "id": 22,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off"
+            },
+            "problem": false,
+            "room": 5
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_1.v1"
+            },
+            "client": {
+              "name": "Entrance dim 1"
+            },
+            "functionality": "lighting",
+            "id": 23,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 100,
+              "power": "off"
+            },
+            "problem": false,
+            "room": null
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_2"
+            },
+            "client": {
+              "name": "Entrance button 2"
+            },
+            "functionality": "appliance",
+            "id": 24,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off"
+            },
+            "problem": false,
+            "room": 5
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_2.v1"
+            },
+            "client": {
+              "name": "Entrance dim 2"
+            },
+            "functionality": "appliance",
+            "id": 25,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 100,
+              "power": "off"
+            },
+            "problem": false,
+            "room": 9
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_3"
+            },
+            "client": {
+              "name": "Entrance button 3"
+            },
+            "functionality": "appliance",
+            "id": 26,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off"
+            },
+            "problem": false,
+            "room": 5
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_3.v1"
+            },
+            "client": {},
+            "functionality": null,
+            "id": 27,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 100,
+              "power": "off"
+            },
+            "problem": false,
+            "room": null
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_4"
+            },
+            "client": {},
+            "functionality": null,
+            "id": 28,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off"
+            },
+            "problem": false,
+            "room": null
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_4.v1"
+            },
+            "client": {},
+            "functionality": null,
+            "id": 29,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 100,
+              "power": "off"
+            },
+            "problem": false,
+            "room": null
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_5"
+            },
+            "client": {},
+            "functionality": null,
+            "id": 30,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "power": "off"
+            },
+            "problem": false,
+            "room": null
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "29",
+              "group": "ch_5.v1"
+            },
+            "client": {
+              "name": "Smartly multiswitch"
+            },
+            "functionality": "lighting",
+            "id": 31,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "dimValue": 100,
+              "power": "off"
+            },
+            "problem": false,
+            "room": null
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "30",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Table lamp"
+            },
+            "functionality": "lighting",
+            "id": 32,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "energy": 73.0899963378906,
+              "power": "off",
+              "wattage": 0,
+              "zwaveConfigParameters": []
+            },
+            "problem": true,
+            "room": 1
+          },
+          {
+            "client": {
+              "name": "Mode switch"
+            },
+            "functionality": "input",
+            "id": 33,
+            "lrn": true,
+            "model": "FH-MODE",
+            "param": {},
+            "problem": false,
+            "room": 4
+          },
+          {
+            "client": {
+              "name": "Water heater"
+            },
+            "functionality": "appliance",
+            "id": 34,
+            "lrn": true,
+            "model": "PSC234",
+            "param": {
+              "power": "on",
+              "wattage": 0
+            },
+            "problem": false,
+            "room": 3
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "31",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "Roof Window",
+              "openStateType": "window"
+            },
+            "functionality": null,
+            "id": 35,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "batteryLevel": "ok",
+              "batteryPercentage": 100,
+              "openState": "open",
+              "temperature": 20.7000007629395,
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": 6
+          },
+          {
+            "_fimp": {
+              "adapter": "zwave-ad",
+              "address": "46",
+              "group": "ch_0"
+            },
+            "client": {
+              "name": "SoftRemote"
+            },
+            "functionality": null,
+            "id": 36,
+            "lrn": true,
+            "model": "fimp",
+            "param": {
+              "batteryLevel": "ok",
+              "batteryPercentage": 100,
+              "zwaveConfigParameters": []
+            },
+            "problem": false,
+            "room": 6
+          }
+        ],
+        "house": {
+          "learning": null,
+          "mode": "home",
+          "time": "2017-07-17T21:45:52Z",
+          "uptime": 1125310371
+        }
+      },
+      "requestId": 1,
+      "success": true
+    },
+    "dst": "chat",
+    "type": "response"
+  },
+  "ver": "sevenOfNine"
+}
