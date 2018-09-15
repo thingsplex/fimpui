@@ -9,9 +9,9 @@ import (
 	"sync"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/labstack/echo"
 	"github.com/alivinco/thingsplex/model"
-	"github.com/alivinco/thingsplex/registry"
+	"github.com/alivinco/tpflow/registry"
+	"github.com/labstack/echo"
 )
 
 // Integration is root level container

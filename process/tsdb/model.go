@@ -2,12 +2,10 @@ package tsdb
 
 import (
 	"time"
-
 	"reflect"
-
-	influx "github.com/influxdata/influxdb/client/v2"
 	"github.com/alivinco/fimpgo"
-	"github.com/alivinco/thingsplex/registry"
+	"github.com/alivinco/tpflow/registry"
+	influx "github.com/influxdata/influxdb/client/v2"
 )
 
 // Transform defines function which converts IotMsg into influx data point

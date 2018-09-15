@@ -2,8 +2,56 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aa0255c3-d749-4c00-bab6-9fc18807428d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/api/context.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/api/flow.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/flow.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/flow_publisher.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/flow_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/manager.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/manager_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/model/context.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/model/context_inmemory.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/model/context_inmemory_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/model/context_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/model/context_test_1.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/model/context_test_2.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/model/flow.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/model/node.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/model/shared_resources.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/ActionNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/BaseNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/ExecNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/IfNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/LoopNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/ReceiveNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/RestActionNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/SetVariableNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/TimeTriggerNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/TimeTriggerNode_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/TransformNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/TriggerNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/WaitNode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/node/init.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/trace.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/utils/logreader.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/logreader.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/utils/utils.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow/utils/utils_test.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/process/datamigration.go" beforeDir="false" afterPath="$PROJECT_DIR$/process/datamigration.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/process/tsdb/boot.go" beforeDir="false" afterPath="$PROJECT_DIR$/process/tsdb/boot.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/process/tsdb/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/process/tsdb/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/process/tsdb/process.go" beforeDir="false" afterPath="$PROJECT_DIR$/process/tsdb/process.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/registry/api/api.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/registry/integration.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/registry/model.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/registry/store.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/registry/store_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/registry/views.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stats.db" beforeDir="false" afterPath="$PROJECT_DIR$/stats.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/var/flow_storage/context.db" beforeDir="false" afterPath="$PROJECT_DIR$/var/flow_storage/context.db" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,38 +63,75 @@
     <session id="1802866451">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.11" value="1" />
+          <entry key="project.open.time.15" value="1" />
+          <entry key="project.open.time.18" value="1" />
           <entry key="project.open.time.2" value="2" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="Makefile" value="1" />
-          <entry key="go" value="7" />
-          <entry key="mod" value="1" />
+          <entry key="go" value="25" />
+          <entry key="mod" value="4" />
           <entry key="sum" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="DTD" value="1" />
-          <entry key="Go" value="7" />
+          <entry key="DTD" value="4" />
+          <entry key="Go" value="25" />
           <entry key="Makefile" value="1" />
           <entry key="PLAIN_TEXT" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="go" value="263" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Go" value="263" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.go.postfix.template.usages.trigger">
+        <counts>
+          <entry key=".len" value="2" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/flow/node/ReceiveNode.go">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="309">
+              <caret line="134" column="74" selection-start-line="134" selection-start-column="56" selection-end-line="134" selection-end-column="74" />
               <folding>
-                <element signature="e#14#189#0" expanded="true" />
+                <element signature="e#14#920#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/go/pkg/mod/github.com/alivinco/tpflow@v0.9.1-0.20180907162434-a1869d5128eb/api/flow.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="405">
+              <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/go/pkg/mod/github.com/alivinco/tpflow@v0.9.0/api/flow.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -54,63 +139,29 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/go.mod">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="26" selection-start-column="26" selection-end-column="26" />
+            <state relative-caret-position="90">
+              <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.go">
+        <entry file="file://$USER_HOME$/go/pkg/mod/github.com/alivinco/tpflow@v0.8.0/registry/integration.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="120" column="30" lean-forward="true" selection-start-line="102" selection-start-column="4" selection-end-line="120" selection-end-column="30" />
+            <state relative-caret-position="150">
+              <caret line="16" column="35" selection-start-line="16" selection-start-column="35" selection-end-line="16" selection-end-column="35" />
               <folding>
-                <element signature="e#14#971#0" expanded="true" />
+                <element signature="e#18#167#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Makefile">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
-              <caret line="12" column="26" lean-forward="true" selection-start-line="11" selection-end-line="12" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/registry/store.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <folding>
-                <element signature="e#18#245#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/registry/integration.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="479">
-              <caret line="32" column="39" selection-start-line="32" selection-start-column="39" selection-end-line="32" selection-end-column="39" />
-              <folding>
-                <element signature="e#18#207#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/flow/api/context.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <folding>
-                <element signature="e#13#180#0" expanded="true" />
-              </folding>
+              <caret line="12" column="26" selection-start-line="11" selection-end-line="12" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -120,6 +171,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>redir</find>
+      <find>fmodel</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="/usr/local/go" />
@@ -130,6 +182,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/model/config.go" />
+        <option value="$PROJECT_DIR$/process/datamigration.go" />
+        <option value="$PROJECT_DIR$/process/tsdb/process.go" />
+        <option value="$PROJECT_DIR$/process/tsdb/model.go" />
+        <option value="$PROJECT_DIR$/process/tsdb/boot.go" />
+        <option value="$PROJECT_DIR$/main.go" />
       </list>
     </option>
   </component>
@@ -148,10 +205,10 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="66" />
+    <option name="x" value="13" />
     <option name="y" value="23" />
-    <option name="width" value="1888" />
-    <option name="height" value="1177" />
+    <option name="width" value="2035" />
+    <option name="height" value="1407" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -168,7 +225,7 @@
             <path>
               <item name="fimpui" type="b2602c69:ProjectViewProjectNode" />
               <item name="fimpui" type="462c0819:PsiDirectoryNode" />
-              <item name="registry" type="462c0819:PsiDirectoryNode" />
+              <item name="var" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -187,6 +244,11 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/utils" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -199,22 +261,40 @@
       </list>
     </option>
   </component>
+  <component name="RunManager">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="fimpui" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <parameters value="-c var/config_local.json" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build main.go" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="ToolWindowManager">
-    <frame x="66" y="23" width="1888" height="1177" extended-state="0" />
+    <frame x="13" y="23" width="2035" height="1407" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2567714" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24535875" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23726235" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.21843319" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3299539" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.2451613" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -238,13 +318,7 @@
     <integration-enabled>true</integration-enabled>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/flow/node/RestActionNode.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="303" column="30" selection-start-line="303" selection-start-column="25" selection-end-line="303" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/flow/node/RestActionNode.go" />
     <entry file="file://$PROJECT_DIR$/go.sum">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -255,56 +329,94 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/flow/node/ReceiveNode.go">
+    <entry file="file://$PROJECT_DIR$/flow/node/ReceiveNode.go" />
+    <entry file="file://$PROJECT_DIR$/registry/store.go" />
+    <entry file="file://$PROJECT_DIR$/flow/api/context.go" />
+    <entry file="file://$PROJECT_DIR$/registry/integration.go" />
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/alivinco/tpflow@v0.8.0/model/config.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#14#189#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="30">
+          <caret line="2" column="5" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/go.mod">
+    <entry file="file://$PROJECT_DIR$/utils/utils.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/process/datamigration.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="26" selection-start-column="26" selection-end-column="26" />
+        <state relative-caret-position="120">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/registry/store.go">
+    <entry file="file://$PROJECT_DIR$/process/tsdb/process.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#18#245#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="165">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/flow/api/context.go">
+    <entry file="file://$PROJECT_DIR$/process/tsdb/model.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#13#180#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="75">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/registry/integration.go">
+    <entry file="file://$PROJECT_DIR$/process/tsdb/boot.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="479">
-          <caret line="32" column="39" selection-start-line="32" selection-start-column="39" selection-end-line="32" selection-end-column="39" />
-          <folding>
-            <element signature="e#18#207#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="210">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.go">
+    <entry file="file://$PROJECT_DIR$/process/tsdb/api.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/process/tsdb/process_test.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/process/tsdb/restendp.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/process/tsdb/transform.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/logreader.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="120" column="30" lean-forward="true" selection-start-line="102" selection-start-column="4" selection-end-line="120" selection-end-column="30" />
+        <state relative-caret-position="30">
+          <caret line="2" column="7" lean-forward="true" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/alivinco/tpflow@v0.8.0/registry/model.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/alivinco/tpflow@v0.9.1-0.20180907162434-a1869d5128eb/api/flow.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/alivinco/tpflow@v0.9.0/api/flow.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/alivinco/tpflow@v0.8.0/registry/integration.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="16" column="35" selection-start-line="16" selection-start-column="35" selection-end-line="16" selection-end-column="35" />
           <folding>
-            <element signature="e#14#971#0" expanded="true" />
+            <element signature="e#18#167#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -312,7 +424,24 @@
     <entry file="file://$PROJECT_DIR$/Makefile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
-          <caret line="12" column="26" lean-forward="true" selection-start-line="11" selection-end-line="12" selection-end-column="26" />
+          <caret line="12" column="26" selection-start-line="11" selection-end-line="12" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/go.mod">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="134" column="74" selection-start-line="134" selection-start-column="56" selection-end-line="134" selection-end-column="74" />
+          <folding>
+            <element signature="e#14#920#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

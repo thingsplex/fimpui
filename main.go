@@ -9,30 +9,27 @@ import (
 	"net/url"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/alivinco/thingsplex/flow"
 	"github.com/alivinco/thingsplex/integr/fhcore"
 	"github.com/alivinco/thingsplex/integr/logexport"
 	"github.com/alivinco/thingsplex/integr/mqtt"
+	"github.com/alivinco/thingsplex/integr/zwave"
 	"github.com/alivinco/thingsplex/model"
 	"github.com/alivinco/thingsplex/process"
-	"github.com/alivinco/thingsplex/registry"
-	regapi "github.com/alivinco/thingsplex/registry/api"
+	"github.com/alivinco/thingsplex/process/tsdb"
+	"github.com/alivinco/thingsplex/statsdb"
+	flow "github.com/alivinco/tpflow/flow"
+	fmodel "github.com/alivinco/tpflow"
+	"github.com/alivinco/tpflow/registry"
+	fapi"github.com/alivinco/tpflow/api"
+	"github.com/alivinco/thingsplex/utils"
 	"github.com/koding/websocketproxy"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	//"time"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"strconv"
 	"strings"
-
-	"gopkg.in/natefinch/lumberjack.v2"
-	"github.com/alivinco/thingsplex/integr/zwave"
-	"github.com/alivinco/thingsplex/statsdb"
 	//_ "net/http/pprof"
 	"os/exec"
-	"github.com/alivinco/thingsplex/flow/api"
-	fmodel "github.com/alivinco/thingsplex/flow/model"
-	"github.com/alivinco/thingsplex/process/tsdb"
-	"github.com/alivinco/thingsplex/flow/utils"
 )
 
 type SystemInfo struct {
@@ -106,13 +103,25 @@ func main() {
 	log.Info("<main> Started ")
 	//-------------------------------------
 	//---------FLOW------------------------
+
+	fconfig := fmodel.Configs{
+		MqttServerURI:configs.MqttServerURI,
+		MqttClientIdPrefix:configs.MqttClientIdPrefix,
+		MqttUsername: configs.MqttUsername,
+		MqttPassword:configs.MqttPassword,
+		ContextStorageDir:configs.ContextStorageDir,
+		FlowStorageDir:configs.FlowStorageDir,
+		MqttTopicGlobalPrefix:configs.MqttTopicGlobalPrefix,
+		RegistryDbFile:configs.RegistryDbFile,
+		LogFile:configs.LogFile,
+		LogLevel:configs.LogLevel,
+	}
 	log.Info("<main> Starting Flow manager")
-	flowManager, err := flow.NewManager(configs)
+	flowManager, err := flow.NewManager(fconfig)
 	if err != nil {
 		log.Error("Can't Init Flow manager . Error :", err)
 	}
-	flowSharedResources := fmodel.GlobalSharedResources{Registry:thingRegistryStore}
-	flowManager.SetSharedResources(flowSharedResources)
+	flowManager.GetConnectorRegistry().AddConnection("thing_registry","thing_registry","thing_registry",thingRegistryStore)
 	flowManager.InitMessagingTransport()
 	err = flowManager.LoadAllFlowsFromStorage()
 	if err != nil {
@@ -123,7 +132,7 @@ func main() {
 
 	//---------REGISTRY INTEGRATION--------
 	log.Info("<main>-------------- Starting MqttIntegration ")
-	mqttRegInt := registry.NewMqttIntegration(configs, thingRegistryStore)
+	mqttRegInt := registry.NewMqttIntegration(&fconfig, thingRegistryStore)
 	mqttRegInt.InitMessagingTransport()
 	log.Info("<main> Started ")
 	//---------STATS STORE-----------------
@@ -179,9 +188,11 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	api.NewContextApi(flowManager.GetGlobalContext(),e)
-	api.NewFlowApi(flowManager,e)
-	regapi.NewRegistryApi(thingRegistryStore,e)
+	fapi.NewContextApi(flowManager.GetGlobalContext(),e)
+	fapi.NewFlowApi(flowManager,e)
+	fapi.NewRegistryApi(thingRegistryStore,e)
+
+
 	// Uncomment the line below to enable Time Series exporter.
 	tsdb.Boot(configs,e,thingRegistryStore)
 

@@ -1,9 +1,9 @@
 package process
 
 import (
-	"github.com/alivinco/thingsplex/integr/fhcore"
-	"github.com/alivinco/thingsplex/registry"
 	log "github.com/Sirupsen/logrus"
+	"github.com/alivinco/thingsplex/integr/fhcore"
+	"github.com/alivinco/tpflow/registry"
 	"strconv"
 	"time"
 )

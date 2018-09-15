@@ -6,9 +6,9 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	influx "github.com/influxdata/influxdb/client/v2"
 	"github.com/alivinco/fimpgo"
-	"github.com/alivinco/thingsplex/registry"
+	"github.com/alivinco/tpflow/registry"
+	influx "github.com/influxdata/influxdb/client/v2"
 )
 
 // Process implements integration flow between messaging system and influxdb timeseries database.
