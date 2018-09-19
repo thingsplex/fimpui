@@ -1,3 +1,3 @@
 #!/bin/bash
-systemctl stop thingsplex.service
-systemctl disable thingsplex.service
+systemctl stop fimpui.service
+systemctl disable fimpui.service

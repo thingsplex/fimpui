@@ -17,9 +17,9 @@ set -e
 case "$1" in
 	install|upgrade)
 		# Stop service if vinculum is running
-		if [ -d /opt/thingsplex/thingsplex ]
+		if [ -d /opt/fimpui/fimpui ]
 		then
-			systemctl stop thingsplex.service
+			systemctl stop fimpui.service
 		fi
 	;;
 

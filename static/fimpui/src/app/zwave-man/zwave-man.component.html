@@ -14,6 +14,8 @@
       <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
     </mat-card-header>
     <mat-card-content>
+          <p> Total devices : {{ totalDevices }}  AC powered : {{ totalDevices - totalBattery }} Battery powered : {{totalBattery}} Sleeping : {{totalSleeping}} Flirs: {{totalFlir}} </p>
+          <p> Online : {{totalUp}}  Offline : {{totalDown}} </p>
           <table>
 
           <thead><tr>
@@ -62,6 +64,7 @@
           </tbody>
          </table>
      <p>Adapter state: {{zwAdState}}</p>
+     <p>Home Id: {{homeId}}</p>
      <p>Incl proc state: {{inclProcState}}</p>
      <p>Enabled global non-secure incl.: {{globalNonSecureInclMode}}</p>
      <p>Last error : {{errorMsg}}</p>

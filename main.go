@@ -84,7 +84,7 @@ func main() {
 	flag.StringVar(&configFile, "c", "", "Config file")
 	flag.Parse()
 	if configFile == "" {
-		configFile = "/opt/thingsplex/config.json"
+		configFile = "/opt/fimpui/config.json"
 	} else {
 		fmt.Println("Loading configs from file ", configFile)
 	}
@@ -141,11 +141,7 @@ func main() {
 	streamProcessor := statsdb.NewStreamProcessor(configs,statsStore)
 	streamProcessor.InitMessagingTransport()
 	log.Info("<main> Started ")
-	//---------STATS STORE-----------------
-	log.Info("<main>-------------- Starting TimeSeries integration process ")
 
-
-	log.Info("<main> Started ")
 	//----------VINCULUM CLIENT------------
 	log.Info("<main>-------------- Starting VinculumClient ")
 	vinculumClient := fhcore.NewVinculumClient(configs.VinculumAddress)

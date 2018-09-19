@@ -39,11 +39,19 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   pingResult :string;
   isReloadNodesEnabled:boolean;
   rssiReport : any;
+  totalDevices : number;
+  totalSleeping: number;
+  totalBattery: number;
+  totalFlir : number;
+  totalUp :number;
+  totalDown : number;
+  homeId : string;
   constructor(public dialog: MatDialog,private fimp:FimpService,private router: Router,private http : Http) {
   }
 
   ngOnInit() {
     this.zwAdState = "UNKNOWN";
+
     this.isReloadNodesEnabled = true;
     this.showProgress(false);
     this.getAdapterStates();
@@ -56,6 +64,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
         if(fimpMsg.mtype == "evt.network.all_nodes_report" )
         {
           this.nodes = fimpMsg.val;
+          this.calculateTotals();
           this.loadThingsFromRegistry()
 
           // for(var key in fimpMsg.val){
@@ -108,16 +117,20 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
           this.errorMsg = fimpMsg.props["msg"];
         }else if(fimpMsg.mtype == "evt.ping.report"){
 
-          var node = this.getNodeByAddress(fimpMsg.val["address"])
-          if (fimpMsg.val.status=="SUCCESS")
-            node.status = "OK";
-          else
-            node.status = "NO_RESP";
+          let node = this.getNodeByAddress(fimpMsg.val["address"])
+          if(node) {
+            if(fimpMsg.val.status=="SUCCESS")
+              node.status = "OK";
+            else
+              node.status = "NO_RESP";
+          }
+
 
         }else if (fimpMsg.mtype == "evt.network.update_report") {
             this.zwAdState = fimpMsg.val;
         }else if (fimpMsg.mtype == "evt.adapter.states_report") {
           this.zwAdState = fimpMsg.val["adapter_state"];
+          this.homeId = fimpMsg.val["home_id"];
           this.inclProcState = fimpMsg.val["base_net_proc_state"];
           this.globalNonSecureInclMode = fimpMsg.val["enabled_global_non_secure"];
         }
@@ -134,6 +147,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
         this.reloadNodes();
     }else {
         this.nodes = JSON.parse(localStorage.getItem("zwaveNodesList"));
+        this.calculateTotals();
         this.loadThingsFromRegistry();
     }
     if (localStorage.getItem("zwNetworkStats")!=null){
@@ -145,6 +159,37 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   ngOnDestroy() {
     this.globalSub.unsubscribe();
   }
+
+  calculateTotals() {
+    this.totalDevices = 0;
+    this.totalBattery = 0;
+    this.totalSleeping = 0;
+    this.totalFlir = 0 ;
+    this.totalUp = 0 ;
+    this.totalDown = 0 ;
+
+    if (this.nodes) {
+      for (let node of this.nodes) {
+        this.totalDevices++;
+        if (node.power_source == "battery") {
+          this.totalBattery++
+          if (node.wakeup_int>0) {
+            this.totalSleeping++;
+          }else {
+            this.totalFlir++;
+          }
+        }
+        if(node.status=="UP") {
+          this.totalUp++;
+        }else {
+          this.totalDown++;
+        }
+
+      }
+    }
+  }
+
+
   showProgress(start:boolean){
     if (start){
       this.progressBarMode = "indeterminate";
@@ -164,11 +209,14 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   }
 
   getNodeByAddress(address:string){
-    for(let node of this.nodes) {
-      if(node.address == address) {
-        return node;
+    if (this.nodes){
+      for(let node of this.nodes) {
+        if(node.address == address) {
+          return node;
+        }
       }
     }
+    return null;
   }
 
 
@@ -396,7 +444,16 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
          this.replaceDevice(node.address);
          break;
        case "ping":
-         this.pingNodeFromGw(String(node.address));
+         // this.pingNodeFromGw(String(node.address));
+
+         let dialogRef = this.dialog.open(PingDeviceDialog, {
+           // height: '400px',
+           width: '600px',
+           data : {"fimp":this.fimp,"nodeId":node.address},
+         });
+         dialogRef.afterClosed().subscribe(result => {
+           this.selectedOption = result;
+         });
          break;
      }
   }
@@ -546,7 +603,8 @@ export class AddDeviceDialog implements OnInit, OnDestroy  {
     });
   }
   ngOnDestroy() {
-    this.globalSub.unsubscribe();
+    if(this.globalSub)
+      this.globalSub.unsubscribe();
   }
 
   startInclusion(){
@@ -584,6 +642,7 @@ export class RemoveDeviceDialog implements OnInit, OnDestroy  {
   customTemplateName : string;
   forceInterview : boolean;
   forceNonSecure : boolean;
+
 
   constructor(public dialogRef: MatDialogRef<RemoveDeviceDialog>,private fimp:FimpService,@Inject(MAT_DIALOG_DATA) public data: any) {
 
@@ -627,7 +686,79 @@ export class RemoveDeviceDialog implements OnInit, OnDestroy  {
 //////////////////////////////////////////////////////////////////////////////////////
 
 
+@Component({
+  selector: 'ping-device-dialog',
+  templateUrl: './dialog-ping-node.html',
+  styleUrls: ['./ping-dialog.css'],
+})
+export class PingDeviceDialog implements OnInit, OnDestroy  {
+  public messages:string[]=[];
+  globalSub : Subscription;
+  pingResult : string ;
+  address : string;
+  status : string;
+  ima : any;
+  results :any[];
 
+  constructor(public dialogRef: MatDialogRef<PingDeviceDialog>,private fimp:FimpService,@Inject(MAT_DIALOG_DATA) public data: any) {
+
+  }
+  ngOnInit(){
+
+    this.status = "Working...";
+    this.ima = {};
+    this.results = [];
+    this.pingNodeFromGw(this.data.nodeId);
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+
+      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+      if (fimpMsg.service == "zwave-ad" )
+      {
+        if(fimpMsg.mtype == "evt.ping.report" )
+        {
+          console.log("-----------NEW message---------")
+          this.address = fimpMsg.val.address;
+          this.status = fimpMsg.val.status;
+          this.ima = fimpMsg.val.ima;
+          this.results.push(fimpMsg.val);
+        }
+      }
+    });
+  }
+  ngOnDestroy() {
+    this.globalSub.unsubscribe();
+  }
+  pingNodeFromGw(toNode:string){
+    this.status = "Working...";
+    this.ima = {};
+    let props:Map<string,string> = new Map();
+    props["tx_level"] = "0";
+    let msg  = new FimpMessage("zwave-ad","cmd.ping.send","string",toNode,props,null)
+    this.data.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+  }
+
+  clearPingResults(){
+    this.status = "";
+    this.ima = {};
+    this.results = [];
+  }
+
+  color(value:number) {
+    if(value > -50) {
+      return "#5ee432"; // green
+    }else if(value > -60) {
+      return "#fffa50"; // yellow
+    }else if(value > -75) {
+      return "#f7aa38"; // orange
+    }else {
+      return "#ef4655"; // red
+    }
+  }
+
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
 @Component({
   selector: 'template-editor-dialog',
   templateUrl: './template-editor-dialog.html',

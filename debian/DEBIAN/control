@@ -1,6 +1,6 @@
-Package: thingsplex
-Version: 0.6.16
-Replaces: thingsplex
+Package: fimpui
+Version: 0.7.4
+Replaces: fimpui
 Architecture: armhf
 Maintainer: Aleksandrs Livincovs <aleksandrs.livincovs@gmail.com>
 Description: FimpUI is support GUI for FIMP protocol .

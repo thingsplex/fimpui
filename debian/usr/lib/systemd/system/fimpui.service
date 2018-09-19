@@ -2,11 +2,11 @@
 Description=FimpUI
 
 [Service]
-Environment=GOOGLE_APPLICATION_CREDENTIALS=/opt/thingsplex/storage.json
+Environment=GOOGLE_APPLICATION_CREDENTIALS=/opt/fimpui/storage.json
 Type=simple
-ExecStart=/opt/thingsplex/thingsplex
+ExecStart=/opt/fimpui/fimpui
 User=fimp
-WorkingDirectory=/opt/thingsplex
+WorkingDirectory=/opt/fimpui
 Restart=on-failure
 StandardOutput=null
 StandardError=null

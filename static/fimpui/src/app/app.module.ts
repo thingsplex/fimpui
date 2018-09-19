@@ -6,6 +6,7 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
+import { GaugeModule } from 'angular-gauge';
 import { MatTableModule,
   MatFormFieldModule,
   MatButtonModule,
@@ -29,7 +30,7 @@ import { MatTableModule,
   MatPaginatorModule,
   MatCheckbox} from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
-import { ZwaveManComponent , AddDeviceDialog, RemoveDeviceDialog } from './zwave-man/zwave-man.component';
+import { ZwaveManComponent , AddDeviceDialog, RemoveDeviceDialog,PingDeviceDialog } from './zwave-man/zwave-man.component';
 import { TemplateEditorDialog } from './zwave-man/zwave-man.component';
 import { IkeaManComponent } from './ikea-man/ikea-man.component';
 import { ZigbeeManComponent } from './zigbee-man/zigbee-man.component';
@@ -109,6 +110,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     SystemsManComponent,
     AddDeviceDialog,
     RemoveDeviceDialog,
+    PingDeviceDialog,
     TimelineComponent,
     ThingViewComponent,
     ThingsTableComponent,
@@ -157,7 +159,8 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     FlowModule,
     StatsModule,
     RegistryModule,
-    CdkTableModule
+    CdkTableModule,
+    GaugeModule.forRoot()
 
   ],
   providers: [FimpService,ThingsDbService,ConfigsService,{
@@ -167,7 +170,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     deps: [ConfigsService],
     multi: true
 }],
-  entryComponents:[AddDeviceDialog,RemoveDeviceDialog,TemplateEditorDialog,MsgDetailsDialog],
+  entryComponents:[AddDeviceDialog,RemoveDeviceDialog,PingDeviceDialog,TemplateEditorDialog,MsgDetailsDialog],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

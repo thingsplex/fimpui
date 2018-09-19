@@ -2,9 +2,9 @@ import sys
 
 def set_deb_control(version , arch):
     file_name  = "./debian/DEBIAN/control"
-    template = "Package: thingsplex\n"
+    template = "Package: fimpui\n"
     template+= "Version: "+version+"\n"
-    template+= "Replaces: thingsplex\n"
+    template+= "Replaces: fimpui\n"
     template+= "Architecture: "+arch+"\n"
     template+= "Maintainer: Aleksandrs Livincovs <aleksandrs.livincovs@gmail.com>\n"
     template+= "Description: FimpUI is support GUI for FIMP protocol .\n"
@@ -19,7 +19,7 @@ def set_static_globals(environment):
     elif environment == "dev" :
         template = 'export const BACKEND_ROOT = "http://localhost:8081"'    
     
-    file_name  = "./static/thingsplex/src/app/globals.ts"
+    file_name  = "./static/fimpui/src/app/globals.ts"
     f = open(file_name,"w")
     f.write(template)
     f.close()    

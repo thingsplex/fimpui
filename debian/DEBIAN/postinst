@@ -52,7 +52,7 @@ add_user_and_group()
 
 set_ownership()
 {
-	chown -R fimp:fimp "/opt/thingsplex"
+	chown -R fimp:fimp "/opt/fimpui"
 }
 
 
@@ -61,11 +61,11 @@ case "$1" in
 		add_user_and_group
 		set_ownership
 
-		# Start thingsplex
-		if [ -f /opt/thingsplex/thingsplex ]
+		# Start fimpui
+		if [ -f /opt/fimpui/fimpui ]
 		then
-		    systemctl enable thingsplex.service
-			systemctl start thingsplex.service
+		    systemctl enable fimpui.service
+			systemctl start fimpui.service
 		fi
 	;;
 

@@ -1,0 +1,44 @@
+<h1 mat-dialog-title> Ping results </h1>
+<mat-dialog-content>
+<p> Node : {{address}} Status : {{status}} </p>
+<div *ngIf="ima">
+
+  <p>Last working route : GW ->
+    <ng-container *ngFor="let im of ima.lwr">
+      {{ im }} ->
+    </ng-container>
+    {{address}}
+  </p>
+  <div> RSSI :
+    <ng-container *ngFor="let rssi of ima.rssi">
+        <mwl-gauge
+           [max]="-35"
+           [min]="-90"
+           [dialStartAngle]="180"
+           [dialEndAngle]="0"
+           [color]="color"
+           [value]="rssi"
+           [animated]="true"
+           [animationDuration]="1">
+         </mwl-gauge>
+    </ng-container>
+  </div>
+  <div>
+    <ng-container *ngFor="let result of results;let i = index">
+      <ng-container *ngIf="result.ima">
+         <p>{{i}} :
+         <ng-container *ngFor="let rssi of result.ima.rssi">
+               {{rssi}}
+          </ng-container>
+         </p>
+      </ng-container>
+    </ng-container>
+  </div>
+
+</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="accent" (click)="pingNodeFromGw(address)" >Ping</button>
+  <button mat-raised-button color="accent" (click)="clearPingResults()" >Clear</button>
+  <button mat-raised-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
