@@ -12,7 +12,7 @@ import { TriggerNodeComponent,VincTriggerNodeComponent } from './flow-nodes/trig
 import { IfNodeComponent } from './flow-nodes/if-node/node.component';
 import { TransformNodeComponent  } from './flow-nodes/transform-node/node.component';
 import { ExecNodeComponent  } from './flow-nodes/exec-node/node.component';
-import { ActionNodeComponent,VincActionNodeComponent } from './flow-nodes/action-node/node.component';
+import { ActionNodeComponent,VincActionNodeComponent,NotificationActionNodeComponent } from './flow-nodes/action-node/node.component';
 import { ReceiveNodeComponent } from './flow-nodes/flow-nodes.component';
 import { FlowRoutingModule } from "app/flow/flow-routing.module";
 import { FormsModule } from '@angular/forms';
@@ -80,6 +80,7 @@ import { MatTableModule,
      NodeEditorDialog,
      FlowNodesComponent,
      ActionNodeComponent,
+     NotificationActionNodeComponent,
      RestActionNodeComponent,
      TriggerNodeComponent,
      ReceiveNodeComponent,

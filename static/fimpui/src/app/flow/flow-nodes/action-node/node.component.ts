@@ -159,3 +159,52 @@ export class VincActionNodeComponent implements OnInit {
   }
 
 }
+
+
+@Component({
+  selector: 'notification-action-node',
+  templateUrl: './notification-action-node.html',
+  styleUrls: ['../flow-nodes.component.css']
+})
+export class NotificationActionNodeComponent implements OnInit {
+  @Input() node :MetaNode;
+  @Input() nodes:MetaNode[];
+  @Input() flowId:string;
+  shortcuts:any[];
+  constructor(public dialog: MatDialog , private http : Http) {
+
+  }
+  ngOnInit() {
+    this.loadDefaultConfig()
+  }
+
+
+  loadDefaultConfig() {
+    if (this.node.Config==null) {
+      this.node.Config = {
+        "VariableName": "",
+        "IsVariableGlobal": false,
+        "Props": {},
+        "RegisterAsVirtualService": false,
+        "VirtualServiceGroup":"",
+        "VirtualServiceProps":{}
+      };
+      this.node.Config["DefaultValue"] = {"Value":{
+          "EventName": "custom",
+          "MessageContent": "Hello world",
+          "SiteId": "F315DCF9-5814-4728-8117-CBCA9A4699B0"
+      },"ValueType":"object"};
+      this.node.Address = "pt:j1/mt:evt/rt:app/rn:kind_owl/ad:1"
+      this.node.ServiceInterface = "evt.notification.report"
+      this.node.Service = "kind-owl"
+      this.node.Label = "Push notification"
+    }
+  }
+
+  inputVariableSelected(cvar:ContextVariable) {
+    this.node.Config.VariableName = cvar.Name;
+    this.node.Config.IsVariableGlobal = cvar.isGlobal;
+    this.node.Config.VariableType = cvar.Type;
+  }
+
+}

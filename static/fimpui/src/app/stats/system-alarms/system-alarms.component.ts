@@ -23,22 +23,34 @@ import {Subscription} from "rxjs/Subscription";
   styleUrls: ['./system-alarms.component.css']
 })
 export class SystemAlarmsComponent implements OnInit {
-  displayedColumns = ['name','service','address','event','power-source','last-contact','is-smoke-sensor','trans-nr'];
+  displayedColumns = ['name','service','address','event','status','power-source','last-contact','is-smoke-sensor','trans-nr'];
   globalSub : Subscription;
   dataSource = new MatTableDataSource();
+  mode :string;
+
   @ViewChild(MatSort) sort: MatSort;
   constructor(private http : Http,private fimp:FimpService) {
   }
 
   ngOnInit() {
     // this.loadData()
-    this.loadDataFromMq()
+    this.mode = "faults"
+    this.loadDataFromMq(this.mode);
     this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
       let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "angry_dog" ){
         if (fimpMsg.mtype == "evt.angry_dog_api.dev_fault_report") {
-          console.log("Message from angry dog");
-          this.dataSource.data = fimpMsg.val;
+          console.log("Message from angry dog evt.angry_dog_api.dev_fault_report");
+          if (fimpMsg.val)
+            this.dataSource.data = fimpMsg.val;
+          else
+            this.dataSource.data = [];
+        }else if (fimpMsg.mtype == "evt.angry_dog_api.dev_report") {
+          console.log("Message from angry dog evt.angry_dog_api.dev_report");
+          if (fimpMsg.val)
+            this.dataSource.data = fimpMsg.val;
+          else
+            this.dataSource.data = [];
         }
 
       }
@@ -53,9 +65,17 @@ export class SystemAlarmsComponent implements OnInit {
   }
 
 
-  loadDataFromMq(){
-    let msg  = new FimpMessage("angry_dog","cmd.angry_dog_api.dev_fault_report","null",null,null,null)
+  loadDataFromMq(mode){
+    let msgType = "cmd.angry_dog_api.get_dev_fault_report";
+    if (mode=="all") {
+      msgType = "cmd.angry_dog_api.get_dev_report"
+    }
+    let msg  = new FimpMessage("angry_dog",msgType,"null",null,null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg.toString());
+  }
+
+  onModeChange(event:any) {
+    this.loadDataFromMq(this.mode);
   }
 
 }

@@ -35,19 +35,31 @@ export class VariableSelectorComponent implements OnInit {
 
   loadContext() {
     this.vars = [];
+
     if (this.flowId) {
+
       this.http
         .get(BACKEND_ROOT+'/fimp/api/flow/context/'+this.flowId)
         .map(function(res: Response){
           let body = res.json();
           return body;
         }).subscribe ((result) => {
+        let isVariableInList = false;
         for (var key in result){
           let v = new ContextVariable()
           v.isGlobal = false
           v.Name  = result[key].Name
           v.Type = result[key].Variable.ValueType;
           v.Value = result[key].Variable.Value;
+          this.vars.push(v);
+          if ( v.Name == this.variableName)
+            isVariableInList = true ;
+        }
+        if (!this.isGlobal && !isVariableInList) {
+          let v = new ContextVariable()
+          v.isGlobal = false
+          v.Name  = this.variableName;
+          v.Type = this.variableType;
           this.vars.push(v);
         }
 
@@ -61,6 +73,7 @@ export class VariableSelectorComponent implements OnInit {
         let body = res.json();
         return body;
       }).subscribe ((result) => {
+      let isVariableInList = false;
       for (var key in result){
         let v = new ContextVariable()
         v.isGlobal = true
@@ -68,8 +81,19 @@ export class VariableSelectorComponent implements OnInit {
         v.Type = result[key].Variable.ValueType;
         v.Value = result[key].Variable.Value;
         this.vars.push(v);
+        if (v.isGlobal == this.isGlobal && v.Name == this.variableName)
+          isVariableInList = true ;
+
+        if (this.isGlobal && !isVariableInList) {
+          let v = new ContextVariable()
+          v.isGlobal = false
+          v.Name  = this.variableName;
+          v.Type = this.variableType;
+          this.vars.push(v);
+        }
       }
     });
+
   }
 
   showContextVariableDialog() {

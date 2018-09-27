@@ -1,4 +1,4 @@
-version="0.7.4"
+version="0.7.7"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
