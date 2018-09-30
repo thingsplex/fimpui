@@ -10,6 +10,7 @@ import { BACKEND_ROOT } from "app/globals";
 import { RegistryModule} from 'app/registry/registry.module'
 import { ServiceInterface } from "app/registry/model";
 import { setTimeout } from 'timers';
+import {FireService} from "../../firebase/fire.service";
 
 export class MetaNode {
   Id               :string;
@@ -55,7 +56,7 @@ export class FlowEditorComponent implements OnInit {
   canvasHeight:number;
   canvasInitHeight:number;
 
-  constructor(private route: ActivatedRoute,private http : Http,public dialog: MatDialog) {
+  constructor(private route: ActivatedRoute,private http : Http,public dialog: MatDialog,private fire:FireService) {
     this.flow = new Flow();
    }
 
@@ -490,6 +491,10 @@ findInputSocketPosition(htmlElement):any {
       if(result)
         this.flow = result;
     });
+  }
+
+  shareFlow() {
+    this.fire.addFlow(this.flow);
   }
 
   showLog() {

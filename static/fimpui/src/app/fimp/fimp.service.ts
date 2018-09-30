@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable,Subject } from 'rxjs/Rx';
+// import { Observable,Subject } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { Http, Response,URLSearchParams }  from '@angular/http';
 import {
   MqttMessage,
@@ -21,7 +22,8 @@ export class FimpFilter {
 export class FimpService{
   private messages:FimpMessage[]=[];
   private filteredMessages:FimpMessage[]=[];
-  public observable: Observable<MqttMessage> = null;
+  public observable: any = null;
+  // public observable: Observable<MqttMessage> = null;
   public maxLogSize:number = 100;
   private fimpFilter : FimpFilter;
   private isFilteringEnabled:boolean;
@@ -115,7 +117,8 @@ export class FimpService{
     });
   }
     
-  public subscribe(topic: string):Observable<MqttMessage>{
+  // public subscribe(topic: string):Observable<MqttMessage>{
+  public subscribe(topic: string):any{
     var topic =  this.prepareTopic(topic);
     console.log("Subscribing to topic "+topic);
     return this.mqtt.observe(topic);

@@ -39,9 +39,12 @@ import { TimelineComponent, MsgDetailsDialog } from './timeline/timeline.compone
 import { ReportComponent } from './report/report.component';
 import { FlightRecorderComponent } from './flight-recorder/flight-recorder.component';
 import { FimpService} from './fimp/fimp.service';
+import { FireService} from './firebase/fire.service';
 import { ThingsDbService } from './things-db.service';
 import { ConfigsService } from './configs.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+// import { AngularFireModule } from '@angular/fire';
+// import { AngularFirestoreModule } from '@angular/fire/firestore';
 // import { ThingIntfUiComponent , KeysPipe }from './thing-intf-ui/thing-intf-ui.component'
 import 'hammerjs';
 import {
@@ -55,6 +58,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { FlowModule} from './flow/flow.module';
 import { StatsModule} from './stats/stats.module';
 import { RegistryModule} from './registry/registry.module';
+import {environment} from "../environments/environment";
 
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -133,6 +137,8 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
       provide: MqttService,
       useFactory: mqttServiceFactory
     }),
+    // AngularFireModule.initializeApp(environment.firebase),
+    // AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     MatButtonModule,
     MatPaginatorModule,
     MatInputModule,
@@ -163,7 +169,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     GaugeModule.forRoot()
 
   ],
-  providers: [FimpService,ThingsDbService,ConfigsService,{
+  providers: [FimpService,ThingsDbService,FireService,ConfigsService,{
     // Provider for APP_INITIALIZER
     provide: APP_INITIALIZER,
     useFactory: startupServiceFactory,

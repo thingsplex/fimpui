@@ -3,6 +3,7 @@ import {Headers, Http, RequestOptions, Response, URLSearchParams} from '@angular
 import { BACKEND_ROOT } from "app/globals";
 import { DatePipe } from '@angular/common';
 import {FlowLogDialog, FlowSourceDialog} from "../flow-editor/flow-editor.component";
+import {FlowShareDialog} from "../flow-overview/flow-share.component";
 import {MatDialog} from "@angular/material";
 
 @Component({
@@ -81,6 +82,19 @@ export class FlowOverviewComponent implements OnInit {
          setTimeout(result => {
            this.loadListOfFlows()
          },1000)
+
+    });
+  }
+
+  openFlowShareWindow() {
+    let dialogRef = this.dialog.open(FlowShareDialog,{
+      // height: '95%',
+      width: '95%',
+      data:{}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+
+
 
     });
   }

@@ -1,0 +1,16 @@
+<mat-list >
+
+<ng-container *ngFor="let flow of flows">
+<mat-list-item >
+  <h3 mat-line style="font-size: 21px">  {{flow.Name}} </h3>
+  <p mat-line> Description : {{flow.Description}} </p>
+
+  <p mat-line>
+    <mat-chip-list style="margin:10px">
+      <mat-chip class="open-chip" (click)="importFlow(flow)">Import</mat-chip>
+    </mat-chip-list>
+  </p>
+
+</mat-list-item>
+</ng-container>
+</mat-list>
