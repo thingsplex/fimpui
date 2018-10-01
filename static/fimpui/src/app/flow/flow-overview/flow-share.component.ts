@@ -51,23 +51,23 @@ export class FlowShareDialog {
       // this.http.get(flowUrl).subscribe ((result) => {
 
         // This can be downloaded directly:
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = 'blob';
-        xhr.onload = function(event) {
-          var blob = xhr.response;
-          xhr.open('GET', flowUrl);
-          xhr.send();
-          console.log("Flow is loaded");
-          let headers = new Headers({ 'Content-Type': 'application/json' });
-          let options = new RequestOptions({headers:headers});
-          this.http
-            .post(BACKEND_ROOT+'/fimp/flow/definition/import',blob,  options )
-            .subscribe ((result) => {
-              console.log("Flow was saved");
-            });
-
-
-        };
+        // var xhr = new XMLHttpRequest();
+        // xhr.responseType = 'blob';
+        // xhr.onload = function(event) {
+        //   var blob = xhr.response;
+        //   xhr.open('GET', flowUrl);
+        //   xhr.send();
+        //   console.log("Flow is loaded");
+        //   let headers = new Headers({ 'Content-Type': 'application/json' });
+        //   let options = new RequestOptions({headers:headers});
+        //   this.http
+        //     .post(BACKEND_ROOT+'/fimp/flow/definition/import',blob,  options )
+        //     .subscribe ((result) => {
+        //       console.log("Flow was saved");
+        //     });
+        //
+        //
+        // };
 
 
 

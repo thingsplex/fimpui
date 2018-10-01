@@ -17,6 +17,65 @@
         <input matInput type="number" [(ngModel)]="template.wakeup_interval" placeholder="Wakeup interval(sec)" >
 </mat-input-container>
 </p>
+
+  <div style="margin-bottom: 15px;width:155px" >
+    <mat-checkbox [(ngModel)]="template.force_zware_interview" >Force zware interview but keep all mappings.</mat-checkbox>
+  </div>
+
+<h3>Retry policy</h3>
+
+  <div style="margin-bottom: 15px;width:155px" >
+    <mat-checkbox [(ngModel)]="template.dev_custom.retry_policy.is_enabled" >Enable retry policy</mat-checkbox>
+  </div>
+
+<ng-container *ngIf="template.dev_custom.retry_policy.is_enabled">
+  <mat-input-container class="node-label-field">
+    <input matInput type="number" [(ngModel)]="template.dev_custom.retry_policy.cmd_retry_count" placeholder="Max number of retries " >
+  </mat-input-container>
+
+  <mat-input-container class="node-label-field">
+    <input matInput type="number" [(ngModel)]="template.dev_custom.retry_policy.cmd_retry_delay" placeholder="Delay between retries (milliseconds) " >
+  </mat-input-container>
+
+  <div style="margin-bottom: 15px;width:155px" >
+    <mat-checkbox [(ngModel)]="template.dev_custom.retry_policy.is_cmd_tx_error_retry_enabled" >Enable TX retry</mat-checkbox>
+  </div>
+
+  <mat-input-container class="node-label-field">
+    <input matInput type="number" [(ngModel)]="template.dev_custom.retry_policy.tx_error_retry_delay" placeholder="Delay between TX retries (milliseconds) " >
+  </mat-input-container>
+
+  <div style="margin-bottom: 15px;width:155px" >
+    <mat-checkbox [(ngModel)]="template.dev_custom.retry_policy.enable_guaranteed_delivery" >Enable guaranteed delivery </mat-checkbox>
+  </div>
+
+<ng-container *ngIf="template.dev_custom.retry_policy.enable_guaranteed_delivery">
+  <h3>Guaranteed delivery</h3>
+  <mat-list>
+    <mat-list-item *ngFor="let gdp of template.dev_custom.retry_policy.guaranteed_delivery_policies" style="height: 170px" >
+      <mat-input-container class="node-label-field">
+        <input matInput type="number" [(ngModel)]="gdp.endpoint" placeholder="Endpoint id" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field">
+        <input matInput type="number" [(ngModel)]="gdp.max_wait_time" placeholder="Max time to wait for response" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field">
+        <input matInput type="number" [(ngModel)]="gdp.max_retry" placeholder="Max retry attempts" >
+      </mat-input-container>
+
+      <json-input style="width:500px" [label] = "'Request msg'" [inputType]="'textarea'"  [(jData)]="gdp.request_msg"></json-input>
+      <json-input style="width:500px" [label] = "'Response msg'" [inputType]="'textarea'"  [(jData)]="gdp.response_msg"></json-input>
+
+      <button mat-raised-button color="primary" (click)="deleteGDPolicy(gdp)">Delete</button> 
+   </mat-list-item>
+  </mat-list>
+  <button mat-raised-button color="primary" (click)="addGDPolicy()">Add guaranteed delivery policy</button>
+
+</ng-container>
+
+</ng-container>
+
+
 <h3>Device auto configuration</h3>
     <mat-list>
         <mat-list-item ><h4>Auto associations </h4></mat-list-item>

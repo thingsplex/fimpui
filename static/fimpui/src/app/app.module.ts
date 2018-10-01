@@ -31,7 +31,7 @@ import { MatTableModule,
   MatCheckbox} from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ZwaveManComponent , AddDeviceDialog, RemoveDeviceDialog,PingDeviceDialog } from './zwave-man/zwave-man.component';
-import { TemplateEditorDialog } from './zwave-man/zwave-man.component';
+import { TemplateEditorDialog } from './zwave-man/template-editor.component';
 import { IkeaManComponent } from './ikea-man/ikea-man.component';
 import { ZigbeeManComponent } from './zigbee-man/zigbee-man.component';
 import { SystemsManComponent } from './systems-man/systems-man.component';
