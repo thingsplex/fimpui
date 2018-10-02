@@ -19,7 +19,7 @@
 </p>
 
   <div style="margin-bottom: 15px;width:155px" >
-    <mat-checkbox [(ngModel)]="template.force_zware_interview" >Force zware interview but keep all mappings.</mat-checkbox>
+    <mat-checkbox [(ngModel)]="template.force_zware_interview" >Force zware interview but keep other configurations.</mat-checkbox>
   </div>
 
 <h3>Retry policy</h3>
@@ -66,7 +66,7 @@
       <json-input style="width:500px" [label] = "'Request msg'" [inputType]="'textarea'"  [(jData)]="gdp.request_msg"></json-input>
       <json-input style="width:500px" [label] = "'Response msg'" [inputType]="'textarea'"  [(jData)]="gdp.response_msg"></json-input>
 
-      <button mat-raised-button color="primary" (click)="deleteGDPolicy(gdp)">Delete</button> 
+      <button mat-raised-button color="primary" (click)="deleteGDPolicy(gdp)">Delete</button>
    </mat-list-item>
   </mat-list>
   <button mat-raised-button color="primary" (click)="addGDPolicy()">Add guaranteed delivery policy</button>

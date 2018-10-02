@@ -438,6 +438,9 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
        case "template":
          this.openTemplateEditor(node.hash+'.json','stable');
          break;
+       case "reload_template":
+         this.reloadDeviceTemplate(node.address);
+         break;
        case "delete":
          this.deleteFailedDevice(node.address);
          break;
@@ -462,6 +465,11 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   updateDevice(nodeId :number){
     let msg  = new FimpMessage("zwave-ad","cmd.network.node_update","int",Number(nodeId),null,null)
     this.showProgress(true);
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+  }
+
+  reloadDeviceTemplate(nodeId :number){
+    let msg  = new FimpMessage("zwave-ad","cmd.thing.reload_template","int",Number(nodeId),null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
   }
   setGatewayMode(mode:string){

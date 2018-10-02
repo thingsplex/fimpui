@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import firebase from "firebase";
+import * as firebase from "firebase";
 import {stringify} from "querystring";
 
 var fireConfig = {
