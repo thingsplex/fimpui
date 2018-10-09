@@ -98,7 +98,7 @@ func main() {
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true, ForceColors: true,TimestampFormat:"2006-01-02T15:04:05.999"})
 	log.SetLevel(log.DebugLevel)
 	configs := model.FimpUiConfigs{ProcConfigStorePath:"./"}
-	integr := tsdb.Boot(&configs,nil)
+	integr := tsdb.Boot(&configs,nil,nil)
 	proc := integr.GetProcessByID(1)
 	tsl := NewTsdbBactchLoader(proc)
 	//dir := "/Users/alivinco/DevProjects/APPS/Futurehome/zipgateway-debug/stianhub-mqtt/mqtt"

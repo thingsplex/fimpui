@@ -98,6 +98,9 @@ func (pr *Process) OnMessage(topic string, addr *fimpgo.Address , iotMsg *fimpgo
 	if pr.registry != nil {
 		context.service, _ = pr.registry.GetServiceByFullAddress(topic)
 	}
+	if pr.Config.SiteId!="" {
+		addr.GlobalPrefix = pr.Config.SiteId
+	}
 	if pr.filter(context, topic, iotMsg, addr.GlobalPrefix, 0) {
 		msg, err := pr.transform(context, topic, iotMsg, addr.GlobalPrefix)
 

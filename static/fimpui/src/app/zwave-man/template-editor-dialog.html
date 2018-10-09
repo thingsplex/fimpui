@@ -64,8 +64,8 @@
       </mat-input-container>
 
       <json-input style="width:500px" [label] = "'Request msg'" [inputType]="'textarea'"  [(jData)]="gdp.request_msg"></json-input>
-      <json-input style="width:500px" [label] = "'Response msg'" [inputType]="'textarea'"  [(jData)]="gdp.response_msg"></json-input>
-
+      <json-input style="width:500px" [label] = "'Confirmation msg'" [inputType]="'textarea'"  [(jData)]="gdp.response_msg"></json-input>
+      <json-input style="width:500px" [label] = "'Report msg'" [inputType]="'textarea'"  [(jData)]="gdp.report_on_response_msg"></json-input>
       <button mat-raised-button color="primary" (click)="deleteGDPolicy(gdp)">Delete</button>
    </mat-list-item>
   </mat-list>

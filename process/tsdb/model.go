@@ -90,6 +90,7 @@ type ProcessConfig struct {
 	Selectors    []Selector
 	Measurements []Measurement
 	Autostart    bool
+	SiteId       string
 }
 
 func (pc *ProcessConfig) getMeasurementByID(ID string)*Measurement {

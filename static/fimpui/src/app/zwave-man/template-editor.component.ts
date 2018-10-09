@@ -249,6 +249,14 @@ export class TemplateEditorDialog implements OnInit, OnDestroy  {
           "props": {},
           "tags": []
          },
+        "report_on_response_msg":{
+          "serv": "siren_ctrl",
+          "type": "evt.mode.report",
+          "val_t": "string",
+          "val": "off",
+          "props": {},
+          "tags": []
+        },
         "max_wait_time":20,
         "max_retry":7
       }

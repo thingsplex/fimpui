@@ -1,6 +1,9 @@
 package utils
 
-import "strings"
+import (
+	"io/ioutil"
+	"strings"
+)
 
 func match(route []string, topic []string) bool {
 	if len(route) == 0 {
@@ -30,4 +33,17 @@ func match(route []string, topic []string) bool {
 
 func RouteIncludesTopic(route, topic string) bool {
 	return match(strings.Split(route, "/"), strings.Split(topic, "/"))
+}
+
+
+func GetFhSiteId(path string) string {
+	if path == "" {
+		path = "/var/www/unicomplex/project/app/data/site.data"
+	}
+	siteIdb, err := ioutil.ReadFile(path)
+
+	if err != nil {
+		return ""
+	}
+	return string(siteIdb)
 }

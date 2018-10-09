@@ -3,6 +3,7 @@ package tsdb
 import (
 	"encoding/json"
 	"errors"
+	"github.com/alivinco/thingsplex/utils"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -217,6 +218,10 @@ func (it *Integration) InitProcesses() error {
 		return errors.New("Load configurations first.")
 	}
 	for i := range it.processConfigs {
+		if it.processConfigs[i].SiteId == "" {
+			it.processConfigs[i].SiteId = utils.GetFhSiteId("");
+		}
+		log.Info("Site id = ", it.processConfigs[i].SiteId)
 		it.InitNewProcess(&it.processConfigs[i])
 	}
 	return nil

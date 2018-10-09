@@ -16,4 +16,5 @@ type FimpUiConfigs struct {
 	LogLevel           string   `json:"log_level"`
 	ZwaveProductTemplates string `json:"zwave_product_templates"`
 	ProcConfigStorePath string  `json:"proc_config_store_path"`
+	SiteId             string 	`json:"site_id"`
 }
