@@ -45,5 +45,6 @@ func GetFhSiteId(path string) string {
 	if err != nil {
 		return ""
 	}
-	return string(siteIdb)
+	return strings.TrimSpace(string(siteIdb))
+
 }

@@ -5,10 +5,8 @@
   <h3 mat-line style="font-size: 21px">  {{flow.Name}} </h3>
   <p mat-line> Description : {{flow.Description}} </p>
 
-  <p mat-line>
-    <mat-chip-list style="margin:10px">
-      <mat-chip class="open-chip" (click)="importFlow(flow)">Import</mat-chip>
-    </mat-chip-list>
+  <p mat-line style="margin-top: 8px">
+      <mat-chip class="open-chip" style="margin-bottom: 5px" (click)="importFlow(flow)">Import</mat-chip>
   </p>
 
 </mat-list-item>

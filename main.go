@@ -255,7 +255,14 @@ func main() {
 		return c.Blob(http.StatusOK,"text/plain", result)
 	})
 
+	e.GET("/fimp/api/get-site-info", func(c echo.Context) error {
+		siteId := utils.GetFhSiteId("")
+		siteInfoResponse := struct {
+			SiteId string
+		}{SiteId:siteId}
 
+		return c.JSON(http.StatusOK, siteInfoResponse)
+	})
 
 	e.POST("/fimp/api/zwave/products/upload-to-cloud", func(c echo.Context) error {
 		cloud,err  := zwave.NewProductCloudStore( configs.ZwaveProductTemplates,"fh-products")

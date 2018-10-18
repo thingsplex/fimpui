@@ -48,6 +48,14 @@ export class FlowShareDialog {
 
     this.fire.getFlowUrlById(flow.Id).then((flowUrl) => {
       console.log("Flow URL:"+flowUrl);
+      // let headers = new Headers({ 'Content-Type': 'application/json' });
+      // let options = new RequestOptions({headers:headers});
+      // this.http
+      //     .post(BACKEND_ROOT+'/fimp/flow/definition/import',blob,  options )
+      //     .subscribe ((result) => {
+      //       console.log("Flow was saved");
+      //     });
+      this.http.post(BACKEND_ROOT+'/fimp/flow/definition/import_from_url', {Url:flowUrl,Token:""}).subscribe(res => console.log(res.json()));
       // this.http.get(flowUrl).subscribe ((result) => {
 
         // This can be downloaded directly:
