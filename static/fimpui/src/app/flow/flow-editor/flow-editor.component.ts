@@ -761,7 +761,7 @@ export class ContextDialog {
     //
     // this.http
     //   .get(BACKEND_ROOT+'/fimp/api/flow/context/global')
-    //   .map(function(res: Response){
+    //   .map(function(res: Response
     //     let body = res.json();
     //     return body;
     //   }).subscribe ((result) => {

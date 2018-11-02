@@ -28,7 +28,7 @@ export class FireService{
   }
 
   public addFlow(flow) {
-    var flowMeta = {Id:flow.Id,Name:flow.Name,ClasSId:"",Description:flow.Description,Author:""};
+    var flowMeta = {Id:flow.Id,Name:flow.Name,ClassId:"",Description:flow.Description,Author:"",UpdatedAt:firebase.firestore.Timestamp.now()};
     this.db.collection("flows").add(flowMeta)
       .then(function(docRef) {
         console.log("Document written with ID: ", docRef.id);
@@ -46,6 +46,13 @@ export class FireService{
 
   }
 
+  public deleteFlow(docId) {
+    this.db.collection("flows").doc(docId).delete().then(function() {
+      console.log("Document successfully deleted!");
+    }).catch(function(error) {
+      console.error("Error removing document: ", error);
+    });
+  }
 
   public getFlows() {
     return this.db.collection("flows").get();

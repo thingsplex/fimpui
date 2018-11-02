@@ -10,15 +10,15 @@ import {BACKEND_ROOT} from "../../globals";
 export interface Item { name: string; }
 
 @Component({
-  selector: 'flow-share-dialog',
-  templateUrl: 'flow-share.component.html',
-  styleUrls: ['flow-overview.component.css']
+  selector: 'flow-lib',
+  templateUrl: 'flow-lib.component.html',
+  styleUrls: ['flow-lib.component.css']
 })
-export class FlowShareDialog {
+export class FlowLibComponent {
   // private itemsCollection: AngularFirestoreCollection<Item>;
   items: Observable<Item[]>;
   flows: any[];
-  constructor(public dialogRef: MatDialogRef<FlowShareDialog>,private fire:FireService,private http : Http) {
+  constructor(private fire:FireService, private http : Http) {
     // this.flowSourceText = JSON.stringify(data, null, 2)
     // this.itemsCollection = afs.collection<Item>('items');
     // this.items = this.itemsCollection.valueChanges();
@@ -31,10 +31,22 @@ export class FlowShareDialog {
     this.fire.getFlows().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         console.log(`${doc.id} => ${doc.data()}`);
-        console.dir(doc.data());
-        this.flows.push(doc.data())
+
+        var prepData = doc.data()
+        prepData.DocId = doc.id
+        if (prepData.UpdatedAt) {
+          prepData.UpdatedAtDate = prepData.UpdatedAt.toDate();
+        }
+
+
+        console.dir(prepData);
+        this.flows.push(prepData)
       });
     });
+  }
+
+  deleteFlow(docId) {
+    this.fire.deleteFlow(docId);
   }
 
   importFlow(flow){

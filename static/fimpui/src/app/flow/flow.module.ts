@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlowOverviewComponent } from './flow-overview/flow-overview.component';
 import { FlowContextComponent } from './flow-context/flow-context.component';
+import { FlowLibComponent } from './flow-lib/flow-lib.component';
 import { VariableSelectorComponent } from './flow-context/variable-selector.component';
 import { JsonInputComponent } from './ui-elements/json-input.component';
 import { FlowEditorComponent, FlowSourceDialog,FlowLogDialog, FlowRunDialog, ServiceLookupDialog,ContextDialog,NodeEditorDialog } from './flow-editor/flow-editor.component';
-import { FlowShareDialog } from './flow-overview/flow-share.component';
 import { FlowNodesComponent ,SetVariableNodeComponent,TimeTriggerNodeComponent } from './flow-nodes/flow-nodes.component';
 import { LoopNodeComponent,WaitNodeComponent} from './flow-nodes/flow-nodes.component';
 import { RestActionNodeComponent } from './flow-nodes/rest-action-node/node.component';
@@ -72,9 +72,9 @@ import { MatTableModule,
   declarations: [
      FlowOverviewComponent,
      FlowContextComponent,
+     FlowLibComponent,
      FlowEditorComponent,
      FlowSourceDialog,
-     FlowShareDialog,
      FlowRunDialog,
      FlowLogDialog,
      VariableSelectorComponent,
@@ -102,6 +102,6 @@ import { MatTableModule,
 
   ],
   exports:[JsonInputComponent],
-  entryComponents: [FlowSourceDialog,FlowShareDialog,FlowLogDialog,FlowRunDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,RecordEditorDialog]
+  entryComponents: [FlowSourceDialog,FlowLogDialog,FlowRunDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,RecordEditorDialog]
 })
 export class FlowModule { }

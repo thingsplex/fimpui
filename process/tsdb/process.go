@@ -1,6 +1,7 @@
 package tsdb
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -347,6 +348,9 @@ func (pr *Process) Start() error {
 // Stop stops the process by unsubscribing from all topics ,
 // stops scheduler and stops adapter.
 func (pr *Process) Stop() error {
+	if pr.State != "RUNNING" {
+		return errors.New("process isn't running, nothing to stop")
+	}
 	log.Info("<tsdb> Stopping process...")
 	pr.ticker.Stop()
 

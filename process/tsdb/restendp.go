@@ -37,6 +37,7 @@ func (endp *IntegrationAPIRestEndp) SetupRoutes() {
 	endp.Echo.GET("/fimproc/tsdb/api/proc/monitoring", endp.procMonitoringEndpoint)
 	endp.Echo.DELETE("/fimproc/tsdb/api/proc/:id", endp.removeProcessEndpoint)
 	endp.Echo.PUT("/fimproc/tsdb/api/proc", endp.addProcessEndpoint)
+	endp.Echo.PUT("/fimproc/tsdb/api/proc/reset_configs_to_default", endp.resetAllConfigsToDefault)
 	endp.Echo.POST("/fimproc/tsdb/api/proc/:id", endp.updateProcessConfigEndpoint)
 	endp.Echo.POST("/fimproc/tsdb/api/proc/:id/ctl", endp.ctlProcessEndpoint)
 
@@ -290,4 +291,14 @@ func (endp *IntegrationAPIRestEndp) removeProcessEndpoint(c echo.Context) error 
 		return err
 	}
 	return c.JSON(http.StatusOK, DefaultResponse{ID: IDt(procID), Msg: "Project removed."})
+}
+
+func (endp *IntegrationAPIRestEndp) resetAllConfigsToDefault(c echo.Context) error {
+	log.Info("resetAllConfigsToDefault")
+
+	err := endp.integr.ResetConfigsToDefault()
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK,nil)
 }

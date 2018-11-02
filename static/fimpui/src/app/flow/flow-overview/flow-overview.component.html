@@ -1,6 +1,7 @@
 <nav mat-tab-nav-bar>
     <a mat-tab-link [routerLink]="['/flow/overview']" >Flows</a>
     <a mat-tab-link [routerLink]="['/flow/context']" >Context</a>
+    <a mat-tab-link [routerLink]="['/flow/lib']" >Cloud library</a>
 </nav>
 <div class="flow">
   <mat-card class="example-card">
@@ -21,7 +22,7 @@
            <mat-icon mat-list-icon *ngIf="flow.State!='RUNNING'" style="color: #ff3928">device_hub</mat-icon>
            <h3 mat-line style="font-size: 21px">  {{flow.Name}} </h3>
            <p mat-line> Description : {{flow.Description}} </p>
-           <p mat-line> State : {{flow.State }} Executed : {{flow.TriggerCounter}} Failed : {{flow.ErrorCounter}} </p>
+           <p mat-line> State : {{flow.State }} Executed : {{flow.TriggerCounter}} Failed : {{flow.ErrorCounter}} Nodes : {{ flow.Stats.NumberOfNodes}}  Triggers : {{flow.Stats.NumberOfTriggers}} Active triggers : {{flow.Stats.NumberOfActiveTriggers}} Active flows {{flow.Stats.NumberOfActiveSubflows}} </p>
            <p mat-line> Started at : {{flow.Stats.StartedAt | date:'yyyy-MM-dd H:mm:ss'}} Duration : {{flow.Stats.LastExecutionTime }} </p>
 
            <p mat-line>
@@ -44,8 +45,7 @@
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button [routerLink]="['/flow/editor','-']" color="primary" > Add new flow</button>
-      <button mat-raised-button (click)="openFlowImportWindow()" color="primary" > Import </button>
-      <button mat-raised-button (click)="openFlowShareWindow()" color="primary" > Import from cloud library</button>
+      <button mat-raised-button (click)="openFlowImportWindow()" color="primary" > Import  </button>
       <button mat-raised-button (click)="showLog()" color="primary" >Log</button>
       <button mat-raised-button (click)="loadListOfFlows()">Refresh</button>
     </mat-card-actions>

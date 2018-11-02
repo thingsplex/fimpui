@@ -5,6 +5,8 @@ def set_deb_control(version , arch):
     template = "Package: fimpui\n"
     template+= "Version: "+version+"\n"
     template+= "Replaces: fimpui\n"
+    template+= "Section: non-free/misc\n"
+    template+= "Priority: optional\n"
     template+= "Architecture: "+arch+"\n"
     template+= "Maintainer: Aleksandrs Livincovs <aleksandrs.livincovs@gmail.com>\n"
     template+= "Description: FimpUI is support GUI for FIMP protocol .\n"

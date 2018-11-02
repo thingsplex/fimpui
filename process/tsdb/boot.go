@@ -45,6 +45,8 @@ func (it *Integration) GetDefaultIntegrConfig() []ProcessConfig {
 		{ID: 2, Topic: "pt:j1/mt:cmd/rt:dev/#"},
 		{ID: 3, Topic: "pt:j1/mt:evt/rt:app/#"},
 		{ID: 4, Topic: "pt:j1/mt:cmd/rt:app/#"},
+		{ID: 5, Topic: "pt:j1/mt:evt/rt:ad/#"},
+		{ID: 6, Topic: "pt:j1/mt:cmd/rt:ad/#"},
 
 	}
 	//filters := []Filter{
@@ -127,6 +129,7 @@ func (it *Integration) GetDefaultIntegrConfig() []ProcessConfig {
 	}
 	config := ProcessConfig{
 		ID:                 1,
+		Name:"default",
 		MqttBrokerAddr:     "tcp://localhost:1883",
 		MqttBrokerUsername: "",
 		MqttBrokerPassword: "",
@@ -142,7 +145,44 @@ func (it *Integration) GetDefaultIntegrConfig() []ProcessConfig {
 		Measurements:       measurements,
 	}
 
-	return []ProcessConfig{config}
+	selector2 := []Selector{
+		{ID: 1, Topic: "pt:j1/mt:evt/rt:dev/#"},
+		{ID: 2, Topic: "pt:j1/mt:cmd/rt:dev/#"},
+		{ID: 3, Topic: "pt:j1/mt:evt/rt:app/#"},
+		{ID: 4, Topic: "pt:j1/mt:cmd/rt:app/#"},
+		{ID: 5, Topic: "pt:j1/mt:evt/rt:ad/#"},
+		{ID: 6, Topic: "pt:j1/mt:cmd/rt:ad/#"},
+
+	}
+
+	measurements2 := []Measurement{
+		{
+			ID:                      "default",
+			RetentionPolicyDuration: "8w",
+			RetentionPolicyName:     "default_8w",
+			UseServiceAsMeasurementName:true,
+		},
+	}
+	config2 := ProcessConfig{
+		ID:                 2,
+		Name:				"MDU monitoring",
+		MqttBrokerAddr:     "tcp://localhost:1883",
+		MqttBrokerUsername: "",
+		MqttBrokerPassword: "",
+		MqttClientID:       "",
+		InfluxAddr:         "https://gtick.futurehome.io/influxdb",
+		InfluxUsername:     "admin",
+		InfluxPassword:     "adminfh531240",
+		InfluxDB:           "getmdu1",
+		BatchMaxSize:       1000,
+		SaveInterval:       1000,
+		Filters: 			[]Filter{},
+		Selectors:          selector2,
+		Measurements:       measurements2,
+		SiteId:utils.GetFhSiteId(""),
+	}
+
+	return []ProcessConfig{config,config2}
 
 }
 
@@ -191,6 +231,25 @@ func (it *Integration) LoadConfig() error {
 	}
 	return err
 
+}
+
+func (it *Integration) ResetConfigsToDefault() error {
+	log.Info("Reseting configs to default")
+
+	for i := range it.processes {
+		it.processes[i].Stop()
+	}
+	it.processes = it.processes[:0]
+	it.processConfigs = it.GetDefaultIntegrConfig()
+	err := it.SaveConfigs()
+	if err != nil {
+		log.Error("Error while saving the config:",err)
+	}else {
+		it.LoadConfig()
+		it.InitProcesses()
+	}
+
+	return err
 }
 
 // SaveConfigs saves configs to json file

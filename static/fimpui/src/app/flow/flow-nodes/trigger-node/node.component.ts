@@ -37,7 +37,7 @@ export class TriggerNodeComponent implements OnInit {
       console.log("Initializing config 2");
       this.node.Config = {};
       this.node.Config["Timeout"] = 0;
-      this.node.Config["VirtualServiceGroup"] = "";
+      this.node.Config["VirtualServiceGroup"] = "ch_0";
       this.node.Config["VirtualServiceProps"] = {};
       this.node.Config["RegisterAsVirtualService"] = false;
       this.node.Config["LookupServiceNameAndLocation"] = false;
@@ -75,7 +75,7 @@ export class TriggerNodeComponent implements OnInit {
 
     }
 
-    this.flowPublishAddress = "pt:j1/mt:"+msgType+"/rt:dev/rn:flow/ad:1/sv:"+this.flowPublishService+"/ad:"+this.flowId;
+    this.flowPublishAddress = "pt:j1/mt:"+msgType+"/rt:dev/rn:flow/ad:1/sv:"+this.flowPublishService+"/ad:"+this.flowId+"_0";
   }
   publishFlowAsVirtualDevice(){
     this.node.ServiceInterface = this.flowPublishInterface;

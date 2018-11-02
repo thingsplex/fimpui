@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"runtime"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/alivinco/thingsplex/integr/fhcore"
@@ -111,6 +112,7 @@ func main() {
 		MqttPassword:configs.MqttPassword,
 		ContextStorageDir:configs.ContextStorageDir,
 		FlowStorageDir:configs.FlowStorageDir,
+		ConnectorStorageDir:configs.ConnectorStorageDir,
 		MqttTopicGlobalPrefix:configs.MqttTopicGlobalPrefix,
 		RegistryDbFile:configs.RegistryDbFile,
 		LogFile:configs.LogFile,
@@ -122,7 +124,6 @@ func main() {
 		log.Error("Can't Init Flow manager . Error :", err)
 	}
 	flowManager.GetConnectorRegistry().AddConnection("thing_registry","thing_registry","thing_registry",thingRegistryStore)
-	flowManager.InitMessagingTransport()
 	err = flowManager.LoadAllFlowsFromStorage()
 	if err != nil {
 		log.Error("Can't load Flows from storage . Error :", err)
@@ -187,6 +188,7 @@ func main() {
 	fapi.NewContextApi(flowManager.GetGlobalContext(),e)
 	fapi.NewFlowApi(flowManager,e)
 	fapi.NewRegistryApi(thingRegistryStore,e)
+
 
 
 	// Uncomment the line below to enable Time Series exporter.
@@ -507,7 +509,11 @@ func main() {
 		return c.NoContent(http.StatusOK)
 	})
 
-
+	e.GET("/debug/mem", func(c echo.Context) error {
+		memStats:= runtime.MemStats{}
+		runtime.ReadMemStats(&memStats)
+		return c.JSON(http.StatusOK,memStats)
+	})
 
 	index := "static/fimpui/dist/index.html"
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{

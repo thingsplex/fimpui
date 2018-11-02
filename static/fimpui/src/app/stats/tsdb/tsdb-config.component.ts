@@ -27,11 +27,11 @@ export class TsdbConfigComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadData()
+    this.loadData(1)
   }
 
-  loadData() {
-    this.http.get(BACKEND_ROOT+'/fimproc/tsdb/api/proc/1',{})
+  loadData(procId:number) {
+    this.http.get(BACKEND_ROOT+'/fimproc/tsdb/api/proc/'+procId,{})
     .map((res: Response)=>{
       let result = res.json();
       return result;
@@ -54,6 +54,17 @@ export class TsdbConfigComponent implements OnInit {
     this.procData.Selectors.push({"ID": -1,"Topic": "","InMemory": false})
   }
 
+  resetConfigsToDefault(){
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({headers:headers});
+    this.http
+      .put(BACKEND_ROOT+'/fimproc/tsdb/api/proc/reset_configs_to_default',"",  options )
+      .subscribe ((result) => {
+        console.log("Configs were reset to default");
+        this.loadData(this.procData.ID);
+      });
+  }
+
   saveSelector(selector:any) {
     ///fimproc/tsdb/api/proc/:id/selectors
     let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -62,7 +73,7 @@ export class TsdbConfigComponent implements OnInit {
       .put(BACKEND_ROOT+'/fimproc/tsdb/api/proc/'+this.procData.ID+'/selectors',JSON.stringify(selector),  options )
       .subscribe ((result) => {
         console.log("Selector was saved");
-        this.loadData();
+        this.loadData(this.procData.ID);
       });
 
   }
@@ -72,7 +83,7 @@ export class TsdbConfigComponent implements OnInit {
       .delete(BACKEND_ROOT+'/fimproc/tsdb/api/proc/'+this.procData.ID+'/selectors/'+id)
       .subscribe ((result) => {
         console.log("Selector was removed");
-        this.loadData();
+        this.loadData(this.procData.ID);
       });
   }
 
@@ -102,7 +113,7 @@ export class TsdbConfigComponent implements OnInit {
       .put(BACKEND_ROOT+'/fimproc/tsdb/api/proc/'+this.procData.ID+'/filters',JSON.stringify(filter),  options )
       .subscribe ((result) => {
         console.log("Filter was saved");
-        this.loadData();
+        this.loadData(this.procData.ID);
       });
 
   }
@@ -112,7 +123,7 @@ export class TsdbConfigComponent implements OnInit {
       .delete(BACKEND_ROOT+'/fimproc/tsdb/api/proc/'+this.procData.ID+'/filters/'+id)
       .subscribe ((result) => {
         console.log("Filter was removed");
-        this.loadData();
+        this.loadData(this.procData.ID);
       });
   }
 
@@ -136,7 +147,7 @@ export class TsdbConfigComponent implements OnInit {
       .put(BACKEND_ROOT+'/fimproc/tsdb/api/proc/'+this.procData.ID+'/measurements',JSON.stringify(measurement),  options )
       .subscribe ((result) => {
         console.log("Measurement was saved");
-        this.loadData();
+        this.loadData(this.procData.ID);
       });
 
   }
@@ -146,7 +157,7 @@ export class TsdbConfigComponent implements OnInit {
       .delete(BACKEND_ROOT+'/fimproc/tsdb/api/proc/'+this.procData.ID+'/measurements/'+id)
       .subscribe ((result) => {
         console.log("Measurement was removed");
-        this.loadData();
+        this.loadData(this.procData.ID);
       });
   }
 
@@ -173,7 +184,7 @@ export class TsdbConfigComponent implements OnInit {
           .post(BACKEND_ROOT+'/fimproc/tsdb/api/proc/'+procId+"/ctl",JSON.stringify(ctlReq),  options )
           .subscribe ((result) => {
             console.log("Process was "+cmd);
-            this.loadData()
+            this.loadData(this.procData.ID)
           });
 
     }
