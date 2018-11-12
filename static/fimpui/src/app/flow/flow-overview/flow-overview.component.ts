@@ -102,7 +102,7 @@ export class FlowOverviewComponent implements OnInit {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({headers:headers});
     this.http
-      .post(BACKEND_ROOT+'/fimp/flow/definition/import',JSON.stringify(flow),  options )
+      .put(BACKEND_ROOT+'/fimp/flow/definition/import',JSON.stringify(flow),  options )
       .subscribe ((result) => {
         console.log("Flow was saved");
       });

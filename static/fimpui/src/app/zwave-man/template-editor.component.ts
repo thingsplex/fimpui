@@ -258,7 +258,8 @@ export class TemplateEditorDialog implements OnInit, OnDestroy  {
           "tags": []
         },
         "max_wait_time":20,
-        "max_retry":7
+        "max_retry":7,
+        "blocking_wait_resp_time":0
       }
     )
   }

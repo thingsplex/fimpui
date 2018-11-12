@@ -53,14 +53,17 @@
   <h3>Guaranteed delivery</h3>
   <mat-list>
     <mat-list-item *ngFor="let gdp of template.dev_custom.retry_policy.guaranteed_delivery_policies" style="height: 170px" >
-      <mat-input-container class="node-label-field">
+      <mat-input-container class="node-label-field" style="width: 120px">
         <input matInput type="number" [(ngModel)]="gdp.endpoint" placeholder="Endpoint id" >
       </mat-input-container>
-      <mat-input-container class="node-label-field">
+      <mat-input-container class="node-label-field" style="width: 120px">
         <input matInput type="number" [(ngModel)]="gdp.max_wait_time" placeholder="Max time to wait for response" >
       </mat-input-container>
-      <mat-input-container class="node-label-field">
+      <mat-input-container class="node-label-field" style="width: 120px">
         <input matInput type="number" [(ngModel)]="gdp.max_retry" placeholder="Max retry attempts" >
+      </mat-input-container>
+      <mat-input-container class="node-label-field" style="width: 120px">
+        <input matInput type="number" [(ngModel)]="gdp.blocking_wait_resp_time" placeholder="Resp. msg max wait time" >
       </mat-input-container>
 
       <json-input style="width:500px" [label] = "'Request msg'" [inputType]="'textarea'"  [(jData)]="gdp.request_msg"></json-input>

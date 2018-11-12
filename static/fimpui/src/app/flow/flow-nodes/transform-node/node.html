@@ -29,34 +29,16 @@
             <variable-selector [label]="'Left variable'" [variableName]="node.Config.LVariableName" [isGlobal]="node.Config.IsLVariableGlobal" [flowId]="flowId" (onSelect)="lVariableSelected($event)" ></variable-selector>
           </div>
           <div *ngIf="node.Config.TransformType=='calc'">
-            <mat-form-field style="width: 80px">
-              <mat-select    style="width: 80px" placeholder="Operation"[(ngModel)]="node.Config.Operation" >
-                  <mat-option value = "flip">flip</mat-option>
-                  <mat-option value = "add">plus</mat-option>
-                  <mat-option value = "subtract">minus</mat-option>
-                  <mat-option value = "multiply">multiply</mat-option>
-                  <mat-option value = "divide">divide</mat-option>
-                  <mat-option value = "to_bool">to binary</mat-option>
-              </mat-select>
+            <mat-form-field class="node-transition-field" style="width: 400px">
+              <input matInput [(ngModel)]="node.Config.Expression" placeholder="Expression" >
             </mat-form-field>
-          </div>
-          <div *ngIf="node.Config.TransformType=='calc'">
-            <mat-form-field style="width: 200px">
-              <mat-select    style="width: 200px" placeholder="Right value type"[(ngModel)]="node.Config.RType" >
-                <mat-option value = "var">Variable</mat-option>
-                <mat-option value = "const">Constant</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div *ngIf="node.Config.TransformType=='calc' && node.Config.RType=='var' ">
-            <variable-selector [label]="'Right variable'" [variableName]="node.Config.RVariableName" [isGlobal]="node.Config.IsRVariableGlobal" [flowId]="flowId" (onSelect)="rVariableSelected($event)" ></variable-selector>
           </div>
       </div>
       <div *ngIf="node.Config.RType=='const' &&  node.Config.TransformType=='calc' ">
 
          <span [ngSwitch]="node.Config.RValue.ValueType">
               <span *ngSwitchCase="'string'">
-                  <mat-form-field class="node-transition-field">
+                  <mat-form-field cHeadersVariableNamelass="node-transition-field">
                       <input matInput [(ngModel)]="node.Config.RValue.Value" placeholder=" Right value" >
                   </mat-form-field>
               </span>
@@ -181,7 +163,7 @@
             <mat-form-field class="node-transition-field" style="margin-right: 5px;width: 250px">
               <input matInput type="text" [(ngModel)]="vmap.Path" placeholder="Path" >
             </mat-form-field>
-           <variable-selector  [label]="'Target variable'" [variableName]="vmap.TargetVariableName" [isGlobal]="vmap.IsTargetVariableGlobal" [flowId]="flowId" (onSelect)="targetVariableSelected($event,vmap)" ></variable-selector>
+           <variable-selector  [label]="'Target variable'" [variableName]="vmap.TargetVariableName"   [inMemory]="vmap.InMemory"  [isGlobal]="vmap.IsTargetVariableGlobal" [flowId]="flowId" (onSelect)="targetVariableSelected($event,vmap)" ></variable-selector>
            <button style="margin-left: 20px;max-height: 40px;" mat-raised-button (click)="deleteXPathRecord(vmap)" >Delete</button>
          </div>
          <button mat-raised-button (click)="addXPathMapping(node)" >Add </button>

@@ -5,6 +5,9 @@
 </nav>
 <br/>
 
+<div id="firebaseui-auth-container"></div>
+
+<div> Hi {{fire.user.displayName}} </div>
 
 <mat-list >
 
@@ -13,7 +16,6 @@
   <h3 mat-line style="font-size: 21px">  {{flow.Name}} </h3>
   <p mat-line> Description : {{flow.Description}} </p>
   <p mat-line> Updated at  : {{flow.UpdatedAtDate}} </p>
-
   <p mat-line style="margin-top: 8px">
     <mat-chip-list style="margin:10px">
       <mat-chip class="open-chip" style="margin-bottom: 5px" (click)="importFlow(flow)">Install</mat-chip>
@@ -25,7 +27,11 @@
 </ng-container>
 </mat-list>
 
+<button mat-raised-button (click)="signOut()" color="primary" >Logout</button>
 
+<div id="sign-in-status"></div>
+<div id="sign-in"></div>
+<div id="account-details"></div>
 
 
 

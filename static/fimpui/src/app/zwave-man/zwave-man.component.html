@@ -24,6 +24,7 @@
             <th style="width:300px">Product name</th>
             <th style="width: 300px">Alias</th>
             <th style="width: 75px">Power</th>
+            <th style="width: 50px">Priority</th>
             <th style="width: 70px">Status</th>
             <th >Actions</th></tr> </thead>
           <tbody>
@@ -35,6 +36,9 @@
            <td>
              <mat-icon *ngIf="node.power_source=='ac'" >power</mat-icon>
              <mat-icon *ngIf="node.power_source=='battery'" >battery_std</mat-icon>
+           </td>
+           <td>
+             {{node.priority}}
            </td>
            <td>
                 <mat-icon *ngIf="node.status=='OK'" style="color: #27ae60">done</mat-icon>

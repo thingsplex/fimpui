@@ -36,6 +36,9 @@
               <tr><td><b>Power source:</b></td><td> {{ thing.powerSource }} </td> </tr>
               <tr><td><b>Wakeup interval:</b></td><td> {{ thing.wakeupInterval }} </td> </tr>
               <tr><td><b>Security:</b></td><td> {{ thing.security }} </td> </tr>
+
+              <tr *ngIf="thing.techSpecificProps"><td><b>Delivery priority:</b></td><td> {{ thing.techSpecificProps.delivery_priority }} </td> </tr>
+
           </table>
            
           <button mat-raised-button style="margin-top: 15px;" (click)="getReport(thing.commTech,thing.address)">Sync with adapter</button>

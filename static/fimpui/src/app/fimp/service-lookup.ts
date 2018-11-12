@@ -18,7 +18,8 @@ const FIMP_SERVICE_LIST = [
     {"name":"door_lock","label":"Doorlock","icon":""},
     {"name":"color_ctrl","label":"Color control","icon":""},
     {"name":"scene_ctrl","label":"Scene controller","icon":""},
-    {"name":"fan_ctrl","label":"Fan speed and modes","icon":""}
+    {"name":"fan_ctrl","label":"Fan speed and modes","icon":""},
+    {"name":"siren_ctrl","label":"Siren control","icon":""}
 
 ];
 

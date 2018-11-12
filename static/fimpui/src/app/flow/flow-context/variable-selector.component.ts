@@ -11,6 +11,7 @@ export class ContextVariable {
   Type : string;
   Value : any;
   isGlobal : boolean;
+  InMemory:boolean;
 }
 
 @Component({
@@ -21,6 +22,7 @@ export class ContextVariable {
 export class VariableSelectorComponent implements OnInit {
     @Input() variableName : string;
     @Input() isGlobal : boolean;
+    @Input() inMemory : boolean;
     @Input() label : string;
     @Input() flowId:string;
     @Output() onSelect = new EventEmitter<ContextVariable>();
@@ -51,6 +53,11 @@ export class VariableSelectorComponent implements OnInit {
           v.Name  = result[key].Name
           v.Type = result[key].Variable.ValueType;
           v.Value = result[key].Variable.Value;
+          if (result[key].InMemory != undefined) {
+            v.InMemory = result[key].InMemory
+          }else {
+            v.InMemory = false
+          }
           this.vars.push(v);
           if ( v.Name == this.variableName)
             isVariableInList = true ;
@@ -60,6 +67,7 @@ export class VariableSelectorComponent implements OnInit {
           v.isGlobal = false
           v.Name  = this.variableName;
           v.Type = this.variableType;
+          v.InMemory = this.inMemory;
           this.vars.push(v);
         }
 
@@ -80,6 +88,7 @@ export class VariableSelectorComponent implements OnInit {
         v.Name  = result[key].Name;
         v.Type = result[key].Variable.ValueType;
         v.Value = result[key].Variable.Value;
+        v.InMemory = result[key].InMemory;
         this.vars.push(v);
         if (v.isGlobal == this.isGlobal && v.Name == this.variableName)
           isVariableInList = true ;
@@ -89,6 +98,7 @@ export class VariableSelectorComponent implements OnInit {
           v.isGlobal = false
           v.Name  = this.variableName;
           v.Type = this.variableType;
+          v.InMemory = this.inMemory;
           this.vars.push(v);
         }
       }
@@ -134,6 +144,7 @@ export class VariableSelectorComponent implements OnInit {
       event.Name = this.variableName;
       event.Type = this.variableType
       event.isGlobal = this.isGlobal;
+      event.InMemory = this.inMemory;
 
      if(this.variableName=="") {
        var event = new ContextVariable();

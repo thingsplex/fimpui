@@ -10,8 +10,8 @@
     <mat-input-container *ngIf="node.Config.ExecType=='cmd' || node.Config.ExecType=='sh-cmd' " style="width: 400px">
       <input matInput [(ngModel)]="node.Config.Command" placeholder="Command">
     </mat-input-container>
-    <mat-input-container *ngIf="node.Config.ExecType=='python'"  style="width: 400px">
-      <textarea mat-autosize  minRows="6" matInput [(ngModel)]="node.Config.ScriptBody" > </textarea>
+    <mat-input-container *ngIf="node.Config.ExecType=='python'"  style="width: 600px">
+      <textarea mat-autosize wrap="off" minRows="6" matInput [(ngModel)]="node.Config.ScriptBody" > </textarea>
     </mat-input-container>
   </div>
  <variable-selector [label]="'Input variable'" [variableName]="node.Config.InputVariableName" [isGlobal]="node.Config.IsInputVariableGlobal" [flowId]="flowId" (onSelect)="inputVariableSelected($event)" ></variable-selector>

@@ -15,4 +15,5 @@ export class TableContextRec {
   UpdatedAt:string;
   Value:any;
   ValueType:string;
+  InMemory:boolean;
 }

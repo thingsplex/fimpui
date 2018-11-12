@@ -28,10 +28,11 @@ export class TransformNodeComponent implements OnInit {
         "TargetVariableName": "",
         "TargetVariableType": "",
         "IsTargetVariableGlobal": false,
+        "IsTargetVariableInMemory":true,
         "TransformType": "calc",
         "Rtype": "var", "IsRVariableGlobal": false,
         "IsLVariableGlobal": false,
-        "Operation": "add",
+        "Expression": "",
         "RValue": {"ValueType": "int", "Value": 0},
         "RVariableName": "",
         "LVariableName": "",
@@ -64,12 +65,15 @@ export class TransformNodeComponent implements OnInit {
     vmap.TargetVariableName = cvar.Name;
     vmap.TargetVariableType = cvar.Type;
     vmap.IsTargetVariableGlobal = cvar.isGlobal;
+    vmap.IsTargetVariableInMemory = cvar.InMemory;
   }
 
   resultVariableSelected(cvar:ContextVariable) {
     this.node.Config.TargetVariableName = cvar.Name;
     this.node.Config.TargetVariableType = cvar.Type;
     this.node.Config.IsTargetVariableGlobal = cvar.isGlobal;
+    this.node.Config.IsTargetVariableInMemory = cvar.InMemory;
+
   }
 
   lVariableSelected(cvar:ContextVariable) {

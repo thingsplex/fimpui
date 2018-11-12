@@ -1,4 +1,4 @@
-version="0.8.3"
+version="0.8.6"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -16,7 +16,7 @@ build-go-amd:
 	GOOS=linux GOARCH=amd64 go build -o fimpui
 
 build-tsdb-loader-osx:
-	cd cd process/tsdb/cli/;go build -o fimp-inxlux-loader
+	cd  process/tsdb/cli/;go build -o fimp-inxlux-loader
 
 clean:
 	-rm -R debian/opt/fimpui/static/fhcore/*
