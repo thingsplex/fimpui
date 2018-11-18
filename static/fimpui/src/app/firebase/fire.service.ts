@@ -11,7 +11,7 @@ var fireConfig = {
   projectId: "thingsplex",
 };
 
-firebase.initializeApp(fireConfig);
+
 @Injectable()
 export class FireService{
   // Get a reference to the storage service, which is used to create references in your storage bucket
@@ -19,10 +19,12 @@ export class FireService{
   private db : any;
   private storage : any;
   private firebaseAuthUi:any;
-  public user:any;
+  // public user:any;
 
   constructor() {
+
     console.log("Firebase service initialized")
+    firebase.initializeApp(fireConfig);
     this.db = firebase.firestore();
     this.storage = firebase.app().storage();
     // Disable deprecated features
@@ -52,38 +54,73 @@ export class FireService{
 
   }
 
-  public initFirebaseUi(){
-    var uiConfig = {
-      // signInSuccessUrl: 'http://localhost:4200/fimp/flow/overview',
-      signInOptions: [
-        // Leave the lines as is for the providers you want to offer your users.
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-        firebase.auth.GithubAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-        firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
-      ],
-      // tosUrl and privacyPolicyUrl accept either url string or a callback
-      // function.
-      // Terms of service url/callback.
-      signInFlow:"popup",
-      tosUrl: '<your-tos-url>',
-      // Privacy policy url/callback.
-      privacyPolicyUrl: function() {
-        window.location.assign('http://localhost:4200/fimp/flow/overview');
-      }
-    };
+  // public initFirebaseUi(){
+  //   var uiConfig = {
+  //     // signInSuccessUrl: 'http://localhost:4200/fimp/flow/overview',
+  //     signInOptions: [
+  //       // Leave the lines as is for the providers you want to offer your users.
+  //       firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+  //       firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+  //       firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+  //       firebase.auth.GithubAuthProvider.PROVIDER_ID,
+  //       firebase.auth.EmailAuthProvider.PROVIDER_ID,
+  //       firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+  //       firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+  //     ],
+  //     // tosUrl and privacyPolicyUrl accept either url string or a callback
+  //     // function.
+  //     // Terms of service url/callback.
+  //     signInFlow:"popup",
+  //     callbacks: {
+  //       signInSuccess: () => false,
+  //     },
+  //     tosUrl: '<your-tos-url>',
+  //     // Privacy policy url/callback.
+  //     privacyPolicyUrl: function() {
+  //       window.location.assign('http://localhost:4200/fimp/flow/overview');
+  //     }
+  //   };
+  //
+  //   if (this.firebaseAuthUi == undefined) {
+  //     // Initialize the FirebaseUI Widget using Firebase.
+  //     this.firebaseAuthUi = new firebaseui.auth.AuthUI(firebase.auth());
+  //   }
+  //
+  //   // The start method will wait until the DOM is loaded.
+  //   this.firebaseAuthUi.start('#firebaseui-auth-container', uiConfig);
+  //
+  // }
 
-    if (this.firebaseAuthUi == undefined) {
-      // Initialize the FirebaseUI Widget using Firebase.
-      this.firebaseAuthUi = new firebaseui.auth.AuthUI(firebase.auth());
-    }
+  public signIn(email:string , password:string) {
+    console.log("User signed in with email = "+email);
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode === 'auth/wrong-password') {
+          alert('Wrong password.');
+        } else {
+          alert(errorMessage);
+        }
+        console.log(error);
+      });
+  }
 
-    // The start method will wait until the DOM is loaded.
-    this.firebaseAuthUi.start('#firebaseui-auth-container', uiConfig);
-
+  public signUp(email:string , password:string) {
+    console.log("User signed in with email = "+email);
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode === 'auth/weak-password') {
+          alert('Wrong password.');
+        } else {
+          alert(errorMessage);
+        }
+        console.log(error);
+      });
   }
 
   public checkUserAuth() {
@@ -92,45 +129,9 @@ export class FireService{
     return firebase.auth().currentUser
   }
 
-  public configureUserAuthListener() {
 
-    firebase.auth().onAuthStateChanged((user)=> {
-      if (user) {
-        // User is signed in.
-        this.user = user;
-        var displayName = user.displayName;
-        var email = user.email;
-        var emailVerified = user.emailVerified;
-        var photoURL = user.photoURL;
-        var uid = user.uid;
-        var phoneNumber = user.phoneNumber;
-        var providerData = user.providerData;
-        // this.firebaseAuthUi.delete();
-        user.getIdToken().then(function(accessToken) {
-          document.getElementById('sign-in-status').textContent = 'Signed in';
-          document.getElementById('sign-in').textContent = 'Sign out';
-          document.getElementById('account-details').textContent = JSON.stringify({
-            displayName: displayName,
-            email: email,
-            emailVerified: emailVerified,
-            phoneNumber: phoneNumber,
-            photoURL: photoURL,
-            uid: uid,
-            accessToken: accessToken,
-            providerData: providerData
-          }, null, '  ');
-        });
-      } else {
-        // User is signed out.
-        this.initFirebaseUi()
-        document.getElementById('sign-in-status').textContent = 'Signed out';
-        document.getElementById('sign-in').textContent = 'Sign in';
-        document.getElementById('account-details').textContent = 'null';
-      }
-    }, function(error) {
-      console.log(error);
-    });
-  }
+
+
 
   public signOut() {
     firebase.auth().signOut()

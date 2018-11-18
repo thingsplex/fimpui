@@ -517,7 +517,7 @@ func main() {
 
 	index := "static/fimpui/dist/index.html"
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:4200", "http:://localhost:8082"},
+		AllowOrigins: []string{"http://localhost:4200","http://127.0.0.1:4200", "http:://localhost:8082"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
 	//e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {

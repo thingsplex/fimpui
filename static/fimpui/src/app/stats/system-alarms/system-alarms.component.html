@@ -6,12 +6,6 @@
 </nav>
 
 <br/>
-<div style="margin-bottom: 10px;margin-left: 15px">
-  <mat-radio-group [(ngModel)]="mode" (change)="onModeChange($event)">
-    <mat-radio-button class="example-margin" value="all">All devices</mat-radio-button>
-    <mat-radio-button class="example-margin" value="faults">Faults</mat-radio-button>
-  </mat-radio-group>
-</div>
 
 <div class="table-container mat-elevation-z8">
   <div class="example-header">
@@ -28,39 +22,79 @@
       <mat-header-cell  *cdkHeaderCellDef> Name </mat-header-cell>
       <mat-cell  *cdkCellDef="let row"> {{row.name}} </mat-cell>
     </ng-container>
-    <ng-container cdkColumnDef="service">
-      <mat-header-cell *cdkHeaderCellDef mat-sort-header>  Service </mat-header-cell>
-      <mat-cell *cdkCellDef="let row" > {{row.serv}} </mat-cell>
+    <ng-container cdkColumnDef="device_type">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>  Device type </mat-header-cell>
+      <mat-cell *cdkCellDef="let row" > {{row.device_type}} </mat-cell>
     </ng-container>
-    <ng-container cdkColumnDef="address">
+    <ng-container cdkColumnDef="vinc_dev_id">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Vinc dev id</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.vinc_dev_id}} </mat-cell>
+    </ng-container>
+    <ng-container cdkColumnDef="tech">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Tech</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.tech}} </mat-cell>
+    </ng-container>
+    <ng-container cdkColumnDef="dev_address">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Address</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.device_address}} </mat-cell>
+      <mat-cell *cdkCellDef="let row">{{row.dev_address}} </mat-cell>
     </ng-container>
+    <ng-container cdkColumnDef="power_source">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Power source</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.power_source}} </mat-cell>
+    </ng-container>
+    <ng-container cdkColumnDef="prod_hash">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Prod hash</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.prod_hash}} </mat-cell>
+    </ng-container>
+
+    <ng-container cdkColumnDef="wakeup_int">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Wakeup int</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.wakeup_int}} </mat-cell>
+    </ng-container>
+
     <ng-container cdkColumnDef="status">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Status</mat-header-cell>
       <mat-cell *cdkCellDef="let row">{{row.status}} </mat-cell>
     </ng-container>
-    <ng-container cdkColumnDef="event">
-      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Event</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.description}} </mat-cell>
+
+    <ng-container cdkColumnDef="mon_op_status">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Op status</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.mon_op_status}} </mat-cell>
     </ng-container>
-    <ng-container cdkColumnDef="power-source">
-      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Power source</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.power_source}} </mat-cell>
+
+    <ng-container cdkColumnDef="mon_type">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Monit. type</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.mon_type}} </mat-cell>
     </ng-container>
-    <ng-container cdkColumnDef="last-contact">
+
+    <ng-container cdkColumnDef="last_contact">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last contact</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.last_wakeup}} </mat-cell>
+      <mat-cell *cdkCellDef="let row">{{row.last_contact| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
     </ng-container>
 
-    <ng-container cdkColumnDef="is-smoke-sensor">
-      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Is smoke sensor</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.is_smoke_sensor}} </mat-cell>
+    <ng-container cdkColumnDef="last_wakeup">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last wakeup</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.last_wakeup| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
     </ng-container>
 
-    <ng-container cdkColumnDef="trans-nr">
-      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Trans. nr.</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.transmission_nr}} </mat-cell>
+    <ng-container cdkColumnDef="last_failure">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last failure</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.last_failure| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+    </ng-container>
+
+    <ng-container cdkColumnDef="last_recovery">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last recovery</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.last_recovery| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+    </ng-container>
+
+    <ng-container cdkColumnDef="last_ping">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last ping</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.last_ping| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+    </ng-container>
+
+    <ng-container cdkColumnDef="last_notify">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last notify</mat-header-cell>
+      <mat-cell *cdkCellDef="let row">{{row.last_notify| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
     </ng-container>
 
     <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>

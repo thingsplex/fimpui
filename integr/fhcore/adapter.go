@@ -67,7 +67,7 @@ func (mg *VinculumAdapter) onMqttMessage(topic string, addr *fimpgo.Address, iot
 	}
 
 }
-
+//Message: sending {"msg":{"data":{"cmd":"set","component":"house","id":null,"param":{"fimp":true,"learning":null,"mode":"home","time":"2018-11-06T07:57:22Z","uptime":185822}},"dst":"clients","type":"notify"},"ver":"sevenOfNine"}
 func (mg *VinculumAdapter) dispatchVinculumMessages() {
 	log.Info("<VincAd> Starting Vinculum dispatcher")
 	go func() {

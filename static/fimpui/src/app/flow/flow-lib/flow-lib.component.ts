@@ -18,20 +18,20 @@ export class FlowLibComponent implements OnInit {
   // private itemsCollection: AngularFirestoreCollection<Item>;
   items: Observable<Item[]>;
   flows: any[];
-  constructor(public fire:FireService, private http : Http) {
+  constructor(public fire:FireService, private http : Http,public dialog: MatDialog) {
     // this.flowSourceText = JSON.stringify(data, null, 2)
     // this.itemsCollection = afs.collection<Item>('items');
     // this.items = this.itemsCollection.valueChanges();
     this.flows = [];
   }
   ngOnInit() {
-    this.fire.configureUserAuthListener();
+    // this.fire.configureUserAuthListener();
     this.loadListOfFlows();
-    if (this.fire.checkUserAuth()){
-
-    }else {
-      // this.fire.initFirebaseUi();
-    }
+    // if (this.fire.checkUserAuth()){
+    //
+    // }else {
+    //   // this.fire.initFirebaseUi();
+    // }
   }
   loadListOfFlows() {
     this.fire.getFlows().then((querySnapshot) => {
@@ -47,9 +47,24 @@ export class FlowLibComponent implements OnInit {
 
         console.dir(prepData);
         this.flows.push(prepData)
-      });
+      })
+    }).catch((error) => {
+      console.error("Error Loading documents: ", error);
+      // this.showSignInDialog()
     });
   }
+
+  // showSignInDialog() {
+  // let dialogRef = this.dialog.open(SignInDialog,{
+  //   width: '450px',
+  // });
+  // dialogRef.afterClosed().subscribe(result => {
+  //   if (result)
+  //   {
+  //
+  //   }
+  // });
+  // }
 
   deleteFlow(docId) {
     this.fire.deleteFlow(docId);

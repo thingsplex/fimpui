@@ -36,13 +36,15 @@ import { IkeaManComponent } from './ikea-man/ikea-man.component';
 import { ZigbeeManComponent } from './zigbee-man/zigbee-man.component';
 import { SystemsManComponent } from './systems-man/systems-man.component';
 import { TimelineComponent, MsgDetailsDialog } from './timeline/timeline.component';
+
 import { ReportComponent } from './report/report.component';
 import { FlightRecorderComponent } from './flight-recorder/flight-recorder.component';
 import { FimpService} from './fimp/fimp.service';
-import { FireService} from './firebase/fire.service';
+
 import { ThingsDbService } from './things-db.service';
 import { ConfigsService } from './configs.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+
 // import { AngularFireModule } from '@angular/fire';
 // import { AngularFirestoreModule } from '@angular/fire/firestore';
 // import { ThingIntfUiComponent , KeysPipe }from './thing-intf-ui/thing-intf-ui.component'
@@ -59,6 +61,8 @@ import { FlowModule} from './flow/flow.module';
 import { StatsModule} from './stats/stats.module';
 import { RegistryModule} from './registry/registry.module';
 import {environment} from "../environments/environment";
+import {JsonInputComponent} from "./flow/ui-elements/json-input.component";
+import {FireService} from "./firebase/fire.service";
 
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -113,6 +117,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     ZigbeeManComponent,
     SystemsManComponent,
     AddDeviceDialog,
+
     RemoveDeviceDialog,
     PingDeviceDialog,
     TimelineComponent,
@@ -169,7 +174,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     GaugeModule.forRoot()
 
   ],
-  providers: [FimpService,ThingsDbService,FireService,ConfigsService,{
+  providers: [FimpService,ThingsDbService,ConfigsService,FireService,{
     // Provider for APP_INITIALIZER
     provide: APP_INITIALIZER,
     useFactory: startupServiceFactory,

@@ -1,15 +1,71 @@
+
+.table-container {
+  padding: 5px;
+  min-width: 2200px;
+}
+
 .mat-column-name {
     flex: 0 0 200px;
   }
-.mat-column-service {
+.mat-column-device_type {
+    flex: 0 0 80px;
+}
+.mat-column-vinc_dev_id {
     flex: 0 0 100px;
 }
-.mat-column-address {
-    flex: 0 0 100px;
+.mat-column-tech {
+    flex: 0 0 70px;
 }
-.mat-column-event {
-    flex: 0 0 150px;
+
+.mat-column-dev_address {
+  flex: 0 0 70px;
 }
-.mat-column-last-contact {
-    flex: 0 0 250px;
+
+.mat-column-wakeup_int {
+  flex: 0 0 70px;
+}
+
+
+.mat-column-status {
+  flex: 0 0 70px;
+}
+
+
+.mat-column-power_source {
+  flex: 0 0 90px;
+}
+
+.mat-column-mon_op_status {
+  flex: 0 0 90px;
+}
+
+.mat-column-mon_type {
+  flex: 0 0 90px;
+}
+
+.mat-column-prod_hash {
+  flex: 0 0 170px;
+}
+
+.mat-column-last_contact {
+    flex: 0 0 170px;
+}
+
+.mat-column-last_wakeup {
+  flex: 0 0 170px;
+}
+.mat-column-last_failure {
+  flex: 0 0 170px;
+}
+
+.mat-column-last_recovery {
+  flex: 0 0 170px;
+}
+
+.mat-column-last_ping {
+  flex: 0 0 170px;
+}
+
+.mat-column-last_notify {
+  flex: 0 0 170px;
 }

@@ -6,7 +6,7 @@ require (
 	github.com/Sereal/Sereal v0.0.0-20180905114147-563b78806e28 // indirect
 	github.com/Sirupsen/logrus v1.0.6
 	github.com/alivinco/fimpgo v1.1.0
-	github.com/alivinco/tpflow v0.10.4-0.20181111175742-7cb0226b0f00
+	github.com/alivinco/tpflow v0.10.4-0.20181113180842-551a4957ba40
 	github.com/asdine/storm v2.1.2+incompatible
 	github.com/buger/jsonparser v0.0.0-20180910192245-6acdf747ae99
 	github.com/futurehomeno/vinculumgo v0.0.2 // indirect
