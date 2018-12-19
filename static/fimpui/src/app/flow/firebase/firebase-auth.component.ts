@@ -43,7 +43,7 @@ import * as firebase from "firebase";
 
 @Component({
   selector: 'firebase-auth-check',
-  template:'<button mat-button (click)="fire.signOut()" >Sign out</button>',
+  template:'<button mat-button (click)="signOut()" >Sign out</button>',
 })
 export class FirebaseAuthCheckComponent{
   private authState:string;
@@ -104,6 +104,9 @@ export class FirebaseAuthCheckComponent{
     });
   }
 
+  signOut(){
+    this.fire.signOut();
+  }
 
   showSignInDialog() {
     let dialogRef = this.dialog.open(SignInDialog,{

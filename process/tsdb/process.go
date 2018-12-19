@@ -3,6 +3,7 @@ package tsdb
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -52,6 +53,8 @@ func (pr *Process) Init() error {
 		log.Fatalln("Error: ", err)
 		return err
 	}
+
+
 	// Creating database
 	log.Info("<tsdb> Setting up database")
 	q := influx.NewQuery(fmt.Sprintf("CREATE DATABASE %s", pr.Config.InfluxDB), "", "")
@@ -59,7 +62,7 @@ func (pr *Process) Init() error {
 		log.Infof("<tsdb> Database %s was created with status :%s", pr.Config.InfluxDB, response.Results)
 	} else {
 		pr.LastError = "InfluxDB is not reachable .Check connection parameters."
-		return err
+		pr.State = "INITIALIZED_WITH_ERRORS"
 	}
 	// Setting up retention policies
 	log.Info("Setting up retention policies")
@@ -71,14 +74,15 @@ func (pr *Process) Init() error {
 		if response, err := pr.influxC.Query(q); err == nil && response.Error() == nil {
 			log.Infof("<tsdb> Retention policy %s was created with status :%s", mes.RetentionPolicyName, response.Results)
 		} else {
-			log.Errorf("<tsdb> Configuration of retention policy %s failed with status : %s ", mes.RetentionPolicyName, response.Error())
+			log.Errorf("<tsdb> Configuration of retention policy %s failed with status : %s ", mes.RetentionPolicyName, err.Error())
+			pr.State = "INITIALIZED_WITH_ERRORS"
 		}
 	}
 
 	pr.batchPoints = make(map[string]influx.BatchPoints)
 	err = pr.InitBatchPoint("")
 	if err != nil {
-		log.Fatalln("Error: ", err)
+		log.Error("<tsdb> Can't init batch points . Error: ", err)
 	}
 
 	log.Info("<tsdb> DB initialization completed.")
@@ -87,7 +91,10 @@ func (pr *Process) Init() error {
 	pr.mqttTransport = fimpgo.NewMqttTransport(pr.Config.MqttBrokerAddr,pr.Config.MqttClientID,pr.Config.MqttBrokerUsername, pr.Config.MqttBrokerPassword,true,1,1)
 	pr.mqttTransport.SetMessageHandler(pr.OnMessage)
 	log.Info("<tsdb> MQTT adapter initialization completed.")
-	pr.State = "INITIALIZED"
+	if pr.State == "INIT_FAILED" {
+		pr.State = "INITIALIZED"
+	}
+	log.Info("<tsdb> the process init state =",pr.State )
 	return nil
 }
 
@@ -290,7 +297,7 @@ func (pr *Process) InitBatchPoint(bpName string) error {
 }
 
 // WriteIntoDb - inserts record into db
-func (pr *Process) WriteIntoDb() {
+func (pr *Process) WriteIntoDb() error {
 	// Mutex is needed to fix condition when the function is invoked by timer and batch size almost at the same time
 	defer func() {
 		pr.writeMutex.Unlock()
@@ -305,14 +312,26 @@ func (pr *Process) WriteIntoDb() {
 		var err error
 		err = pr.influxC.Write(pr.batchPoints[bpKey])
 		if err != nil {
-			log.Error("<tsdb> Batch write error: ", err)
+
+			if strings.Contains(err.Error(),"unable to parse") {
+				log.Error("<tsdb> Batch write error , unable to parse packet.Error: ", err)
+			}else {
+				pr.State = "LOST_CONNECTION"
+				log.Error("<tsdb> Batch write error , batch is dropped.Changing state to LOST_CONNECTION ", err)
+			}
+
+		}else {
+			if pr.State != "RUNNING" {
+				pr.State = "RUNNING"
+			}
 		}
 		err = pr.InitBatchPoint(bpKey)
 
 		if err != nil {
-			log.Fatalln("Error: ", err)
+			log.Error("<tsdb> Batch init error , batch is dropped: ", err)
 		}
 	}
+	return nil
 }
 
 // Start starts the process by starting MQTT adapter ,
@@ -320,7 +339,7 @@ func (pr *Process) WriteIntoDb() {
 func (pr *Process) Start() error {
 	log.Info("<tsdb> Starting process...")
 	// try to initialize process first if current state is not INITIALIZED
-	if pr.State == "INIT_FAILED" || pr.State == "LOADED" {
+	if pr.State == "INIT_FAILED" || pr.State == "LOADED" || pr.State == "INITIALIZED_WITH_ERRORS" {
 		if err := pr.Init(); err != nil {
 			return err
 		}
@@ -333,13 +352,15 @@ func (pr *Process) Start() error {
 	}()
 	err := pr.mqttTransport.Start()
 	if err != nil {
-		log.Fatalln("Error: ", err)
+		log.Error("Error: ", err)
 		return err
 	}
 	for _, selector := range pr.Config.Selectors {
 		pr.mqttTransport.Subscribe(selector.Topic)
 	}
-	pr.State = "RUNNING"
+	if pr.State == "INITIALIZED"{
+		pr.State = "RUNNING"
+	}
 	log.Info("<tsdb> Process started. State = RUNNING ")
 	return nil
 

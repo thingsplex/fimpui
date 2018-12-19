@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/alivinco/fimpgo"
+	"github.com/alivinco/thingsplex/api"
+	"github.com/alivinco/tpflow/api/client"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -15,14 +18,10 @@ import (
 	"github.com/alivinco/thingsplex/integr/mqtt"
 	"github.com/alivinco/thingsplex/integr/zwave"
 	"github.com/alivinco/thingsplex/model"
-	"github.com/alivinco/thingsplex/process"
 	"github.com/alivinco/thingsplex/process/tsdb"
 	"github.com/alivinco/thingsplex/statsdb"
-	flow "github.com/alivinco/tpflow/flow"
-	fmodel "github.com/alivinco/tpflow"
-	"github.com/alivinco/tpflow/registry"
-	fapi"github.com/alivinco/tpflow/api"
 	"github.com/alivinco/thingsplex/utils"
+	"github.com/alivinco/tpflow/registry"
 	"github.com/koding/websocketproxy"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -97,45 +96,17 @@ func main() {
 
 	SetupLog(configs.LogFile, configs.LogLevel)
 	log.Info("--------------Starting FIMPUI----------------")
+	log.Info("---------------------------------------------")
 
 	//---------THINGS REGISTRY-------------
 	log.Info("<main>-------------- Starting Things registry ")
 	thingRegistryStore := registry.NewThingRegistryStore(configs.RegistryDbFile)
 	log.Info("<main> Started ")
 	//-------------------------------------
-	//---------FLOW------------------------
 
-	fconfig := fmodel.Configs{
-		MqttServerURI:configs.MqttServerURI,
-		MqttClientIdPrefix:configs.MqttClientIdPrefix,
-		MqttUsername: configs.MqttUsername,
-		MqttPassword:configs.MqttPassword,
-		ContextStorageDir:configs.ContextStorageDir,
-		FlowStorageDir:configs.FlowStorageDir,
-		ConnectorStorageDir:configs.ConnectorStorageDir,
-		MqttTopicGlobalPrefix:configs.MqttTopicGlobalPrefix,
-		RegistryDbFile:configs.RegistryDbFile,
-		LogFile:configs.LogFile,
-		LogLevel:configs.LogLevel,
-	}
-	log.Info("<main> Starting Flow manager")
-	flowManager, err := flow.NewManager(fconfig)
-	if err != nil {
-		log.Error("Can't Init Flow manager . Error :", err)
-	}
-	flowManager.GetConnectorRegistry().AddConnection("thing_registry","thing_registry","thing_registry",thingRegistryStore)
-	err = flowManager.LoadAllFlowsFromStorage()
-	if err != nil {
-		log.Error("Can't load Flows from storage . Error :", err)
-	}
 	log.Info("<main> Started")
 	//-------------------------------------
 
-	//---------REGISTRY INTEGRATION--------
-	log.Info("<main>-------------- Starting MqttIntegration ")
-	mqttRegInt := registry.NewMqttIntegration(&fconfig, thingRegistryStore)
-	mqttRegInt.InitMessagingTransport()
-	log.Info("<main> Started ")
 	//---------STATS STORE-----------------
 	log.Info("<main>-------------- Stats store ")
 	statsStore := statsdb.NewStatsStore("stats.db")
@@ -184,12 +155,6 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
-	fapi.NewContextApi(flowManager.GetGlobalContext(),e)
-	fapi.NewFlowApi(flowManager,e)
-	fapi.NewRegistryApi(thingRegistryStore,e)
-
-
 
 	// Uncomment the line below to enable Time Series exporter.
 	tsdb.Boot(configs,e,thingRegistryStore)
@@ -458,10 +423,6 @@ func main() {
 
 	})
 
-
-
-
-
 	//e.POST("/fimp/api/registry/service-fields", func(c echo.Context) error {
 	//	// The service update only selected fields and not entire object
 	//	service := registry.Service{}
@@ -505,7 +466,7 @@ func main() {
 	})
 
 	e.GET("/fimp/vinculum/import_to_registry", func(c echo.Context) error {
-		process.LoadVinculumDeviceInfoToStore(thingRegistryStore, vinculumClient,mqttRegInt)
+		//process.LoadVinculumDeviceInfoToStore(thingRegistryStore, vinculumClient,mqttRegInt)
 		return c.NoContent(http.StatusOK)
 	})
 
@@ -514,6 +475,12 @@ func main() {
 		runtime.ReadMemStats(&memStats)
 		return c.JSON(http.StatusOK,memStats)
 	})
+
+	sClient := fimpgo.NewSyncClient(nil)
+	sClient.Connect(configs.MqttServerURI,"fimpui_tpflow_client","","",true,1,1)
+
+	tpflowApi := client.NewApiRemoteClient(sClient,"1")
+	api.RegisterTpFlowApi(e,tpflowApi)
 
 	index := "static/fimpui/dist/index.html"
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -526,6 +493,7 @@ func main() {
 	//	}
 	//	return false, nil
 	//}))
+
 	e.GET("/mqtt", wsUpgrader.Upgrade)
 	e.File("/fimp", index)
 	//e.File("/fhcore", "static/fhcore.html")

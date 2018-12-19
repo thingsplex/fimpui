@@ -6,7 +6,7 @@ require (
 	github.com/Sereal/Sereal v0.0.0-20180905114147-563b78806e28 // indirect
 	github.com/Sirupsen/logrus v1.0.6
 	github.com/alivinco/fimpgo v1.1.0
-	github.com/alivinco/tpflow v0.10.4-0.20181113180842-551a4957ba40
+	github.com/alivinco/tpflow v0.10.4-0.20181219160533-0484222364c2
 	github.com/asdine/storm v2.1.2+incompatible
 	github.com/buger/jsonparser v0.0.0-20180910192245-6acdf747ae99
 	github.com/futurehomeno/vinculumgo v0.0.2 // indirect
@@ -19,7 +19,7 @@ require (
 	github.com/koding/websocketproxy v0.0.0-20180412071414-b8568f354aec
 	github.com/kr/pty v1.1.3 // indirect
 	github.com/labstack/echo v3.2.1+incompatible
-	github.com/labstack/gommon v0.2.7 // indirect
+	github.com/labstack/gommon v0.2.7
 	github.com/magiconair/properties v1.7.6 // indirect
 	github.com/paulhammond/tai64 v0.0.0-20140211175639-01084308b858
 	github.com/pelletier/go-toml v1.1.0 // indirect
