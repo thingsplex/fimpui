@@ -46,6 +46,9 @@
          <div *ngSwitchCase="'evt.setpoint.report'">
           {{ intf.lastValue.val.type}} {{ intf.lastValue.val.temp }}
         </div>
+        <div *ngSwitchCase="'evt.camera.image'">
+          {{ intf.lastValue.val.type}} <img width="600" [src]="_DomSanitizationService.bypassSecurityTrustUrl('data:image/jpeg;base64,'+intf.lastValue.val)"  alt="image" />
+        </div>
         <div *ngSwitchCase="'evt.lock.report'">
           <p>Is secured      = <mat-icon *ngIf="intf.lastValue.val.is_secured" >lock</mat-icon> <mat-icon *ngIf="!intf.lastValue.val.is_secured" >lock_open</mat-icon>  </p>
           <p>Door is closed  = <mat-icon *ngIf="intf.lastValue.val.door_is_closed" >done</mat-icon> <mat-icon *ngIf="!intf.lastValue.val.door_is_closed" >close</mat-icon>   </p>
@@ -86,12 +89,13 @@
         <table class="table-full-width" cellspacing="0">
           <tr>
             <td>
-              <mat-slider #lvlValue thumbLabel  min="0" max="255" step="1" value="0"></mat-slider>
+
+              <mat-slider *ngIf="serv.props.max_lvl" #lvlValue thumbLabel style="width: 350px" min="serv.props.min_lvl" max="serv.props.max_lvl" step="1" value="0"  (change)="cmdLvlSet(lvlValue.value,durationValue.value)"></mat-slider>
+              <mat-slider  *ngIf="!serv.props.max_lvl" #lvlValue thumbLabel style="width: 350px" min="0" max="255" step="1" value="0"  (change)="cmdLvlSet(lvlValue.value,durationValue.value)"></mat-slider>
             </td>
-            <td><mat-input-container class="example-full-width">
+            <td><mat-input-container class="example-full-width" style="width: 50px">
               <input #durationValue matInput placeholder="Duration" type="number" value="0">
             </mat-input-container></td>
-            <td><button mat-raised-button (click)="cmdLvlSet(lvlValue.value,durationValue.value)" >Set</button></td>
           </tr>
           </table>
         </form>

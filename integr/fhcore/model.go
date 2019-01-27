@@ -149,7 +149,7 @@ type House struct {
 	Learning interface{} `json:"learning"`
 	Mode     string      `json:"mode"`
 	Time     time.Time   `json:"time"`
-	Uptime   int         `json:"uptime"`
+	Uptime   int64         `json:"uptime"`
 }
 
 type Room struct {

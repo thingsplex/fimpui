@@ -28,6 +28,7 @@ export function MapJsonToThingObject(val:any):Thing {
     for (let fimpService of val.services ) {
         let service = new Service();
         service.name = fimpService.name;
+        service.alias = fimpService.alias;
         service.address = fimpService.address;
         service.enabled = fimpService.enabled;
         service.groups = fimpService.groups;

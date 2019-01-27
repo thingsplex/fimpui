@@ -49,24 +49,26 @@
         <div *ngFor="let row of thing.services" style="margin: 10px">
             <mat-card class="example-card">
                 <mat-card-header>
-               <mat-card-title><h3>{{row.name}}</h3></mat-card-title>
+               <mat-card-title *ngIf="!row.alias"><h3>{{row.name}}</h3></mat-card-title>
+               <mat-card-title *ngIf="row.alias"><h3>{{row.alias}}({{row.name}})</h3></mat-card-title>
                <mat-card-subtitle>Group : {{row.groups}}</mat-card-subtitle>
                </mat-card-header>
                <mat-card-content>
                <p matLine><b>Address: </b>{{row.address}}</p>
                <p matLine><b>Enabled: </b>{{row.enabled}}</p>
-               <p matLine><b>Secure : </b>{{row.props.is_secure}} <b>Unsecure : </b>{{row.props.is_unsecure}} </p>
-               <p matLine *ngIf="row.props.sup_units"> <b>Supported units:</b> {{row.props.sup_units}} </p>
-               <p matLine *ngIf="row.props.sup_events"><b>Supported events:</b> {{row.props.sup_events}} </p>
-               <p matLine *ngIf="row.props.sup_setpoints"><b>Supported setpoints:</b> {{row.props.sup_setpoints}} </p>
-               <p matLine *ngIf="row.props.sup_states"><b>Supported states:</b> {{row.props.sup_states}} </p>
-               <p matLine *ngIf="row.props.sup_tstates"><b>Supported target states:</b> {{row.props.sup_tstates}} </p>
-               <p matLine *ngIf="row.props.sup_modes"><b>Supported modes:</b> {{row.props.sup_modes}} </p>
-               <p matLine *ngIf="row.props.sup_scenes"><b>Supported scenes:</b> {{row.props.sup_scenes}} </p>
-               <p matLine *ngIf="row.props.sup_components"><b>Supported components:</b> {{row.props.sup_components}} </p>
-               <p  matLine *ngIf="row.props.sup_notiftypes"><b>Supported notif. types:</b> {{row.props.sup_notiftypes}} </p>
-               
-               <mat-expansion-panel *ngIf="row.name=='dev_sys'">
+               <ng-container *ngIf="row.props">
+                 <p matLine><b>Secure : </b>{{row.props.is_secure}} <b>Unsecure : </b>{{row.props.is_unsecure}} </p>
+                 <p matLine *ngIf="row.props.sup_units"> <b>Supported units:</b> {{row.props.sup_units}} </p>
+                 <p matLine *ngIf="row.props.sup_events"><b>Supported events:</b> {{row.props.sup_events}} </p>
+                 <p matLine *ngIf="row.props.sup_setpoints"><b>Supported setpoints:</b> {{row.props.sup_setpoints}} </p>
+                 <p matLine *ngIf="row.props.sup_states"><b>Supported states:</b> {{row.props.sup_states}} </p>
+                 <p matLine *ngIf="row.props.sup_tstates"><b>Supported target states:</b> {{row.props.sup_tstates}} </p>
+                 <p matLine *ngIf="row.props.sup_modes"><b>Supported modes:</b> {{row.props.sup_modes}} </p>
+                 <p matLine *ngIf="row.props.sup_scenes"><b>Supported scenes:</b> {{row.props.sup_scenes}} </p>
+                 <p matLine *ngIf="row.props.sup_components"><b>Supported components:</b> {{row.props.sup_components}} </p>
+                 <p  matLine *ngIf="row.props.sup_notiftypes"><b>Supported notif. types:</b> {{row.props.sup_notiftypes}} </p>
+               </ng-container>
+                 <mat-expansion-panel *ngIf="row.name=='dev_sys'">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
                       More...
@@ -79,7 +81,7 @@
                         <td>{{ intf.type }}</td>
                         <td>{{ intf.msgType }}</td>
                         <td>{{ intf.valueType }}</td>
-                        <td><thing-intf-ui [intf]="intf" [msgType]="intf.msgType" [addr]="row.address" [service]="row.name" > </thing-intf-ui></td>
+                        <td><thing-intf-ui [intf]="intf" [serv]="row" [msgType]="intf.msgType" [addr]="row.address" [service]="row.name" > </thing-intf-ui></td>
                       </tr>
                     </table>
                 
@@ -91,7 +93,7 @@
                    <td>{{ intf.type }}</td>
                    <td>{{ intf.msgType }}</td>
                    <td>{{ intf.valueType }}</td>
-                   <td><thing-intf-ui [intf]="intf" [msgType]="intf.msgType" [addr]="row.address" [service]="row.name" > </thing-intf-ui></td>
+                   <td><thing-intf-ui [intf]="intf" [serv]="row" [msgType]="intf.msgType" [addr]="row.address" [service]="row.name" > </thing-intf-ui></td>
                  </tr>
                </table>
 

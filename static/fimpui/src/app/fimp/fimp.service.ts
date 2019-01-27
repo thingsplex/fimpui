@@ -150,6 +150,10 @@ export class FimpService{
  }
  
  private saveFilteredMessage(fimpMsg : FimpMessage){
+  if (fimpMsg.mtype=="evt.camera.image") {
+    fimpMsg.raw = "content deleted"
+    fimpMsg.val = "content deleted"
+  }
   if (this.isFilteringEnabled) {
     if ( ( (this.fimpFilter.topicFilter== undefined || this.fimpFilter.topicFilter == "") || this.fimpFilter.topicFilter == fimpMsg.topic) && 
         ( (this.fimpFilter.serviceFilter== undefined || this.fimpFilter.serviceFilter == "") || this.fimpFilter.serviceFilter == fimpMsg.service) &&

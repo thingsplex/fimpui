@@ -659,7 +659,7 @@ export class FlowLogDialog {
   flowId : string ;
   mode : string;
   constructor(public dialogRef: MatDialogRef<FlowSourceDialog>,@Inject(MAT_DIALOG_DATA) public data: any,private http : Http) {
-    this.limit = 100000;
+    this.limit = 10;
     this.flowId = data.flowId;
     this.mode = data.mode;
     this.reload();
@@ -667,9 +667,9 @@ export class FlowLogDialog {
   reload(){
     let rurl:string;
     if(this.mode=="flow")
-      rurl = BACKEND_ROOT+'/fimp/api/get-log?limit='+this.limit+"&flowId="+this.flowId;
+      rurl = BACKEND_ROOT+'/fimp/api/flow/get-log?limit='+this.limit+"&flowId="+this.flowId;
     else
-      rurl = BACKEND_ROOT+'/fimp/api/get-log?limit='+this.limit;
+      rurl = BACKEND_ROOT+'/fimp/api/flow/get-log?limit='+this.limit;
 
     this.http
       .get(rurl)

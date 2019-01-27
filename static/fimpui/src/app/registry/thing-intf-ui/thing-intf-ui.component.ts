@@ -1,7 +1,8 @@
 import { Component, OnInit ,Input ,Pipe, PipeTransform } from '@angular/core';
-import { Interface } from "../model";
+import {Interface, Service} from "../model";
 import { FimpService } from 'app/fimp/fimp.service';
 import { FimpMessage ,NewFimpMessageFromString } from 'app/fimp/Message';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'thing-intf-ui',
@@ -10,11 +11,13 @@ import { FimpMessage ,NewFimpMessageFromString } from 'app/fimp/Message';
 })
 export class ThingIntfUiComponent implements OnInit {
   @Input() intf: Interface;
+  @Input() serv: Service;
   @Input() msgType : string;
   @Input() addr: string;
   @Input() service :string;
 
-  constructor(private fimp:FimpService) {
+  constructor(private fimp:FimpService, public _DomSanitizationService: DomSanitizer) {
+
     // this.fimp.getGlobalObservable().subscribe((msg) => {
     // let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
     // });

@@ -23,6 +23,7 @@ export class Thing {
 
 export class Service {
     name : string;
+    alias: string;
     address : string ;
     enabled: boolean;
     groups : string[];

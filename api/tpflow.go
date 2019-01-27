@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/gommon/log"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 func RegisterTpFlowApi(e *echo.Echo,api *client.ApiRemoteClient) {
@@ -272,6 +273,23 @@ func RegisterTpFlowApi(e *echo.Echo,api *client.ApiRemoteClient) {
 	e.DELETE("/fimp/api/registry/location/:id", func(c echo.Context) error {
 		idStr := c.Param("id")
 		resp,err := api.RegistryDeleteLocation(idStr)
+		if err == nil {
+			return c.JSON(http.StatusOK, resp)
+		}else {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+	})
+
+	e.GET("/fimp/api/flow/get-log", func(c echo.Context) error {
+
+		limitS := c.QueryParam("limit")
+		limit , err := strconv.Atoi(limitS)
+		if err != nil {
+			limit = 10000
+		}
+		flowId := c.QueryParam("flowId")
+
+		resp,err := api.GetFlowLog(limit,flowId)
 		if err == nil {
 			return c.JSON(http.StatusOK, resp)
 		}else {

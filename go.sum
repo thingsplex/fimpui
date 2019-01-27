@@ -79,6 +79,8 @@ github.com/alivinco/tpflow v0.10.4-0.20181215171203-f087898a1eb1 h1:F88XsfrP61l6
 github.com/alivinco/tpflow v0.10.4-0.20181215171203-f087898a1eb1/go.mod h1:s7dBp3v2jUXI9gdtMTPCUPZw+bq1BY/lLKmlpmoJHQY=
 github.com/alivinco/tpflow v0.10.4-0.20181219160533-0484222364c2 h1:scSEgVBxqkUOEa9mXJKhVD77W3xj4wXb2dzOBJeckfk=
 github.com/alivinco/tpflow v0.10.4-0.20181219160533-0484222364c2/go.mod h1:s7dBp3v2jUXI9gdtMTPCUPZw+bq1BY/lLKmlpmoJHQY=
+github.com/alivinco/tpflow v0.10.5 h1:pylmuCMfx0VOYDIuYfaLAL1y8+lBoOVCsDHpaNfBmG0=
+github.com/alivinco/tpflow v0.10.5/go.mod h1:LOQKpHLyBzM8StVj7IzJK24iemaGwS9FTWFJhw9DyCs=
 github.com/asdine/storm v2.1.1+incompatible h1:j/IqbSqHVmrU908a11QGf+2Iv7pr7NXiyDE+P35Bp80=
 github.com/asdine/storm v2.1.1+incompatible/go.mod h1:RarYDc9hq1UPLImuiXK3BIWPJLdIygvV3PsInK0FbVQ=
 github.com/asdine/storm v2.1.2+incompatible h1:dczuIkyqwY2LrtXPz8ixMrU/OFgZp71kbKTHGrXYt/Q=
