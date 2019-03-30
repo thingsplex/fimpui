@@ -5,7 +5,7 @@
 }
 
 .mat-column-name {
-    flex: 0 0 200px;
+    flex: 0 0 250px;
   }
 .mat-column-device_type {
     flex: 0 0 80px;
@@ -30,6 +30,10 @@
   flex: 0 0 70px;
 }
 
+.mat-column-health_index {
+  flex: 0 0 70px;
+}
+
 
 .mat-column-power_source {
   flex: 0 0 90px;
@@ -40,7 +44,7 @@
 }
 
 .mat-column-mon_type {
-  flex: 0 0 90px;
+  flex: 0 0 120px;
 }
 
 .mat-column-prod_hash {

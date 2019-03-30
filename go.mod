@@ -4,32 +4,21 @@ require (
 	cloud.google.com/go v0.18.0
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/Sereal/Sereal v0.0.0-20180905114147-563b78806e28 // indirect
-	github.com/Sirupsen/logrus v1.0.6
-	github.com/alivinco/fimpgo v1.1.0
-	github.com/alivinco/tpflow v0.10.5
+	github.com/alivinco/tpflow v0.11.0
 	github.com/asdine/storm v2.1.2+incompatible
 	github.com/buger/jsonparser v0.0.0-20180910192245-6acdf747ae99
-	github.com/futurehomeno/vinculumgo v0.0.2 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/futurehomeno/fimpgo v1.3.1
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/googleapis/gax-go v2.0.0+incompatible // indirect
 	github.com/gorilla/websocket v1.4.0
-	github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce // indirect
-	github.com/influxdata/influxdb v1.6.3
 	github.com/koding/websocketproxy v0.0.0-20180412071414-b8568f354aec
-	github.com/kr/pty v1.1.3 // indirect
 	github.com/labstack/echo v3.2.1+incompatible
 	github.com/labstack/gommon v0.2.7
-	github.com/magiconair/properties v1.7.6 // indirect
-	github.com/paulhammond/tai64 v0.0.0-20140211175639-01084308b858
-	github.com/pelletier/go-toml v1.1.0 // indirect
 	github.com/pkg/errors v0.8.0
 	github.com/rcrowley/go-metrics v0.0.0-20180406234716-d932a24a8ccb
-	github.com/spf13/afero v1.1.0 // indirect
-	github.com/spf13/cast v1.2.0 // indirect
-	github.com/spf13/jwalterweatherman v0.0.0-20180109140146-7c0cea34c8ec // indirect
-	github.com/spf13/pflag v1.0.1 // indirect
-	github.com/spf13/viper v1.0.2
+	github.com/sirupsen/logrus v1.3.0
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	go.etcd.io/bbolt v1.3.0 // indirect
 	go.opencensus.io v0.8.0 // indirect

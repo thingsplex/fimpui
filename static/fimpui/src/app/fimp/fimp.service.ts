@@ -137,6 +137,7 @@ export class FimpService{
  }
 
  private saveMessage(msg:MqttMessage){
+    try {
       console.log("Saving new message to log")
       let fimpMsg  = NewFimpMessageFromString(msg.payload.toString());
       fimpMsg.topic = this.detachGlobalPrefix(msg.topic);
@@ -147,6 +148,10 @@ export class FimpService{
       this.rotateMessages(this.messages);
       this.saveFilteredMessage(fimpMsg);
       this.rotateMessages(this.filteredMessages);
+    } catch (e) {
+        console.log("Can't parse message")
+    }
+
  }
  
  private saveFilteredMessage(fimpMsg : FimpMessage){

@@ -1,7 +1,7 @@
 package fhcore
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/alivinco/fimpgo"
+	log "github.com/sirupsen/logrus"
+	"github.com/futurehomeno/fimpgo"
 	"github.com/alivinco/thingsplex/model"
 )
 

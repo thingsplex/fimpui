@@ -1,4 +1,4 @@
-version="0.9.3"
+version="0.11.1"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -7,7 +7,7 @@ build-js:
 	cd static/fimpui;ng build --prod --deploy '/fimp/static/'
 
 build-go-arm:
-	GOOS=linux GOARCH=arm GOARM=6 go build -o fimpui
+	GOOS=linux GOARCH=arm GOARM=6 go build -ldflags="-s -w" -o fimpui
 
 build-go:
 	go build -o fimpui

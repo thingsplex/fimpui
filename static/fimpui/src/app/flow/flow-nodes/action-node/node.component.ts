@@ -94,7 +94,7 @@ export class ActionNodeComponent implements OnInit {
           case "vinc_action":
             this.node.Address = "pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1"
             this.node.ServiceInterface = "cmd.mode.set"
-            this.node.Service = "home_mode"
+            this.node.Service = "vinc_mode"
             this.node.Label = "Home action"
             this.node.Config.DefaultValue.ValueType = "string"
             break;
@@ -153,7 +153,7 @@ export class VincActionNodeComponent implements OnInit {
       this.node.Config["DefaultValue"] = {"Value": "", "ValueType": "string"};
       this.node.Address = "pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1"
       this.node.ServiceInterface = "cmd.mode.set"
-      this.node.Service = "home_mode"
+      this.node.Service = "vinc_mode"
       this.node.Label = "Home action"
     }
   }

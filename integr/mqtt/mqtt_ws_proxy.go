@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/http"
 	//"encoding/hex"
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"crypto/tls"
 )

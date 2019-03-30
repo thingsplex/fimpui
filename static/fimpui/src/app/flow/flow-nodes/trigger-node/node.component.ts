@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {FlowRunDialog, MetaNode, ServiceLookupDialog} from "../../flow-editor/flow-editor.component";
 import {MatDialog} from "@angular/material";
+import {BACKEND_ROOT} from "../../../globals";
+import {Http, Response} from "@angular/http";
 
 
 @Component({
@@ -115,11 +117,24 @@ export class VincTriggerNodeComponent implements OnInit {
   @Input() node :MetaNode;
   @Input() nodes:MetaNode[];
   @Input() flowId:string;
-  constructor(public dialog: MatDialog) {
+  shortcuts:any[];
+  constructor(public dialog: MatDialog, private http : Http) {
 
   }
   ngOnInit() {
     this.loadDefaultConfig()
+    this.loadShortcuts()
+  }
+
+  loadShortcuts() {
+    this.http
+      .get(BACKEND_ROOT+'/fimp/api/vinculum/shortcuts')
+      .map(function(res: Response){
+        let body = res.json();
+        return body;
+      }).subscribe ((result) => {
+      this.shortcuts = result
+    });
   }
 
   loadDefaultConfig() {
@@ -134,7 +149,7 @@ export class VincTriggerNodeComponent implements OnInit {
       this.node.Config["IsValueFilterEnabled"] = false;
       this.node.Address = "pt:j1/mt:evt/rt:app/rn:vinculum/ad:1"
       this.node.ServiceInterface = "evt.mode.report"
-      this.node.Service = "home_mode"
+      this.node.Service = "vinc_mode"
       this.node.Label = "Home mode trigger"
     }
   }

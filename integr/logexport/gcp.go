@@ -9,7 +9,7 @@ import (
 	//"google.golang.org/api/iterator"
 	"time"
 	//"github.com/shirou/gopsutil/host"
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"os"

@@ -3,7 +3,7 @@ package zwave
 import (
 	"strings"
 	"io/ioutil"
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"path/filepath"
 	"cloud.google.com/go/storage"
 	"golang.org/x/net/context"

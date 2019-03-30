@@ -4,7 +4,7 @@ import (
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/codec/protobuf"
 	metrics "github.com/rcrowley/go-metrics"
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 

@@ -2,8 +2,8 @@ package statsdb
 
 import (
 	"github.com/alivinco/thingsplex/model"
-	"github.com/alivinco/fimpgo"
-	log "github.com/Sirupsen/logrus"
+	"github.com/futurehomeno/fimpgo"
+	log "github.com/sirupsen/logrus"
 )
 
 type StreamProcessor struct {

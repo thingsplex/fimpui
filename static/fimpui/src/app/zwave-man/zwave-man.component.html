@@ -22,6 +22,7 @@
             <th style="width: 70px">Node Id</th>
             <th style="width: 150px">Product hash</th>
             <th style="width:300px">Product name</th>
+            <th style="width:100px">Room</th>
             <th style="width: 300px">Alias</th>
             <th style="width: 75px">Power</th>
             <th style="width: 50px">Priority</th>
@@ -32,6 +33,7 @@
            <td> {{node.address}}</td>
            <td> {{node.hash}}</td>
            <td> {{node.product_name}}</td>
+           <td> {{node.room}}</td>
            <td> {{node.alias}}</td>
            <td>
              <mat-icon *ngIf="node.power_source=='ac'" >power</mat-icon>

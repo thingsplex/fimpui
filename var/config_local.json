@@ -6,9 +6,9 @@
   ],
   "zwave_product_templates":"/Users/alivinco/DevProjects/APPS/Futurehome/zwave-ad/products",
   "report_log_size_limit":500000,
-  "vinculum_address":"test.local:8082",
-  "mqtt_server_uri":"tcp://localhost:1883",
-  "mqtt_client_id_prefix":"alex_macbook",
+  "vinculum_address":"cube.localdomain:8082",
+  "mqtt_server_uri":"tcp://192.168.100.139:1883",
+  "mqtt_client_id_prefix":"alex_macbook_44",
   "mqtt_server_username":"",
   "mqtt_server_password":"",
   "mqtt_topic_global_prefix":"",
@@ -20,3 +20,6 @@
   "log_file":"",
   "log_level":"debug"
 }
+
+
+

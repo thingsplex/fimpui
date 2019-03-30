@@ -4,27 +4,24 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/alivinco/fimpgo"
 	"github.com/alivinco/thingsplex/api"
 	"github.com/alivinco/tpflow/api/client"
+	"github.com/futurehomeno/fimpgo"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"runtime"
 
-	log "github.com/Sirupsen/logrus"
-	"github.com/alivinco/thingsplex/integr/fhcore"
 	"github.com/alivinco/thingsplex/integr/logexport"
 	"github.com/alivinco/thingsplex/integr/mqtt"
 	"github.com/alivinco/thingsplex/integr/zwave"
 	"github.com/alivinco/thingsplex/model"
-	"github.com/alivinco/thingsplex/process/tsdb"
 	"github.com/alivinco/thingsplex/statsdb"
 	"github.com/alivinco/thingsplex/utils"
-	"github.com/alivinco/tpflow/registry"
 	"github.com/koding/websocketproxy"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"strconv"
 	"strings"
@@ -99,9 +96,9 @@ func main() {
 	log.Info("---------------------------------------------")
 
 	//---------THINGS REGISTRY-------------
-	log.Info("<main>-------------- Starting Things registry ")
-	thingRegistryStore := registry.NewThingRegistryStore(configs.RegistryDbFile)
-	log.Info("<main> Started ")
+	//log.Info("<main>-------------- Starting Things registry ")
+	//	//thingRegistryStore := registry.NewThingRegistryStore(configs.RegistryDbFile)
+	//	//log.Info("<main> Started ")
 	//-------------------------------------
 
 	log.Info("<main> Started")
@@ -115,18 +112,18 @@ func main() {
 	log.Info("<main> Started ")
 
 	//----------VINCULUM CLIENT------------
-	log.Info("<main>-------------- Starting VinculumClient ")
-	vinculumClient := fhcore.NewVinculumClient(configs.VinculumAddress)
-	err = vinculumClient.Start()
-	if err != nil {
-		log.Error("<main> Can't connect to Vinculum")
-	} else {
-		log.Info("<main> Started ")
-	}
+	//log.Info("<main>-------------- Starting VinculumClient ")
+	//vinculumClient := fhcore.NewVinculumClient(configs.VinculumAddress)
+	//err = vinculumClient.Start()
+	//if err != nil {
+	//	log.Error("<main> Can't connect to Vinculum")
+	//} else {
+	//	log.Info("<main> Started ")
+	//}
     // --------VINCULUM ADAPTER------------
-	log.Info("<main>-------------- Starting VinculumAdapter ")
-	vinculumAd := fhcore.NewVinculumAdapter(configs,vinculumClient)
-	vinculumAd.InitMessagingTransport()
+	//log.Info("<main>-------------- Starting VinculumAdapter ")
+	//vinculumAd := fhcore.NewVinculumAdapter(configs,vinculumClient)
+	//vinculumAd.InitMessagingTransport()
 
 	//---------GOOGLE OBJECT STORE---------
 	log.Info("<main>-------------- Initializing Google Object Store ")
@@ -139,6 +136,7 @@ func main() {
 		sysInfo.Version = string(versionFile)
 	}
 	//--------VINCULUM PROXY----------------
+	// TODO: Should be off by default but can be turned on via FIMPUI
 	coreUrl := "ws://" + configs.VinculumAddress
 	go startWsCoreProxy(coreUrl)
 	//--------------------------------------
@@ -156,8 +154,12 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// Uncomment the line below to enable Time Series exporter.
-	tsdb.Boot(configs,e,thingRegistryStore)
+	sClient := fimpgo.NewSyncClient(nil)
+	sClient.Connect(configs.MqttServerURI, configs.MqttClientIdPrefix+"_fimpui_tpflow_client","","",true,1,1)
+
+
+	tpflowApi := client.NewApiRemoteClient(sClient,"1")
+	api.RegisterTpFlowApi(e,tpflowApi)
 
 	e.GET("/fimp/system-info", func(c echo.Context) error {
 
@@ -422,46 +424,25 @@ func main() {
 		}
 
 	})
-
-	//e.POST("/fimp/api/registry/service-fields", func(c echo.Context) error {
-	//	// The service update only selected fields and not entire object
-	//	service := registry.Service{}
-	//	err := c.Bind(&service)
-	//	if err == nil {
-	//		log.Info("<REST> Saving service fields")
-	//		thingRegistryStore.UpsertService(&service)
-	//		return c.NoContent(http.StatusOK)
-	//	} else {
-	//		log.Info("<REST> Can't bind service")
-	//		return c.JSON(http.StatusInternalServerError, err)
-	//	}
+	// TODO: Implement in vinfimp adapter
+	//e.GET("/fimp/vinculum/devices", func(c echo.Context) error {
+	//	resp, _ := vinculumClient.GetMessage([]string{"device"})
+	//	return c.JSON(http.StatusOK, resp.Msg.Data.Param.Device)
 	//})
-	//
-	//e.POST("/fimp/api/registry/thing-fields", func(c echo.Context) error {
-	//	// The service update only selected fields and not entire object
-	//	thing := registry.Thing{}
-	//	err := c.Bind(&thing)
-	//	if err == nil {
-	//		log.Info("<REST> Saving thing fields")
-	//		thingRegistryStore.UpsertThing(&thing)
-	//		return c.NoContent(http.StatusOK)
-	//	} else {
-	//		log.Info("<REST> Can't bind thing")
-	//		return c.JSON(http.StatusInternalServerError, err)
-	//	}
+	// TODO : Implement in vinfimp
+	//e.GET("/fimp/api/vinculum/areas", func(c echo.Context) error {
+	//	resp, _ := vinculumClient.GetMessage([]string{"area"})
+	//	return c.JSON(http.StatusOK, resp.Msg.Data.Param.Area)
 	//})
-
-	e.GET("/fimp/vinculum/devices", func(c echo.Context) error {
-		resp, _ := vinculumClient.GetMessage([]string{"device"})
-		return c.JSON(http.StatusOK, resp.Msg.Data.Param.Device)
-	})
-	e.GET("/fimp/api/vinculum/areas", func(c echo.Context) error {
-		resp, _ := vinculumClient.GetMessage([]string{"area"})
-		return c.JSON(http.StatusOK, resp.Msg.Data.Param.Area)
-	})
-
+	sClient.AddSubscription("pt:j1/mt:evt/rt:app/rn:vinculum/ad:1")
 	e.GET("/fimp/api/vinculum/shortcuts", func(c echo.Context) error {
-		resp, _ := vinculumClient.GetShortcuts()
+		reqMsg := fimpgo.NewNullMessage("cmd.shortcut.get_list","vinc_shortcut",nil,nil,nil)
+		respMsg , err := sClient.SendFimp("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",reqMsg,15)
+		if err != nil {
+			return err
+		}
+		var resp interface{}
+		err = json.Unmarshal(respMsg.GetRawObjectValue(), &resp)
 		return c.JSON(http.StatusOK, resp)
 	})
 
@@ -476,11 +457,7 @@ func main() {
 		return c.JSON(http.StatusOK,memStats)
 	})
 
-	sClient := fimpgo.NewSyncClient(nil)
-	sClient.Connect(configs.MqttServerURI,"fimpui_tpflow_client","","",true,1,1)
 
-	tpflowApi := client.NewApiRemoteClient(sClient,"1")
-	api.RegisterTpFlowApi(e,tpflowApi)
 
 	index := "static/fimpui/dist/index.html"
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -510,6 +487,7 @@ func main() {
 	e.File("/fimp/registry/things/*", index)
 	e.File("/fimp/registry/services/*", index)
 	e.File("/fimp/registry/locations", index)
+	e.File("/fimp/stats/angrydog", index)
 	e.File("/fimp/registry/admin", index)
 	e.Static("/fimp/static", "static/fimpui/dist/")
 
