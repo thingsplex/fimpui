@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // import { Observable,Subject } from 'rxjs/Rx';
-import { Observable } from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import { Http, Response,URLSearchParams }  from '@angular/http';
 import {
   MqttMessage,
@@ -10,6 +10,8 @@ import {
 import { FimpMessage, NewFimpMessageFromString } from "app/fimp/Message";
 import { BACKEND_ROOT } from "app/globals";
 import { ConfigsService } from 'app/configs.service';
+import {WebRTCService} from "./WebRTC.service";
+import {tap} from "rxjs/operators";
 
 export class FimpFilter {
   public topicFilter:string;
@@ -23,15 +25,18 @@ export class FimpService{
   private messages:FimpMessage[]=[];
   private filteredMessages:FimpMessage[]=[];
   public observable: any = null;
-  // public observable: Observable<MqttMessage> = null;
+  public wrtcObservable: Observable<MqttMessage> ;
   public maxLogSize:number = 100;
   private fimpFilter : FimpFilter;
   private isFilteringEnabled:boolean;
   private globalTopicPrefix:string;
   public mqttSeviceOptions:any;
-  constructor(public mqtt: MqttService,private configs:ConfigsService) {
+  private source:string;
+  constructor(public mqtt: MqttService,private configs:ConfigsService,private wertcService:WebRTCService) {
     this.fimpFilter = new FimpFilter();
-    this.isFilteringEnabled = false; 
+    this.isFilteringEnabled = false;
+    this.source = "mqtt";
+
     this.mqtt.onConnect.subscribe((message: any) => {
           console.log("FimpService onConnect");
           // this.observable = null;
@@ -84,22 +89,38 @@ export class FimpService{
     console.log("Subscribing to all messages ") 
     // topic = this.prepareTopic(topic);
     console.log("Subscribing to topic "+topic); 
-    this.observable = this.mqtt.observe(topic);
+    // this.observable = this.mqtt.observe(topic);
+    this.observable = this.subscribe(topic);
     this.observable.subscribe((msg) => {
-      var msgTopic = this.detachGlobalPrefix(msg.topic)
-      console.log("New message from topic :"+msgTopic+" message :"+msg.payload)
-      this.saveMessage(msg);
+      if (msg != null) {
+        var msgTopic = this.detachGlobalPrefix(msg.topic)
+        console.log("New message from topic :"+msgTopic+" message :"+msg.payload)
+        this.saveMessage(msg);
+      }
     });
     return this.observable
   }
   public getGlobalObservable():Observable<MqttMessage>{
     console.log("Getting global observable");
     if (this.observable == null){
-      var topic =  this.prepareTopic("pt:j1/#");
-      this.subscribeToAll(topic);
+      // var topic =  this.prepareTopic("pt:j1/#");
+      // var topic =  this.prepareTopic("pt:j1/#");
+      this.subscribeToAll("pt:j1/#");
     }
     return this.observable;
   }
+
+  public getMqttSignalingOservable():Observable<MqttMessage>{
+    console.log("Getting global observable");
+    if (this.observable == null){
+      // var topic =  this.prepareTopic("pt:j1/#");
+      // var topic =  this.prepareTopic("pt:j1/#");
+      this.subscribeToAll("pt:j1/#");
+    }
+    return this.observable;
+  }
+
+
   public setFilter(topic:string,service:string,msgType:string) {
     this.fimpFilter.topicFilter = topic;
     this.fimpFilter.serviceFilter = service;
@@ -119,16 +140,42 @@ export class FimpService{
     
   // public subscribe(topic: string):Observable<MqttMessage>{
   public subscribe(topic: string):any{
+    if (this.source == "mqtt") {
+      var topic =  this.prepareTopic(topic);
+      console.log("Subscribing to topic "+topic);
+      return this.mqtt.observe(topic);
+    } else {
+      console.log("subscribing to webrtc");
+      return this.wertcService.whatever$.pipe(tap(d => console.log(d)));
+    }
+  }
+
+  public subscribeMqtt(topic: string):any {
     var topic =  this.prepareTopic(topic);
     console.log("Subscribing to topic "+topic);
     return this.mqtt.observe(topic);
   }
-  public publish(topic: string, message: string) {
+
+
+  public subscribeWebRtc(topic: string):any{
+      return this.wertcService.whatever$.pipe(tap(d => console.log(d)));
+  }
+
+  public publishMqtt(topic:string,message:string) {
     topic =  this.prepareTopic(topic);
     console.log("Publishing to topic "+topic);
     this.mqtt.publish(topic, message, {qos: 1}).subscribe((err)=>{
       console.log(err);
     });
+  }
+
+  public publish(topic: string, message: string) {
+    if (this.source == "mqtt") {
+      this.publishMqtt(topic,message)
+    }else {
+      this.wertcService.publish(topic,message)
+    }
+
   }
  private rotateMessages(msgLog:FimpMessage[]) {
     if(msgLog.length>this.maxLogSize) {

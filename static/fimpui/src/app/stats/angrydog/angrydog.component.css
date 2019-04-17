@@ -1,7 +1,7 @@
 
 .table-container {
   padding: 5px;
-  min-width: 2200px;
+  min-width: 2500px;
 }
 
 .mat-column-name {
@@ -49,6 +49,10 @@
 
 .mat-column-prod_hash {
   flex: 0 0 170px;
+}
+
+.mat-column-time_since_last_contact {
+  flex: 0 0 130px;
 }
 
 .mat-column-last_contact {

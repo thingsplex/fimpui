@@ -54,7 +54,7 @@
 
     <ng-container cdkColumnDef="status">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Status</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.status}} </mat-cell>
+      <mat-cell *cdkCellDef="let row"><b *ngIf="row.status=='online'" style="color: #27ae60">{{row.status}}</b> <b *ngIf="row.status=='offline'" style="color: #e74c3c">{{row.status}}</b> <b *ngIf="row.status=='sleep'" style="color: #009688">{{row.status}}</b> </mat-cell>
     </ng-container>
 
     <ng-container cdkColumnDef="mon_op_status">
@@ -71,35 +71,38 @@
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Monit. type</mat-header-cell>
       <mat-cell *cdkCellDef="let row">{{row.mon_type}} </mat-cell>
     </ng-container>
-
+    <ng-container cdkColumnDef="time_since_last_contact">
+      <mat-header-cell *cdkHeaderCellDef mat-sort-header>Time since LC </mat-header-cell>
+      <mat-cell *cdkCellDef="let row"><b style="color: #27ae60" *ngIf="row.time_since_last_contact < 5000 ">{{row.time_since_last_contact}} min</b>  </mat-cell>
+    </ng-container>
     <ng-container cdkColumnDef="last_contact">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last contact</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.last_contact| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+      <mat-cell *cdkCellDef="let row"><ng-container *ngIf="row.last_contact!='0001-01-01T00:00:00Z'">{{row.last_contact| date:'M/d/yy, H:mm:ss.SSS'}}</ng-container>  </mat-cell>
     </ng-container>
 
     <ng-container cdkColumnDef="last_wakeup">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last wakeup</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.last_wakeup| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+      <mat-cell *cdkCellDef="let row"><ng-container *ngIf="row.last_wakeup!='0001-01-01T00:00:00Z'">{{row.last_wakeup| date:'M/d/yy, H:mm:ss.SSS'}}</ng-container> </mat-cell>
     </ng-container>
 
     <ng-container cdkColumnDef="last_failure">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last failure</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.last_failure| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+      <mat-cell *cdkCellDef="let row"><ng-container *ngIf="row.last_failure!='0001-01-01T00:00:00Z'">{{row.last_failure| date:'M/d/yy, H:mm:ss.SSS'}}</ng-container> </mat-cell>
     </ng-container>
 
     <ng-container cdkColumnDef="last_recovery">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last recovery</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.last_recovery| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+      <mat-cell *cdkCellDef="let row"><ng-container *ngIf="row.last_recovery!='0001-01-01T00:00:00Z'">{{row.last_recovery| date:'M/d/yy, H:mm:ss.SSS'}}</ng-container> </mat-cell>
     </ng-container>
 
     <ng-container cdkColumnDef="last_ping">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last ping</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.last_ping| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+      <mat-cell *cdkCellDef="let row"><ng-container *ngIf="row.last_ping!='0001-01-01T00:00:00Z'">{{row.last_ping| date:'M/d/yy, H:mm:ss.SSS'}}</ng-container> </mat-cell>
     </ng-container>
 
     <ng-container cdkColumnDef="last_notify">
       <mat-header-cell *cdkHeaderCellDef mat-sort-header>Last notify</mat-header-cell>
-      <mat-cell *cdkCellDef="let row">{{row.last_notify| date:'M/d/yy, H:mm:ss.SSS'}} </mat-cell>
+      <mat-cell *cdkCellDef="let row"><ng-container *ngIf="row.last_notify!='0001-01-01T00:00:00Z'">{{row.last_notify| date:'M/d/yy, H:mm:ss.SSS'}}</ng-container> </mat-cell>
     </ng-container>
 
     <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
@@ -121,6 +124,9 @@
         </mat-input-container>
         <mat-input-container style="width:80px">
         <input matInput type="number" [(ngModel)]="noOpTimeout"  placeholder="No OP timeout">
+        </mat-input-container>
+        <mat-input-container style="width:80px">
+        <input matInput type="number" [(ngModel)]="rifleTestMode"  placeholder="Mode">
         </mat-input-container>
 </div>
 

@@ -63,6 +63,8 @@ import { RegistryModule} from './registry/registry.module';
 import {environment} from "../environments/environment";
 import {JsonInputComponent} from "./flow/ui-elements/json-input.component";
 import {FireService} from "./firebase/fire.service";
+import {WebRTCService} from 'app/fimp/WebRTC.service';
+import {CacheService} from "./fimp/cache.service";
 
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -174,7 +176,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     GaugeModule.forRoot()
 
   ],
-  providers: [FimpService,ThingsDbService,ConfigsService,FireService,{
+  providers: [CacheService, WebRTCService, FimpService,ThingsDbService,ConfigsService,FireService,{
     // Provider for APP_INITIALIZER
     provide: APP_INITIALIZER,
     useFactory: startupServiceFactory,

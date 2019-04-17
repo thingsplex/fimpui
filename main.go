@@ -33,6 +33,8 @@ type SystemInfo struct {
 	Version string
 }
 
+//22kVUwLgIl0yJPU1s4y2rZGQ
+
 // SetupLog configures default logger
 // Supported levels : info , degug , warn , error
 func SetupLog(logfile string, level string) {

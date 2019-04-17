@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FimpService} from 'app/fimp/fimp.service';
 import {FimpMessage, NewFimpMessageFromString} from "../fimp/Message";
-import {navigationCancelingError} from "@angular/router/src/shared";
 import {Subscription} from "rxjs";
+import {tap} from "rxjs/operators";
+import {CacheService} from "../fimp/cache.service";
+import {WebRTCService} from "../fimp/WebRTC.service";
+
+declare function  GetWebRtcInstance():any;
+
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -15,10 +20,13 @@ export class SettingsComponent implements OnInit {
   fimpService:FimpService;
   globalSub : Subscription;
   appCtrlResponse : any;
-  constructor(fimpService:FimpService) {
+  pc : any;
+  constructor(fimpService:FimpService, private webrtcService: WebRTCService) {
+    // this.pc = GetWebRtcInstance();
     this.fimpService = fimpService;
     let statusMap = {0:"disconnected",1:"connecting",2:"conneted"};
     this.connStatus = statusMap[this.fimpService.mqtt.state.getValue().toString()];
+
   }
 
   save(mqttHost:string , mqttPort:number) {
@@ -59,10 +67,25 @@ export class SettingsComponent implements OnInit {
   }
 
 
-
-
   ngOnInit() {
+
+    this.fimpService.subscribeMqtt("pt:j1/mt:evt/rt:ad/rn:fimp2p/ad:1").subscribe((msg)=>{
+
+      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+      if (fimpMsg.service == "fimp2p" ) {
+        if(fimpMsg.mtype == "evt.system.connect_params_report") {
+          console.log("Webrtc desciptor response")
+          this.webrtcService.startWrtcSession(fimpMsg.val.address);
+        }
+
+      }
+    })
+
+
     this.globalSub = this.fimpService.getGlobalObservable().subscribe((msg) => {
+      if (msg== null) {
+        return;
+      }
       let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "fhbutler" )
       {
@@ -73,5 +96,24 @@ export class SettingsComponent implements OnInit {
     })
       // console.log(msg.payload.toString());
   }
+
+
+  generateOffer(){
+    this.webrtcService.generateOffer();
+  }
+
+  startWrtcSessionFromForm() {
+    this.webrtcService.startWrtcSessionFromForm();
+  }
+
+
+  startWrtcRemoteSession() {
+      let props:Map<string,string> = new Map();
+      let val:Map<string,string> = new Map();
+      val["security_key"] = this.webrtcService.getLocalDescriptor();
+      let msg  = new FimpMessage("fimp2p","cmd.system.connect","str_map",val,props,null)
+      this.fimpService.publishMqtt("pt:j1/mt:cmd/rt:ad/rn:fimp2p/ad:1",msg.toString());
+  }
+
 
 }
