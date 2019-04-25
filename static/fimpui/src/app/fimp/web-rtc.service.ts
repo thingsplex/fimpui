@@ -1,21 +1,17 @@
 import {Injectable} from '@angular/core';
-import {CacheService} from "./cache.service";
 import {Subject} from "rxjs";
-import {MqttMessage} from "angular2-mqtt";
-
-// import { Observable,Subject } from 'rxjs/Rx';
 
 
 declare const document: any;
 declare const RTCPeerConnection: any;
 
 @Injectable()
-export class WebRTCService {
+export class WebRtcService {
 
   pc ;
   sendChannel;
-  public whatever$: Subject<{data: any}> = new Subject<{data: any}>();
-
+  public inboundMsgChannel$: Subject<{data: any}> = new Subject<{data: any}>();
+  localDescriptionHandler : any;
   constructor() {
 
   }
@@ -34,7 +30,7 @@ export class WebRTCService {
     this.sendChannel.onopen = () => console.log('sendChannel has opened')
     this.sendChannel.onmessage = e => {
       console.log(`Message from DataChannel '${this.sendChannel.label}' payload '${e.data}'`)
-      this.whatever$.next(this.convertWrtcMsgToMqttMsg(e.data))
+      this.inboundMsgChannel$.next(this.convertWrtcMsgToMqttMsg(e.data))
     }
 
     this.pc.oniceconnectionstatechange = (e) => {
@@ -45,13 +41,22 @@ export class WebRTCService {
     }
     this.pc.onicecandidate = event => {
       if (event.candidate === null) {
-        document.getElementById('localSessionDescription').value = btoa(JSON.stringify(this.pc.localDescription))
-
+        if(this.localDescriptionHandler) {
+          this.localDescriptionHandler(btoa(JSON.stringify(this.pc.localDescription)));
+        }
       }
     }
     this.pc.onnegotiationneeded = e =>
       this.pc.createOffer().then((d) => this.pc.setLocalDescription(d) ).catch(console.log)
 
+  }
+
+  getConnectionState() {
+    return this.pc.iceConnectionState;
+  }
+
+  setLocalDescriptionHandler(handler) {
+    this.localDescriptionHandler = handler;
   }
 
   convertWrtcMsgToMqttMsg(data:string):any {
@@ -63,9 +68,28 @@ export class WebRTCService {
 
 
   startWrtcSessionFromForm() {
+
     let sd = document.getElementById('remoteSessionDescription').value;
     this.startWrtcSession(sd);
+    localStorage.setItem("wrtcRemoteDesc",sd);
+    localStorage.setItem("wrtcLocalDesc",btoa(JSON.stringify(this.pc.localDescription)));
   }
+
+  loadDescriptorsFromLocalStore() {
+    let remoteSd = localStorage.getItem("wrtcRemoteDesc");
+    let localSd = localStorage.getItem("wrtcLocalDesc");
+
+    if (localSd && remoteSd) {
+      console.log("reconnecting wrtc session")
+      this.pc.setLocalDescription(new RTCSessionDescription(JSON.parse(atob(localSd))));
+      this.pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(atob(remoteSd))));
+    }else {
+      console.log("Session can't be restarted either local or remote desciptor are empty")
+    }
+
+
+  }
+
 
   startWrtcSession(sd:string) {
     if (sd === '') {
@@ -85,7 +109,9 @@ export class WebRTCService {
 
   publish(topic:string,payload:string) {
     let msg = {"topic":topic,"payload":payload};
-    this.sendChannel.send(JSON.stringify(msg));
+    if (this.sendChannel) {
+      this.sendChannel.send(JSON.stringify(msg));
+    }
   }
 
 }

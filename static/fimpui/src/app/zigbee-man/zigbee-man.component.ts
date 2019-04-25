@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import { FimpService } from "app/fimp/fimp.service";
 import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message'; 
 import { Subscription } from "rxjs/Subscription";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material";
+// import {AddDeviceDialog} from "../zwave-man/zwave-man.component";
 
 @Component({
   selector: 'app-zigbee-man',
@@ -11,7 +13,7 @@ import { Subscription } from "rxjs/Subscription";
 export class ZigbeeManComponent implements OnInit {
   nodes : any[];
   globalSub : Subscription;
-  constructor(private fimp:FimpService) {
+  constructor(public dialog: MatDialog,private fimp:FimpService) {
   }
 
   reloadZigbeeDevices(){
@@ -19,15 +21,30 @@ export class ZigbeeManComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
   } 
 
+  // addDevice(){
+  //   console.log("Add device")
+  //   let msg  = new FimpMessage("zigbee","cmd.thing.inclusion","bool",true,null,null)
+  //   this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+  //
+  // }
+
   addDevice(){
     console.log("Add device")
-    let msg  = new FimpMessage("zigbee","cmd.thing.inclusion","bool",true,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
-   
+
+    let dialogRef = this.dialog.open(AddZigbeeDeviceDialog, {
+      height: '400px',
+      width: '600px',
+      data : "inclusion",
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      // this.selectedOption = result;
+    });
   }
-  removeDevice(){
-    console.log("Remove device ")
-    let msg  = new FimpMessage("zigbee","cmd.thing.exclusion","bool",true,null,null)
+
+  removeDevice(address:string){
+    console.log("Remove device")
+    let val = {"address":address.toString()}
+    let msg  = new FimpMessage("zigbee","cmd.thing.delete","str_map",val,null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
     
   }
@@ -65,4 +82,58 @@ export class ZigbeeManComponent implements OnInit {
     }
     
   }
+}
+
+
+@Component({
+  selector: 'add-device-dialog',
+  templateUrl: './dialog-add-node.html',
+})
+export class AddZigbeeDeviceDialog implements OnInit, OnDestroy  {
+  messages:string[]=[];
+  globalSub : Subscription;
+  customTemplateName : string;
+  constructor(public dialogRef: MatDialogRef<AddZigbeeDeviceDialog>,private fimp:FimpService,@Inject(MAT_DIALOG_DATA) public data: any) {
+  }
+  ngOnInit(){
+    this.messages = [];
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+
+      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+      if (fimpMsg.service == "zigbee" )
+      {
+        if(fimpMsg.mtype == "evt.thing.inclusion_report" )
+        {
+          this.messages.push("Node added :"+fimpMsg.val.address);
+          this.messages.push("Product name :"+fimpMsg.val.product_name);
+        } else if (fimpMsg.mtype == "evt.thing.exclusion_report" ){
+          this.messages.push("Node removed :"+fimpMsg.val.address);
+        }
+        else if (fimpMsg.mtype == "evt.thing.inclusion_status_report" ){
+          this.messages.push("New state :"+fimpMsg.val);
+        } else if (fimpMsg.mtype == "evt.error.report" ){
+          this.messages.push("Error : code:"+fimpMsg.val+" message:"+fimpMsg.props["msg"]);
+        }
+      }
+    });
+  }
+  ngOnDestroy() {
+    if(this.globalSub)
+      this.globalSub.unsubscribe();
+  }
+
+  startInclusion(){
+    this.messages = [];
+    this.messages.push("Network is open.");
+    var props = new Map<string,string>();
+    props["template_name"] = this.customTemplateName;
+    let msg  = new FimpMessage("zigbee","cmd.thing.inclusion","bool",true,props,null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+  }
+  stopInclusion(){
+    let msg  = new FimpMessage("zigbee","cmd.thing.inclusion","bool",false,null,null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+    this.dialogRef.close();
+  }
+
 }

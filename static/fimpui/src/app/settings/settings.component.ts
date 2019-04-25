@@ -2,11 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FimpService} from 'app/fimp/fimp.service';
 import {FimpMessage, NewFimpMessageFromString} from "../fimp/Message";
 import {Subscription} from "rxjs";
-import {tap} from "rxjs/operators";
-import {CacheService} from "../fimp/cache.service";
-import {WebRTCService} from "../fimp/WebRTC.service";
+import {WebRtcService} from "../fimp/web-rtc.service";
 
-declare function  GetWebRtcInstance():any;
+// declare function  GetWebRtcInstance():any;
 
 @Component({
   selector: 'app-settings',
@@ -20,10 +18,21 @@ export class SettingsComponent implements OnInit {
   fimpService:FimpService;
   globalSub : Subscription;
   appCtrlResponse : any;
+  wrtcLocalDescription : string;
+  onWrtcLocalDescriptionReady:any;
+  fimpTransportType:string = "mqtt"; // Connectivity channel , either mqtt or webrtc
   pc : any;
-  constructor(fimpService:FimpService, private webrtcService: WebRTCService) {
+  constructor(fimpService:FimpService, private webrtcService: WebRtcService) {
     // this.pc = GetWebRtcInstance();
     this.fimpService = fimpService;
+    this.fimpTransportType = fimpService.transportType;
+    if(this.fimpTransportType=="webrtc") {
+      this.onWrtcLocalDescriptionReady = (desc) => {
+        console.log("onWebRtc local descriptor" + desc);
+        this.wrtcLocalDescription = desc;
+      }
+      this.webrtcService.setLocalDescriptionHandler(this.onWrtcLocalDescriptionReady);
+    }
     let statusMap = {0:"disconnected",1:"connecting",2:"conneted"};
     this.connStatus = statusMap[this.fimpService.mqtt.state.getValue().toString()];
 
@@ -47,6 +56,11 @@ export class SettingsComponent implements OnInit {
     // this.fimpService.mqtt.disconnect();
     // this.fimpService.mqtt.connect(MQTT_SERVICE_OPTIONS_1);
 
+  }
+
+  saveFimpTransportType() {
+    this.fimpService.transportType = this.fimpTransportType;
+    location.reload();
   }
 
   appCtrl(name:string,operation:string) {
@@ -99,12 +113,14 @@ export class SettingsComponent implements OnInit {
 
 
   generateOffer(){
+    this.wrtcLocalDescription = "loading...";
     this.webrtcService.generateOffer();
   }
 
   startWrtcSessionFromForm() {
     this.webrtcService.startWrtcSessionFromForm();
   }
+
 
 
   startWrtcRemoteSession() {

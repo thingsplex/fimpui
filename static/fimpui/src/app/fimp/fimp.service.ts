@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
-// import { Observable,Subject } from 'rxjs/Rx';
 import {BehaviorSubject, Observable} from 'rxjs';
-import { Http, Response,URLSearchParams }  from '@angular/http';
 import {
   MqttMessage,
-  MqttModule,
   MqttService
 } from 'angular2-mqtt';
 import { FimpMessage, NewFimpMessageFromString } from "app/fimp/Message";
-import { BACKEND_ROOT } from "app/globals";
 import { ConfigsService } from 'app/configs.service';
-import {WebRTCService} from "./WebRTC.service";
+import {WebRtcService} from "./web-rtc.service";
 import {tap} from "rxjs/operators";
 
 export class FimpFilter {
@@ -22,20 +18,35 @@ export class FimpFilter {
 
 @Injectable()
 export class FimpService{
+  get webRtcService(): WebRtcService {
+    return this._webRtcService;
+  }
+  get transportType(): string {
+    return this._transportType;
+  }
+
+  set transportType(value: string) {
+    localStorage.setItem("fimpTransportType",value);
+    this._transportType = value;
+  }
   private messages:FimpMessage[]=[];
   private filteredMessages:FimpMessage[]=[];
   public observable: any = null;
   public wrtcObservable: Observable<MqttMessage> ;
-  public maxLogSize:number = 100;
+  public maxLogSize:number = 130;
   private fimpFilter : FimpFilter;
   private isFilteringEnabled:boolean;
   private globalTopicPrefix:string;
   public mqttSeviceOptions:any;
-  private source:string;
-  constructor(public mqtt: MqttService,private configs:ConfigsService,private wertcService:WebRTCService) {
+  private _transportType:string;
+
+  constructor(public mqtt: MqttService,private configs:ConfigsService,private _webRtcService:WebRtcService) {
     this.fimpFilter = new FimpFilter();
     this.isFilteringEnabled = false;
-    this.source = "mqtt";
+    this._transportType = localStorage.getItem("fimpTransportType");
+    if (!this._transportType) {
+      this._transportType = "mqtt"
+    }
 
     this.mqtt.onConnect.subscribe((message: any) => {
           console.log("FimpService onConnect");
@@ -140,13 +151,13 @@ export class FimpService{
     
   // public subscribe(topic: string):Observable<MqttMessage>{
   public subscribe(topic: string):any{
-    if (this.source == "mqtt") {
+    if (this._transportType == "mqtt") {
       var topic =  this.prepareTopic(topic);
       console.log("Subscribing to topic "+topic);
       return this.mqtt.observe(topic);
     } else {
       console.log("subscribing to webrtc");
-      return this.wertcService.whatever$.pipe(tap(d => console.log(d)));
+      return this._webRtcService.inboundMsgChannel$.pipe(tap(d => console.log(d)));
     }
   }
 
@@ -158,7 +169,7 @@ export class FimpService{
 
 
   public subscribeWebRtc(topic: string):any{
-      return this.wertcService.whatever$.pipe(tap(d => console.log(d)));
+      return this._webRtcService.inboundMsgChannel$.pipe(tap(d => console.log(d)));
   }
 
   public publishMqtt(topic:string,message:string) {
@@ -170,10 +181,10 @@ export class FimpService{
   }
 
   public publish(topic: string, message: string) {
-    if (this.source == "mqtt") {
+    if (this._transportType == "mqtt") {
       this.publishMqtt(topic,message)
     }else {
-      this.wertcService.publish(topic,message)
+      this._webRtcService.publish(topic,message)
     }
 
   }

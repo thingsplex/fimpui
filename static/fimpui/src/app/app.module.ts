@@ -33,7 +33,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { ZwaveManComponent , AddDeviceDialog, RemoveDeviceDialog,PingDeviceDialog } from './zwave-man/zwave-man.component';
 import { TemplateEditorDialog } from './zwave-man/template-editor.component';
 import { IkeaManComponent } from './ikea-man/ikea-man.component';
-import { ZigbeeManComponent } from './zigbee-man/zigbee-man.component';
+import { ZigbeeManComponent ,AddZigbeeDeviceDialog} from './zigbee-man/zigbee-man.component';
 import { SystemsManComponent } from './systems-man/systems-man.component';
 import { TimelineComponent, MsgDetailsDialog } from './timeline/timeline.component';
 
@@ -63,8 +63,7 @@ import { RegistryModule} from './registry/registry.module';
 import {environment} from "../environments/environment";
 import {JsonInputComponent} from "./flow/ui-elements/json-input.component";
 import {FireService} from "./firebase/fire.service";
-import {WebRTCService} from 'app/fimp/WebRTC.service';
-import {CacheService} from "./fimp/cache.service";
+import {WebRtcService} from 'app/fimp/web-rtc.service';
 
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -119,7 +118,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     ZigbeeManComponent,
     SystemsManComponent,
     AddDeviceDialog,
-
+    AddZigbeeDeviceDialog,
     RemoveDeviceDialog,
     PingDeviceDialog,
     TimelineComponent,
@@ -176,14 +175,14 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     GaugeModule.forRoot()
 
   ],
-  providers: [CacheService, WebRTCService, FimpService,ThingsDbService,ConfigsService,FireService,{
+  providers: [WebRtcService, FimpService,ThingsDbService,ConfigsService,FireService,{
     // Provider for APP_INITIALIZER
     provide: APP_INITIALIZER,
     useFactory: startupServiceFactory,
     deps: [ConfigsService],
     multi: true
 }],
-  entryComponents:[AddDeviceDialog,RemoveDeviceDialog,PingDeviceDialog,TemplateEditorDialog,MsgDetailsDialog],
+  entryComponents:[AddDeviceDialog,AddZigbeeDeviceDialog,RemoveDeviceDialog,PingDeviceDialog,TemplateEditorDialog,MsgDetailsDialog],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
