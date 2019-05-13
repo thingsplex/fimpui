@@ -3,6 +3,9 @@ import { FimpService } from "app/fimp/fimp.service";
 import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message'; 
 import { Subscription } from "rxjs/Subscription";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material";
+// import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatSnackBar} from '@angular/material';
+
 // import {AddDeviceDialog} from "../zwave-man/zwave-man.component";
 
 @Component({
@@ -13,7 +16,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material";
 export class ZigbeeManComponent implements OnInit {
   nodes : any[];
   globalSub : Subscription;
-  constructor(public dialog: MatDialog,private fimp:FimpService) {
+  constructor(public dialog: MatDialog,private fimp:FimpService,private snackBar: MatSnackBar) {
   }
 
   reloadZigbeeDevices(){
@@ -68,7 +71,14 @@ export class ZigbeeManComponent implements OnInit {
           localStorage.setItem("zigbeeNodesList", JSON.stringify(this.nodes));
         }else if (fimpMsg.mtype == "evt.thing.exclusion_report" || fimpMsg.mtype == "evt.thing.inclusion_report"){
             console.log("Reloading nodes 2");
-            //this.reloadZigbeeDevices();
+            this.reloadZigbeeDevices();
+        }
+
+        if (fimpMsg.mtype == "evt.thing.exclusion_report") {
+          // Simple message.
+          let snackBarRef = this.snackBar.open('Device deleted',"",{
+            duration: 5000
+          });
         }
       }
       //this.messages.push("topic:"+msg.topic," payload:"+msg.payload);
@@ -82,6 +92,32 @@ export class ZigbeeManComponent implements OnInit {
     }
     
   }
+  changeChannel(channel:number) {
+    channel = Number(channel)
+    var props = new Map<string,string>();
+    let msg  = new FimpMessage("zigbee","cmd.custom.channel","int",channel,props,null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+
+    let snackBarRef = this.snackBar.open('Command was sent',"",{
+      duration: 2000
+    });
+  }
+
+  runZigbeeNetCommand(cmd:string) {
+    var props = new Map<string,string>();
+    let msg  = new FimpMessage("zigbee","cmd.custom."+cmd,"null",null,props,null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+
+    let snackBarRef = this.snackBar.open('Command was sent',"",{
+      duration: 2000
+    });
+  }
+
+  ngOnDestroy() {
+    if(this.globalSub)
+      this.globalSub.unsubscribe();
+  }
+
 }
 
 
@@ -135,5 +171,7 @@ export class AddZigbeeDeviceDialog implements OnInit, OnDestroy  {
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
     this.dialogRef.close();
   }
+
+
 
 }

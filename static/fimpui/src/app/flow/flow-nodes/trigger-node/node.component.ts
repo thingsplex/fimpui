@@ -3,6 +3,7 @@ import {FlowRunDialog, MetaNode, ServiceLookupDialog} from "../../flow-editor/fl
 import {MatDialog} from "@angular/material";
 import {BACKEND_ROOT} from "../../../globals";
 import {Http, Response} from "@angular/http";
+import {ServiceInterface} from "../../../registry/model";
 
 
 @Component({
@@ -29,6 +30,12 @@ export class TriggerNodeComponent implements OnInit {
       this.node.Config["Timeout"] = 0;
       this.node.Config["ValueFilter"] = {"Value":"","ValueType":""};
     }
+  }
+
+  onServiceConfigured(service:ServiceInterface) {
+    this.node.Address = service.intfAddress;
+    this.node.Service = service.serviceName;
+    this.node.ServiceInterface = service.intfMsgType;
   }
 
   loadDefaultConfig() {

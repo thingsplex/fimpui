@@ -29,6 +29,7 @@ import { FimpService } from 'app/fimp/fimp.service'
 import { ServiceEditorDialog }from 'app/registry/services/service-editor.component'
 import { ThingEditorDialog }from 'app/registry/things/thing-editor.component'
 import { LocationEditorDialog }from 'app/registry/locations/location-editor.component'
+import {ThingsRegistryService} from "./registry.service";
 
 @NgModule({
   imports: [
@@ -73,7 +74,7 @@ import { LocationEditorDialog }from 'app/registry/locations/location-editor.comp
     ThingEditorDialog,
     LocationEditorDialog
   ],
-  providers:[FimpService],
+  providers:[ThingsRegistryService],
   entryComponents: [ServiceEditorDialog,ThingEditorDialog,LocationEditorDialog]
 })
 export class RegistryModule { }

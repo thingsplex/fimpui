@@ -33,7 +33,7 @@ export class FimpService{
   private filteredMessages:FimpMessage[]=[];
   public observable: any = null;
   public wrtcObservable: Observable<MqttMessage> ;
-  public maxLogSize:number = 130;
+  public maxLogSize:number = 200;
   private fimpFilter : FimpFilter;
   private isFilteringEnabled:boolean;
   private globalTopicPrefix:string;
@@ -242,43 +242,43 @@ public getMessagLog():FimpMessage[]{
 }
 
 
-@Injectable()
-export class WsService {
-
-    private actionUrl: string;
-    private websocket: any;
-    private receivedMsg: any;
-    private observable:Observable<any>;
-    
-    constructor(){
-      console.log("Fimp service constructor")
-      this.connect();
-      this.websocket = new WebSocket("ws://echo.websocket.org/"); //dummy echo websocket service
-      this.websocket.onopen =  (evt) => {
-          
-          this.websocket.send("Hello World");
-      };
-    }
-
-    public sendMessage(text:string){
-      this.websocket.send(text);
-    }
-
-    public GetInstance(): Observable<any> {
-      return this.observable
-    }
-
-    public connect(){
-     this.observable = Observable.create(observer=>{
-          this.websocket.onmessage = (evt) => { 
-              observer.next(evt);
-          };
-      })
-      .map(res=>"From WS: " + res.data)
-      .share();
-      // var subject = new Subject();
-      // this.observable = source.multicast(subject);
-      // this.observable.connect();
-      
-    }
-}
+// @Injectable()
+// export class WsService {
+//
+//     private actionUrl: string;
+//     private websocket: any;
+//     private receivedMsg: any;
+//     private observable:Observable<any>;
+//
+//     constructor(){
+//       console.log("Fimp service constructor")
+//       this.connect();
+//       this.websocket = new WebSocket("ws://echo.websocket.org/"); //dummy echo websocket service
+//       this.websocket.onopen =  (evt) => {
+//
+//           this.websocket.send("Hello World");
+//       };
+//     }
+//
+//     public sendMessage(text:string){
+//       this.websocket.send(text);
+//     }
+//
+//     public GetInstance(): Observable<any> {
+//       return this.observable
+//     }
+//
+//     public connect(){
+//      this.observable = Observable.create(observer=>{
+//           this.websocket.onmessage = (evt) => {
+//               observer.next(evt);
+//           };
+//       })
+//       .map(res=>"From WS: " + res.data)
+//       .share();
+//       // var subject = new Subject();
+//       // this.observable = source.multicast(subject);
+//       // this.observable.connect();
+//
+//     }
+// }

@@ -89,8 +89,8 @@
         <table class="table-full-width" cellspacing="0">
           <tr>
             <td>
-
-              <mat-slider *ngIf="serv.props.max_lvl" #lvlValue thumbLabel style="width: 350px" min="serv.props.min_lvl" max="serv.props.max_lvl" step="1" value="0"  (change)="cmdLvlSet(lvlValue.value,durationValue.value)"></mat-slider>
+              Max : {{serv.props.max_lvl}}
+              <mat-slider *ngIf="serv.props.max_lvl" #lvlValue thumbLabel style="width: 350px" [min]="serv.props.min_lvl" [max]="serv.props.max_lvl" step="1" value="0"  (change)="cmdLvlSet(lvlValue.value,durationValue.value)"></mat-slider>
               <mat-slider  *ngIf="!serv.props.max_lvl" #lvlValue thumbLabel style="width: 350px" min="0" max="255" step="1" value="0"  (change)="cmdLvlSet(lvlValue.value,durationValue.value)"></mat-slider>
             </td>
             <td><mat-input-container class="example-full-width" style="width: 50px">

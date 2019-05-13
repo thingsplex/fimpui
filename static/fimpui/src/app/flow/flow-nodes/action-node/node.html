@@ -1,8 +1,17 @@
 <div>
     <div #nodebody>
+
+    <mat-expansion-panel [expanded]="'true'">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Action config </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>
+          <service-selector-wizard [inputServiceAddress]="node.Address" [inputInterfaceName]="node.ServiceInterface" (onSelect)="onServiceConfigured($event)"></service-selector-wizard>
+        </p>
+    </mat-expansion-panel>
     <mat-expansion-panel>
       <mat-expansion-panel-header>
-          <mat-panel-title> Service binding </mat-panel-title>
+          <mat-panel-title> Advanced Service binding </mat-panel-title>
       </mat-expansion-panel-header>
         <p>
             <mat-input-container style="width: 130px">
@@ -14,7 +23,6 @@
             <mat-input-container style="width: 450px">
                 <input matInput [(ngModel)]="node.Address" placeholder="Address">
             </mat-input-container>
-            <button mat-raised-button (click)="serviceLookupDialog(node.Id)" >Lookup</button>
         </p>
       <div style="margin-bottom: 5px" >
         <mat-checkbox [(ngModel)]="node.Config.RegisterAsVirtualService" >Register as virtual service</mat-checkbox>

@@ -123,6 +123,9 @@
         <input matInput type="number" [(ngModel)]="globalTimeout"  placeholder="Global timeout">
         </mat-input-container>
         <mat-input-container style="width:80px">
+        <input matInput type="number" [(ngModel)]="resendInterval"  placeholder="Resend interval">
+        </mat-input-container>
+        <mat-input-container style="width:80px">
         <input matInput type="number" [(ngModel)]="noOpTimeout"  placeholder="No OP timeout">
         </mat-input-container>
         <mat-input-container style="width:80px">
@@ -174,6 +177,8 @@
   <p>Total tested devices       : {{rifleTestReport.TotalTestedNodes}}</p>
   <p>Battery devices (tested)   : {{rifleTestReport.TotalBattTestedNodes}}</p>
   <p>AC powered (tested)        : {{rifleTestReport.TotalAcTestedNodes}}</p>
+  <p>StartTime                  : {{rifleTestReport.StartTime}}</p>
+  <p>StopTime                   : {{rifleTestReport.StopTime}}</p>
 </div>
 
 

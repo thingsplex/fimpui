@@ -1,8 +1,8 @@
 const FIMP_SERVICE_LIST = [
     {"name":"basic","label":"Generic level","icon":""},
-    {"name":"dev_sys","label":"Device system","icon":""},
-    {"name":"out_bin_switch","label":"Output switch/relay","icon":""},
-    {"name":"out_lvl_switch","label":"Output level switch/dimmer","icon":""},
+    {"name":"dev_sys","label":"Device system services","icon":""},
+    {"name":"out_bin_switch","label":"On/off switch/relay","icon":""},
+    {"name":"out_lvl_switch","label":"Level switch/dimmer","icon":""},
     {"name":"meter_elec","label":"Electricity meter","icon":""},
     {"name":"meter_gas","label":"Gas meter","icon":""},
     {"name":"meter_water","label":"Water meter","icon":""},
@@ -24,7 +24,8 @@ const FIMP_SERVICE_LIST = [
 ];
 
 const FIMP_INTERFACE_LIST = [
-    {"name":"cmd.lvl.set","label":"Generic level set","val_t":"int","icon":""},
+    {"name":"cmd.binary.set","label":"On/Off","val_t":"int","icon":""},
+    {"name":"cmd.lvl.set","label":"Level change","val_t":"int","icon":""},
     {"name":"cmd.lvl.get_report","label":"Request level report","val_t":"null","icon":""},
     {"name":"evt.lvl.report","label":"Level report","val_t":"int","icon":""},
     {"name":"cmd.config.set","label":"Set configurations","val_t":"str_map","icon":""},

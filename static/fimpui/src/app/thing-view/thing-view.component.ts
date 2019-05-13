@@ -38,11 +38,11 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
     }
     address = address.split("_")[0];
     //this.getReport(techAdapterName,serviceName,id);
-    if(techAdapterName == "zw") {
+    // if(techAdapterName == "zw") {
       this.subscribeForFimpMsg(techAdapterName,address)
       this.getReport(techAdapterName,address);
-    }else
-      this.loadThingFromRegistry(techAdapterName,address);
+    // }else
+    //   this.loadThingFromRegistry(techAdapterName,address);
  }
 
 

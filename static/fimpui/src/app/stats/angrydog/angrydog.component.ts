@@ -33,6 +33,7 @@ export class AngrydogComponent implements OnInit {
   rifleTestReport : any;
   rifleTestMode  = 0;
   mode :string;
+  resendInterval = 30;
   globalTimeout = 0;
   noOpTimeout  = 60;
   @ViewChild(MatSort) sort: MatSort;
@@ -95,7 +96,11 @@ export class AngrydogComponent implements OnInit {
     this.dataSourceRifleTest.data = [];
     this.rifleTestReport = {"Status":"running"};
     let msgType = "cmd.systest.run_mdu_rifle";
-    let msg  = new FimpMessage("angry_dog",msgType,"int_map",{"global_timeout":this.globalTimeout , "no_activity_timeout":this.noOpTimeout,"mode":this.rifleTestMode},null,null)
+    let msg  = new FimpMessage("angry_dog",msgType,"int_map",{
+      "global_timeout":this.globalTimeout ,
+      "resend_interval":this.resendInterval ,
+      "no_activity_timeout":this.noOpTimeout,
+      "mode":this.rifleTestMode},null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg.toString());
   }
 

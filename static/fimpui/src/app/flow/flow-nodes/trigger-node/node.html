@@ -1,5 +1,13 @@
 <div>
      <div #nodebody>
+       <mat-expansion-panel [expanded]="'true'">
+         <mat-expansion-panel-header>
+           <mat-panel-title> Trigger config </mat-panel-title>
+         </mat-expansion-panel-header>
+         <p>
+           <service-selector-wizard [inputServiceAddress]="node.Address" [inputInterfaceName]="node.ServiceInterface" (onSelect)="onServiceConfigured($event)"></service-selector-wizard>
+         </p>
+       </mat-expansion-panel>
          <mat-expansion-panel>
             <mat-expansion-panel-header>
                     <mat-panel-title>

@@ -12,7 +12,6 @@ import (
 	"net/url"
 	"runtime"
 
-	"github.com/alivinco/thingsplex/integr/logexport"
 	"github.com/alivinco/thingsplex/integr/mqtt"
 	"github.com/alivinco/thingsplex/integr/zwave"
 	"github.com/alivinco/thingsplex/model"
@@ -127,9 +126,9 @@ func main() {
 	//vinculumAd.InitMessagingTransport()
 
 	//---------GOOGLE OBJECT STORE---------
-	log.Info("<main>-------------- Initializing Google Object Store ")
-	objectStorage, _ := logexport.NewGcpObjectStorage("fh-cube-log")
-	log.Info("<main> Done ")
+	//log.Info("<main>-------------- Initializing Google Object Store ")
+	//objectStorage, _ := logexport.NewGcpObjectStorage("fh-cube-log")
+	//log.Info("<main> Done ")
 	//-------------------------------------
 	sysInfo := SystemInfo{}
 	versionFile, err := ioutil.ReadFile("VERSION")
@@ -169,29 +168,29 @@ func main() {
 	e.GET("/fimp/api/configs", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, configs)
 	})
-	e.GET("/fimp/fr/upload-log-snapshot", func(c echo.Context) error {
-
-		//logexport.UploadLogToGcp()
-		//files := []string {"/var/log/daily.out"}
-		hostAlias := c.QueryParam("hostAlias")
-		log.Info(hostAlias)
-		if hostAlias == "" {
-			hostAlias = "unknown"
-		}
-		uploadStatus := objectStorage.UploadLogSnapshot(configs.ReportLogFiles, hostAlias, configs.ReportLogSizeLimit)
-		return c.JSON(http.StatusOK, uploadStatus)
-	})
-	e.GET("/fimp/api/fr/upload-file", func(c echo.Context) error {
-
-		files := []string {c.QueryParam("fileName")}
-		hostAlias := c.QueryParam("hostAlias")
-		log.Info(hostAlias)
-		if hostAlias == "" {
-			hostAlias = "unknown"
-		}
-		uploadStatus := objectStorage.UploadLogSnapshot(files, hostAlias, 0)
-		return c.JSON(http.StatusOK, uploadStatus)
-	})
+	//e.GET("/fimp/fr/upload-log-snapshot", func(c echo.Context) error {
+	//
+	//	//logexport.UploadLogToGcp()
+	//	//files := []string {"/var/log/daily.out"}
+	//	hostAlias := c.QueryParam("hostAlias")
+	//	log.Info(hostAlias)
+	//	if hostAlias == "" {
+	//		hostAlias = "unknown"
+	//	}
+	//	uploadStatus := objectStorage.UploadLogSnapshot(configs.ReportLogFiles, hostAlias, configs.ReportLogSizeLimit)
+	//	return c.JSON(http.StatusOK, uploadStatus)
+	//})
+	//e.GET("/fimp/api/fr/upload-file", func(c echo.Context) error {
+	//
+	//	files := []string {c.QueryParam("fileName")}
+	//	hostAlias := c.QueryParam("hostAlias")
+	//	log.Info(hostAlias)
+	//	if hostAlias == "" {
+	//		hostAlias = "unknown"
+	//	}
+	//	uploadStatus := objectStorage.UploadLogSnapshot(files, hostAlias, 0)
+	//	return c.JSON(http.StatusOK, uploadStatus)
+	//})
 
 	e.GET("/fimp/api/fr/run-cmd", func(c echo.Context) error {
 
@@ -476,6 +475,7 @@ func main() {
 	e.File("/fimp", index)
 	//e.File("/fhcore", "static/fhcore.html")
 	e.File("/fimp/zwave-man", index)
+	e.File("/fimp/zigbee-man", index)
 	e.File("/fimp/settings", index)
 	e.File("/fimp/timeline", index)
 	e.File("/fimp/ikea-man", index)

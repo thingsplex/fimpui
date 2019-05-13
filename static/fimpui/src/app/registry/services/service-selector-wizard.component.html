@@ -1,23 +1,21 @@
 <div style="margin: 20px">
-    <mat-select placeholder="Location" style="width:350px" [(ngModel)]="selectedLocationId" >
-                <mat-option *ngFor="let location of locations" [value]="location.id">{{ location.alias }} ({{location.type}}) </mat-option>
+    <mat-select placeholder="Service location" style="width:400px" [(ngModel)]="selectedLocationId" (change)="onLocationSelected()" >
+       <mat-option *ngFor="let location of registry.locations" [value]="location.id">{{ location.alias }} ({{location.type}}) </mat-option>
     </mat-select>
-    <p>        
-    <mat-select #serviceInput placeholder="Service" style="width:350px" [(ngModel)]="selectedService" (change)="onServiceSelected()" >
-        <mat-option *ngFor="let service of fimpServiceList" [value]="service.name" >{{ service.label }} ({{service.name}}) </mat-option>
+    <p>
+    <mat-select #thingInput placeholder="Thing" style="width:400px" [(ngModel)]="selectedThingId" (change)="onThingSelected()" >
+      <mat-option *ngFor="let thing of things" [value]="thing.id" >{{ thing.alias }} ({{thing.product_id}}) </mat-option>
     </mat-select>
     </p>
-    <mat-nav-list>
-            <mat-list-item *ngFor="let service of services">
-              <p mat-line >{{ service.alias }} at {{ service.location_alias }} ({{service.groups}}) </p>
-              <p mat-line >
-                 <mat-select #serviceInput placeholder="Interface" style="width:300px"  [(ngModel)]="selectedInterface" (change)="onInterfaceSelected(service)"  >
-                     <span *ngFor="let intf of service.interfaces">
-                        <mat-option *ngIf="msgFlowDirection == intf.intf_t"  [value]="intf.msg_t" >{{intf.msg_t}} </mat-option>
-                     </span>
-                 </mat-select>      
-              </p>
-            </mat-list-item>
-    </mat-nav-list>
+    <p>        
+    <mat-select #serviceInput placeholder="Service" style="width:400px" [(ngModel)]="selectedServiceId" (change)="onServiceSelected()" >
+        <mat-option *ngFor="let service of services" [value]="service.id" >{{ service.alias }} ({{service.name}} {{service.groups}} ) </mat-option>
+    </mat-select>
+    </p>
+    <p>
+      <mat-select *ngIf="activeService" #interfaceInput placeholder="Interface" style="width:400px" [(ngModel)]="selectedInterfaceName" (change)="onInterfaceSelected()" >
+        <mat-option *ngFor="let intf of activeService.interfaces" [value]="intf.msg_t" >{{ intf.msg_t }} </mat-option>
+      </mat-select>
+    </p>
+
  </div>
- 

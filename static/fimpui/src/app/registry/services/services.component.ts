@@ -16,6 +16,7 @@ import { BACKEND_ROOT} from "app/globals";
 import { getFimpServiceList} from "app/fimp/service-lookup"
 import {ThingIntfUiComponent} from 'app/registry/thing-intf-ui/thing-intf-ui.component'
 import {ServiceEditorDialog} from 'app/registry/services/service-editor.component'
+import {ThingsRegistryService} from "../registry.service";
 
 
 @Component({
@@ -37,59 +38,77 @@ export class ServicesMainComponent {
 })
 export class ServiceSelectorWizardComponent implements OnInit {
   @Input() msgFlowDirection : string;
-  public services : any;
-  public locations : any;
-  public selectedLocationId :string;
-  public selectedService:any;
-  public selectedInterface:any;
+  @Input() inputServiceAddress: string;
+  @Input() inputServiceName: string;
+  @Input() inputInterfaceName: string;
+  public selectedLocationId :number;
+  public selectedServiceId:number;
+  public selectedThingId :number;
+  public selectedInterfaceName:any;
   public fimpServiceList :any;
+  private activeThings:any;
+  private things:any;
+  private activeService:any;
+  private services:any;
+
   @Output() onSelect = new EventEmitter<ServiceInterface>();
   ngOnInit() {
-    this.loadLocations();
+    if(this.inputServiceAddress) {
+      let svcs = this.registry.getServiceByAddress(this.inputServiceAddress)
+      if (svcs.length > 0) {
+
+        this.selectedServiceId = svcs[0].id;
+        this.selectedLocationId = svcs[0].location_id;
+        this.selectedInterfaceName = this.inputInterfaceName;
+        this.selectedThingId = svcs[0].container_id;
+        console.log("Selected thing id "+this.selectedThingId);
+        this.activeService = svcs[0]
+        this.onLocationSelected();
+        this.onThingSelected()
+        this.onServiceSelected()
+      }
+
+    }
   }
-  constructor(private http : Http,private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute,private registry:ThingsRegistryService) {
     this.fimpServiceList = getFimpServiceList();
   }
+
   selectInterface(intf:ServiceInterface) {
     console.dir(intf);
     this.onSelect.emit(intf);
   }
 
-  loadServices(serviceName:string,locationId:string) {
-    let params: URLSearchParams = new URLSearchParams();
-    params.set('serviceName', serviceName);
-    params.set('filterWithoutAlias',"true");
-    this.http.get(BACKEND_ROOT+'/fimp/api/registry/services',{search:params})
-    .map((res: Response)=>{
-      let result = res.json();
-      return result;
-    }).subscribe(result=>{
-      this.services = result;
-    });
+
+
+  onLocationSelected() {
+    this.things = this.registry.getThingsForLocation(this.selectedLocationId);
+    console.log("THings for location:")
+    console.dir(this.things)
   }
-  loadLocations() {
-    this.http.get(BACKEND_ROOT+'/fimp/api/registry/locations',{})
-    .map((res: Response)=>{
-      let result = res.json();
-      return result;
-    }).subscribe(result=>{
-      this.locations = result;
-    });
+
+  onThingSelected() {
+    this.services = this.registry.getServicesForThing(this.selectedThingId);
+    console.log("Services for thing:")
+    console.dir(this.services)
   }
 
   onServiceSelected(){
-    this.loadServices(this.selectedService,"");
+    // this.loadServices(this.selectedService,"");
+    this.activeService = this.registry.getServiceById(this.selectedServiceId)
+    console.dir(this.activeService);
   }
+
   onInterfaceSelected(service) {
     var intf = new ServiceInterface();
-    intf.serviceName = this.selectedService;
-    intf.intfMsgType = this.selectedInterface;
-    intf.locationAlias = service.location_alias;
-    intf.serviceAlias = service.alias;
+    intf.serviceName = this.activeService.name;
+    intf.intfMsgType = this.selectedInterfaceName;
+    intf.locationAlias = this.activeService.location_alias;
+    intf.serviceAlias = this.activeService.alias;
     if (intf.intfMsgType.indexOf("cmd.")>=0) {
-      intf.intfAddress = "pt:j1/mt:cmd"+service.address
+      intf.intfAddress = "pt:j1/mt:cmd"+this.activeService.address
     }else {
-      intf.intfAddress = "pt:j1/mt:evt"+service.address
+      intf.intfAddress = "pt:j1/mt:evt"+this.activeService.address
     }
 
     this.onSelect.emit(intf);

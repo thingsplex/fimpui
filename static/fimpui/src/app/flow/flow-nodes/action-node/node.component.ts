@@ -4,6 +4,7 @@ import {MatDialog} from "@angular/material";
 import {Http, Response} from "@angular/http";
 import {BACKEND_ROOT} from "../../../globals";
 import {ContextVariable} from "../../flow-context/variable-selector.component";
+import {ServiceInterface} from "../../../registry/model";
 
 @Component({
   selector: 'action-node',
@@ -46,6 +47,12 @@ export class ActionNodeComponent implements OnInit {
   }
   updateProps(){
     this.node.Config.Props = JSON.parse(this.propsAsString)
+  }
+
+  onServiceConfigured(service:ServiceInterface) {
+    this.node.Address = service.intfAddress;
+    this.node.Service = service.serviceName;
+    this.node.ServiceInterface = service.intfMsgType;
   }
 
   serviceLookupDialog(nodeId:string) {

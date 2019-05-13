@@ -1,8 +1,9 @@
 import { Component, OnInit,Inject } from '@angular/core';
-import { Http, Response,URLSearchParams,RequestOptions,Headers }  from '@angular/http';
 import { MatDialog, MatDialogRef,MatSnackBar} from '@angular/material';
 import { MAT_DIALOG_DATA} from '@angular/material';
 import { BACKEND_ROOT } from "app/globals";
+import {FimpService} from "../../fimp/fimp.service";
+import {FimpMessage} from "../../fimp/Message";
 
 @Component({
     selector: 'thing-editor-dialog',
@@ -12,7 +13,7 @@ import { BACKEND_ROOT } from "app/globals";
     locationId : number;
     alias : string;
     thingId : number;     
-    constructor(public dialogRef: MatDialogRef<ThingEditorDialog>,@Inject(MAT_DIALOG_DATA) public data: any,public snackBar: MatSnackBar,private http : Http) {
+    constructor(public dialogRef: MatDialogRef<ThingEditorDialog>,@Inject(MAT_DIALOG_DATA) public data: any,public snackBar: MatSnackBar,private fimp:FimpService) {
           console.dir(data)
           this.thingId = data.id
           this.alias = data.alias
@@ -23,16 +24,10 @@ import { BACKEND_ROOT } from "app/globals";
         this.locationId = locationId
     }
     save(){
-      let headers = new Headers({ 'Content-Type': 'application/json' });
-      let options = new RequestOptions({headers:headers});
-      let request = {"id":this.thingId,"alias":this.alias,"location_id":this.locationId}
-      this.http
-        .put(BACKEND_ROOT+'/fimp/api/registry/thing',JSON.stringify(request),  options )
-        .subscribe ((result) => {
-           console.log("Thing fields were saved");
-           this.dialogRef.close("ok");
-        });
+      let val = {"id":this.thingId,"alias":this.alias,"location_id":this.locationId}
+      let msg  = new FimpMessage("tpflow","cmd.registry.update_thing","object",val,null,null)
+      this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+      this.dialogRef.close("ok");
     }
     
   }
-  

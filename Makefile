@@ -1,4 +1,4 @@
-version="0.11.3"
+version="0.11.7"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -13,7 +13,7 @@ build-go:
 	go build -o fimpui
 
 build-go-amd:
-	GOOS=linux GOARCH=amd64 go build -o fimpui
+	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o fimpui
 
 build-tsdb-loader-osx:
 	cd  process/tsdb/cli/;go build -o fimp-inxlux-loader
