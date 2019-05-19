@@ -16,6 +16,7 @@
          <action-node *ngIf="node.Ui.nodeType==''" [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </action-node>
          <vinc-action-node *ngIf="node.Ui.nodeType=='vinc_action'" [node]="node" [nodes]="flow.Nodes" ></vinc-action-node>
          <notification-action-node *ngIf="node.Ui.nodeType=='notification_action'" [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" ></notification-action-node>
+         <timeline-action-node *ngIf="node.Ui.nodeType=='timeline_action'" [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" ></timeline-action-node>
     </div>
     <div *ngSwitchCase="'rest_action'">
       <rest-action-node *ngIf="node.Ui.nodeType==''" [node]="node" [nodes]="flow.Nodes" > </rest-action-node>

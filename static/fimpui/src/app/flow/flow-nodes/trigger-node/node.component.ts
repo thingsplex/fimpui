@@ -174,3 +174,57 @@ export class VincTriggerNodeComponent implements OnInit {
   }
 
 }
+
+
+@Component({
+  selector: 'scene-trigger-node',
+  templateUrl: './scene-trigger-node.html',
+  styleUrls: ['../flow-nodes.component.css']
+})
+export class SceneTriggerNodeComponent implements OnInit {
+  @Input() node :MetaNode;
+  @Input() nodes:MetaNode[];
+  @Input() flowId:string;
+
+   public sceneValues:string[];
+  sceneSeviceTopic:string;
+
+  constructor(public dialog: MatDialog) {
+
+  }
+  ngOnInit() {
+    this.loadDefaultConfig()
+  }
+
+
+
+  loadDefaultConfig() {
+
+    if (this.node.Config==null) {
+      this.node.Config = {};
+      this.node.Config["Timeout"] = 0;
+      this.node.Config["VirtualServiceGroup"] = "";
+      this.node.Config["VirtualServiceProps"] = {};
+      this.node.Config["RegisterAsVirtualService"] = false;
+      this.node.Config["ValueFilter"] = {"Value":"","ValueType":"string"};
+      this.node.Config["IsValueFilterEnabled"] = false;
+      this.node.Address = ""
+      this.node.ServiceInterface = "evt.scene.report"
+      this.node.Service = "scene_ctrl"
+      this.node.Label = "Scene button trigger"
+    }
+  }
+
+  runFlow(node:MetaNode) {
+    let dialogRef = this.dialog.open(FlowRunDialog,{
+      // height: '95%',
+      width: '500px',
+      data:node
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      // this.flow = result;
+      // this.loadContext();
+    });
+  }
+
+}

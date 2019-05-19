@@ -46,10 +46,10 @@ export class ServiceSelectorWizardComponent implements OnInit {
   public selectedThingId :number;
   public selectedInterfaceName:any;
   public fimpServiceList :any;
-  private activeThings:any;
-  private things:any;
-  private activeService:any;
-  private services:any;
+  public activeThings:any;
+  public things:any;
+  public activeService:any;
+  public services:any;
 
   @Output() onSelect = new EventEmitter<ServiceInterface>();
   ngOnInit() {
@@ -70,7 +70,7 @@ export class ServiceSelectorWizardComponent implements OnInit {
 
     }
   }
-  constructor(private route: ActivatedRoute,private registry:ThingsRegistryService) {
+  constructor(private route: ActivatedRoute,public registry:ThingsRegistryService) {
     this.fimpServiceList = getFimpServiceList();
   }
 

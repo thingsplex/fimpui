@@ -1,5 +1,5 @@
 <div style="margin: 20px">
-    <mat-select placeholder="Service location" style="width:400px" [(ngModel)]="selectedLocationId" (change)="onLocationSelected()" >
+    <mat-select placeholder="Location (room,area,house)" style="width:400px" [(ngModel)]="selectedLocationId" (change)="onLocationSelected()" >
        <mat-option *ngFor="let location of registry.locations" [value]="location.id">{{ location.alias }} ({{location.type}}) </mat-option>
     </mat-select>
     <p>
@@ -13,7 +13,7 @@
     </mat-select>
     </p>
     <p>
-      <mat-select *ngIf="activeService" #interfaceInput placeholder="Interface" style="width:400px" [(ngModel)]="selectedInterfaceName" (change)="onInterfaceSelected()" >
+      <mat-select *ngIf="activeService" #interfaceInput placeholder="Action" style="width:400px" [(ngModel)]="selectedInterfaceName" (change)="onInterfaceSelected()" >
         <mat-option *ngFor="let intf of activeService.interfaces" [value]="intf.msg_t" >{{ intf.msg_t }} </mat-option>
       </mat-select>
     </p>

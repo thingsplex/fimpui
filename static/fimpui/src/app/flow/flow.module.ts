@@ -9,11 +9,11 @@ import { FlowEditorComponent, FlowSourceDialog,FlowLogDialog, FlowRunDialog, Ser
 import { FlowNodesComponent ,SetVariableNodeComponent,TimeTriggerNodeComponent } from './flow-nodes/flow-nodes.component';
 import { LoopNodeComponent,WaitNodeComponent} from './flow-nodes/flow-nodes.component';
 import { RestActionNodeComponent } from './flow-nodes/rest-action-node/node.component';
-import { TriggerNodeComponent,VincTriggerNodeComponent } from './flow-nodes/trigger-node/node.component';
+import { TriggerNodeComponent,VincTriggerNodeComponent,SceneTriggerNodeComponent } from './flow-nodes/trigger-node/node.component';
 import { IfNodeComponent } from './flow-nodes/if-node/node.component';
 import { TransformNodeComponent  } from './flow-nodes/transform-node/node.component';
 import { ExecNodeComponent  } from './flow-nodes/exec-node/node.component';
-import { ActionNodeComponent,VincActionNodeComponent,NotificationActionNodeComponent } from './flow-nodes/action-node/node.component';
+import { ActionNodeComponent,VincActionNodeComponent,NotificationActionNodeComponent,TimelineActionNodeComponent } from './flow-nodes/action-node/node.component';
 import { ReceiveNodeComponent } from './flow-nodes/flow-nodes.component';
 import { FlowRoutingModule } from "app/flow/flow-routing.module";
 import { FormsModule } from '@angular/forms';
@@ -87,6 +87,7 @@ import {MsgDetailsDialog} from "../timeline/timeline.component";
      FlowNodesComponent,
      ActionNodeComponent,
      NotificationActionNodeComponent,
+     TimelineActionNodeComponent,
      RestActionNodeComponent,
      TriggerNodeComponent,
      ReceiveNodeComponent,
@@ -102,7 +103,8 @@ import {MsgDetailsDialog} from "../timeline/timeline.component";
      WaitNodeComponent,
      VincTriggerNodeComponent,
      VincActionNodeComponent,
-     RecordEditorDialog
+     RecordEditorDialog,
+    SceneTriggerNodeComponent
 
   ],
   providers:[],

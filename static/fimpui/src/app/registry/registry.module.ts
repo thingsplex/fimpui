@@ -14,6 +14,7 @@ import { MatTableModule,
          MatTabsModule,
          MatButtonModule,
          MatSnackBarModule,
+         MatCardModule,
          MatCheckbox} from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -50,7 +51,7 @@ import {ThingsRegistryService} from "./registry.service";
     MatCheckboxModule,
     MatDialogModule,
     MatTabsModule,
-  
+    MatCardModule,
     HttpModule, 
     CdkTableModule
   ],

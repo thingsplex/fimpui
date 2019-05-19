@@ -179,7 +179,8 @@ func RegisterTpFlowApi(e *echo.Echo,api *client.ApiRemoteClient) {
 
 
 	e.GET("/fimp/api/registry/things", func(c echo.Context) error {
-		thingsWithLocation,err := api.RegistryGetListOfThings()
+		locationIdStr := c.QueryParam("locationId")
+		thingsWithLocation,err := api.RegistryGetListOfThings(locationIdStr)
 		if err == nil {
 			return c.JSON(http.StatusOK, thingsWithLocation)
 		} else {

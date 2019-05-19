@@ -4,7 +4,7 @@ require (
 	cloud.google.com/go v0.18.0
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/Sereal/Sereal v0.0.0-20180905114147-563b78806e28 // indirect
-	github.com/alivinco/tpflow v0.11.0
+	github.com/alivinco/tpflow v0.12.0
 	github.com/asdine/storm v2.1.2+incompatible
 	github.com/buger/jsonparser v0.0.0-20180910192245-6acdf747ae99
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect

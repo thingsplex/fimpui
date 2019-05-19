@@ -215,3 +215,51 @@ export class NotificationActionNodeComponent implements OnInit {
   }
 
 }
+
+@Component({
+  selector: 'timeline-action-node',
+  templateUrl: './timeline-action-node.html',
+  styleUrls: ['../flow-nodes.component.css']
+})
+export class TimelineActionNodeComponent implements OnInit {
+  @Input() node :MetaNode;
+  @Input() nodes:MetaNode[];
+  @Input() flowId:string;
+  shortcuts:any[];
+  constructor(public dialog: MatDialog , private http : Http) {
+
+  }
+  ngOnInit() {
+    this.loadDefaultConfig()
+  }
+
+
+  loadDefaultConfig() {
+    if (this.node.Config==null) {
+      this.node.Config = {
+        "VariableName": "",
+        "IsVariableGlobal": false,
+        "Props": {},
+        "RegisterAsVirtualService": false,
+        "VirtualServiceGroup":"",
+        "VirtualServiceProps":{}
+      };
+      this.node.Config["DefaultValue"] = {"Value":{
+          "message_en": "",
+          "message_no": "-",
+          "sender": "flow"
+        },"ValueType":"str_map"};
+      this.node.Address = "pt:j1/mt:cmd/rt:app/rn:time_owl/ad:1"
+      this.node.ServiceInterface = "cmd.timeline.set"
+      this.node.Service = "time_owl"
+      this.node.Label = "Publish timeline"
+    }
+  }
+
+  inputVariableSelected(cvar:ContextVariable) {
+    this.node.Config.VariableName = cvar.Name;
+    this.node.Config.IsVariableGlobal = cvar.isGlobal;
+    this.node.Config.VariableType = cvar.Type;
+  }
+
+}

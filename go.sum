@@ -18,6 +18,8 @@ github.com/alivinco/tpflow v0.10.9-0.20190227141634-ec32fae797bc h1:rEHCbwcw6fG8
 github.com/alivinco/tpflow v0.10.9-0.20190227141634-ec32fae797bc/go.mod h1:HPE/7IlMnNrSGccfFqDm8gpOj33SaNE0+j0o/nQ+Zlw=
 github.com/alivinco/tpflow v0.11.0 h1:Uj9QJK5NQCzpgzUJoblxP0o7T9WfTuJg5MZhoQ00j3Y=
 github.com/alivinco/tpflow v0.11.0/go.mod h1:HPE/7IlMnNrSGccfFqDm8gpOj33SaNE0+j0o/nQ+Zlw=
+github.com/alivinco/tpflow v0.12.0 h1:I2siVOyui1Kka6jubDkF4tJNr1ahSji3UKobqKuT8Nw=
+github.com/alivinco/tpflow v0.12.0/go.mod h1:dAJwzH3UT5rt8U1+T4Fxb3Xy1nM4toUuzJoxvm2FJkc=
 github.com/asdine/storm v2.1.1+incompatible h1:j/IqbSqHVmrU908a11QGf+2Iv7pr7NXiyDE+P35Bp80=
 github.com/asdine/storm v2.1.1+incompatible/go.mod h1:RarYDc9hq1UPLImuiXK3BIWPJLdIygvV3PsInK0FbVQ=
 github.com/asdine/storm v2.1.2+incompatible h1:dczuIkyqwY2LrtXPz8ixMrU/OFgZp71kbKTHGrXYt/Q=
@@ -83,6 +85,8 @@ github.com/mattn/go-isatty v0.0.4 h1:bnP0vzxcAdeI1zdubAl5PjU6zsERjGZb7raWodagDYs
 github.com/mattn/go-isatty v0.0.4/go.mod h1:M+lRXTBqGeGNdLjl/ufCoiOlB5xdOkqRJdNxMWT7Zi4=
 github.com/mitchellh/mapstructure v1.0.0 h1:vVpGvMXJPqSDh2VYHF7gsfQj8Ncx+Xw5Y1KHeTRY+7I=
 github.com/mitchellh/mapstructure v1.0.0/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
+github.com/nathan-osman/go-sunrise v0.0.0-20171121204956-7c449e7c690b h1:nWQAhkNZTyV8tfXIpwSGm97Pd0mM1y9tutJiyWoEhw0=
+github.com/nathan-osman/go-sunrise v0.0.0-20171121204956-7c449e7c690b/go.mod h1:kCE4+NvReDuwiJGk03l6QONGmYy805GQP3xGcCm8cBg=
 github.com/oliveagle/jsonpath v0.0.0-20180606110733-2e52cf6e6852 h1:Yl0tPBa8QPjGmesFh1D0rDy+q1Twx6FyU7VWHi8wZbI=
 github.com/oliveagle/jsonpath v0.0.0-20180606110733-2e52cf6e6852/go.mod h1:eqOVx5Vwu4gd2mmMZvVZsgIqNSaW3xxRThUJ0k/TPk4=
 github.com/pkg/errors v0.0.0-20161029093637-248dadf4e906/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
