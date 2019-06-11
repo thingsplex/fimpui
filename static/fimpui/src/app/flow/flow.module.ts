@@ -5,7 +5,7 @@ import { FlowContextComponent } from './flow-context/flow-context.component';
 import { FlowLibComponent } from './flow-lib/flow-lib.component';
 import { VariableSelectorComponent } from './flow-context/variable-selector.component';
 import { JsonInputComponent } from './ui-elements/json-input.component';
-import { FlowEditorComponent, FlowSourceDialog,FlowLogDialog, FlowRunDialog, ServiceLookupDialog,ContextDialog,NodeEditorDialog } from './flow-editor/flow-editor.component';
+import { FlowEditorComponent, FlowSourceDialog,FlowLogDialog, FlowRunDialog, ServiceLookupDialog,ContextDialog,NodeEditorDialog,HelpDialog } from './flow-editor/flow-editor.component';
 import { FlowNodesComponent ,SetVariableNodeComponent,TimeTriggerNodeComponent } from './flow-nodes/flow-nodes.component';
 import { LoopNodeComponent,WaitNodeComponent} from './flow-nodes/flow-nodes.component';
 import { RestActionNodeComponent } from './flow-nodes/rest-action-node/node.component';
@@ -84,6 +84,7 @@ import {MsgDetailsDialog} from "../timeline/timeline.component";
      VariableSelectorComponent,
      JsonInputComponent,
      NodeEditorDialog,
+     HelpDialog,
      FlowNodesComponent,
      ActionNodeComponent,
      NotificationActionNodeComponent,
@@ -109,6 +110,6 @@ import {MsgDetailsDialog} from "../timeline/timeline.component";
   ],
   providers:[],
   exports:[JsonInputComponent],
-  entryComponents: [FlowSourceDialog,FlowLogDialog,FlowRunDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,RecordEditorDialog,SignInDialog]
+  entryComponents: [FlowSourceDialog,FlowLogDialog,FlowRunDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,HelpDialog,RecordEditorDialog,SignInDialog]
 })
 export class FlowModule { }

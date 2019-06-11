@@ -18,15 +18,14 @@ export class AdminComponent implements OnInit {
 
 
   public vinculumSyncRooms(){
-    let msg  = new FimpMessage("vinc_db","cmd.room.get_list","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
+    let msg  = new FimpMessage("tpflow","cmd.registry.sync_rooms","null",null,null,null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg.toString());
   }
 
   public vinculumSyncDevices(){
-    let msg  = new FimpMessage("vinc_db","cmd.device.get_list","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
+    let msg  = new FimpMessage("tpflow","cmd.registry.sync_devices","null",null,null,null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg.toString());
   }
-
 
 
   public clearRegistry(){

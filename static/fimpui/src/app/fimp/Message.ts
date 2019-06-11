@@ -20,6 +20,10 @@ export class FimpMessage {
 	// UID
 	uid : string;
 
+	src : string;
+
+	resp_to: string;
+
     // private field
 
     topic : string;
@@ -48,7 +52,22 @@ export class FimpMessage {
         jvalue["props"] = props;
         jvalue["ctime"] = timestamp(mctime);
         */
-        let msg = {"serv":this.service,"type":this.mtype,"val_t":this.valueType,"val":this.val,"props":this.props,"tags":this.tags};
+        if(this.src=="" || this.src == undefined ) {
+          this.src = "thingsplex-ui"
+        }
+        if(this.version == "") {
+          this.version = "1";
+        }
+        let msg = {"serv":this.service,
+          "type":this.mtype,
+          "val_t":this.valueType,
+          "val":this.val,
+          "props":this.props,
+          "tags":this.tags,
+          "resp_to":this.resp_to,
+          "src":this.src,
+          "ver":this.version
+        };
         return JSON.stringify(msg);
     }
 

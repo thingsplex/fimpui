@@ -9,6 +9,7 @@ import { msgTypeToValueTypeMap } from "app/things-db/mapping";
 import { BACKEND_ROOT } from "app/globals";
 import { RegistryModule} from 'app/registry/registry.module'
 import { ServiceInterface } from "app/registry/model";
+import {SafeResourceUrl,DomSanitizer} from "@angular/platform-browser"
 import { setTimeout } from 'timers';
 import {FireService} from "../../firebase/fire.service";
 
@@ -20,6 +21,7 @@ export class MetaNode {
 	TimeoutTransition :string;
 	ErrorTransition   :string;
 	Address           :string;
+	ResponseToTopic   :string;
 	Service           :string;
 	ServiceInterface  :string;
   Config            :any;
@@ -691,7 +693,7 @@ export class FlowLogDialog {
 export class NodeEditorDialog {
   flow :Flow;
   node :MetaNode;
-  constructor(public dialogRef: MatDialogRef<NodeEditorDialog>,@Inject(MAT_DIALOG_DATA) public data:any) {
+  constructor(public dialogRef: MatDialogRef<NodeEditorDialog>,@Inject(MAT_DIALOG_DATA) public data:any,public dialog: MatDialog) {
     this.flow = data.flow;
     this.node = data.node;
    }
@@ -738,6 +740,16 @@ export class NodeEditorDialog {
     maxId++;
     return maxId+"";
   }
+
+  showHelp(node:MetaNode){
+    let dialogRef = this.dialog.open(HelpDialog,{
+      // width: '95%',
+      height: '95%',
+      width: '95%',
+      data:node
+    });
+  }
+
 
 }
 
@@ -803,6 +815,24 @@ export class FlowRunDialog {
     this.fimp.publish(this.data.Address,msg.toString());
     let snackBarRef = this.snackBar.open('Message was sent',"",{duration:1000});
   }
+}
+
+@Component({
+  selector: 'help-dialog',
+  templateUrl: 'help-dialog.html',
+  styleUrls: ['./flow-editor.component.css']
+})
+export class HelpDialog {
+  actionData : MetaNode;
+  public url: SafeResourceUrl;
+  constructor(public dialogRef: MatDialogRef<FlowRunDialog>,@Inject(MAT_DIALOG_DATA) public data: MetaNode,private sanitizer: DomSanitizer) {
+
+  }
+  ngOnInit() {
+    let urlString = "/fimp/help/node-"+this.data.Type+".html"
+    this.url = this.url = this.sanitizer.bypassSecurityTrustResourceUrl(urlString); (3)
+  }
+
 }
 
 @Component({

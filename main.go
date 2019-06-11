@@ -153,11 +153,11 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
+	log.Info("Async client connecting... ")
 	sClient := fimpgo.NewSyncClient(nil)
-	sClient.Connect(configs.MqttServerURI, configs.MqttClientIdPrefix+"_fimpui_tpflow_client","","",true,1,1)
+	sClient.Connect(configs.MqttServerURI, configs.MqttClientIdPrefix+"_fimpui_tpflow_client",configs.MqttUsername,configs.MqttPassword,true,1,1)
 
-
+	log.Info("Async client connected ")
 	tpflowApi := client.NewApiRemoteClient(sClient,"1")
 	api.RegisterTpFlowApi(e,tpflowApi)
 
@@ -424,32 +424,23 @@ func main() {
 	//	}
 	//
 	//})
-	// TODO: Implement in vinfimp adapter
-	//e.GET("/fimp/vinculum/devices", func(c echo.Context) error {
-	//	resp, _ := vinculumClient.GetMessage([]string{"device"})
-	//	return c.JSON(http.StatusOK, resp.Msg.Data.Param.Device)
-	//})
-	// TODO : Implement in vinfimp
-	//e.GET("/fimp/api/vinculum/areas", func(c echo.Context) error {
-	//	resp, _ := vinculumClient.GetMessage([]string{"area"})
-	//	return c.JSON(http.StatusOK, resp.Msg.Data.Param.Area)
-	//})
-	sClient.AddSubscription("pt:j1/mt:evt/rt:app/rn:vinculum/ad:1")
-	e.GET("/fimp/api/vinculum/shortcuts", func(c echo.Context) error {
-		reqMsg := fimpgo.NewNullMessage("cmd.shortcut.get_list","vinc_shortcut",nil,nil,nil)
-		respMsg , err := sClient.SendFimp("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",reqMsg,15)
-		if err != nil {
-			return err
-		}
-		var resp interface{}
-		err = json.Unmarshal(respMsg.GetRawObjectValue(), &resp)
-		return c.JSON(http.StatusOK, resp)
-	})
 
-	e.GET("/fimp/vinculum/import_to_registry", func(c echo.Context) error {
-		//process.LoadVinculumDeviceInfoToStore(thingRegistryStore, vinculumClient,mqttRegInt)
-		return c.NoContent(http.StatusOK)
-	})
+	//sClient.AddSubscription("pt:j1/mt:evt/rt:app/rn:vinculum/ad:1")
+	//e.GET("/fimp/api/vinculum/shortcuts", func(c echo.Context) error {
+	//	reqMsg := fimpgo.NewNullMessage("cmd.shortcut.get_list","vinc_shortcut",nil,nil,nil)
+	//	respMsg , err := sClient.SendFimp("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",reqMsg,15)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	var resp interface{}
+	//	err = json.Unmarshal(respMsg.GetRawObjectValue(), &resp)
+	//	return c.JSON(http.StatusOK, resp)
+	//})
+
+	//e.GET("/fimp/vinculum/import_to_registry", func(c echo.Context) error {
+	//	//process.LoadVinculumDeviceInfoToStore(thingRegistryStore, vinculumClient,mqttRegInt)
+	//	return c.NoContent(http.StatusOK)
+	//})
 
 	e.GET("/debug/mem", func(c echo.Context) error {
 		memStats:= runtime.MemStats{}
@@ -491,6 +482,7 @@ func main() {
 	e.File("/fimp/stats/angrydog", index)
 	e.File("/fimp/registry/admin", index)
 	e.Static("/fimp/static", "static/fimpui/dist/")
+	e.Static("/fimp/help", "static/help/")
 
 	e.Logger.Debug(e.Start(":8081"))
 	//e.Shutdown(context.Background())

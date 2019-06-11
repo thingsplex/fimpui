@@ -5,6 +5,9 @@ import {Http, Response} from "@angular/http";
 import {BACKEND_ROOT} from "../../../globals";
 import {ContextVariable} from "../../flow-context/variable-selector.component";
 import {ServiceInterface} from "../../../registry/model";
+import {Subscription} from "rxjs";
+import {FimpMessage, NewFimpMessageFromString} from "../../../fimp/Message";
+import {FimpService} from "../../../fimp/fimp.service";
 
 @Component({
   selector: 'action-node',
@@ -129,22 +132,42 @@ export class VincActionNodeComponent implements OnInit {
   @Input() node :MetaNode;
   @Input() nodes:MetaNode[];
   shortcuts:any[];
-  constructor(public dialog: MatDialog , private http : Http) {
+  globalSub : Subscription;
+  constructor(public dialog: MatDialog ,private fimp:FimpService) {
 
   }
   ngOnInit() {
+
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+      if (fimpMsg.service == "vinculum" ){
+        if (fimpMsg.mtype == "evt.pd7.response") {
+          if (fimpMsg.val) {
+            this.shortcuts = fimpMsg.val.param.shortcut;
+            console.log("Shortcuts update");
+            console.dir(this.shortcuts);
+          }else
+            this.shortcuts = [];
+        }
+      }
+
+    });
+
     this.loadDefaultConfig()
     this.loadShortcuts()
   }
+
+  ngOnDestroy() {
+    if(this.globalSub)
+      this.globalSub.unsubscribe();
+  }
   loadShortcuts() {
-    this.http
-      .get(BACKEND_ROOT+'/fimp/api/vinculum/shortcuts')
-      .map(function(res: Response){
-        let body = res.json();
-        return body;
-      }).subscribe ((result) => {
-      this.shortcuts = result
-    });
+    let val = {"cmd":"get","component":null,"id":null,"param":{"components":["shortcut"]}};
+    var props = new Map<string,string>();
+    let msg  = new FimpMessage("vinculum","cmd.pd7.request","object",val,props,null)
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:thingsplex-ui/ad:1"
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
+
   }
 
   loadDefaultConfig() {
@@ -155,13 +178,22 @@ export class VincActionNodeComponent implements OnInit {
         "Props": {},
         "RegisterAsVirtualService": false,
         "VirtualServiceGroup":"",
-        "VirtualServiceProps":{}
+        "VirtualServiceProps":{},
+        "ResponseToTopic":"pt:j1/mt:rsp/rt:app/rn:tpflow/ad:1"
       };
-      this.node.Config["DefaultValue"] = {"Value": "", "ValueType": "string"};
+      // TODO: For some reason version , response_to fields are empty and shortcut id is string instead of number .
+      this.node.Config["DefaultValue"] = {"Value":  {
+          "cmd": "set",
+          "component": "mode",
+          "id": "home",
+          "param": {},
+          "requestId": 1
+        }, "ValueType": "object"};
       this.node.Address = "pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1"
-      this.node.ServiceInterface = "cmd.mode.set"
-      this.node.Service = "vinc_mode"
+      this.node.ServiceInterface = "cmd.pd7.request"
+      this.node.Service = "vinculum"
       this.node.Label = "Home action"
+
     }
   }
 

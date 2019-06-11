@@ -1,4 +1,4 @@
-version="0.12.0"
+version="0.12.1"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -42,6 +42,7 @@ package-deb-doc:
 	cp fimpui debian/opt/fimpui
 	cp VERSION debian/opt/fimpui
 	cp -R static/fimpui/dist debian/opt/fimpui/static/fimpui/
+	cp -R static/fimpui/help debian/opt/fimpui/static/
 	cp -R static/fhcore debian/opt/fimpui/static/
 	docker run --rm -v ${working_dir}:/build -w /build --name debuild debian dpkg-deb --build debian
 	@echo "Done"

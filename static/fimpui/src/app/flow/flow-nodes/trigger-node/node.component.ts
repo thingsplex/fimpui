@@ -4,6 +4,9 @@ import {MatDialog} from "@angular/material";
 import {BACKEND_ROOT} from "../../../globals";
 import {Http, Response} from "@angular/http";
 import {ServiceInterface} from "../../../registry/model";
+import {FimpMessage, NewFimpMessageFromString} from "../../../fimp/Message";
+import {FimpService} from "../../../fimp/fimp.service";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -125,23 +128,12 @@ export class VincTriggerNodeComponent implements OnInit {
   @Input() nodes:MetaNode[];
   @Input() flowId:string;
   shortcuts:any[];
-  constructor(public dialog: MatDialog, private http : Http) {
+  constructor(public dialog: MatDialog, private fimp:FimpService) {
 
   }
   ngOnInit() {
     this.loadDefaultConfig()
-    this.loadShortcuts()
-  }
 
-  loadShortcuts() {
-    this.http
-      .get(BACKEND_ROOT+'/fimp/api/vinculum/shortcuts')
-      .map(function(res: Response){
-        let body = res.json();
-        return body;
-      }).subscribe ((result) => {
-      this.shortcuts = result
-    });
   }
 
   loadDefaultConfig() {
@@ -154,9 +146,11 @@ export class VincTriggerNodeComponent implements OnInit {
       this.node.Config["RegisterAsVirtualService"] = false;
       this.node.Config["ValueFilter"] = {"Value":"","ValueType":"string"};
       this.node.Config["IsValueFilterEnabled"] = false;
+      this.node.Config["ValueJPath"] = "$.param.current";
+      this.node.Config["ValueJPathResultType"] = "string";
       this.node.Address = "pt:j1/mt:evt/rt:app/rn:vinculum/ad:1"
-      this.node.ServiceInterface = "evt.mode.report"
-      this.node.Service = "vinc_mode"
+      this.node.ServiceInterface = "evt.pd7.notify"
+      this.node.Service = "vinculum"
       this.node.Label = "Home mode trigger"
     }
   }
