@@ -8,8 +8,8 @@
       <br>
       <div> 
       <div *ngIf="node.Config.DefaultValue.Value.component=='shortcut'">
-      <mat-select #nodeTypeInput class="value-selector"   placeholder="Mode filter" [(ngModel)]="node.Config.DefaultValue.Value.id">
-                    <mat-option *ngFor="let shortcut of shortcuts" value="{{shortcut.id}}">{{shortcut.client.name}}</mat-option>
+      <mat-select #nodeTypeInput class="value-selector" placeholder="Mode filter" (change)="onSelected($event)" [(ngModel)]="node.Config.DefaultValue.Value.id">
+                    <mat-option *ngFor="let shortcut of shortcuts" [value]="shortcut.id">{{shortcut.client.name}}</mat-option>
       </mat-select> 
       </div>
       <div *ngIf="node.Config.DefaultValue.Value.component=='mode'">

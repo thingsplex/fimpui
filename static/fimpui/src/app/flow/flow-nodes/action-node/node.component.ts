@@ -169,7 +169,11 @@ export class VincActionNodeComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
 
   }
-
+  onSelected(v) {
+    // console.log("Selected ");
+    // console.dir(v.value);
+    // this.node.Config.DefaultValue.Value.id = Number(v.value);
+  }
   loadDefaultConfig() {
     if (this.node.Config==null) {
       this.node.Config = {
