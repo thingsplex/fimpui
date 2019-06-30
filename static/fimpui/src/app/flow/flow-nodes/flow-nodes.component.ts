@@ -1,10 +1,6 @@
 import { Component, OnInit ,Input } from '@angular/core';
 import { MetaNode, ServiceLookupDialog } from "../flow-editor/flow-editor.component";
 import { MatDialog, MatDialogRef} from '@angular/material';
-import { msgTypeToValueTypeMap } from "app/things-db/mapping";
-import { FlowRunDialog } from "app/flow/flow-editor/flow-editor.component"
-import { Http, Response }  from '@angular/http';
-import { BACKEND_ROOT } from "app/globals";
 
 @Component({
   selector: 'app-flow-nodes',
@@ -30,8 +26,34 @@ export class SetVariableNodeComponent implements OnInit {
   @Input() node :MetaNode;
   @Input() nodes:MetaNode[];
   @Input() flowId:string;
+  public valueSource:string;
   constructor(public dialog: MatDialog) { }
   ngOnInit() {
+    if (this.node.Config.DefaultValue.ValueType == "") {
+      this.valueSource = "input";
+    }else {
+      this.valueSource = "value";
+    }
+  }
+
+  valueSourceSelected() {
+    console.log("Input source changed");
+    if (this.valueSource=="value") {
+      this.node.Config.Name = "";
+    }else {
+      this.node.Config.DefaultValue.ValueType = "";
+    }
+  }
+
+  resultVariableSelected(cvar) {
+    this.node.Config.Name = cvar.Name;
+    if (this.valueSource=="value")
+       this.node.Config.DefaultValue.ValueType = cvar.Type;
+    else
+       this.node.Config.DefaultValue.ValueType = "";
+
+    this.node.Config.UpdateGlobal = cvar.isGlobal;
+    // this.node.Config.IsTargetVariableInMemory = cvar.InMemory;
   }
 }
 

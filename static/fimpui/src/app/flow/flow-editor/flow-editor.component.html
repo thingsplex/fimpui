@@ -14,9 +14,6 @@
     <mat-list-item> <button mat-raised-button (click)="addNode('trigger','vinc_trigger')"  >
         <mat-icon aria-label="Edit node">input</mat-icon> Home mode trigger</button>
     </mat-list-item>
-    <mat-list-item> <button mat-raised-button (click)="addNode('trigger','vinc_trigger')"  >
-          <mat-icon aria-label="Edit node">input</mat-icon> Mode&shortcut trigger</button>
-    </mat-list-item>
     <mat-list-item> <button mat-raised-button (click)="addNode('trigger','scene_trigger')"  >
           <mat-icon aria-label="Edit node">input</mat-icon>Scene trigger</button>
     </mat-list-item>
@@ -36,7 +33,7 @@
         <mat-icon  aria-label="Edit node">send</mat-icon> REST Action</button>
       </mat-list-item>
     <mat-list-item> <button mat-raised-button (click)="addNode('action','vinc_action')" >
-        <mat-icon  aria-label="Edit node">send</mat-icon> Home action</button>
+        <mat-icon  aria-label="Edit node">send</mat-icon> Modes & shortcuts action</button>
     </mat-list-item>
     <mat-list-item> <button mat-raised-button (click)="addNode('receive','')" >
       <mat-icon aria-label="Edit node">input</mat-icon> Receive</button>
@@ -64,19 +61,14 @@
 
   <mat-card class="flow-editor-main-card">
     <mat-card-header>
-      <mat-card-title><h3>Flow editor</h3></mat-card-title>
+      <mat-card-title><h3>Flow : {{ flow.Name }} </h3></mat-card-title>
     </mat-card-header>
     <mat-card-content >
-      <mat-input-container class="example-full-width">
-              <input matInput [(ngModel)]="flow.Name" placeholder="Name" >
-      </mat-input-container>
-      <mat-input-container class="example-full-width">
-        <input matInput [(ngModel)]="flow.Group" placeholder="Group" >
-      </mat-input-container>
-      <mat-input-container >
-              <input style="width: 300px" matInput [(ngModel)]="flow.Description" placeholder="Description" >
-      </mat-input-container>
-
+      <p> Group: {{ flow.Group }} Description: {{ flow.Description }}
+        <button mat-icon-button (click)="showPropsDialog('ui')" >
+          <mat-icon aria-label="Edit node">edit</mat-icon>
+        </button>
+      </p>
       <div id="flowEditorCanvasId" class="drag-area" (drop)="nodeDrop($event)" (dragstart)="nodeDragStart($event)" (dragover)="allowNodeDrop($event)"  >
           <svg id="flow-connections" class = "connections" ></svg>
           <mat-card id = "nodeId_{{node.Id}}" *ngFor="let node of flow.Nodes;let index = index;" class="node-card" [style.left.px]="node.Ui.x" [style.top.px]="node.Ui.y" draggable="true" >

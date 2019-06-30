@@ -1,5 +1,5 @@
 import { Component, OnInit,Inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
 import { Http, Response,URLSearchParams,RequestOptions,Headers }  from '@angular/http';
 import {MatDialog, MatDialogRef,MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
@@ -7,11 +7,11 @@ import { FimpService } from "app/fimp/fimp.service";
 import { FimpMessage } from "app/fimp/Message";
 import { msgTypeToValueTypeMap } from "app/things-db/mapping";
 import { BACKEND_ROOT } from "app/globals";
-import { RegistryModule} from 'app/registry/registry.module'
 import { ServiceInterface } from "app/registry/model";
 import {SafeResourceUrl,DomSanitizer} from "@angular/platform-browser"
 import { setTimeout } from 'timers';
 import {FireService} from "../../firebase/fire.service";
+import {FlowPropsDialog} from "./flow-props-editor.component";
 
 export class MetaNode {
   Id               :string;
@@ -58,12 +58,15 @@ export class FlowEditorComponent implements OnInit {
   canvasHeight:number;
   canvasInitHeight:number;
 
-  constructor(private route: ActivatedRoute,private http : Http,public dialog: MatDialog,private fire:FireService) {
+  constructor(private route: ActivatedRoute,private router: Router,private http : Http,public dialog: MatDialog,private fire:FireService,public snackBar: MatSnackBar) {
     this.flow = new Flow();
    }
 
   ngOnInit() {
     let id  = this.route.snapshot.params['id'];
+    if (id=="-" || id=="") {
+      this.showPropsDialog(id);
+    }
     this.canvasHeight = 0;
     this.loadFlow(id);
 
@@ -121,13 +124,16 @@ export class FlowEditorComponent implements OnInit {
   }
 
  saveFlow() {
-    console.dir(this.flow)
+    // console.dir(this.flow)
+    let snackRef = this.snackBar.open('Saving....',"");
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({headers:headers});
     this.http
       .post(BACKEND_ROOT+'/fimp/flow/definition/'+this.flow.Id,JSON.stringify(this.flow),  options )
       .subscribe ((result) => {
-         console.log("Flow was saved");
+        snackRef.dismiss();
+        this.snackBar.open('Flow is saved',"",{duration:1000});
+        this.router.navigate(['/flow/editor',this.flow.Id]);
       });
   }
   runFlow() {
@@ -147,11 +153,36 @@ export class FlowEditorComponent implements OnInit {
       // this.loadContext();
     });
   }
+
+  showPropsDialog(id) {
+    let dialogRef = this.dialog.open(FlowPropsDialog,{
+      // height: '95%',
+      width: '500px',
+      data:this.flow
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.dir(result)
+      if (result.Name != undefined) {
+        this.flow.Name = result.Name;
+        this.flow.Group = result.Group;
+        this.flow.Description = result.Description;
+        if(id=="-") {
+          this.saveFlow();
+        }
+      }
+
+    });
+  }
+
   sendFlowControllCommands(command:string) {
     this.http
       .post(BACKEND_ROOT+'/fimp/flow/ctrl/'+this.flow.Id+'/'+command,null,  {} )
       .subscribe ((result) => {
          console.log("Cmd was sent");
+         if (command=="send-inclusion-report")
+           this.snackBar.open('Flow is registered',"",{duration:1000});
+         else
+           this.snackBar.open('Flow is unregistered',"",{duration:1000});
       });
   }
 
@@ -497,6 +528,7 @@ findInputSocketPosition(htmlElement):any {
 
   shareFlow() {
     this.fire.addFlow(this.flow);
+    this.snackBar.open('Flow is shared',"",{duration:1000});
   }
 
   showLog() {
@@ -829,7 +861,11 @@ export class HelpDialog {
 
   }
   ngOnInit() {
-    let urlString = "/fimp/help/node-"+this.data.Type+".html"
+    let urlString = "/fimp/help/node-"+this.data.Type+".html";
+    if (this.data.Ui.nodeType) {
+      urlString = "/fimp/help/node-"+this.data.Type+"-"+this.data.Ui.nodeType+".html"
+    }
+    console.log("Loading help from "+urlString);
     this.url = this.url = this.sanitizer.bypassSecurityTrustResourceUrl(urlString); (3)
   }
 

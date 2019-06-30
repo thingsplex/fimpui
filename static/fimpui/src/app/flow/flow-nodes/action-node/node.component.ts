@@ -1,7 +1,8 @@
 import {MetaNode, ServiceLookupDialog} from "../../flow-editor/flow-editor.component";
 import {Component, Input, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material";
-import {Http, Response} from "@angular/http";
+// import {Http, Response} from "@angular/http";
+import { HttpClient } from '@angular/common/http';
 import {BACKEND_ROOT} from "../../../globals";
 import {ContextVariable} from "../../flow-context/variable-selector.component";
 import {ServiceInterface} from "../../../registry/model";
@@ -22,7 +23,7 @@ export class ActionNodeComponent implements OnInit {
   globalVars:any;
   complexValueAsString:any; //string representation of node.Config.DefaultValue.Value
   propsAsString:any;
-  constructor(public dialog: MatDialog,private http : Http) {
+  constructor(public dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -214,13 +215,23 @@ export class NotificationActionNodeComponent implements OnInit {
   @Input() nodes:MetaNode[];
   @Input() flowId:string;
   shortcuts:any[];
-  constructor(public dialog: MatDialog , private http : Http) {
+  siteId:string;
+  constructor(public dialog: MatDialog , private http : HttpClient) {
+    this.siteId = "";
 
   }
   ngOnInit() {
-    this.loadDefaultConfig()
+    this.loadDefaultConfig();
+    this.loadSiteId();
   }
 
+  loadSiteId() {
+    this.http.get(BACKEND_ROOT+'/fimp/api/get-site-info').subscribe((data: any) =>{
+      this.siteId = data["SiteId"];
+      this.node.Config.DefaultValue.Value.SiteId = this.siteId
+      console.log("Site id = "+this.siteId);
+    })
+  }
 
   loadDefaultConfig() {
     if (this.node.Config==null) {
@@ -235,7 +246,7 @@ export class NotificationActionNodeComponent implements OnInit {
       this.node.Config["DefaultValue"] = {"Value":{
           "EventName": "custom",
           "MessageContent": "Hello world",
-          "SiteId": "F315DCF9-5814-4728-8117-CBCA9A4699B0"
+          "SiteId": this.siteId
       },"ValueType":"object"};
       this.node.Address = "pt:j1/mt:evt/rt:app/rn:kind_owl/ad:1"
       this.node.ServiceInterface = "evt.notification.report"
@@ -262,7 +273,7 @@ export class TimelineActionNodeComponent implements OnInit {
   @Input() nodes:MetaNode[];
   @Input() flowId:string;
   shortcuts:any[];
-  constructor(public dialog: MatDialog , private http : Http) {
+  constructor(public dialog: MatDialog ) {
 
   }
   ngOnInit() {

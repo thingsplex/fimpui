@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Variable</h1>
-<mat-dialog-content>
+<mat-dialog-content style="height: 290px">
         <mat-input-container class="node-transition-field">
             <input  matInput placeholder="Name" [(ngModel)]="ctxRec.Name" >
         </mat-input-container>
@@ -42,7 +42,7 @@
           <div *ngSwitchCase="''">
 
           </div>
-          <div *ngSwitchCase="'bool'">
+          <div *ngSwitchCase="'bool'" style="padding-bottom: 7px">
             <mat-radio-group class="node-transition-field"  placeholder="Default value" [(ngModel)]="ctxRec.Value">
               <mat-radio-button class="example-radio-button" [value]="true">
                 true (On)

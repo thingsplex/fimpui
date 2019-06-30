@@ -43,6 +43,7 @@ import { MatTableModule,
   MatTabsModule,
   MatCheckbox} from '@angular/material';
 import {MsgDetailsDialog} from "../timeline/timeline.component";
+import {FlowPropsDialog} from "./flow-editor/flow-props-editor.component";
 
 
 @NgModule({
@@ -78,6 +79,7 @@ import {MsgDetailsDialog} from "../timeline/timeline.component";
      FlowEditorComponent,
      FlowSourceDialog,
      FlowRunDialog,
+     FlowPropsDialog,
      FlowLogDialog,
     SignInDialog,
     FirebaseAuthCheckComponent,
@@ -110,6 +112,6 @@ import {MsgDetailsDialog} from "../timeline/timeline.component";
   ],
   providers:[],
   exports:[JsonInputComponent],
-  entryComponents: [FlowSourceDialog,FlowLogDialog,FlowRunDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,HelpDialog,RecordEditorDialog,SignInDialog]
+  entryComponents: [FlowSourceDialog,FlowLogDialog,FlowRunDialog,FlowPropsDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,HelpDialog,RecordEditorDialog,SignInDialog]
 })
 export class FlowModule { }

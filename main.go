@@ -226,6 +226,9 @@ func main() {
 
 	e.GET("/fimp/api/get-site-info", func(c echo.Context) error {
 		siteId := utils.GetFhSiteId("")
+		if siteId == "" {
+			siteId = "unknown"
+		}
 		siteInfoResponse := struct {
 			SiteId string
 		}{SiteId:siteId}
