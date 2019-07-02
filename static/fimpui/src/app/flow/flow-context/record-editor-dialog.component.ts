@@ -25,7 +25,12 @@ import {ContextRecord} from "./model"
       let request = new ContextRecord();
       request.Name = this.ctxRec.Name;
       request.Variable = new Variable();
-      request.Variable.Value = this.ctxRec.Value;
+      if (this.ctxRec.Value == undefined) {
+        request.Variable.Value = "";
+      }else {
+        request.Variable.Value = this.ctxRec.Value;
+      }
+
       request.Variable.ValueType = this.ctxRec.ValueType;
       request.Description = this.ctxRec.Description;
       if (this.ctxRec.FlowId == null ) {
@@ -41,7 +46,24 @@ import {ContextRecord} from "./model"
           this.snackBar.open('Error !!! . Save the flow and try again.',null,{duration: 10000});
         });
     }
+    onTypeSelected(event) {
+      console.log("Type selected")
+      if (this.ctxRec.ValueType == "int" || this.ctxRec.ValueType == "float") {
+        if ( typeof this.ctxRec.Value == "string" || typeof this.ctxRec.Value == "boolean" || this.ctxRec.Value == undefined) {
+          this.ctxRec.Value = 0;
+        }
+      }else if (this.ctxRec.ValueType == "bool") {
+        if (typeof this.ctxRec.Value == "string"|| typeof this.ctxRec.Value == "number" || this.ctxRec.Value == undefined) {
+          this.ctxRec.Value = true;
+        }
+      }else {
+        if (this.ctxRec.Value == undefined || typeof this.ctxRec.Value == "number" || typeof this.ctxRec.Value == "boolean") {
+          this.ctxRec.Value = "";
+        }
+      }
 
+
+    }
     delete() {
     this.http
       .delete(BACKEND_ROOT+'/fimp/api/flow/context/record/'+this.ctxRec.Name)
