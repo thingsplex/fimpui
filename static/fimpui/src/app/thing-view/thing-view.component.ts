@@ -7,6 +7,7 @@ import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message';
 import { Subscription } from 'rxjs/Subscription';
 import { Http, Response,URLSearchParams,RequestOptions,Headers }  from '@angular/http';
 import { BACKEND_ROOT } from "app/globals";
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-thing-view',
@@ -25,7 +26,7 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
   //   { prop: 'groups' },
   // ];
 
-  constructor(private fimp:FimpService,private route: ActivatedRoute,private http : Http) {
+  constructor(private fimp:FimpService,private route: ActivatedRoute,private http : Http,private _location: Location) {
     this.thing = new Thing();
   }
 
@@ -127,6 +128,10 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
         this.subscribeForFimpMsg(techAdapterName,address);
         this.getReport(techAdapterName,address);
       } );
+  }
+
+  backClicked() {
+    this._location.back();
   }
 
 }

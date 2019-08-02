@@ -34,6 +34,7 @@ import { ZwaveManComponent , AddDeviceDialog, RemoveDeviceDialog,PingDeviceDialo
 import { TemplateEditorDialog } from './zwave-man/template-editor.component';
 import { IkeaManComponent } from './ikea-man/ikea-man.component';
 import { ZigbeeManComponent ,AddZigbeeDeviceDialog} from './zigbee-man/zigbee-man.component';
+import { GenericAdManComponent ,AddGenericDeviceDialog} from './generic-ad-man/generic-ad-man.component';
 import { SystemsManComponent } from './systems-man/systems-man.component';
 import { TimelineComponent, MsgDetailsDialog } from './timeline/timeline.component';
 
@@ -70,6 +71,7 @@ const appRoutes: Routes = [
   { path: 'zwave-man', component: ZwaveManComponent },
   { path: 'ikea-man', component: IkeaManComponent },
   { path: 'zigbee-man', component: ZigbeeManComponent },
+  { path: 'generic-ad-man', component: GenericAdManComponent },
   { path: 'systems-man', component: SystemsManComponent },
   { path: 'timeline', component: TimelineComponent },
   { path: 'report', component: ReportComponent },
@@ -116,9 +118,11 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     ZwaveManComponent,
     IkeaManComponent,
     ZigbeeManComponent,
+    GenericAdManComponent,
     SystemsManComponent,
     AddDeviceDialog,
     AddZigbeeDeviceDialog,
+    AddGenericDeviceDialog,
     RemoveDeviceDialog,
     PingDeviceDialog,
     TimelineComponent,
@@ -182,7 +186,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     deps: [ConfigsService],
     multi: true
 }],
-  entryComponents:[AddDeviceDialog,AddZigbeeDeviceDialog,RemoveDeviceDialog,PingDeviceDialog,TemplateEditorDialog,MsgDetailsDialog],
+  entryComponents:[AddDeviceDialog,AddZigbeeDeviceDialog,AddGenericDeviceDialog,RemoveDeviceDialog,PingDeviceDialog,TemplateEditorDialog,MsgDetailsDialog],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

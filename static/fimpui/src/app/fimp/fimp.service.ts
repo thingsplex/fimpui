@@ -188,6 +188,12 @@ export class FimpService{
     }
 
   }
+
+ public discoverResources() {
+   let msg  = new FimpMessage("system","cmd.discovery.request","null",null,null,null)
+   this.publish("pt:j1/mt:cmd/rt:discovery",msg.toString());
+ }
+
  private rotateMessages(msgLog:FimpMessage[]) {
     if(msgLog.length>this.maxLogSize) {
       msgLog.pop();

@@ -473,6 +473,7 @@ func main() {
 	e.File("/fimp/settings", index)
 	e.File("/fimp/timeline", index)
 	e.File("/fimp/ikea-man", index)
+	e.File("/fimp/generic-ad-man", index)
 	e.File("/fimp/systems-man", index)
 	e.File("/fimp/flow/context", index)
 	e.File("/fimp/flow/overview", index)
