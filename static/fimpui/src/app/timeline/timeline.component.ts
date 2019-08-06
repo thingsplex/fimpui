@@ -28,7 +28,7 @@ export class TimelineComponent implements OnInit {
   serviceFilter:string;
   msgTypeFilter:string;
   fimpService:FimpService;
-  displayedColumns = ['time','topic','service','msgType','value'];
+  displayedColumns = ['time','topic','src','service','msgType','value'];
   // dataSource: MatTableDataSource<FimpMessage>;
   dataSource: TimelineDataSource|null;
   constructor(private fimp: FimpService,public dialog: MatDialog) {

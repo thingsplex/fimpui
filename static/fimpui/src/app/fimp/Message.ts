@@ -41,7 +41,9 @@ export class FimpMessage {
         this.val = value;
         this.props = props;
         this.tags = tags;
+        this.src = "";
         this.version = "1";
+        this.uid = this.getUuid();
     }
     toString() {
         /*
@@ -53,7 +55,7 @@ export class FimpMessage {
         jvalue["ctime"] = timestamp(mctime);
         */
         if(this.src=="" || this.src == undefined ) {
-          this.src = "thingsplex-ui"
+          this.src = "tplex-ui"
         }
         if(this.version == "") {
           this.version = "1";
@@ -66,16 +68,29 @@ export class FimpMessage {
           "tags":this.tags,
           "resp_to":this.resp_to,
           "src":this.src,
-          "ver":this.version
+          "ver":this.version,
+          "uid":this.uid
         };
         return JSON.stringify(msg);
     }
+
+  getUuid(){
+    var dt = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = (dt + Math.random()*16)%16 | 0;
+      dt = Math.floor(dt/16);
+      return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+  }
 
 }
 
 export function NewFimpMessageFromString(jsonString:string):FimpMessage{
         let jobj = JSON.parse(jsonString);
         let msg = new FimpMessage(jobj["serv"],jobj["type"],jobj["val_t"],jobj["val"],jobj["props"],jobj["tags"])
-        msg.ctime = jobj["ctime"]
+        msg.ctime = jobj["ctime"];
+        msg.src = jobj["src"];
+        msg.corid = jobj["corid"];
         return msg ;
 }

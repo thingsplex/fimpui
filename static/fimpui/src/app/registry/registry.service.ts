@@ -53,6 +53,9 @@ export class ThingsRegistryService{
         this.things = result;
       });
   }
+  getLocationById(locationId:number) {
+    return this.locations.filter(location => location.id == locationId)
+  }
 
   getThingsForLocation(locationId:number) {
       return this.things.filter(thing => thing.location_id == locationId)

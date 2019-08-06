@@ -61,6 +61,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { FlowModule} from './flow/flow.module';
 import { StatsModule} from './stats/stats.module';
 import { RegistryModule} from './registry/registry.module';
+import { AnalyticsModule} from './analytics/analytics.module';
 import {environment} from "../environments/environment";
 import {JsonInputComponent} from "./flow/ui-elements/json-input.component";
 import {FireService} from "./firebase/fire.service";
@@ -174,6 +175,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     NgxDatatableModule,
     FlowModule,
     StatsModule,
+    AnalyticsModule,
     RegistryModule,
     CdkTableModule,
     GaugeModule.forRoot()

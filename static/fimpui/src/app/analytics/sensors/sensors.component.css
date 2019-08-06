@@ -1,0 +1,8 @@
+.table-container {
+    padding: 5px;
+    min-width: 1000px;
+  }
+
+.mat-cell:nth-child(0), .mat-header-cell:nth-child(0) {
+    flex: 0 0 250px;
+}

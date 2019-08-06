@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/alivinco/thingsplex/api"
-	"github.com/alivinco/tpflow/api/client"
+	"github.com/thingsplex/tpflow/api/client"
 	"github.com/futurehomeno/fimpgo"
 	"io/ioutil"
 	"net/http"
@@ -158,7 +158,7 @@ func main() {
 	sClient.Connect(configs.MqttServerURI, configs.MqttClientIdPrefix+"_fimpui_tpflow_client",configs.MqttUsername,configs.MqttPassword,true,1,1)
 
 	log.Info("Async client connected ")
-	tpflowApi := client.NewApiRemoteClient(sClient,"1")
+	tpflowApi := client.NewApiRemoteClient(sClient,"1","tplex-ui")
 	api.RegisterTpFlowApi(e,tpflowApi)
 
 	e.GET("/fimp/system-info", func(c echo.Context) error {
@@ -480,6 +480,7 @@ func main() {
 	e.File("/fimp/flow/flow/editor/*", index)
 	e.File("/fimp/flight-recorder", index)
 	e.File("/fimp/thing-view/*", index)
+	e.File("/fimp/analytics/dashboard", index)
 	e.File("/fimp/registry/things/*", index)
 	e.File("/fimp/registry/services/*", index)
 	e.File("/fimp/registry/locations", index)

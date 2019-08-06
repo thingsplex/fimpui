@@ -14,8 +14,6 @@ github.com/Sereal/Sereal v0.0.0-20180727013122-68c42fd7bfdf h1:gziqYtUl2f8Oo1/Ko
 github.com/Sereal/Sereal v0.0.0-20180727013122-68c42fd7bfdf/go.mod h1:D0JMgToj/WdxCgd30Kc1UcA9E+WdZoJqeVOuYW7iTBM=
 github.com/Sereal/Sereal v0.0.0-20180905114147-563b78806e28 h1:KjLSBawWQq6I0p9VRX8RtHIuttTYvUCGfMgNoBBFxYs=
 github.com/Sereal/Sereal v0.0.0-20180905114147-563b78806e28/go.mod h1:D0JMgToj/WdxCgd30Kc1UcA9E+WdZoJqeVOuYW7iTBM=
-github.com/alivinco/tpflow v0.12.2 h1:nIgMdG81C5MohEIbI+jsy80PobSLyUgUDC09EmmGQdI=
-github.com/alivinco/tpflow v0.12.2/go.mod h1:QoT2h/MC59q5I2j9ecMSW8+oLLL+XnOCfiU5TTrJAc4=
 github.com/asdine/storm v2.1.1+incompatible h1:j/IqbSqHVmrU908a11QGf+2Iv7pr7NXiyDE+P35Bp80=
 github.com/asdine/storm v2.1.1+incompatible/go.mod h1:RarYDc9hq1UPLImuiXK3BIWPJLdIygvV3PsInK0FbVQ=
 github.com/asdine/storm v2.1.2+incompatible h1:dczuIkyqwY2LrtXPz8ixMrU/OFgZp71kbKTHGrXYt/Q=
@@ -39,8 +37,8 @@ github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumC
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/eclipse/paho.mqtt.golang v1.2.0 h1:1F8mhG9+aO5/xpdtFkW4SxOJB67ukuDC3t2y2qayIX0=
 github.com/eclipse/paho.mqtt.golang v1.2.0/go.mod h1:H9keYFcgq3Qr5OUJm/JZI/i6U7joQ8SYLhZwfeOo6Ts=
-github.com/futurehomeno/fimpgo v1.3.4 h1:ZmBQOX9b7EPUCyBeloSjW3VXXo9xQapWTg1avYurDjU=
-github.com/futurehomeno/fimpgo v1.3.4/go.mod h1:HlCU8WBRMpYVmB/3MUh08VIDj+H95b9TQO6wVhUvrXY=
+github.com/futurehomeno/fimpgo v1.4.0 h1:p/sPrJdg5EPW+A1ZHSBBOzeJBUdFWmtfxkYEq5vyk8I=
+github.com/futurehomeno/fimpgo v1.4.0/go.mod h1:HlCU8WBRMpYVmB/3MUh08VIDj+H95b9TQO6wVhUvrXY=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b h1:VKtxabqXZkF25pY9ekfRL6a582T4P37/31XEstQ5p58=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
@@ -100,6 +98,8 @@ github.com/sirupsen/logrus v1.3.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPx
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
+github.com/thingsplex/tpflow v0.12.3 h1:Hc/sYgvpUClHK+a9EG32rcA1LSoOgAOmfOdZcfGa8zg=
+github.com/thingsplex/tpflow v0.12.3/go.mod h1:P47zB2Sy+ZQyqol1m1dmb0XEyuHhQ35gth5c57FEggI=
 github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a h1:AOcehBWpFhYPYw0ioDTppQzgI8pAAahVCiMSKTp9rbo=
 github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=

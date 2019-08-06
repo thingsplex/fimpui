@@ -1,0 +1,11 @@
+<nav mat-tab-nav-bar>
+    <a mat-tab-link active [routerLink]="['/analytics/dashboard']" >Dashboard</a>
+    <a mat-tab-link [routerLink]="['/analytics/sensors']" >Sensors</a>
+    <a mat-tab-link [routerLink]="['/analytics/presence']" >Presence</a>
+</nav>
+
+  <br/>
+
+  <events-per-device-chart *ngIf = "dataSource.aggrErrorsByDevice.length>0" [events] = "dataSource.aggrErrorsByDevice"></events-per-device-chart>
+
+

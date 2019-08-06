@@ -50,6 +50,10 @@
             <mat-header-cell *cdkHeaderCellDef> Topic </mat-header-cell>
             <mat-cell *cdkCellDef="let row"> {{row.topic}} </mat-cell>
           </ng-container>
+          <ng-container cdkColumnDef="src">
+            <mat-header-cell *cdkHeaderCellDef> Src </mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.src}} </mat-cell>
+          </ng-container>
           <ng-container cdkColumnDef="service">
               <mat-header-cell *cdkHeaderCellDef> Service </mat-header-cell>
               <mat-cell *cdkCellDef="let row">{{row.service}} </mat-cell>

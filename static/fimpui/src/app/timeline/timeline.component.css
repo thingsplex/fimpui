@@ -11,6 +11,10 @@
   flex: 0 0 470px;
 }
 
+.mat-column-src {
+  flex: 0 0 70px;
+}
+
 .mat-column-service {
   flex: 0 0 150px;
 }
