@@ -79,7 +79,7 @@ const appRoutes: Routes = [
   { path: 'flight-recorder', component: FlightRecorderComponent },
   { path: 'thing-view/:ad/:id', component: ThingViewComponent },
   { path: 'thing-view-addr/:id', component: ThingViewComponent },
-  { path: '',redirectTo:'/zwave-man',pathMatch: 'full'}
+  { path: '',redirectTo:'/analytics/dashboard',pathMatch: 'full'}
 ];
 let mqttHost : string = window.location.hostname;
 let mqttPort : number = Number(window.location.port);
