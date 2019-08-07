@@ -2,3 +2,4 @@
 var/flow_storage
 debian/opt/fimpui/static/fimpui/dist
 debian/opt/fimpui/static
+.idea

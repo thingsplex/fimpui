@@ -2,8 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/alivinco/tpflow/api/client"
-	"github.com/alivinco/tpflow/model"
+	"github.com/thingsplex/tpflow/api/client"
+	"github.com/thingsplex/tpflow/model"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	"io/ioutil"
