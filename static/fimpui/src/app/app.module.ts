@@ -34,7 +34,7 @@ import { ZwaveManComponent , AddDeviceDialog, RemoveDeviceDialog,PingDeviceDialo
 import { TemplateEditorDialog } from './zwave-man/template-editor.component';
 import { IkeaManComponent } from './ikea-man/ikea-man.component';
 import { ZigbeeManComponent ,AddZigbeeDeviceDialog} from './zigbee-man/zigbee-man.component';
-import { GenericAdManComponent ,AddGenericDeviceDialog} from './generic-ad-man/generic-ad-man.component';
+import { GenericAdManComponent ,AddGenericDeviceDialog} from './tpui-modules/generic-ad-man/generic-ad-man.component';
 import { SystemsManComponent } from './systems-man/systems-man.component';
 import { TimelineComponent, MsgDetailsDialog } from './timeline/timeline.component';
 
@@ -58,12 +58,12 @@ import {
 import { ThingViewComponent } from './thing-view/thing-view.component';
 import { ThingsTableComponent } from './things-table/things-table.component';
 import { SettingsComponent } from './settings/settings.component';
-import { FlowModule} from './flow/flow.module';
+import { FlowModule} from './tpui-modules/flow/flow.module';
 import { StatsModule} from './stats/stats.module';
-import { RegistryModule} from './registry/registry.module';
-import { AnalyticsModule} from './ext-modules/analytics/analytics.module';
+import { RegistryModule} from './tpui-modules/registry/registry.module';
+import { AnalyticsModule} from './tpui-modules/analytics/analytics.module';
 import {environment} from "../environments/environment";
-import {JsonInputComponent} from "./flow/ui-elements/json-input.component";
+import {JsonInputComponent} from "./tpui-modules/flow/ui-elements/json-input.component";
 import {FireService} from "./firebase/fire.service";
 import {WebRtcService} from 'app/fimp/web-rtc.service';
 

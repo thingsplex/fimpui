@@ -1,0 +1,4 @@
+Adding git subtree in sourcetree.
+For some reason configuring subtrees via UI doesnt work , workaround is :
+git subtree add --prefix static/fimpui/src/app/tpui-modules https://alivinco@github.com/thingsplex/tpui-modules.git master --squash
+and use UI configuration after that
