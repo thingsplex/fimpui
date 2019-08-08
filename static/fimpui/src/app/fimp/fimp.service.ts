@@ -51,9 +51,9 @@ export class FimpService{
     this.mqtt.onConnect.subscribe((message: any) => {
           console.log("FimpService onConnect");
           // this.observable = null;
-    }); 
+    });
     this.connect();
-   
+
   }
   public init() {
     var topic =  this.prepareTopic("pt:j1/#");
@@ -90,22 +90,22 @@ export class FimpService{
       }else {
         return topic;
       }
-      
+
     }else {
       return topic;
     }
   }
 
   private subscribeToAll(topic: string):Observable<MqttMessage>{
-    console.log("Subscribing to all messages ") 
+    console.log("Subscribing to all messages ")
     // topic = this.prepareTopic(topic);
-    console.log("Subscribing to topic "+topic); 
+    console.log("Subscribing to topic "+topic);
     // this.observable = this.mqtt.observe(topic);
     this.observable = this.subscribe(topic);
     this.observable.subscribe((msg) => {
       if (msg != null) {
         var msgTopic = this.detachGlobalPrefix(msg.topic)
-        console.log("New message from topic :"+msgTopic+" message :"+msg.payload)
+        // console.log("New message from topic :"+msgTopic+" message :"+msg.payload)
         this.saveMessage(msg);
       }
     });
@@ -148,7 +148,7 @@ export class FimpService{
       this.saveFilteredMessage(element);
     });
   }
-    
+
   // public subscribe(topic: string):Observable<MqttMessage>{
   public subscribe(topic: string):any{
     if (this._transportType == "mqtt") {
@@ -217,14 +217,14 @@ export class FimpService{
     }
 
  }
- 
+
  private saveFilteredMessage(fimpMsg : FimpMessage){
   if (fimpMsg.mtype=="evt.camera.image") {
     fimpMsg.raw = "content deleted"
     fimpMsg.val = "content deleted"
   }
   if (this.isFilteringEnabled) {
-    if ( ( (this.fimpFilter.topicFilter== undefined || this.fimpFilter.topicFilter == "") || this.fimpFilter.topicFilter == fimpMsg.topic) && 
+    if ( ( (this.fimpFilter.topicFilter== undefined || this.fimpFilter.topicFilter == "") || this.fimpFilter.topicFilter == fimpMsg.topic) &&
         ( (this.fimpFilter.serviceFilter== undefined || this.fimpFilter.serviceFilter == "") || this.fimpFilter.serviceFilter == fimpMsg.service) &&
         ( (this.fimpFilter.msgTypeFilter== undefined || this.fimpFilter.msgTypeFilter == "") || this.fimpFilter.msgTypeFilter == fimpMsg.mtype)  ) {
       this.filteredMessages.unshift(fimpMsg);
@@ -232,8 +232,8 @@ export class FimpService{
   }else {
     console.log("Adding message to filtered list")
     this.filteredMessages.unshift(fimpMsg);
-  }    
-  
+  }
+
 }
 public getFilter():FimpFilter {
   return this.fimpFilter;
