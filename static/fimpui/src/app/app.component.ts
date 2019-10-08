@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Http, Response }  from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { FimpService} from 'app/fimp/fimp.service';
+import {BACKEND_ROOT, MQTT_PORT, setGlobals} from "./globals";
+import {HttpClient} from "@angular/common/http";
 @Component({
   moduleId: module.id,
   selector: 'fimp-ui',
@@ -11,7 +13,7 @@ import { FimpService} from 'app/fimp/fimp.service';
 export class AppComponent {
   showHeading = true;
   public version :String;
-  constructor (private http : Http){
+  constructor (private http: HttpClient){
     this.loadSystemInfo();
   }
   toggleHeading() {
@@ -30,19 +32,12 @@ export class AppComponent {
 
   // }
 
-  loadSystemInfo() {
-     console.log("Loading system info")
-
-     this.http
-      .get('/fimp/system-info')
-      .map(function(res: Response){
-        let body = res.json();
-        console.log(body.Version);
-        return body;
-      }).subscribe ((result)=>{
-         console.log(result.Version);
-         this.version = result.Version;
-
+  public loadSystemInfo() {
+    this.http.get(BACKEND_ROOT+"/fimp/system-info")
+      .subscribe((data: any) => {
+        // MQTT_PORT = data["WsMqttPort"];
+        setGlobals(data["WsMqttPort"])
+        this.version = data["Version"];
       });
   }
 

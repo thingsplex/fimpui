@@ -14,6 +14,7 @@ import { BACKEND_ROOT } from "app/globals";
 //   MqttService
 // }  from 'angular2-mqtt';
 import {TemplateEditorDialog} from "./template-editor.component";
+import {ThingsRegistryService} from "../tpui-modules/registry/registry.service";
 
 declare var vis: any;
 
@@ -47,7 +48,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   totalUp :number;
   totalDown : number;
   homeId : string;
-  constructor(public dialog: MatDialog,private fimp:FimpService,private router: Router,private http : Http) {
+  constructor(public dialog: MatDialog,private fimp:FimpService,private router: Router,private http : Http,private registry:ThingsRegistryService) {
   }
 
   ngOnInit() {
@@ -141,9 +142,9 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
         }
       }else if (fimpMsg.service == "vinc_db" ) {
         if (fimpMsg.mtype == "evt.device.list_report") {
-           this.updateNodesWithVincDeviceInfo(fimpMsg.val);
+           // this.updateNodesWithVincDeviceInfo(fimpMsg.val);
         }else if (fimpMsg.mtype == "evt.room.list_report") {
-           this.updateNodesWithVincRoomInfo(fimpMsg.val);
+           // this.updateNodesWithVincRoomInfo(fimpMsg.val);
         }
 
       }
@@ -335,50 +336,25 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   }
 
   loadThingsFromRegistry() {
-     this.requestVincDevices()
-
-     // this.http
-     //  .get(BACKEND_ROOT+'/fimp/api/registry/things')
-     //  .map(function(res: Response){
-     //    let body = res.json();
-     //    //console.log(body.Version);
-     //    return body;
-     //  }).subscribe ((result) => {
-     //    //  console.log(result.report_log_files);
-     //     for(let node of this.nodes) {
-     //       for (let thing of result) {
-     //          // change node.id to node.address
-     //           if (node.address == thing.address && thing.comm_tech == "zw") {
-     //              node["alias"] = thing.location_alias +" "+ thing.alias
-     //              node["product_name"] = thing.product_name
-     //           }
-     //       }
-     //     }
-     //     localStorage.setItem("zwaveNodesList", JSON.stringify(this.nodes));
-     //  });
+    this.updateNodesWithVincDeviceInfo();
   }
 
-  updateNodesWithVincDeviceInfo(listOfDevices:any) {
+  updateNodesWithVincDeviceInfo() {
       try {
-
-
         for(let node of this.nodes) {
           node["alias"] = "";
         }
 
         for(let node of this.nodes) {
-          for (let thing of listOfDevices) {
-            // change node.id to node.address
-            if (node.address == thing.fimp.address && thing.fimp.adapter == "zwave-ad") {
-              node["alias"] = node["alias"]+" | "+thing.client.name;
-              node["vincId"] = thing.room
-            }
+          // console.log("Getting thing for address : "+node.address)
+          let thing = this.registry.getThingByAddress("zw",node.address)
+          console.dir(thing);
+          if (thing.length > 0) {
+            node.alias = thing[0].alias
+            node["room"] = thing[0].location_alias
           }
         }
         localStorage.setItem("zwaveNodesList", JSON.stringify(this.nodes));
-        this.requestVincRooms()
-
-
       }catch (e) {
 
       }
@@ -487,13 +463,14 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     this.showProgress(true);
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
   }
-
+  // Deprecated
   requestVincDevices() {
     let msg  = new FimpMessage("vinc_db","cmd.device.get_list","null","",null,null)
     this.showProgress(true);
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
   }
 
+  // Deprecated
   requestVincRooms() {
     let msg  = new FimpMessage("vinc_db","cmd.room.get_list","null","",null,null)
     this.showProgress(true);

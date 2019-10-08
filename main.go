@@ -5,30 +5,26 @@ import (
 	"flag"
 	"fmt"
 	"github.com/alivinco/thingsplex/api"
-	"github.com/thingsplex/tpflow/api/client"
 	"github.com/futurehomeno/fimpgo"
+	"github.com/thingsplex/tpflow/api/client"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"runtime"
 
 	"github.com/alivinco/thingsplex/integr/mqtt"
 	"github.com/alivinco/thingsplex/integr/zwave"
 	"github.com/alivinco/thingsplex/model"
 	"github.com/alivinco/thingsplex/utils"
-	"github.com/koding/websocketproxy"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"strconv"
 	"strings"
-	//_ "net/http/pprof"
-	"os/exec"
 )
 
 type SystemInfo struct {
 	Version string
+	WsMqttPort int
 }
 
 //22kVUwLgIl0yJPU1s4y2rZGQ
@@ -56,21 +52,6 @@ func SetupLog(logfile string, level string) {
 
 }
 
-func startWsCoreProxy(backendUrl string) {
-	defer func() {
-		if r := recover(); r != nil {
-			log.Error("!!!!!!!!!!!!!WsCoreProxy crashed with panic!!!!!!!!!!!", r)
-		}
-	}()
-	u, _ := url.Parse(backendUrl)
-	http.Handle("/", http.FileServer(http.Dir("static/fhcore")))
-	http.Handle("/ws", websocketproxy.ProxyHandler(u))
-	err := http.ListenAndServe(":8082", nil)
-	if err != nil {
-		fmt.Print(err)
-	}
-}
-
 func main() {
 	// pprof server
 	//go func() {
@@ -78,7 +59,9 @@ func main() {
 	//}()
 	configs := &model.FimpUiConfigs{}
 	var configFile string
+	var port int
 	flag.StringVar(&configFile, "c", "", "Config file")
+	flag.IntVar(&port, "p", 8081, "Port" )
 	flag.Parse()
 	if configFile == "" {
 		configFile = "/opt/fimpui/config.json"
@@ -95,50 +78,15 @@ func main() {
 	log.Info("--------------Starting FIMPUI----------------")
 	log.Info("---------------------------------------------")
 
-	//---------THINGS REGISTRY-------------
-	//log.Info("<main>-------------- Starting Things registry ")
-	//	//thingRegistryStore := registry.NewThingRegistryStore(configs.RegistryDbFile)
-	//	//log.Info("<main> Started ")
-	//-------------------------------------
-
 	log.Info("<main> Started")
 	//-------------------------------------
 
-	//---------STATS STORE-----------------
-	//log.Info("<main>-------------- Stats store ")
-	//statsStore := statsdb.NewStatsStore("stats.db")
-	//streamProcessor := statsdb.NewStreamProcessor(configs,statsStore)
-	//streamProcessor.InitMessagingTransport()
-	//log.Info("<main> Started ")
-
-	//----------VINCULUM CLIENT------------
-	//log.Info("<main>-------------- Starting VinculumClient ")
-	//vinculumClient := fhcore.NewVinculumClient(configs.VinculumAddress)
-	//err = vinculumClient.Start()
-	//if err != nil {
-	//	log.Error("<main> Can't connect to Vinculum")
-	//} else {
-	//	log.Info("<main> Started ")
-	//}
-    // --------VINCULUM ADAPTER------------
-	//log.Info("<main>-------------- Starting VinculumAdapter ")
-	//vinculumAd := fhcore.NewVinculumAdapter(configs,vinculumClient)
-	//vinculumAd.InitMessagingTransport()
-
-	//---------GOOGLE OBJECT STORE---------
-	//log.Info("<main>-------------- Initializing Google Object Store ")
-	//objectStorage, _ := logexport.NewGcpObjectStorage("fh-cube-log")
-	//log.Info("<main> Done ")
-	//-------------------------------------
 	sysInfo := SystemInfo{}
+	sysInfo.WsMqttPort = port
 	versionFile, err := ioutil.ReadFile("VERSION")
 	if err == nil {
 		sysInfo.Version = string(versionFile)
 	}
-	//--------VINCULUM PROXY----------------
-	// TODO: Should be off by default but can be turned on via FIMPUI
-	coreUrl := "ws://" + configs.VinculumAddress
-	go startWsCoreProxy(coreUrl)
 	//--------------------------------------
 	var brokerAddress string
 	var isSSL bool
@@ -168,61 +116,38 @@ func main() {
 	e.GET("/fimp/api/configs", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, configs)
 	})
-	//e.GET("/fimp/fr/upload-log-snapshot", func(c echo.Context) error {
+
+	//e.GET("/fimp/api/fr/run-cmd", func(c echo.Context) error {
 	//
-	//	//logexport.UploadLogToGcp()
-	//	//files := []string {"/var/log/daily.out"}
-	//	hostAlias := c.QueryParam("hostAlias")
-	//	log.Info(hostAlias)
-	//	if hostAlias == "" {
-	//		hostAlias = "unknown"
-	//	}
-	//	uploadStatus := objectStorage.UploadLogSnapshot(configs.ReportLogFiles, hostAlias, configs.ReportLogSizeLimit)
-	//	return c.JSON(http.StatusOK, uploadStatus)
-	//})
-	//e.GET("/fimp/api/fr/upload-file", func(c echo.Context) error {
+	//	cmd := c.QueryParam("cmd")
+	//	out, err := exec.Command("bash", "-c", cmd).Output()
+	//	result := map[string]string{"result":"","error":""}
 	//
-	//	files := []string {c.QueryParam("fileName")}
-	//	hostAlias := c.QueryParam("hostAlias")
-	//	log.Info(hostAlias)
-	//	if hostAlias == "" {
-	//		hostAlias = "unknown"
+	//	if err != nil {
+	//		log.Error(err)
+	//		result["result"] = err.Error()
+	//	}else {
+	//		result["result"] = string(out)
 	//	}
-	//	uploadStatus := objectStorage.UploadLogSnapshot(files, hostAlias, 0)
-	//	return c.JSON(http.StatusOK, uploadStatus)
+	//	return c.JSON(http.StatusOK, result)
 	//})
 
-	e.GET("/fimp/api/fr/run-cmd", func(c echo.Context) error {
-
-		cmd := c.QueryParam("cmd")
-		out, err := exec.Command("bash", "-c", cmd).Output()
-		result := map[string]string{"result":"","error":""}
-
-		if err != nil {
-			log.Error(err)
-			result["result"] = err.Error()
-		}else {
-			result["result"] = string(out)
-		}
-		return c.JSON(http.StatusOK, result)
-	})
-
-	e.GET("/fimp/api/get-log", func(c echo.Context) error {
-
-		limitS := c.QueryParam("limit")
-		limit , err := strconv.Atoi(limitS)
-		if err != nil {
-			limit = 10000
-		}
-		flowId := c.QueryParam("flowId")
-
-		//out, err := exec.Command("bash", "-c", cmd).Output()
-		//result := map[string]string{"result":"","error":""}
-		filter := utils.LogFilter{FlowId:flowId}
-		result := utils.GetLogs(configs.LogFile,&filter,int64(limit),true)
-
-		return c.Blob(http.StatusOK,"text/plain", result)
-	})
+	//e.GET("/fimp/api/get-log", func(c echo.Context) error {
+	//
+	//	limitS := c.QueryParam("limit")
+	//	limit , err := strconv.Atoi(limitS)
+	//	if err != nil {
+	//		limit = 10000
+	//	}
+	//	flowId := c.QueryParam("flowId")
+	//
+	//	//out, err := exec.Command("bash", "-c", cmd).Output()
+	//	//result := map[string]string{"result":"","error":""}
+	//	filter := utils.LogFilter{FlowId:flowId}
+	//	result := utils.GetLogs(configs.LogFile,&filter,int64(limit),true)
+	//
+	//	return c.Blob(http.StatusOK,"text/plain", result)
+	//})
 
 	e.GET("/fimp/api/get-site-info", func(c echo.Context) error {
 		siteId := utils.GetFhSiteId("")
@@ -367,83 +292,6 @@ func main() {
 		}
 	})
 
-	//e.GET("/fimp/api/stats/event-log", func(c echo.Context) error {
-	//
-	//	pageSize := 1000
-	//	page := 0
-	//	pageSize, _ = strconv.Atoi(c.QueryParam("pageSize"))
-	//	page, _ = strconv.Atoi(c.QueryParam("page"))
-	//	statsErrors, err := statsStore.GetEvents(pageSize,page)
-	//
-	//	if err == nil {
-	//		return c.JSON(http.StatusOK, statsErrors)
-	//	} else {
-	//		log.Error("Faild to fetch errors ",err)
-	//		return c.JSON(http.StatusInternalServerError, err)
-	//	}
-	//
-	//})
-	//ClearDb
-
-	//e.POST("/fimp/api/stats/drop-eventsdb", func(c echo.Context) error {
-	//	err := statsStore.DropDb()
-	//	if err == nil {
-	//		return c.JSON(http.StatusOK,err)
-	//	} else {
-	//		log.Error("Faild to drop db ",err)
-	//		return c.JSON(http.StatusInternalServerError, err)
-	//	}
-	//
-	//})
-
-
-
-	//e.GET("/fimp/api/stats/metrics/counters", func(c echo.Context) error {
-	//
-	//	result := make(map[string]interface{})
-	//	result["restart_time"] = statsStore.GetResetTime()
-	//	result["metrics"] = statsStore.GetCounterMetrics()
-	//
-	//	if err == nil {
-	//		return c.JSON(http.StatusOK, result)
-	//	} else {
-	//		log.Error("Faild to fetch errors ",err)
-	//		return c.JSON(http.StatusInternalServerError, err)
-	//	}
-	//
-	//})
-
-	//e.GET("/fimp/api/stats/metrics/meters", func(c echo.Context) error {
-	//
-	//	result := make(map[string]interface{})
-	//	result["restart_time"] = statsStore.GetResetTime()
-	//	result["metrics"] = statsStore.GetMeterMetrics()
-	//
-	//	if err == nil {
-	//		return c.JSON(http.StatusOK, result)
-	//	} else {
-	//		log.Error("Faild to fetch errors ",err)
-	//		return c.JSON(http.StatusInternalServerError, err)
-	//	}
-	//
-	//})
-
-	//sClient.AddSubscription("pt:j1/mt:evt/rt:app/rn:vinculum/ad:1")
-	//e.GET("/fimp/api/vinculum/shortcuts", func(c echo.Context) error {
-	//	reqMsg := fimpgo.NewNullMessage("cmd.shortcut.get_list","vinc_shortcut",nil,nil,nil)
-	//	respMsg , err := sClient.SendFimp("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",reqMsg,15)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	var resp interface{}
-	//	err = json.Unmarshal(respMsg.GetRawObjectValue(), &resp)
-	//	return c.JSON(http.StatusOK, resp)
-	//})
-
-	//e.GET("/fimp/vinculum/import_to_registry", func(c echo.Context) error {
-	//	//process.LoadVinculumDeviceInfoToStore(thingRegistryStore, vinculumClient,mqttRegInt)
-	//	return c.NoContent(http.StatusOK)
-	//})
 
 	e.GET("/debug/mem", func(c echo.Context) error {
 		memStats:= runtime.MemStats{}
@@ -451,11 +299,9 @@ func main() {
 		return c.JSON(http.StatusOK,memStats)
 	})
 
-
-
 	index := "static/fimpui/dist/index.html"
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:4200","http://127.0.0.1:4200", "http:://localhost:8082"},
+		AllowOrigins: []string{"http://localhost:4200","http://127.0.0.1:4200"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
 	//e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
@@ -467,6 +313,7 @@ func main() {
 
 	e.GET("/mqtt", wsUpgrader.Upgrade)
 	e.File("/fimp", index)
+	e.File("/", index)
 	//e.File("/fhcore", "static/fhcore.html")
 	e.File("/fimp/zwave-man", index)
 	e.File("/fimp/zigbee-man", index)
@@ -480,7 +327,7 @@ func main() {
 	e.File("/fimp/flow/flow/editor/*", index)
 	e.File("/fimp/flight-recorder", index)
 	e.File("/fimp/thing-view/*", index)
-	e.File("/fimp/analytics/dashboard", index)
+	e.File("/fimp/analytics/*", index)
 	e.File("/fimp/registry/things/*", index)
 	e.File("/fimp/registry/services/*", index)
 	e.File("/fimp/registry/locations", index)
@@ -489,7 +336,7 @@ func main() {
 	e.Static("/fimp/static", "static/fimpui/dist/")
 	e.Static("/fimp/help", "static/help/")
 
-	e.Logger.Debug(e.Start(":8081"))
+	e.Logger.Debug(e.Start(fmt.Sprintf(":%d",port) ))
 	//e.Shutdown(context.Background())
 	log.Info("Exiting the app")
 

@@ -37,6 +37,26 @@ export class TimelineComponent implements OnInit {
     this.topicFilter = filter.topicFilter;
     this.serviceFilter = filter.serviceFilter;
     this.msgTypeFilter = filter.msgTypeFilter;
+    if (this.topic == "" || this.topic == undefined) {
+      this.topic = "pt:j1/mt:cmd/rt:app/rn:put_app_name_here/ad:1"
+    }
+    if (this.payload == "" || this.payload == undefined) {
+      this.payload = "{\n" +
+        "  \"type\": \"cmd.app.something\",\n" +
+        "  \"serv\": \"set_service_name_here\",\n" +
+        "  \"val_t\": \"str_map\",\n" +
+        "  \"val\": {\n" +
+        "    \"location_id\": \"\"\n" +
+        "  },\n" +
+        "  \"tags\": null,\n" +
+        "  \"props\": null,\n" +
+        "  \"ver\": \"1\",\n" +
+        "  \"corid\": \"\",\n" +
+        "  \"src\": \"tplex-ui\",\n" +
+        "  \"ctime\": \"2019-09-13T11:12:51.597+09:00\",\n" +
+        "  \"uid\": \"08d2da8b-0d2c-4a2c-a0d7-8facc48b3026\"\n" +
+        "}"
+    }
     // this.messages = this.fimp.getFilteredMessagLog();
   }
 
@@ -120,7 +140,7 @@ export class MsgDetailsDialog {
       this.fimpMsg = data.fimp;
       this.fimpMsg.raw = JSON.stringify(JSON.parse(this.fimpMsg.raw),null,2)
       this.parentComp = data.parent;
-      this.getServiceByAddress(this.fimpMsg.topic)
+      // this.getServiceByAddress(this.fimpMsg.topic)
     }
 
   close(): void {

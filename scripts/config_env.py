@@ -17,9 +17,11 @@ def set_deb_control(version , arch):
 
 def set_static_globals(environment):
     if environment == "prod" :
-        template = 'export const BACKEND_ROOT = ""'
+        template = 'export var BACKEND_ROOT = ""; export var MQTT_PORT = 8081;export function setGlobals(mqtt) { MQTT_PORT = mqtt;} '
+
+
     elif environment == "dev" :
-        template = 'export const BACKEND_ROOT = "http://localhost:8081"'    
+        template = 'export var BACKEND_ROOT = "http://localhost:8081"; export var MQTT_PORT = 8081;export function setGlobals(mqtt) { MQTT_PORT = mqtt;}'
     
     file_name  = "./static/fimpui/src/app/globals.ts"
     f = open(file_name,"w")

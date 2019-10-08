@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import { Observable} from 'rxjs';
 import {
   MqttMessage,
   MqttService
@@ -8,6 +8,7 @@ import { FimpMessage, NewFimpMessageFromString } from "app/fimp/Message";
 import { ConfigsService } from 'app/configs.service';
 import {WebRtcService} from "./web-rtc.service";
 import {tap} from "rxjs/operators";
+import {MQTT_PORT} from "../globals";
 
 export class FimpFilter {
   public topicFilter:string;
@@ -39,10 +40,16 @@ export class FimpService{
   private globalTopicPrefix:string;
   public mqttSeviceOptions:any;
   private _transportType:string;
+  private brokerPort :number = 0;
+  public mqttConnState  = 0;
 
   constructor(public mqtt: MqttService,private configs:ConfigsService,private _webRtcService:WebRtcService) {
     this.fimpFilter = new FimpFilter();
     this.isFilteringEnabled = false;
+    this.mqtt.state.subscribe(state => {
+      console.log("mqtt connection state :"+state)
+      this.mqttConnState = state;
+    })
     this._transportType = localStorage.getItem("fimpTransportType");
     if (!this._transportType) {
       this._transportType = "mqtt"
@@ -50,7 +57,6 @@ export class FimpService{
 
     this.mqtt.onConnect.subscribe((message: any) => {
           console.log("FimpService onConnect");
-          // this.observable = null;
     });
     this.connect();
 
@@ -59,11 +65,12 @@ export class FimpService{
     var topic =  this.prepareTopic("pt:j1/#");
     this.subscribeToAll(topic);
   }
+
   public connect(){
     let mqttHost : string = window.location.hostname;
     this.mqttSeviceOptions  = {
       hostname:mqttHost,
-      port: 8081,
+      port:  MQTT_PORT,
       path: '/mqtt',
       username:this.configs.configs.mqtt_server_username,
       password:this.configs.configs.mqtt_server_password
@@ -114,9 +121,7 @@ export class FimpService{
   public getGlobalObservable():Observable<MqttMessage>{
     console.log("Getting global observable");
     if (this.observable == null){
-      // var topic =  this.prepareTopic("pt:j1/#");
-      // var topic =  this.prepareTopic("pt:j1/#");
-      this.subscribeToAll("pt:j1/#");
+        this.subscribeToAll("pt:j1/#");
     }
     return this.observable;
   }
@@ -202,7 +207,7 @@ export class FimpService{
 
  private saveMessage(msg:MqttMessage){
     try {
-      console.log("Saving new message to log")
+      // console.log("Saving new message to log")
       let fimpMsg  = NewFimpMessageFromString(msg.payload.toString());
       fimpMsg.topic = this.detachGlobalPrefix(msg.topic);
       fimpMsg.raw = msg.payload.toString();
