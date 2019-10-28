@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FimpService} from 'app/fimp/fimp.service';
-import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message'; 
+import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -13,6 +13,8 @@ export class SystemsManComponent implements OnInit {
   address : string ;
   securityKey : string;
   globalSub : Subscription;
+  configKeys : string[];
+  configParams : any;
   constructor(private fimp:FimpService) { }
 
   ngOnInit() {
@@ -20,10 +22,19 @@ export class SystemsManComponent implements OnInit {
       console.log(msg.payload.toString());
       let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if(fimpMsg.mtype == "evt.system.connect_params_report" )
-        { 
+        {
+          this.configKeys = [];
           console.log("updating variables");
-          this.systemId = fimpMsg.val["id"];
-          this.address = fimpMsg.val["address"];
+          console.dir(fimpMsg.val)
+          this.configParams = fimpMsg.val
+          for(let key in fimpMsg.val) {
+            console.log("Key:"+key)
+            this.configKeys.push(key);
+
+          }
+          // this.systemId = fimpMsg.val["id"];
+          // this.address = fimpMsg.val["address"];
+
         }
       //this.messages.push("topic:"+msg.topic," payload:"+msg.payload);
     });
@@ -31,8 +42,8 @@ export class SystemsManComponent implements OnInit {
   }
 
   public connect(service:string,systemId:string,securityKey:string,address:string) {
-     let val = {"address":address,"security_key":securityKey,"id":systemId};
-     let msg  = new FimpMessage(service,"cmd.system.connect","str_map",val,null,null);
+     // let val = {"address":address,"security_key":securityKey,"id":systemId};
+     let msg  = new FimpMessage(service,"cmd.system.connect","str_map",this.configParams,null,null);
      this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+service+"/ad:1",msg.toString());
   }
 
@@ -45,7 +56,7 @@ export class SystemsManComponent implements OnInit {
     let msg  = new FimpMessage(service,"cmd.system.disconnect","null",null,null,null);
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+service+"/ad:1",msg.toString());
  }
- // Force system syncronization . 
+ // Force system syncronization .
  public sync(service:string) {
   let msg  = new FimpMessage(service,"cmd.system.sync","null",null,null,null);
   this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+service+"/ad:1",msg.toString());

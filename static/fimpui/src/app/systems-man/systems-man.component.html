@@ -18,20 +18,15 @@
             <input #service matInput placeholder="service">
     </mat-input-container>
     <p>
-    <mat-input-container class="example-full-width">
-        <input #systemIdInput matInput placeholder="id" [(ngModel)]= "systemId" >
+    <mat-input-container *ngFor="let key of configKeys" class="example-full-width">
+        <input #systemIdInput matInput placeholder="{{key}}" [(ngModel)]="configParams[key]" >
     </mat-input-container>
-    <mat-input-container class="example-full-width">
-        <input #addressInput matInput placeholder="address" [(ngModel)]="address" >
-      </mat-input-container>
-    <mat-input-container class="example-full-width">
-            <input #securityKeyInput matInput placeholder="securityKey" [(ngModel)]="securityKey">
-    </mat-input-container>
+
     </p>
   </mat-card-content>
     <mat-card-actions>
     <button mat-raised-button (click)="getConnParams(service.value)" >Get connection parameters</button>
-    <button mat-raised-button (click)="connect(service.value,systemIdInput.value,securityKeyInput.value,addressInput.value)" >Connect</button>
+    <button mat-raised-button (click)="connect()" >Connect</button>
     <button mat-raised-button (click)="sync(service.value)" >Synchronize</button>
     <button mat-raised-button (click)="disconnect(service.value)" >Disconnect</button>
     </mat-card-actions>
