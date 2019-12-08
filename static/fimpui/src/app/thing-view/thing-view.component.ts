@@ -17,6 +17,7 @@ import {Location} from '@angular/common';
 export class ThingViewComponent implements OnInit ,OnDestroy{
   globalSub : Subscription;
   thing : Thing;
+  advancedViewMode:boolean;
 
   rows = [
   ];
@@ -28,6 +29,7 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
 
   constructor(private fimp:FimpService,private route: ActivatedRoute,private http : Http,private _location: Location) {
     this.thing = new Thing();
+    this.advancedViewMode = false;
   }
 
   ngOnInit() {
@@ -44,8 +46,10 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
       this.getReport(techAdapterName,address);
     // }else
     //   this.loadThingFromRegistry(techAdapterName,address);
- }
-
+  }
+  enableAdvancedView(flag:boolean) {
+    this.advancedViewMode = flag;
+  }
 
   ngOnDestroy() {
     if (this.globalSub!=undefined)

@@ -93,7 +93,6 @@ export class TimelineComponent implements OnInit {
 
   }
 
-
 }
 
 export class TimelineDataSource extends DataSource<any> {

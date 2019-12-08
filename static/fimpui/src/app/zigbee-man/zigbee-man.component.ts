@@ -1,10 +1,11 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import { FimpService } from "app/fimp/fimp.service";
-import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message'; 
+import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message';
 import { Subscription } from "rxjs/Subscription";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material";
 // import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSnackBar} from '@angular/material';
+import {ThingsRegistryService} from "../tpui-modules/registry/registry.service";
 
 // import {AddDeviceDialog} from "../zwave-man/zwave-man.component";
 
@@ -16,13 +17,13 @@ import {MatSnackBar} from '@angular/material';
 export class ZigbeeManComponent implements OnInit {
   nodes : any[];
   globalSub : Subscription;
-  constructor(public dialog: MatDialog,private fimp:FimpService,private snackBar: MatSnackBar) {
+  constructor(public dialog: MatDialog,private fimp:FimpService,private snackBar: MatSnackBar,public registry:ThingsRegistryService) {
   }
 
   reloadZigbeeDevices(){
     let msg  = new FimpMessage("zigbee","cmd.network.get_all_nodes","null",null,null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
-  } 
+  }
 
   // addDevice(){
   //   console.log("Add device")
@@ -49,25 +50,32 @@ export class ZigbeeManComponent implements OnInit {
     let val = {"address":address.toString()}
     let msg  = new FimpMessage("zigbee","cmd.thing.delete","str_map",val,null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
-    
+
   }
-  
+
   generateExclusionReport(address:string){
     let msg  = new FimpMessage("zigbee","evt.thing.exclusion_report","object",{"address":String(address)},null,null)
     this.fimp.publish("pt:j1/mt:evt/rt:ad/rn:zigbee/ad:1",msg.toString());
-    
+
   }
 
   ngOnInit() {
-    
+
     this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
       console.log(msg.payload.toString());
       let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "zigbee" )
         {
         if(fimpMsg.mtype == "evt.network.all_nodes_report" )
-        { 
+        {
           this.nodes = fimpMsg.val;
+          for (let n of this.nodes) {
+            let things = this.registry.getThingByAddress("zigbee",n.address);
+            if (things.length>0) {
+              n["location"] = things[0].location_alias;
+              n["name"] = things[0].alias;
+            }
+          }
           localStorage.setItem("zigbeeNodesList", JSON.stringify(this.nodes));
         }else if (fimpMsg.mtype == "evt.thing.exclusion_report" || fimpMsg.mtype == "evt.thing.inclusion_report"){
             console.log("Reloading nodes 2");
@@ -90,7 +98,7 @@ export class ZigbeeManComponent implements OnInit {
     }else {
       this.nodes = JSON.parse(localStorage.getItem("zigbeeNodesList"));
     }
-    
+
   }
   changeChannel(channel:number) {
     channel = Number(channel)

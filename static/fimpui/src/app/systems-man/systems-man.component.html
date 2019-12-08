@@ -14,9 +14,19 @@
   <mat-card-subtitle> Connect or disconnect a system adapter to FH </mat-card-subtitle>
     </mat-card-header>
   <mat-card-content>
+    <mat-form-field>
+      <mat-label>Discovered resources</mat-label>
+      <mat-select  [(value)]="selectedResource" >
+        <mat-option *ngFor="let ad of listOfDiscoveredResources" [value]="ad">
+            {{ad}}
+        </mat-option>
+
+      </mat-select>
+    </mat-form-field>
     <mat-input-container class="example-full-width">
-            <input #service matInput placeholder="service">
+            <input #service matInput placeholder="or provide resource name">
     </mat-input-container>
+
     <p>
     <mat-input-container *ngFor="let key of configKeys" class="example-full-width">
         <input #systemIdInput matInput placeholder="{{key}}" [(ngModel)]="configParams[key]" >
@@ -26,9 +36,10 @@
   </mat-card-content>
     <mat-card-actions>
     <button mat-raised-button (click)="getConnParams(service.value)" >Get connection parameters</button>
-    <button mat-raised-button (click)="connect()" >Connect</button>
+    <button mat-raised-button (click)="connect(service.value)" >Connect</button>
     <button mat-raised-button (click)="sync(service.value)" >Synchronize</button>
     <button mat-raised-button (click)="disconnect(service.value)" >Disconnect</button>
     </mat-card-actions>
+    <div *ngIf="connectStatus"> Connect status : {{ connectStatus }} Error : {{ connectError }} </div>
 </mat-card>
 </div>
