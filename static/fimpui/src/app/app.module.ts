@@ -32,7 +32,6 @@ import { MatTableModule,
 import { CdkTableModule } from '@angular/cdk/table';
 import { ZwaveManComponent , AddDeviceDialog, RemoveDeviceDialog,PingDeviceDialog } from './zwave-man/zwave-man.component';
 import { TemplateEditorDialog } from './zwave-man/template-editor.component';
-import { IkeaManComponent } from './ikea-man/ikea-man.component';
 import { ZigbeeManComponent ,AddZigbeeDeviceDialog} from './zigbee-man/zigbee-man.component';
 import { GenericAdManComponent ,AddGenericDeviceDialog} from './tpui-modules/generic-ad-man/generic-ad-man.component';
 import { SystemsManComponent } from './systems-man/systems-man.component';
@@ -62,6 +61,7 @@ import { FlowModule} from './tpui-modules/flow/flow.module';
 import { StatsModule} from './stats/stats.module';
 import { RegistryModule} from './tpui-modules/registry/registry.module';
 import { AnalyticsModule} from './tpui-modules/analytics/analytics.module';
+import { SystemModule} from "./system/system.module";
 import {environment} from "../environments/environment";
 import {JsonInputComponent} from "./tpui-modules/flow/ui-elements/json-input.component";
 import {FireService} from "./firebase/fire.service";
@@ -70,7 +70,6 @@ import {WebRtcService} from 'app/fimp/web-rtc.service';
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
   { path: 'zwave-man', component: ZwaveManComponent },
-  { path: 'ikea-man', component: IkeaManComponent },
   { path: 'zigbee-man', component: ZigbeeManComponent },
   { path: 'generic-ad-man', component: GenericAdManComponent },
   { path: 'systems-man', component: SystemsManComponent },
@@ -117,7 +116,6 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
   declarations: [
     AppComponent,
     ZwaveManComponent,
-    IkeaManComponent,
     ZigbeeManComponent,
     GenericAdManComponent,
     SystemsManComponent,
@@ -176,6 +174,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     FlowModule,
     StatsModule,
     AnalyticsModule,
+    SystemModule,
     RegistryModule,
     CdkTableModule,
     GaugeModule.forRoot()

@@ -18,6 +18,7 @@ export class SystemsManComponent implements OnInit {
   connectStatus : string;
   connectError  : string;
   listOfDiscoveredResources : string[];
+  listOfDiscoveredResourceObjects : any[];
   selectedResource : string; // Name of the adapter
   constructor(private fimp:FimpService) { }
 
@@ -26,7 +27,7 @@ export class SystemsManComponent implements OnInit {
       this.selectedResource = localStorage.getItem("selectedResource");
     }
 
-    if (localStorage.getItem("listOfDiscoveredResources")!=null){
+    if (localStorage.getItem("listOfDiscoveredResources-")!=null){
       this.listOfDiscoveredResources = JSON.parse(localStorage.getItem("listOfDiscoveredResources"));
     }else {
       this.discover();
@@ -56,7 +57,8 @@ export class SystemsManComponent implements OnInit {
 
       }else if (fimpMsg.mtype == "evt.discovery.report") {
           this.listOfDiscoveredResources.push(fimpMsg.val.resource_name)
-          localStorage.setItem("listOfAdapters", JSON.stringify(this.listOfDiscoveredResources));
+          this.listOfDiscoveredResourceObjects.push(fimpMsg.val)
+          localStorage.setItem("listOfDiscoveredResources", JSON.stringify(this.listOfDiscoveredResources));
       }
       //this.messages.push("topic:"+msg.topic," payload:"+msg.payload);
     });
@@ -64,38 +66,74 @@ export class SystemsManComponent implements OnInit {
   }
   discover() {
     this.listOfDiscoveredResources = [];
+    this.listOfDiscoveredResourceObjects = [];
     this.fimp.discoverResources()
   }
   public connect(service:string) {
      if(service == "") {
       service = this.selectedResource;
      }
-     // let val = {"address":address,"security_key":securityKey,"id":systemId};
-     let msg  = new FimpMessage(service,"cmd.system.connect","str_map",this.configParams,null,null);
-     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+service+"/ad:1",msg.toString());
+    let res = this.getDiscoveredResourceObject(service)
+    let rt = "ad";
+    let instance_id = "1";
+    if (res) {
+      rt = res.resource_type;
+      instance_id = res.instance_id;
+    }
+    let msg  = new FimpMessage(service,"cmd.system.connect","str_map",this.configParams,null,null);
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
   }
 
   public getConnParams(service:string) {
     if(service == "") {
       service = this.selectedResource;
     }
+    let res = this.getDiscoveredResourceObject(service)
+    let rt = "ad";
+    let instance_id = "1";
+    if (res) {
+      rt = res.resource_type;
+      instance_id = res.instance_id;
+    }
     let msg  = new FimpMessage(service,"cmd.system.get_connect_params","null",null,null,null);
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+service+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
  }
 
   public disconnect(service:string) {
     if(service == "") {
       service = this.selectedResource;
     }
+    let res = this.getDiscoveredResourceObject(service)
+    let rt = "ad";
+    let instance_id = "1";
+    if (res) {
+      rt = res.resource_type;
+      instance_id = res.instance_id;
+    }
     let msg  = new FimpMessage(service,"cmd.system.disconnect","null",null,null,null);
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+service+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
  }
  // Force system syncronization .
  public sync(service:string) {
   if(service == "") {
      service = this.selectedResource;
   }
+   let res = this.getDiscoveredResourceObject(service)
+   let rt = "ad";
+   let instance_id = "1";
+   if (res) {
+     rt = res.resource_type;
+     instance_id = res.instance_id;
+   }
   let msg  = new FimpMessage(service,"cmd.system.sync","null",null,null,null);
-  this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+service+"/ad:1",msg.toString());
-}
+   this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+  }
+
+  public getDiscoveredResourceObject(name:string):any {
+    for (let res of this.listOfDiscoveredResourceObjects) {
+      if (res.resource_name == name) {
+        return res;
+      }
+    }
+  }
 }

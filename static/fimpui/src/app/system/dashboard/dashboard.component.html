@@ -1,0 +1,151 @@
+<nav mat-tab-nav-bar>
+    <a mat-tab-link active [routerLink]="['/system/dashboard']" >Dashboard</a>
+</nav>
+
+<div style="overflow: hidden" >
+
+       <mat-card class="card">
+        <mat-card-header>
+            <mat-card-title><h3> Cloud connection </h3></mat-card-title>
+            <mat-card-subtitle></mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p> Cloud communication statistics </p>
+          <table *ngIf="cbInfo">
+            <thead>
+            <tr><td width="190px">Bridge state </td><td>{{cbInfo.AppState}}</td></tr>
+            <tr><td>Connection state </td><td>{{cbInfo.ConnectionState}}</td></tr>
+            <tr><td>Backend version </td><td>{{cbInfo.BackendVersion}}</td></tr>
+            <tr><td>Backend env. </td><td>{{cbInfo.Env}}</td></tr>
+            <tr><td>Tx bytes </td><td>{{cbInfo.MqttTxBytes/1000000}} MB</td></tr>
+            <tr><td>Rx bytes </td><td>{{cbInfo.MqttRxBytes/1000000}} MB</td></tr>
+            <tr><td>Tx messages </td><td>{{cbInfo.MqttTxMsg}}</td></tr>
+            <tr><td>Rx messages </td><td>{{cbInfo.MqttRxMsg}}</td></tr>
+            <tr><td>Number of re-connections </td><td>{{cbInfo.ReconnectCounter}}</td></tr>
+            <tr><td>Msg dropped </td><td>{{cbInfo.MsgDropped}}</td></tr>
+            <tr><td>Active sessions </td><td>{{cbInfo.ActiveSessions}}</td></tr>
+            <tr><td>Total started sessions </td><td>{{cbInfo.TotalStartedSessions}}</td></tr>
+            <tr><td>Started at  </td><td>{{cbInfo.StartTime}}</td></tr>
+            <tr><td>Last connected at </td><td>{{cbInfo.LastConnectedAt}}</td></tr>
+            <tr><td>Last disconnected at </td><td>{{cbInfo.LastDisconnectedAt}}</td></tr>
+            </thead>
+          </table>
+          <p> Site structure statistics </p>
+          <table *ngIf="cbInfo">
+            <thead>
+            <tr><td width="190px">Number of updates </td><td>{{cbInfo.SiteStruct.UpdatesCnt}}</td></tr>
+            <tr><td width="190px">Number of errors </td><td>{{cbInfo.SiteStruct.ErrorsCnt}}</td></tr>
+            <tr><td width="190px">Max cloud response time  </td><td>{{cbInfo.SiteStruct.MaxUpdateTime}}</td></tr>
+            <tr><td width="190px">Min cloud response time  </td><td>{{cbInfo.SiteStruct.MinUpdateTime}}</td></tr>
+            <tr><td width="190px">Last updated at  </td><td>{{cbInfo.SiteStruct.LastUpdatedAt}}</td></tr>
+            <tr><td width="190px">Last error at  </td><td>{{cbInfo.SiteStruct.LastErrorAt}}</td></tr>
+            <tr><td width="190px">Last error  </td><td>{{cbInfo.SiteStruct.LastError}}</td></tr>
+            </thead>
+          </table>
+          <p> <button mat-raised-button (click)="requestCBDiagnosticReport()" color="primary" > Reload</button> </p>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="card">
+        <mat-card-header>
+            <mat-card-title><h3> Hardware and OS  </h3></mat-card-title>
+            <mat-card-subtitle></mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <table *ngIf="systemReport">
+            <thead>
+
+            <tr *ngFor="let cp of systemReport.osInfo.cpu"><td width="190px">CPU model </td><td>{{cp.modelName}} {{cp.mhz}} Mhz cores : {{cp.cores}}</td></tr>
+            <tr><td width="190px">Host name </td>  <td>{{systemReport.osInfo.host.hostname}}</td></tr>
+            <tr><td width="190px">Uptime </td>  <td>{{systemReport.osInfo.host.uptime}} sec or {{systemReport.osInfo.host.uptime/(86400)}} days</td></tr>
+            <tr><td width="190px">Os </td>  <td>{{systemReport.osInfo.host.os}}</td></tr>
+            <tr><td width="190px">Platform </td>  <td>{{systemReport.osInfo.host.platformFamily}}</td></tr>
+            <tr><td width="190px">Os version </td>  <td>{{systemReport.osInfo.host.platformVersion}}</td></tr>
+            <tr><td width="190px">Kernel version </td>  <td>{{systemReport.osInfo.host.kernelVersion}}</td></tr>
+            </thead>
+          </table>
+          <p>Networking</p>
+          <table *ngIf="systemReport">
+            <thead>
+            <tr>
+              <th>Name</th><th>hw addr</th><th>flags</th><th>address</th>
+            </tr>
+            </thead>
+            <tr *ngFor="let net of systemReport.osInfo.netInterfaces">
+              <td width="120px">{{net.name}}</td>
+              <td width="120px">{{net.hardwareaddr}}</td>
+              <td width="250px">{{net.flags}}</td>
+              <td width="250px"> <p *ngFor="let ad of net.addrs"> {{ad.addr}}</p> </td>
+            </tr>
+          </table>
+
+        </mat-card-content>
+        <p> <button mat-raised-button (click)="requestButlerSystemReport()" color="primary" > Reload</button> </p>
+    </mat-card>
+
+    <mat-card class="card">
+        <mat-card-header>
+            <mat-card-title><h3> System activity </h3></mat-card-title>
+            <mat-card-subtitle ></mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p> <b>CPU</b></p>
+          <table *ngIf="activityReport">
+            <thead>
+            <tr>
+              <th width="80px"> 1 min avg</th><th width="80px">5 min avg</th><th width="80px">15 min avg</th>
+            </tr>
+            </thead>
+            <tr>
+              <td>{{activityReport.cpu.load1}}</td>
+              <td>{{activityReport.cpu.load5}}</td>
+              <td>{{activityReport.cpu.load15}}</td>
+            </tr>
+          </table>
+
+          <p><b>Memory</b></p>
+          <table *ngIf="activityReport">
+            <thead>
+            <tr>
+              <th  width="60px" > Name </th><th  width="70px" > Total </th><th  width="70px">Available </th><th width="70px">Used</th><th width="60px">Used %</th>
+            </tr>
+            </thead>
+            <tr>
+              <td>RAM</td>
+              <td>{{activityReport.mem.total}} MB</td>
+              <td>{{activityReport.mem.available}}MB</td>
+              <td>{{activityReport.mem.used}}MB</td>
+              <td>{{activityReport.mem.usedPercent}} %</td>
+            </tr>
+            <tr>
+              <td>Swap </td>
+              <td>{{activityReport.mem.swapTotal}} MB</td>
+              <td>{{activityReport.mem.swapFree}}MB</td>
+              <td>{{activityReport.mem.swapUsed}}MB</td>
+              <td>{{activityReport.mem.swapUsedPercent}} %</td>
+            </tr>
+          </table>
+
+          <p><b>Disk</b></p>
+          <table *ngIf="activityReport">
+            <thead>
+            <tr>
+              <th  width="80px" > Total </th><th  width="80px">Free </th><th width="80px">Used</th><th width="70px">Used %</th>
+            </tr>
+            </thead>
+            <tr>
+              <td>{{activityReport.hdd.total}} MB</td>
+              <td>{{activityReport.hdd.free}}MB</td>
+              <td>{{activityReport.hdd.used}}MB</td>
+              <td>{{activityReport.hdd.usedPercent}} %</td>
+            </tr>
+          </table>
+
+          <p> <button mat-raised-button (click)="requestButlerActivitySystemReport()" color="primary" > Reload</button> </p>
+          <cpu-chart [title]="'CPU usage'"></cpu-chart>
+
+        </mat-card-content>
+    </mat-card>
+
+
+</div>

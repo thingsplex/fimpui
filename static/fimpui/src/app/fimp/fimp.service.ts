@@ -232,11 +232,12 @@ export class FimpService{
     if ( ( (this.fimpFilter.topicFilter== undefined || this.fimpFilter.topicFilter == "") || this.fimpFilter.topicFilter == fimpMsg.topic) &&
         ( (this.fimpFilter.serviceFilter== undefined || this.fimpFilter.serviceFilter == "") || this.fimpFilter.serviceFilter == fimpMsg.service) &&
         ( (this.fimpFilter.msgTypeFilter== undefined || this.fimpFilter.msgTypeFilter == "") || this.fimpFilter.msgTypeFilter == fimpMsg.mtype)  ) {
-      this.filteredMessages.unshift(fimpMsg);
+      // this.filteredMessages.unshift(fimpMsg);
+      this.filteredMessages.push(fimpMsg);
     }
   }else {
     console.log("Adding message to filtered list")
-    this.filteredMessages.unshift(fimpMsg);
+    this.filteredMessages.push(fimpMsg);
   }
 
 }
