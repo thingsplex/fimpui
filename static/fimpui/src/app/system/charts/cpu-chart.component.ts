@@ -32,6 +32,7 @@ export class CpuChartComponent implements OnInit  {
   // public data5:any[] = [];
   // public data15:any[] = [];
   private lastRequestId : string ;
+  private timer:any;
 
   constructor(private fimp : FimpService) {
   }
@@ -77,8 +78,10 @@ export class CpuChartComponent implements OnInit  {
 
 
   ngOnInit() {
+   this.initChart();
+   this.initDatasets();
    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+     let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
      if(fimpMsg.mtype == "evt.systemos.activity_report" )
      {
         let rep = fimpMsg.val;
@@ -96,14 +99,15 @@ export class CpuChartComponent implements OnInit  {
        this.chart.update(0);
      }
     });
-    this.initChart();
-    this.initDatasets();
-    var t=setInterval(()=>(this.requestButlerActivitySystemReport()),5000);
+
+    this.timer=setInterval(()=>(this.requestButlerActivitySystemReport()),5000);
 
   }
   ngOnDestroy() {
     if(this.globalSub)
       this.globalSub.unsubscribe();
+    if(this.timer)
+      clearInterval(this.timer);
   }
   requestButlerActivitySystemReport(){
     let msg  = new FimpMessage("fhbutler","cmd.systemos.get_activity_report","string","",null,null)

@@ -29,7 +29,7 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
 
   constructor(private fimp:FimpService,private route: ActivatedRoute,private http : Http,private _location: Location) {
     this.thing = new Thing();
-    this.advancedViewMode = false;
+    this.advancedViewMode = true;
   }
 
   ngOnInit() {
