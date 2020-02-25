@@ -37,10 +37,12 @@ github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumC
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/eclipse/paho.mqtt.golang v1.2.0 h1:1F8mhG9+aO5/xpdtFkW4SxOJB67ukuDC3t2y2qayIX0=
 github.com/eclipse/paho.mqtt.golang v1.2.0/go.mod h1:H9keYFcgq3Qr5OUJm/JZI/i6U7joQ8SYLhZwfeOo6Ts=
-github.com/futurehomeno/fimpgo v1.4.0 h1:p/sPrJdg5EPW+A1ZHSBBOzeJBUdFWmtfxkYEq5vyk8I=
-github.com/futurehomeno/fimpgo v1.4.0/go.mod h1:HlCU8WBRMpYVmB/3MUh08VIDj+H95b9TQO6wVhUvrXY=
 github.com/futurehomeno/fimpgo v1.4.8-0.20191103192234-d113ca2a4cd0 h1:oCDMyGZszU8TRSHu/sRomyJ0IfPeiLaoXghvYF+9YBU=
 github.com/futurehomeno/fimpgo v1.4.8-0.20191103192234-d113ca2a4cd0/go.mod h1:hVp7bMPj/wz4zejT6O0WCPCttKqSNn+72+n5Elu7wNI=
+github.com/futurehomeno/fimpgo v1.4.10 h1:8CtT+q2t8F8MhxXO6SXdUDPmJuDVX+uCvc5gAXg6HW8=
+github.com/futurehomeno/fimpgo v1.4.10/go.mod h1:qWhd1VFe4yaePWcKzp7NuJqcX9PlzjEPfE+YTRZbCtA=
+github.com/futurehomeno/fimpgo v1.4.11 h1:95ZczYzKzb2QUhPBcaQ0EIo+Vic7jH92c/HWYctNPsg=
+github.com/futurehomeno/fimpgo v1.4.11/go.mod h1:qWhd1VFe4yaePWcKzp7NuJqcX9PlzjEPfE+YTRZbCtA=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b h1:VKtxabqXZkF25pY9ekfRL6a582T4P37/31XEstQ5p58=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
@@ -49,6 +51,7 @@ github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db h1:woRePGFeVFfLKN/pO
 github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEWrmP2Q=
 github.com/google/go-cmp v0.2.0 h1:+dTQ8DZQJz0Mb/HjFlkptS1FeQ4cWSnN941F8aEG4SQ=
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
+github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/googleapis/gax-go v2.0.0+incompatible h1:j0GKcs05QVmm7yesiZq2+9cxHkNK9YM6zKx4D2qucQU=
 github.com/googleapis/gax-go v2.0.0+incompatible/go.mod h1:SFVmujtThgffbyetf+mdk2eWhX2bMyUtNHzFKcPA9HY=
 github.com/gorilla/websocket v1.4.0 h1:WDFjx/TMzVgy9VdMMQi2K2Emtwi2QcUQsztZ/zLaH/Q=
@@ -59,8 +62,6 @@ github.com/influxdata/influxdb v1.6.2 h1:Cvl0/3n7/T6RkCefitJtEHWKJznmOA+9tT8gVx3
 github.com/influxdata/influxdb v1.6.2/go.mod h1:qZna6X/4elxqT3yI9iZYdZrWWdeFOOprn86kgg4+IzY=
 github.com/kelvins/sunrisesunset v0.0.0-20170601204625-14f1915ad4b4 h1:8GEzGYjqXcb1PW2RFrkbsv7Gzq4v9ykbjy6lUc9nbnM=
 github.com/kelvins/sunrisesunset v0.0.0-20170601204625-14f1915ad4b4/go.mod h1:3oZ7G+fb8Z8KF+KPHxeDO3GWpEjgvk/f+d/yaxmDRT4=
-github.com/koding/websocketproxy v0.0.0-20180412071414-b8568f354aec h1:I1l0Uzu+I0cSx0fzg75YN79goqNg4jDizbR6I4OfH6U=
-github.com/koding/websocketproxy v0.0.0-20180412071414-b8568f354aec/go.mod h1:Nn5wlyECw3iJrzi0AhIWg+AJUb4PlRQVW4/3XHH1LZA=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1 h1:mweAR1A6xJ3oS2pRaGiHgQ4OO8tzTaLawm8vnODuwDk=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
@@ -93,6 +94,8 @@ github.com/rcrowley/go-metrics v0.0.0-20180406234716-d932a24a8ccb h1:aiaXBnYotW4
 github.com/rcrowley/go-metrics v0.0.0-20180406234716-d932a24a8ccb/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967 h1:x7xEyJDP7Hv3LVgvWhzioQqbC/KtuUhTigKlH/8ehhE=
 github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967/go.mod h1:JGuDeoQd7Z6yL4zQhZ3OPEVHB7fL6Ka6skscFHfmt2k=
+github.com/robfig/cron/v3 v3.0.0 h1:kQ6Cb7aHOHTSzNVNEhmp8EcWKLb4CbiMW9h9VyIhO4E=
+github.com/robfig/cron/v3 v3.0.0/go.mod h1:eQICP3HwyT7UooqI/z+Ov+PtYAWygg1TEWWzGIFLtro=
 github.com/satori/go.uuid v1.2.0 h1:0uYX9dsZ2yD7q2RtLRtPSdGDWzjeM3TbMJP9utgA0ww=
 github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
 github.com/sirupsen/logrus v1.3.0 h1:hI/7Q+DtNZ2kINb6qt/lS+IyXnHQe9e90POfeewL/ME=
@@ -100,10 +103,12 @@ github.com/sirupsen/logrus v1.3.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPx
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
-github.com/thingsplex/tpflow v0.12.3 h1:Hc/sYgvpUClHK+a9EG32rcA1LSoOgAOmfOdZcfGa8zg=
-github.com/thingsplex/tpflow v0.12.3/go.mod h1:P47zB2Sy+ZQyqol1m1dmb0XEyuHhQ35gth5c57FEggI=
 github.com/thingsplex/tpflow v0.12.11-0.20191103192816-91a03b013a16 h1:lX6ExmL3FnSE8/Hua5WmPenVPP4fYPJ8hW+Qik72SbY=
 github.com/thingsplex/tpflow v0.12.11-0.20191103192816-91a03b013a16/go.mod h1:saDsN+UBLw4TmzRsm8RQhNHqggdc9bV7PLbKPDwJCE8=
+github.com/thingsplex/tpflow v0.12.11-0.20200223203940-ed7e12ed2b5d h1:Y6PkQmET+DSNpcNasmvQ1xS0+hcmPgTFztnYGCIZv24=
+github.com/thingsplex/tpflow v0.12.11-0.20200223203940-ed7e12ed2b5d/go.mod h1:J87moQsJwbgxYkODo69PHRiI1BS3Sl/ER4AWD/zMkUM=
+github.com/thingsplex/tpflow v0.12.11-0.20200224104713-fc93baa8efa7 h1:Uf+5eV4QysczfgewvNpCuZgOKlYqGdreTQpWzc50zhc=
+github.com/thingsplex/tpflow v0.12.11-0.20200224104713-fc93baa8efa7/go.mod h1:J87moQsJwbgxYkODo69PHRiI1BS3Sl/ER4AWD/zMkUM=
 github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a h1:AOcehBWpFhYPYw0ioDTppQzgI8pAAahVCiMSKTp9rbo=
 github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=

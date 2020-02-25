@@ -3,14 +3,13 @@
 <nav mat-tab-nav-bar>
     <a mat-tab-link [routerLink]="['/zwave-man']" >Z-Wave</a>
     <a mat-tab-link active [routerLink]="['/zigbee-man']" >ZigBee</a>
-    <a mat-tab-link [routerLink]="['/ikea-man']" >Ikea Tradfri</a>
   <a mat-tab-link [routerLink]="['/generic-ad-man']" >Generic adapter</a>
     <a mat-tab-link [routerLink]="['/systems-man']" >Systems</a>
 </nav>
 <div class="systems-man">
 <mat-card class="example-card">
     <mat-card-header>
-  <mat-card-title> <h3> System adapter managment </h3> </mat-card-title>
+  <mat-card-title> <h3> System adapter management </h3> </mat-card-title>
   <mat-card-subtitle> Connect or disconnect a system adapter to FH </mat-card-subtitle>
     </mat-card-header>
   <mat-card-content>
@@ -33,6 +32,7 @@
     </mat-input-container>
 
     </p>
+
   </mat-card-content>
     <mat-card-actions>
     <button mat-raised-button (click)="getConnParams(service.value)" >Get connection parameters</button>
@@ -42,4 +42,52 @@
     </mat-card-actions>
     <div *ngIf="connectStatus"> Connect status : {{ connectStatus }} Error : {{ connectError }} </div>
 </mat-card>
+
+  <br/>
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title> <h3> App or adapter configuration </h3> </mat-card-title>
+      <mat-card-subtitle> Set app configuration parameters or change log level </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-input-container class="example-full-width">
+        <input #appName matInput placeholder="app name">
+      </mat-input-container>
+
+
+      <p>
+        <mat-input-container class="example-full-width">
+          <input #configName matInput placeholder="Config name">
+        </mat-input-container>
+        <mat-input-container class="example-full-width">
+          <input #configValue matInput placeholder="Config value">
+        </mat-input-container>
+        <button mat-raised-button (click)="setConfigParam(appName.value,configName.value,configValue.value)" >Configure</button>
+      </p>
+
+      <p>Log level:</p>
+      <p>
+        <mat-form-field>
+          <mat-label>Log level</mat-label>
+          <mat-select width="150px" #logLevel >
+            <mat-option value="trace">trace</mat-option>
+            <mat-option value="debug">debug</mat-option>
+            <mat-option value="info">info</mat-option>
+            <mat-option value="warn">warn</mat-option>
+            <mat-option value="error">error</mat-option>
+            <mat-option value="fatal">fatal</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br/>
+        <button mat-raised-button (click)="setLogLevel(appName.value,logLevel.value)" >Set</button>
+      </p>
+
+
+    </mat-card-content>
+    <mat-card-actions>
+
+    </mat-card-actions>
+    <div *ngIf="connectStatus"> Connect status : {{ connectStatus }} Error : {{ connectError }} </div>
+  </mat-card>
+
 </div>

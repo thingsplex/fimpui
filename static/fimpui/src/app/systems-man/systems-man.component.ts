@@ -99,6 +99,53 @@ export class SystemsManComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
  }
 
+  public setConfigParam(service:string,name:string,value:string) {
+    if(service == "") {
+      service = this.selectedResource;
+    }
+    let res = this.getDiscoveredResourceObject(service);
+    let rt = "ad";
+    let instance_id = "1";
+    if (res) {
+      rt = res.resource_type;
+      instance_id = res.instance_id;
+    }
+    let configs = {};
+    configs[name] = value;
+    let msg  = new FimpMessage(service,"cmd.config.set","str_map",configs,null,null);
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+  }
+
+  public setLogLevel(service:string,level:string) {
+    if(service == "") {
+      service = this.selectedResource;
+    }
+    let res = this.getDiscoveredResourceObject(service);
+    let rt = "ad";
+    let instance_id = "1";
+    if (res) {
+      rt = res.resource_type;
+      instance_id = res.instance_id;
+    }
+    let msg  = new FimpMessage(service,"cmd.log.set_level","string",level,null,null);
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+  }
+
+  public set(name:string,value:string) {
+    let service = this.selectedResource;
+    let res = this.getDiscoveredResourceObject(service);
+    let rt = "ad";
+    let instance_id = "1";
+    if (res) {
+      rt = res.resource_type;
+      instance_id = res.instance_id;
+    }
+    let configs = {name:value};
+    let msg  = new FimpMessage(service,"cmd.config.set","str_map",configs,null,null);
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+  }
+
+
   public disconnect(service:string) {
     if(service == "") {
       service = this.selectedResource;

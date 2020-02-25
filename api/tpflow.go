@@ -188,6 +188,16 @@ func RegisterTpFlowApi(e *echo.Echo,api *client.ApiRemoteClient) {
 		}
 	})
 
+	e.GET("/fimp/api/registry/devices", func(c echo.Context) error {
+		locationIdStr := c.QueryParam("locationId")
+		thingsWithLocation,err := api.RegistryGetListOfDevices(locationIdStr)
+		if err == nil {
+			return c.JSON(http.StatusOK, thingsWithLocation)
+		} else {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+	})
+
 	e.GET("/fimp/api/registry/thing/:tech/:address", func(c echo.Context) error {
 		things, err := api.RegistryGetThing(c.Param("tech"), c.Param("address"))
 		if err == nil {

@@ -1,7 +1,8 @@
-version="0.14.9"
+version="0.15.0"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
+remote_host = "fh@cube.local"
 
 build-js:
 	cd static/fimpui;ng build --prod --deploy '/fimp/static/'
@@ -58,6 +59,15 @@ deb-amd : configure-amd64 build-js build-go-amd package-deb-doc
 set-dev : configure-dev-js build-go
 
 build-mac : build-js build-go
+
+upload :
+	scp fimpui_$(version)_armhf.deb $(remote_host):~/
+
+upload-install : upload
+	ssh -t $(remote_host) "sudo dpkg -i fimpui_$(version)_armhf.deb"
+
+remote-install : deb-arm upload
+	ssh -t $(remote_host) "sudo dpkg -i fimpui_$(version)_armhf.deb"
 
 run :
 	go run main.go -c var/config_local.json
