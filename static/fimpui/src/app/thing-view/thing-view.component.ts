@@ -39,6 +39,14 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
       techAdapterName = address.split(":")[0];
       address = address.split(":")[1];
     }
+    if (address.includes("rn:")) {
+      //  /rn:conbee/ad:1/ad:s34
+      let addressSplit = address.split("/ad:");
+      address = addressSplit[2];
+      techAdapterName = addressSplit[0].replace("/rn:","")
+    }
+    console.log("Address:"+address)
+    console.log("Adapter:"+techAdapterName)
     address = address.split("_")[0];
     //this.getReport(techAdapterName,serviceName,id);
     // if(techAdapterName == "zw") {

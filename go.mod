@@ -7,7 +7,7 @@ require (
 	github.com/asdine/storm v2.1.2+incompatible
 	github.com/buger/jsonparser v0.0.0-20180910192245-6acdf747ae99
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
-	github.com/futurehomeno/fimpgo v1.4.11
+	github.com/futurehomeno/fimpgo v1.4.12-0.20200225115408-3bef8e50764d
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/googleapis/gax-go v2.0.0+incompatible // indirect
@@ -16,7 +16,7 @@ require (
 	github.com/labstack/gommon v0.2.7
 	github.com/rcrowley/go-metrics v0.0.0-20180406234716-d932a24a8ccb
 	github.com/sirupsen/logrus v1.3.0
-	github.com/thingsplex/tpflow v0.12.11-0.20200224104713-fc93baa8efa7
+	github.com/thingsplex/tpflow v0.14.0
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	go.etcd.io/bbolt v1.3.0 // indirect
 	go.opencensus.io v0.8.0 // indirect

@@ -43,6 +43,8 @@ github.com/futurehomeno/fimpgo v1.4.10 h1:8CtT+q2t8F8MhxXO6SXdUDPmJuDVX+uCvc5gAX
 github.com/futurehomeno/fimpgo v1.4.10/go.mod h1:qWhd1VFe4yaePWcKzp7NuJqcX9PlzjEPfE+YTRZbCtA=
 github.com/futurehomeno/fimpgo v1.4.11 h1:95ZczYzKzb2QUhPBcaQ0EIo+Vic7jH92c/HWYctNPsg=
 github.com/futurehomeno/fimpgo v1.4.11/go.mod h1:qWhd1VFe4yaePWcKzp7NuJqcX9PlzjEPfE+YTRZbCtA=
+github.com/futurehomeno/fimpgo v1.4.12-0.20200225115408-3bef8e50764d h1:MTJ9VDa2wqa1vXB7+uJAK67xT4cF2NkqGb6CJYuwjDc=
+github.com/futurehomeno/fimpgo v1.4.12-0.20200225115408-3bef8e50764d/go.mod h1:qWhd1VFe4yaePWcKzp7NuJqcX9PlzjEPfE+YTRZbCtA=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b h1:VKtxabqXZkF25pY9ekfRL6a582T4P37/31XEstQ5p58=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
@@ -109,6 +111,10 @@ github.com/thingsplex/tpflow v0.12.11-0.20200223203940-ed7e12ed2b5d h1:Y6PkQmET+
 github.com/thingsplex/tpflow v0.12.11-0.20200223203940-ed7e12ed2b5d/go.mod h1:J87moQsJwbgxYkODo69PHRiI1BS3Sl/ER4AWD/zMkUM=
 github.com/thingsplex/tpflow v0.12.11-0.20200224104713-fc93baa8efa7 h1:Uf+5eV4QysczfgewvNpCuZgOKlYqGdreTQpWzc50zhc=
 github.com/thingsplex/tpflow v0.12.11-0.20200224104713-fc93baa8efa7/go.mod h1:J87moQsJwbgxYkODo69PHRiI1BS3Sl/ER4AWD/zMkUM=
+github.com/thingsplex/tpflow v0.12.11-0.20200301164918-72d2cb52d619 h1:XMPxbT1OzrpYXEoGgzLv1QHeHhovo02VQTuQuNjX1wU=
+github.com/thingsplex/tpflow v0.12.11-0.20200301164918-72d2cb52d619/go.mod h1:CRUl/WpnX3AacmUKQnnxFvarcunjTvoBoPQgUneR3G8=
+github.com/thingsplex/tpflow v0.14.0 h1:QglMLcznGuPS3ZH672EXm9+/6binzSRyer+YqsYGBAI=
+github.com/thingsplex/tpflow v0.14.0/go.mod h1:CRUl/WpnX3AacmUKQnnxFvarcunjTvoBoPQgUneR3G8=
 github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a h1:AOcehBWpFhYPYw0ioDTppQzgI8pAAahVCiMSKTp9rbo=
 github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=

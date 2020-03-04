@@ -1,8 +1,8 @@
-version="0.15.0"
+version="0.15.4"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
-remote_host = "fh@cube.local"
+remote_host = "fh@aleks.local"
 
 build-js:
 	cd static/fimpui;ng build --prod --deploy '/fimp/static/'
