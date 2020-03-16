@@ -1,19 +1,20 @@
 <nav mat-tab-nav-bar>
-  <a mat-tab-link [routerLink]="['/stats/event-log']" >System events</a>
-  <a mat-tab-link [routerLink]="['/stats/system-metrics']" >System metrics</a>
-  <a mat-tab-link active [routerLink]="['/stats/tsdb-config']" >Time series config</a>
+  <a mat-tab-link [routerLink]="['/analytics/dashboard']" >Dashboard</a>
+  <a mat-tab-link [routerLink]="['/analytics/sensors']" >Sensors</a>
+  <a mat-tab-link [routerLink]="['/analytics/presence']" >Activity</a>
+  <a mat-tab-link [routerLink]="['/analytics/presence']" >Energy</a>
+  <a mat-tab-link [routerLink]="['/analytics/explore']" >Explore</a>
+  <a mat-tab-link active [routerLink]="['/analytics/settings']" >Settings</a>
 </nav>
 
 <br/>
 
 
-<mat-card>
+<mat-card style="margin: 5px">
   <mat-card-header>
-    <mat-card-title><h3>List of configured FIMP-InfluxDB processes  </h3></mat-card-title>
+    <mat-card-title><h3>List of event collectors</h3></mat-card-title>
   </mat-card-header>
   <mat-card-content>
-
-
     <table>
       <thead>
         <th style="width: 150px"> Name</th>
@@ -22,27 +23,29 @@
       </thead>
       <tbody>
         <tr *ngFor="let proc of procList">
-          <td>{{proc.ProcName}}</td>
-          <td>{{proc.State}}</td>
-          <td>
-            <mat-chip-list>
-              <mat-chip color="warn" (click)="loadData(proc.ProcID)">Configure</mat-chip>
+          <td>{{proc.Config.Name}}</td>
+          <td style="width: 150px">{{proc.State}}</td>
+          <td style="width: 300px">
+            <mat-chip-list >
+              <mat-chip color="warn" (click)="selectProc(proc.Config)">Configure</mat-chip>
+              <mat-chip color="warn" (click)="procCtrl('start',procData.ID)">Start</mat-chip>
+              <mat-chip color="warn" (click)="procCtrl('stop',procData.ID)">Stop</mat-chip>
             </mat-chip-list>
           </td>
         </tr>
       </tbody>
     </table>
     <mat-card-actions>
-      <button mat-raised-button (click)="resetConfigsToDefault()" color="warn" >Reset configs to default</button>
+
     </mat-card-actions>
   </mat-card-content>
 </mat-card>
 
 
-<mat-card>
+<mat-card style="margin: 5px">
     <mat-card-header>
       <!--<div mat-card-avatar class="example-header-image"></div>-->
-      <mat-card-title><h3>Process configuration</h3></mat-card-title>
+      <mat-card-title><h3>Process configurations</h3></mat-card-title>
       <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
     </mat-card-header>
     <mat-card-content *ngIf="procData">
@@ -90,18 +93,18 @@
           </mat-form-field>
         </p>
         <div style="margin-bottom: 5px;margin-top: 10px" >
-          <mat-checkbox [(ngModel)]="procData.Autostart" >Autostart</mat-checkbox>
+          <mat-checkbox [(ngModel)]="procData.Autostart" >Auto start</mat-checkbox>
         </div>
       </div>
       <div style="margin-top: 10px">
         <button mat-raised-button (click)="procCtrl('save',procData.ID)"> Save </button>
-        <button mat-raised-button (click)="procCtrl('start',procData.ID)"> Start </button>
-        <button mat-raised-button (click)="procCtrl('stop',procData.ID)"> Stop </button>
+        <button mat-raised-button (click)="resetConfigsToDefault()" color="warn" >Reset configs to default</button>
       </div>
-      <mat-card style="margin-top: 20px;">
-        <mat-card-header>
-          <mat-card-title> <h3>Selectors</h3></mat-card-title>
-        </mat-card-header>
+      <mat-expansion-panel style="margin-top: 20px;">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Selectors </mat-panel-title>
+        </mat-expansion-panel-header>
+      <mat-card >
         <mat-card-content>
           <mat-list>
             <mat-list-item *ngFor="let sel of procData.Selectors">
@@ -118,21 +121,20 @@
           <button mat-raised-button (click)="addSelector()"> Add </button>
         </mat-card-actions>
       </mat-card>
+      </mat-expansion-panel>
 
+      <mat-expansion-panel style="margin-top: 20px;">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Filters </mat-panel-title>
+        </mat-expansion-panel-header>
 
-      <mat-card style="margin-top: 20px;">
-        <mat-card-header>
-          <mat-card-title> <h3>Filters</h3></mat-card-title>
-        </mat-card-header>
+      <mat-card>
         <mat-card-content>
           <mat-list>
           <mat-list-item *ngFor="let sel of procData.Filters">
             <mat-form-field class="form-filters">
               <input  matInput placeholder="Name" [(ngModel)]="sel.Name" >
             </mat-form-field>
-            <p>
-            </p>
-            <div>
               <mat-form-field style="width:200px">
                 <input  matInput placeholder="Topic" [(ngModel)]="sel.Topic" >
               </mat-form-field>
@@ -142,14 +144,13 @@
             <mat-form-field class="form-filters">
                 <input  matInput placeholder="MsgType" [(ngModel)]="sel.MsgType" >
             </mat-form-field>
-
-            </div>
-            <p>
               -->>
               <mat-form-field class="form-filters">
-                <input  matInput placeholder="Measuremen Id" [(ngModel)]="sel.MeasurementID" >
+                <input  matInput placeholder="measurement Id" [(ngModel)]="sel.MeasurementID" >
               </mat-form-field>
-            </p>
+            <div style="margin-bottom: 5px;margin-top: 10px;margin-left: 5px" >
+              <mat-checkbox [(ngModel)]="sel.Negation" > Exclude </mat-checkbox>
+            </div>
             <button *ngIf="sel.ID==-1" class="delete-button" mat-raised-button (click)="saveFilter(sel)"> Save</button>
             <button class="delete-button" mat-raised-button (click)="removeFilter(sel.ID)"> Delete</button>
           </mat-list-item>
@@ -160,11 +161,15 @@
         </mat-card-actions>
       </mat-card>
 
+      </mat-expansion-panel>
 
-      <mat-card style="margin-top: 20px;">
-        <mat-card-header>
-          <mat-card-title> <h3>Measurements</h3></mat-card-title>
-        </mat-card-header>
+      <mat-expansion-panel style="margin-top: 20px;">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Measurements </mat-panel-title>
+        </mat-expansion-panel-header>
+
+      <mat-card >
+
         <mat-card-content>
           <mat-list>
             <mat-list-item *ngFor="let sel of procData.Measurements">
@@ -189,10 +194,56 @@
           <button mat-raised-button (click)="addMeasurement()"> Add </button>
         </mat-card-actions>
       </mat-card>
+      </mat-expansion-panel>
 
     </mat-card-content>
 </mat-card>
 
+
+<mat-card style="margin: 5px">
+  <mat-card-header>
+    <!--<div mat-card-avatar class="example-header-image"></div>-->
+    <mat-card-title><h3>DB configuration and monitoring</h3></mat-card-title>
+    <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
+  </mat-card-header>
+  <mat-card-content>
+
+    <mat-expansion-panel style="margin-top: 20px;">
+      <mat-expansion-panel-header>
+        <mat-panel-title> Measurements </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-card >
+        <mat-card-content>
+          <mat-list>
+            <mat-list-item *ngFor="let sel of listOfMeasurements">
+              <span style="width: 400px">{{ sel }}</span>
+              <button class="delete-button" mat-raised-button (click)="deleteDbObject('measurement',sel)"> Delete</button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
+        </mat-card-actions>
+      </mat-card>
+    </mat-expansion-panel>
+    <mat-expansion-panel style="margin-top: 20px;">
+      <mat-expansion-panel-header>
+        <mat-panel-title> Retention policies </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-card >
+        <mat-card-content>
+          <mat-list>
+            <mat-list-item *ngFor="let sel of listOfRetensions">
+              <span style="width: 400px">{{ sel }}</span>
+              <button class="delete-button" mat-raised-button (click)="deleteDbObject('retention_policy',sel)"> Delete</button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
+        </mat-card-actions>
+      </mat-card>
+    </mat-expansion-panel>
+  </mat-card-content>
+</mat-card>
 
 
 
