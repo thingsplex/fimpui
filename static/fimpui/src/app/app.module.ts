@@ -66,6 +66,7 @@ import {environment} from "../environments/environment";
 import {JsonInputComponent} from "./tpui-modules/flow/ui-elements/json-input.component";
 import {FireService} from "./firebase/fire.service";
 import {WebRtcService} from 'app/fimp/web-rtc.service';
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -177,7 +178,8 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     SystemModule,
     RegistryModule,
     CdkTableModule,
-    GaugeModule.forRoot()
+    GaugeModule.forRoot(),
+    MatButtonToggleModule
 
   ],
   providers: [WebRtcService, FimpService,ThingsDbService,ConfigsService,FireService,{

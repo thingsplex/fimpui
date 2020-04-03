@@ -48,6 +48,8 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   totalUp :number;
   totalDown : number;
   homeId : string;
+  graphType = 'lwr';
+
   constructor(public dialog: MatDialog,private fimp:FimpService,private router: Router,private http : Http,private registry:ThingsRegistryService) {
   }
 
@@ -228,52 +230,84 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     return null;
   }
 
+  generateLwrData() {
+    const edges = [];
+    const lwrNodes = this.networkStats.filter(n => n.lwr.has_lwr).map(n => {
+      n.lwr.route = [n.lwr.r1, n.lwr.r2, n.lwr.r3, n.lwr.r4];
+      return n;
+    });
 
+    const nodes = lwrNodes.map(node => ({id:node["node_id"],label:"Node\n"+node["node_id"],group:'sleep',title:node["alias"]}));
+    // GW node
+    const gw = this.networkStats.find(n => n.node_id === 1);
+    nodes.push({id:gw["node_id"],label:"Node\n"+gw["node_id"],group:"gw",title:gw["alias"]});
+
+    for (const node of lwrNodes) {
+      let from = 1;
+      for (const routeNode of node.lwr.route) {
+        if (routeNode !== 0) {
+          edges.push({from: from, to: routeNode, arrows: 'to', color: { inherit: 'to' }, smooth: {type: 'curvedCW', roundness: 0.2}});
+          from = routeNode;
+        }
+      }
+      edges.push({from: from, to: node['node_id'], arrows: 'to', color: { inherit: 'to' }, smooth: {type: 'curvedCW', roundness: 0.2}});
+    }
+
+    return {nodes, edges};
+  }
+
+  generateNbData() {
+    var edges = [];
+    var nodes = [];
+
+    for(let node of this.networkStats) {
+      for(let nbNode of node["nb_info"]) {
+        var skip = false
+        for(let n of edges){
+          if(n.to==node["node_id"] && n.from == nbNode["node_id"] ){
+            skip = true
+            break
+          }
+        }
+        if(skip){
+          continue
+        }
+        edges.push({from:node["node_id"],to:nbNode["node_id"],arrows:'',color: { inherit: "from" }})
+        if(nbNode["is_rep"]) {
+          this.repeaterNodes.push(nbNode["node_id"])
+        }
+      }
+    }
+
+    for(let node of this.networkStats) {
+      var rgroup = "sleep"
+      if(node["node_id"]==1) {
+        rgroup = "gw"
+      }else
+      if(this.isNodeRepeater(node["node_id"])) {
+        rgroup ="rep"
+        // console.log("Node is repater ="+node["node_id"]);
+      }
+      nodes.push({id:node["node_id"],label:"Node\n"+node["node_id"],group:rgroup,title:node["alias"]})
+    }
+
+    return {nodes, edges};
+  }
 
   drawNetworkTopology() {
-        this.repeaterNodes = []
-        var nodes = [];
-        var edges = []
-        for(let node of this.networkStats) {
-          var tnd = this.getNodeByAddress(String(node.node_id)) ;
-          if (tnd) {
-            node["alias"] = tnd.alias;
-            node["power_source"] = tnd.power_source;
-            node["status"] = tnd.status;
-            console.log("Alias is set "+tnd.alias);
-          }
-          for(let nbNode of node["nb_info"]) {
-              var skip = false
-              for(let n of edges){
-                if(n.to==node["node_id"] && n.from == nbNode["node_id"] ){
-                  skip = true
-                  break
-                }
-              }
-              if(skip){
-                continue
-              }
-              edges.push({from:node["node_id"],to:nbNode["node_id"],arrows:''})
-              if(nbNode["is_rep"]) {
-                this.repeaterNodes.push(nbNode["node_id"])
-              }
-          }
-        }
-
-        for(let node of this.networkStats) {
-            var rgroup = "sleep"
-            if(node["node_id"]==1) {
-              rgroup = "gw"
-            }else
-            if(this.isNodeRepeater(node["node_id"])) {
-              rgroup ="rep"
-              // console.log("Node is repater ="+node["node_id"]);
-            }
-            nodes.push({id:node["node_id"],label:"Node "+node["node_id"],group:rgroup,title:node["alias"]})
-        }
-        var nodesDS = new vis.DataSet(nodes);
-
-        var edgesDS = new vis.DataSet(edges);
+    this.repeaterNodes = [];
+    for(let node of this.networkStats) {
+      var tnd = this.getNodeByAddress(String(node.node_id));
+      if (tnd) {
+        node["alias"] = tnd.alias;
+        node["power_source"] = tnd.power_source;
+        node["status"] = tnd.status;
+        console.log("Alias is set " + tnd.alias);
+      }
+    }
+    const graphData = this.graphType === 'lwr' ? this.generateLwrData() : this.generateNbData();
+        var nodesDS = new vis.DataSet(graphData.nodes);
+        var edgesDS = new vis.DataSet(graphData.edges);
 
 
         // create a network
@@ -293,42 +327,49 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
         // var options = {};
         var options = {
           nodes: {
-            shape: 'dot',
-            size: 16,
-
+            shape: "circle",
+            size: 10,
+            font: {
+              size: 12,
+            }
           },
-          edges : {
-            chosen:{edge:function(values, id, selected, hovering) {
-                values.color = "orange";
-                values.width = 3;
-              }}
+          edges: {
+            smooth: false
           },
           layout: {
-            randomSeed:1
+            randomSeed: 1
           },
           physics: {
-            enabled:true,
+            enabled: true,
             forceAtlas2Based: {
-              avoidOverlap:0.65,
-              gravitationalConstant: -45,
-                            // centralGravity: 0.005,
-              //               springLength: 230,
-                            springConstant: 0.18
+              avoidOverlap: 0.65,
+              gravitationalConstant: -2500,
+              // centralGravity: 0.005,
+              springLength: 100,
+              springConstant: 0.3
             },
             maxVelocity: 500,
-            minVelocity:200,
+            minVelocity: 200,
             solver: 'forceAtlas2Based',
             timestep: 0.35,
             stabilization: {iterations: 100}
           },
           groups: {
-            "gw": {color:{background:'red'}, borderWidth:3,size:30},
-            "rep": {color:{background:'green'}, borderWidth:2,size:18},
-            "sleep": {color:{background:'gray'}, borderWidth:1}
+            "gw": {shape: "box", color: '#e2893d', size: 30},
+            "rep": {color: '#96ff6e'},
+            "sleep": {color: '#cccccc'}
           }
         };
         // initialize your network!
         this.visJsNetwork = new vis.Network(container, data, options);
+        // add double click listener to nodes
+        this.visJsNetwork.on('doubleClick', (event) => {
+          this.dialog.open(PingDeviceDialog, {
+            // height: '400px',
+            width: '600px',
+            data : {"fimp":this.fimp,"nodeId":event.nodes[0]},
+          });
+        });
   }
 
   stopSimulation(){

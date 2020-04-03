@@ -16,17 +16,17 @@
     <mat-card-content>
           <p> Total devices : {{ totalDevices }}  AC powered : {{ totalDevices - totalBattery }} Battery powered : {{totalBattery}} Sleeping : {{totalSleeping}} Flirs: {{totalFlir}} </p>
           <p> Online : {{totalUp}}  Offline : {{totalDown}} </p>
-          <table>
+          <table class="network-stats-table">
 
           <thead><tr>
-            <th style="width: 70px">Node Id</th>
-            <th style="width: 150px">Product hash</th>
-            <th style="width:300px">Product name</th>
-            <th style="width:100px">Room</th>
-            <th style="width: 300px">Alias</th>
-            <th style="width: 75px">Power</th>
-            <th style="width: 50px">Priority</th>
-            <th style="width: 70px">Status</th>
+            <th>Node Id</th>
+            <th>Product hash</th>
+            <th>Product name</th>
+            <th>Room</th>
+            <th>Alias</th>
+            <th>Power</th>
+            <th>Priority</th>
+            <th>Status</th>
             <th >Actions</th></tr> </thead>
           <tbody>
          <tr *ngFor="let node of nodes">
@@ -95,32 +95,31 @@
         <button mat-raised-button color="accent" (click)="requestImaStats()">Reload</button>
         <button mat-raised-button color="accent" (click)="resetImaStats()">Reset</button></p>
         <button mat-raised-button color="accent" (click)="pingNetwork()">Ping all nodes in the network </button>
-        <table>
-
+        <table class="network-stats-table">
           <thead>
             <tr>
-              <th style="width: 70px">Node Id</th>
-              <th style="width: 150px">Alias</th>
-              <th style="width: 50px">Power</th>
-              <th style="width: 70px">Status</th>
-              <th style="width: 70px">Tx count</th>
-              <th style="width: 70px">Err count</th>
-              <th style="width: 70px">Route change</th>
-              <th style="width: 70px">Has LWR</th>
-              <th style="width: 100px">LWR speed (kbps)</th>
-              <th style=" width: 250px">Last working route (LWR)</th>
-              <th style=" width: 400px">Neighbors</th>
-
-            </tr> </thead>
+              <th>Node Id</th>
+              <th>Alias</th>
+              <th>Power</th>
+              <th>Status</th>
+              <th>Tx count</th>
+              <th>Err count</th>
+              <th>Route change</th>
+              <th>Has LWR</th>
+              <th>LWR speed (kbps)</th>
+              <th class="col-long">Last working route (LWR)</th>
+              <th class="col-long">Neighbors</th>
+            </tr>
+          </thead>
           <tbody>
           <tr *ngFor="let node of networkStats">
             <td> {{node.node_id}}</td>
             <td> {{node.alias}}</td>
-            <td>
+            <td class="col-icon">
               <mat-icon *ngIf="node.power_source=='ac'" >power</mat-icon>
               <mat-icon *ngIf="node.power_source=='battery'" >battery_std</mat-icon>
             </td>
-            <td>
+            <td class="col-icon">
               <mat-icon *ngIf="node.status=='OK'" style="color: #27ae60">done</mat-icon>
               <mat-icon *ngIf="node.status=='NO_PING'" >done</mat-icon>
               <mat-icon *ngIf="node.status=='NO_RESP'" style="color: red">error_outline</mat-icon>
@@ -131,9 +130,9 @@
             <td> {{node.tx_count}}</td>
             <td> {{node.err_count}}</td>
             <td> {{node.route_change}}</td>
-            <td> <mat-icon *ngIf="node.lwr.has_lwr" style="color: green">done</mat-icon> <mat-icon *ngIf="!node.lwr.has_lwr" style="color: red">error_outline</mat-icon> </td>
+            <td class="col-icon"> <mat-icon *ngIf="node.lwr.has_lwr" style="color: green">done</mat-icon> <mat-icon *ngIf="!node.lwr.has_lwr" style="color: red">error_outline</mat-icon> </td>
             <td> {{node.lwr.link_sp}}</td>
-            <td> GW(1) ->
+            <td class="col-long"> GW(1) ->
               <span *ngIf="node.lwr.has_lwr" >
                 <span *ngIf="node.lwr.r1!=0" >{{node.lwr.r1}} -> </span>
                 <span *ngIf="node.lwr.r2!=0" >{{node.lwr.r2}} -> </span>
@@ -142,7 +141,7 @@
                 {{ node.node_id }}
               </span>
             </td>
-            <td>
+            <td class="col-long">
               <span *ngFor="let  nbl of node.nb_info">
                 {{ nbl.node_id }},
               </span>
@@ -150,6 +149,15 @@
           </tr>
           </tbody>
         </table>
+
+        <div class="graph-type-selector">
+          <span>Graph type: </span>
+          <mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="graphType" (ngModelChange)="drawNetworkTopology()">
+            <mat-button-toggle [value]="'lwr'">LWR</mat-button-toggle>
+            <mat-button-toggle [value]="'nb'">Neighborhood</mat-button-toggle>
+          </mat-button-toggle-group>
+          <p><b>Tip: </b>Double click a node to ping it!</p>
+        </div>
 
 
         <div id="zwnetwork" style="width: 100%;height: 1000px"></div>
