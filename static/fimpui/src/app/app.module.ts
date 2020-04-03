@@ -30,7 +30,13 @@ import { MatTableModule,
   MatPaginatorModule,
   MatCheckbox} from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
-import { ZwaveManComponent , AddDeviceDialog, RemoveDeviceDialog,PingDeviceDialog } from './zwave-man/zwave-man.component';
+import {
+  ZwaveManComponent,
+  AddDeviceDialog,
+  RemoveDeviceDialog,
+  PingDeviceDialog,
+  ConfirmDialogComponent
+} from './zwave-man/zwave-man.component';
 import { TemplateEditorDialog } from './zwave-man/template-editor.component';
 import { ZigbeeManComponent ,AddZigbeeDeviceDialog} from './zigbee-man/zigbee-man.component';
 import { GenericAdManComponent ,AddGenericDeviceDialog} from './tpui-modules/generic-ad-man/generic-ad-man.component';
@@ -132,7 +138,8 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     ReportComponent,
     FlightRecorderComponent,
     TemplateEditorDialog,
-    MsgDetailsDialog
+    MsgDetailsDialog,
+    ConfirmDialogComponent,
     // ThingIntfUiComponent,
     // KeysPipe,
   ],
@@ -189,7 +196,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     deps: [ConfigsService],
     multi: true
 }],
-  entryComponents:[AddDeviceDialog,AddZigbeeDeviceDialog,AddGenericDeviceDialog,RemoveDeviceDialog,PingDeviceDialog,TemplateEditorDialog,MsgDetailsDialog],
+  entryComponents:[AddDeviceDialog,AddZigbeeDeviceDialog,AddGenericDeviceDialog,RemoveDeviceDialog,PingDeviceDialog,TemplateEditorDialog,MsgDetailsDialog,ConfirmDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

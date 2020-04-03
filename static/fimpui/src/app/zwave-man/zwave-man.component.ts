@@ -459,9 +459,17 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     this.showProgress(true);
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
   }
-  resetNetwork(){
-    let msg  = new FimpMessage("zwave-ad","cmd.network.reset","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+  resetNetwork() {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: '250px',
+      });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        let msg  = new FimpMessage("zwave-ad","cmd.network.reset","null",null,null,null)
+        this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+      }
+    });
   }
   getAdapterStates(){
     let msg  = new FimpMessage("zwave-ad","cmd.adapter.get_states","null",null,null,null)
@@ -852,6 +860,23 @@ export class PingDeviceDialog implements OnInit, OnDestroy  {
     }
   }
 
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+@Component({
+  selector: 'dialog-confirm',
+  templateUrl: 'dialog-confirm.html',
+})
+export class ConfirmDialogComponent {
+
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmDialogComponent>) {}
+
+  onCancel(): void {
+    this.dialogRef.close();
+  }
 
 }
 
