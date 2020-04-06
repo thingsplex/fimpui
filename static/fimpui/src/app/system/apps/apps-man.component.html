@@ -1,0 +1,49 @@
+<nav mat-tab-nav-bar>
+    <a mat-tab-link active [routerLink]="['/system/dashboard']" >Dashboard</a>
+    <a mat-tab-link active [routerLink]="['/system/apps-man']" >Applications</a>
+</nav>
+
+<div style="overflow: hidden" >
+
+       <mat-card class="card">
+        <mat-card-header>
+            <mat-card-title><h3> Applications </h3></mat-card-title>
+            <mat-card-subtitle></mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <table >
+            <thead>
+            <tr>
+                <th width="270px">Name</th>
+                <th width="150px">Version</th>
+                <th width="150px">Update</th>
+                <th width="150px">Status</th>
+                <th width="100px"> Discoverable </th>
+                <th width="100px"> Playgrounds </th>
+                <th width="150px"> Actions </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let app of apps"  >
+              <td >{{app.name}}</td>
+              <td >{{app.version}}</td>
+              <td >{{app.updateVersion}}</td>
+              <td >{{app.status}}</td>
+              <td> {{app.isDiscoverable}} </td>
+              <td>{{app.isInPlaygrounds}}  </td>
+              <td>
+                <mat-chip-list>
+                  <mat-chip class="open-chip" [routerLink]="['/system/app-config',app.name,app.version]">Configure & Control</mat-chip>
+                </mat-chip-list>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+          <p> <button mat-raised-button (click)="requestInstalledApps()" color="primary" > Reload</button> </p>
+          <p> <button mat-raised-button (click)="requestInstalledApps()" color="primary" > Check for updates</button> </p>
+        </mat-card-content>
+    </mat-card>
+
+
+</div>

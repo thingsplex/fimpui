@@ -149,6 +149,13 @@ func main() {
 	//	return c.Blob(http.StatusOK,"text/plain", result)
 	//})
 
+	e.GET("/fimp/api/get-apps-from-playgrounds", func(c echo.Context) error {
+		resp, err := http.Get("https://app-store.s3-eu-west-1.amazonaws.com/registry/list.json")
+		defer resp.Body.Close()
+		c.Stream(http.StatusOK,"application/json",resp.Body)
+		return err
+	})
+
 	e.GET("/fimp/api/get-site-info", func(c echo.Context) error {
 		siteId := utils.GetFhSiteId("")
 		if siteId == "" {
@@ -301,7 +308,7 @@ func main() {
 
 	index := "static/fimpui/dist/index.html"
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:4200","http://127.0.0.1:4200"},
+		AllowOrigins: []string{"http://localhost:4200","http://127.0.0.1:4200","https://app-store.s3-eu-west-1.amazonaws.com"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
 	//e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {

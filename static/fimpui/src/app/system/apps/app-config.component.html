@@ -1,0 +1,54 @@
+<nav mat-tab-nav-bar>
+    <a mat-tab-link active [routerLink]="['/system/dashboard']" >Dashboard</a>
+    <a mat-tab-link active [routerLink]="['/system/apps-man']" >Applications</a>
+</nav>
+
+<div style="overflow: hidden" >
+
+       <mat-card class="card">
+        <mat-card-header>
+            <mat-card-title><h3> Application control </h3></mat-card-title>
+            <mat-card-subtitle></mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p> Name : {{ appName }} {{ appVersion }} </p>
+          <p> Available version : {{ app.updateVersion }} </p>
+          <p> Type : {{ app.appType }} </p>
+          <p> Service  : {{ app.fimpServiceName }} </p>
+          <p> Long name : {{ app.longName }} </p>
+          <p> Description : {{ app.description }} </p>
+          <p> Author : {{ app.author }} </p>
+          <br>
+          <p> Status : {{appStatus}}</p>
+          <p> Operation status : {{lastOpStatus}}</p>
+          <p> Last error : {{lastError}}</p>
+          <button mat-raised-button (click)="controlApp('status')" color="primary" >Status</button>
+          <button mat-raised-button (click)="controlApp('start')" color="primary" >Start</button>
+          <button mat-raised-button (click)="controlApp('stop')" color="primary" >Stop</button>
+          <button mat-raised-button (click)="controlApp('install')" color="primary" >Update</button>
+          <button mat-raised-button (click)="controlApp('uninstall')" color="warn" >Uninstall</button>
+
+        </mat-card-content>
+    </mat-card>
+
+
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title><h3> Application state </h3></mat-card-title>
+      <mat-card-subtitle></mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title><h3> Configuration </h3></mat-card-title>
+      <mat-card-subtitle></mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+
+    </mat-card-content>
+  </mat-card>
+</div>

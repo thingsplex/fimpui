@@ -22,7 +22,10 @@ import { MatTableModule,
   MatTabsModule,
   MatExpansionModule} from '@angular/material';
 import {SystemDashboardComponent} from "./dashboard/systemDashboardComponent";
+import {AppsManComponent} from "./apps/apps-man.component";
+import {AppConfigComponent} from "./apps/app-config.component";
 import {CpuChartComponent} from "./charts/cpu-chart.component";
+import {AppsRegistryService} from "./apps/apps-registry.service";
 
 
 @NgModule({
@@ -51,6 +54,7 @@ import {CpuChartComponent} from "./charts/cpu-chart.component";
      HttpModule,
   ],
   exports:[],
-  declarations: [SystemDashboardComponent,CpuChartComponent]
+  providers:[AppsRegistryService],
+  declarations: [SystemDashboardComponent,AppsManComponent,AppConfigComponent,AppsManComponent,CpuChartComponent]
 })
 export class SystemModule { }
