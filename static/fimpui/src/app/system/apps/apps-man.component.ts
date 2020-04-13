@@ -47,9 +47,9 @@ export class AppsManComponent implements OnInit {
 
     });
 
-    if (this.appsReg.isInitialized()) {
-      this.apps = this.appsReg.getListOfApps();
-    }
+    // if (this.appsReg.isInitialized()) {
+    //   this.apps = this.appsReg.getListOfApps();
+    // }
 
   }
 
@@ -64,6 +64,15 @@ export class AppsManComponent implements OnInit {
     let msg  = new FimpMessage("fhbutler","cmd.app.ctrl","str_map","",null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
+  }
+
+  requestInstalledApps() {
+    this.apps = [];
+    this.appsReg.requestInstalledApps();
+  }
+  requestForUpdates() {
+    this.apps = [];
+    this.appsReg.checkForUpdates();
   }
 
 

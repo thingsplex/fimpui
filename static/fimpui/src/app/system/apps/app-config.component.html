@@ -1,6 +1,6 @@
 <nav mat-tab-nav-bar>
-    <a mat-tab-link active [routerLink]="['/system/dashboard']" >Dashboard</a>
-    <a mat-tab-link active [routerLink]="['/system/apps-man']" >Applications</a>
+  <a mat-tab-link active [routerLink]="['/system/apps-man']" >Applications</a>
+  <a mat-tab-link active [routerLink]="['/system/dashboard']" >Hardware and network</a>
 </nav>
 
 <div style="overflow: hidden" >
@@ -11,6 +11,7 @@
             <mat-card-subtitle></mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
+          <div *ngIf="app">
           <p> Name : {{ appName }} {{ appVersion }} </p>
           <p> Available version : {{ app.updateVersion }} </p>
           <p> Type : {{ app.appType }} </p>
@@ -25,30 +26,174 @@
           <button mat-raised-button (click)="controlApp('status')" color="primary" >Status</button>
           <button mat-raised-button (click)="controlApp('start')" color="primary" >Start</button>
           <button mat-raised-button (click)="controlApp('stop')" color="primary" >Stop</button>
+          <button mat-raised-button (click)="controlApp('enable')" color="primary" >Enable</button>
+          <button mat-raised-button (click)="controlApp('disable')" color="primary" >Disable</button>
           <button mat-raised-button (click)="controlApp('install')" color="primary" >Update</button>
           <button mat-raised-button (click)="controlApp('uninstall')" color="warn" >Uninstall</button>
-
+          </div>
         </mat-card-content>
     </mat-card>
 
-
+  <ng-container  *ngIf="manifest">
   <mat-card class="card">
     <mat-card-header>
-      <mat-card-title><h3> Application state </h3></mat-card-title>
+      <mat-card-title><h3> Application states </h3></mat-card-title>
       <mat-card-subtitle></mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+      <div>
+        <p>Application    : {{manifest.app_state.app}}</p>
+        <p>Connection     : {{manifest.app_state.connection}}</p>
+        <p>Configuration  : {{manifest.app_state.config}}</p>
+        <p>Authentication : {{manifest.app_state.auth}}</p>
+        <p>Last error code: {{manifest.app_state.last_error_code}}</p>
+        <p>Last error text: {{manifest.app_state.last_error_text}}</p>
+      </div>
 
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="card">
+  <mat-card class="card" *ngIf="manifest.auth">
     <mat-card-header>
-      <mat-card-title><h3> Configuration </h3></mat-card-title>
+      <mat-card-title><h3> Authentication </h3></mat-card-title>
       <mat-card-subtitle></mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
 
+        <p *ngIf="manifest.app_state.auth=='AUTHENTICATED'"> The app is already authenticated <b></b></p>
+        <div *ngIf="authErrorText">
+          <b>Error:</b> {{authErrorText}} ({{authErrorCode}})
+        </div>
+        <ng-container *ngIf="manifest.auth.type=='password'">
+          <p>
+            <mat-form-field>
+              <mat-label>Username</mat-label>
+              <input matInput type="text" [(ngModel)]="username" placeholder="username">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Password</mat-label>
+              <input matInput type="text" [(ngModel)]="password" placeholder="password">
+            </mat-form-field>
+          </p>
+            <button mat-raised-button (click)="login()" color="primary" >Login</button>
+        </ng-container>
+
+        <ng-container *ngIf="manifest.auth.type=='oauth2_code_grant' || manifest.auth.type=='oauth2_password_grant' ">
+         <p>
+          <mat-form-field>
+            <mat-label>Access token</mat-label>
+            <input matInput type="text" [(ngModel)]="accessToken" placeholder="access token">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Refresh token</mat-label>
+            <input matInput type="text" [(ngModel)]="refreshToken" placeholder="refresh token">
+          </mat-form-field>
+         </p><p>
+          <mat-form-field>
+            <mat-label>Expires in</mat-label>
+            <input matInput type="number" [(ngModel)]="expiresIn" placeholder="expires in">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Token type</mat-label>
+            <input matInput type="string" [(ngModel)]="tokenType" placeholder="token type">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Scope</mat-label>
+            <input matInput type="string" [(ngModel)]="accessScope" placeholder="scope">
+          </mat-form-field>
+          </p>
+          <button mat-raised-button (click)="sendTokens()" color="primary" >Set tokens</button>
+        </ng-container>
+
+
     </mat-card-content>
   </mat-card>
+
+  <ng-container >
+    <mat-card *ngFor="let block of manifest.ui_blocks" class="card">
+      <mat-card-title> {{block.header.en}} </mat-card-title>
+      <mat-card-subtitle>{{block.text.en}} </mat-card-subtitle>
+      <mat-card-content>
+        <ng-container *ngFor="let conf of block.configs">
+          <ng-container *ngFor="let mconf of manifest.configs">
+            <div *ngIf="conf == mconf.id" >
+              <ng-container [ngSwitch]="mconf.ui.type">
+                <ng-container *ngSwitchCase="'radio'">
+                  <label style="margin: 4px">{{mconf.label.en}}</label>
+                  <mat-radio-group [(ngModel)] = "mconf._state" class="conf-radio-group">
+                    <mat-radio-button class="conf-radio-button" *ngFor="let opt of mconf.ui.select" [value]="opt.val">
+                      {{opt.label.en}}
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </ng-container>
+                <ng-container *ngSwitchCase="'multi_select'">
+
+                  <mat-form-field>
+                    <mat-label>{{mconf.label.en}}</mat-label>
+                    <mat-select [(ngModel)] = "mconf._state" multiple>
+                      <mat-option *ngFor="let opt of mconf.ui.select" [value]="opt.val">{{opt.label.en}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                </ng-container>
+                <ng-container *ngSwitchCase="'select'">
+
+                  <mat-form-field>
+                    <mat-label>{{mconf.label.en}}</mat-label>
+                    <mat-select [(ngModel)] = "mconf._state" >
+                      <mat-option *ngFor="let opt of mconf.ui.select" [value]="opt.val">{{opt.label.en}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'string'">
+                  <mat-form-field>
+                    <mat-label>{{mconf.label.en}}</mat-label>
+                    <input matInput type="text" [(ngModel)]="mconf._state" placeholder="{{mconf.label.en}}">
+                  </mat-form-field>
+
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'number'">
+
+                  <mat-form-field>
+                    <mat-label>{{mconf.label.en}}</mat-label>
+                    <input matInput type="number" [(ngModel)]="mconf._state" placeholder="{{mconf.label.en}}">
+                  </mat-form-field>
+
+                </ng-container>
+                <ng-container *ngSwitchCase="'readonly'">
+                  <div style="margin: 5px">
+                    <b>{{mconf.label.en}}</b> : {{mconf._state}}
+                  </div>
+
+
+                </ng-container>
+              </ng-container>
+
+
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngFor="let bid of block.buttons">
+          <ng-container *ngFor="let mbutton of manifest.ui_buttons">
+            <div *ngIf="bid == mbutton.id" >
+              <button mat-raised-button (click)="sendButtonAction(mbutton.req.intf_t,mbutton.req.val)" color="primary" style="margin: 5px">{{mbutton.label.en}}</button>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <p>{{block.footer.en}}</p>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+
+  <button mat-raised-button (click)="saveConfigChanges()" color="primary" style="margin: 5px">Save configurations </button>
+  </ng-container>
 </div>

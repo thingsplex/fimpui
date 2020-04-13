@@ -1,23 +1,29 @@
 import { Injectable } from '@angular/core';
 import {FimpService} from "app/fimp/fimp.service";
-import {Subject} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 import {Subscription} from "rxjs/Subscription";
 import {FimpMessage, NewFimpMessageFromString} from "../../fimp/Message";
 import {BACKEND_ROOT} from "../../globals";
 import {HttpClient} from "@angular/common/http";
+import {setTimeout} from "timers";
 
 @Injectable()
 export class AppsRegistryService{
 
   globalSub : Subscription;
   apps      : AppRecord[] = [];
-  private registryStateSource = new Subject<string>();
+  private registryStateSource = new BehaviorSubject<string>("");
   public registryState$ = this.registryStateSource.asObservable();
 
   constructor(private fimp: FimpService,private http: HttpClient) {
     console.log("apps-registry service constructor")
     this.init()
-    this.requestInstalledApps()
+    if (this.loadFromLocalStorage()) {
+      this.notifyRegistryState();
+    }else {
+      this.requestInstalledApps();
+    }
+
   }
 
   public init() {
@@ -33,18 +39,40 @@ export class AppsRegistryService{
             let appRecord = new AppRecord();
             appRecord.name = fimpMsg.val[key].name;
             appRecord.status = fimpMsg.val[key].status;
+            if (appRecord.status.includes("installed"))
+              appRecord.status = "installed";
             appRecord.version = fimpMsg.val[key].ver;
             appRecord.updateVersion = fimpMsg.val[key].update_ver;
             appRecord.isInPlaygrounds = false;
             appRecord.isDiscoverable = false;
             this.apps.push(appRecord)
           }
-          this.notifyRegistryState();
+          // this.notifyRegistryState();
           this.loadAppsFromPlaygrounds();
 
         }
       }else if (fimpMsg.service == "fhbutler") {
 
+      }else if (fimpMsg.mtype == "evt.discovery.report") {
+        console.log("Discovered resource:"+fimpMsg.val.resource_name);
+        let app = this.getAppByNameMatch(fimpMsg.val.resource_name);
+        if(app) {
+          app.appType = fimpMsg.val.resource_type;
+          app.fimpServiceName = fimpMsg.val.resource_name;
+          app.isDiscoverable = true;
+          if (app.author==""||app.author==null)
+            app.author = fimpMsg.val.author;
+          if (app.description==""||app.description==null)
+            app.description = fimpMsg.val.description;
+          if (app.longName==""||app.longName==null)
+            app.longName = fimpMsg.val.resource_full_name;
+        }else {
+          console.log("No match")
+        }
+        // if (fimpMsg.val.resource_type== "ad") {
+        //   this.listOfAdapters.push(fimpMsg.val.resource_name)
+        //   localStorage.setItem("listOfAdapters", JSON.stringify(this.listOfAdapters));
+        // }
       }
       //this.messages.push("topic:"+msg.topic," payload:"+msg.payload);
     });
@@ -88,19 +116,53 @@ export class AppsRegistryService{
 
         }
         this.notifyRegistryState();
-
+        this.saveToLocalStorage();
+        this.fimp.discoverResources();
+        setTimeout(args => this.completeResourceDiscovery(),5000);
       });
   }
 
+  completeResourceDiscovery() {
+    console.log("discovery process completed")
+
+    this.saveToLocalStorage();
+    this.notifyRegistryState();
+  }
+
+  saveToLocalStorage() {
+    localStorage.setItem("appsRegistry", JSON.stringify(this.apps));
+  }
+  loadFromLocalStorage():boolean {
+    if (localStorage.getItem("appsRegistry")!=null){
+      this.apps = JSON.parse(localStorage.getItem("appsRegistry"));
+      return true;
+    }
+    return false;
+  }
+
   requestInstalledApps(){
-    console.log("Remove device")
     let msg  = new FimpMessage("fhbutler","cmd.app.get_version","null",null,null,null)
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
+  }
+
+  checkForUpdates(){
+    let msg  = new FimpMessage("fhbutler","cmd.app.check_updates","null",null,null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
   }
 
   getAppByName(name:string):AppRecord {
     let result = this.apps.filter(app => app.name == name)
+    if (result.length>0) {
+      return result[0]
+    }else {
+      return null
+    }
+  }
+
+  getAppByNameMatch(name:string):AppRecord {
+    let result = this.apps.filter(app => app.name.includes(name))
     if (result.length>0) {
       return result[0]
     }else {

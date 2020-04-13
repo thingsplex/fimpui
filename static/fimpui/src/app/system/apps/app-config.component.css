@@ -7,7 +7,11 @@
 .card {
   max-width: 1100px;
   margin: 20px;
+}
 
+.ui_block {
+  max-width: 500px;
+  margin: 5px;
 }
 .chart-container {
   display: flex;
@@ -18,4 +22,18 @@
 
 .mat-cell:nth-child(0), .mat-header-cell:nth-child(0) {
     flex: 0 0 250px;
+}
+
+.conf-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+.conf-radio-button {
+  margin: 5px;
+}
+
+.conf-input-field {
+  margin: 5px;
 }

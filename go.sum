@@ -102,6 +102,8 @@ github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/thingsplex/tpflow v0.14.0 h1:QglMLcznGuPS3ZH672EXm9+/6binzSRyer+YqsYGBAI=
 github.com/thingsplex/tpflow v0.14.0/go.mod h1:CRUl/WpnX3AacmUKQnnxFvarcunjTvoBoPQgUneR3G8=
+github.com/thingsplex/tpflow v0.14.1-0.20200408142336-c831953b0787 h1:ZyoN4WxY4mxrRbCjDWIRQWL113mE5ggPS2HrLCqXmbo=
+github.com/thingsplex/tpflow v0.14.1-0.20200408142336-c831953b0787/go.mod h1:gW2WUclD28XJn3XjReAPSK02guFbhhEyfmAcs+Kn66I=
 github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a h1:AOcehBWpFhYPYw0ioDTppQzgI8pAAahVCiMSKTp9rbo=
 github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=

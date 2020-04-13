@@ -1,6 +1,6 @@
 <nav mat-tab-nav-bar>
-    <a mat-tab-link active [routerLink]="['/system/dashboard']" >Dashboard</a>
-    <a mat-tab-link active [routerLink]="['/system/apps-man']" >Applications</a>
+  <a mat-tab-link active [routerLink]="['/system/apps-man']" >Applications</a>
+  <a mat-tab-link active [routerLink]="['/system/dashboard']" >Hardware and network</a>
 </nav>
 
 <div style="overflow: hidden" >
@@ -29,8 +29,10 @@
               <td >{{app.version}}</td>
               <td >{{app.updateVersion}}</td>
               <td >{{app.status}}</td>
-              <td> {{app.isDiscoverable}} </td>
-              <td>{{app.isInPlaygrounds}}  </td>
+              <td> <ng-container *ngIf="app.isDiscoverable"> <span style="color: #3c763d">Yes</span> </ng-container>
+                   <ng-container *ngIf="!app.isDiscoverable"> <span style="color:#c9302c">No</span> </ng-container></td>
+              <td> <ng-container *ngIf="app.isInPlaygrounds"> <span style="color: #3c763d">Yes</span> </ng-container>
+                <ng-container *ngIf="!app.isInPlaygrounds"> <span style="color:#c9302c">No</span> </ng-container></td>
               <td>
                 <mat-chip-list>
                   <mat-chip class="open-chip" [routerLink]="['/system/app-config',app.name,app.version]">Configure & Control</mat-chip>
@@ -41,7 +43,7 @@
           </table>
 
           <p> <button mat-raised-button (click)="requestInstalledApps()" color="primary" > Reload</button> </p>
-          <p> <button mat-raised-button (click)="requestInstalledApps()" color="primary" > Check for updates</button> </p>
+          <p> <button mat-raised-button (click)="checkForUpdates()" color="primary" > Check for updates</button> </p>
         </mat-card-content>
     </mat-card>
 

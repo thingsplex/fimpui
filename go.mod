@@ -15,8 +15,9 @@ require (
 	github.com/labstack/echo v3.2.1+incompatible
 	github.com/labstack/gommon v0.2.7
 	github.com/rcrowley/go-metrics v0.0.0-20180406234716-d932a24a8ccb
+	github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967 // indirect
 	github.com/sirupsen/logrus v1.3.0
-	github.com/thingsplex/tpflow v0.14.0
+	github.com/thingsplex/tpflow v0.14.1-0.20200408142336-c831953b0787
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	go.etcd.io/bbolt v1.3.0 // indirect
 	go.opencensus.io v0.8.0 // indirect
