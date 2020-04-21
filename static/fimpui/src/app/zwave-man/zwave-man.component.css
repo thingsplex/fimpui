@@ -15,5 +15,31 @@ md-chip {
   cursor: pointer;
 }
 
+.graph-type-selector {
+  margin-left: 25px;
+  color: black;
+}
+
+.graph-type-selector span {
+  margin-right: 15px;
+}
+
+.network-stats-table {
+  margin: 25px;
+  width: 95%;
+}
+
+.network-stats-table tr {
+  height: 40px;
+}
+
+.network-stats-table th,  .network-stats-table td{
+  text-align: left;
+}
+
+.network-stats-table .col-long {
+  width: 15%;
+}
+
 
 
