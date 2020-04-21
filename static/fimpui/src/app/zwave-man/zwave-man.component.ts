@@ -238,9 +238,15 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     });
 
     const nodes = lwrNodes.map(node => ({id:node["node_id"],label:"Node\n"+node["node_id"],group:'sleep',title:node["alias"]}));
+
     // GW node
-    const gw = this.networkStats.find(n => n.node_id === 1);
-    nodes.push({id:gw["node_id"],label:"Node\n"+gw["node_id"],group:"gw",title:gw["alias"]});
+    const existingGW = nodes.find(n => n.id === 1);
+    if (existingGW != null) {
+      existingGW.group = 'gw';
+    } else {
+      const gw = this.networkStats.find(n => n.node_id === 1);
+      nodes.push({id:gw["node_id"],label:"Node\n"+gw["node_id"],group:"gw",title:gw["alias"]});
+    }
 
     for (const node of lwrNodes) {
       let from = 1;
