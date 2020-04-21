@@ -30,7 +30,13 @@ import { MatTableModule,
   MatPaginatorModule,
   MatCheckbox} from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
-import { ZwaveManComponent , AddDeviceDialog, RemoveDeviceDialog,PingDeviceDialog } from './zwave-man/zwave-man.component';
+import {
+  ZwaveManComponent,
+  AddDeviceDialog,
+  RemoveDeviceDialog,
+  PingDeviceDialog,
+  ConfirmDialogComponent
+} from './zwave-man/zwave-man.component';
 import { TemplateEditorDialog } from './zwave-man/template-editor.component';
 import { ZigbeeManComponent ,AddZigbeeDeviceDialog} from './zigbee-man/zigbee-man.component';
 import { GenericAdManComponent ,AddGenericDeviceDialog} from './tpui-modules/generic-ad-man/generic-ad-man.component';
@@ -66,6 +72,7 @@ import {environment} from "../environments/environment";
 import {JsonInputComponent} from "./tpui-modules/flow/ui-elements/json-input.component";
 import {FireService} from "./firebase/fire.service";
 import {WebRtcService} from 'app/fimp/web-rtc.service';
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -131,7 +138,8 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     ReportComponent,
     FlightRecorderComponent,
     TemplateEditorDialog,
-    MsgDetailsDialog
+    MsgDetailsDialog,
+    ConfirmDialogComponent,
     // ThingIntfUiComponent,
     // KeysPipe,
   ],
@@ -177,7 +185,8 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     SystemModule,
     RegistryModule,
     CdkTableModule,
-    GaugeModule.forRoot()
+    GaugeModule.forRoot(),
+    MatButtonToggleModule
 
   ],
   providers: [WebRtcService, FimpService,ThingsDbService,ConfigsService,FireService,{
@@ -187,7 +196,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     deps: [ConfigsService],
     multi: true
 }],
-  entryComponents:[AddDeviceDialog,AddZigbeeDeviceDialog,AddGenericDeviceDialog,RemoveDeviceDialog,PingDeviceDialog,TemplateEditorDialog,MsgDetailsDialog],
+  entryComponents:[AddDeviceDialog,AddZigbeeDeviceDialog,AddGenericDeviceDialog,RemoveDeviceDialog,PingDeviceDialog,TemplateEditorDialog,MsgDetailsDialog,ConfirmDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
