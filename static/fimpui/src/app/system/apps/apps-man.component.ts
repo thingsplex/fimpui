@@ -70,7 +70,7 @@ export class AppsManComponent implements OnInit {
     this.apps = [];
     this.appsReg.requestInstalledApps();
   }
-  requestForUpdates() {
+  checkForUpdates() {
     this.apps = [];
     this.appsReg.checkForUpdates();
   }

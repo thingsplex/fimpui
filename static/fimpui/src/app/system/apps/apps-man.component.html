@@ -17,7 +17,6 @@
                 <th width="270px">Name</th>
                 <th width="150px">Version</th>
                 <th width="150px">Update</th>
-                <th width="150px">Status</th>
                 <th width="100px"> Discoverable </th>
                 <th width="100px"> Playgrounds </th>
                 <th width="150px"> Actions </th>
@@ -28,7 +27,6 @@
               <td >{{app.name}}</td>
               <td >{{app.version}}</td>
               <td >{{app.updateVersion}}</td>
-              <td >{{app.status}}</td>
               <td> <ng-container *ngIf="app.isDiscoverable"> <span style="color: #3c763d">Yes</span> </ng-container>
                    <ng-container *ngIf="!app.isDiscoverable"> <span style="color:#c9302c">No</span> </ng-container></td>
               <td> <ng-container *ngIf="app.isInPlaygrounds"> <span style="color: #3c763d">Yes</span> </ng-container>
