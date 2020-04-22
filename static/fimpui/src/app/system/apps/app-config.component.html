@@ -113,8 +113,8 @@
     </mat-card-content>
   </mat-card>
 
-  <ng-container >
-    <mat-card *ngFor="let block of manifest.ui_blocks" class="card">
+  <ng-container *ngFor="let block of manifest.ui_blocks" >
+    <mat-card *ngIf="!block.hidden" class="card">
       <mat-card-title> {{block.header.en}} </mat-card-title>
       <mat-card-subtitle>{{block.text.en}} </mat-card-subtitle>
       <mat-card-content>
@@ -122,7 +122,7 @@
           <ng-container *ngFor="let mconf of manifest.configs">
             <div *ngIf="conf == mconf.id" >
               <ng-container [ngSwitch]="mconf.ui.type">
-                <ng-container *ngSwitchCase="'radio'">
+                <ng-container *ngSwitchCase="'list_radio'">
                   <label style="margin: 4px">{{mconf.label.en}}</label>
                   <mat-radio-group [(ngModel)] = "mconf._state" class="conf-radio-group">
                     <mat-radio-button class="conf-radio-button" *ngFor="let opt of mconf.ui.select" [value]="opt.val">
@@ -130,7 +130,7 @@
                     </mat-radio-button>
                   </mat-radio-group>
                 </ng-container>
-                <ng-container *ngSwitchCase="'multi_select'">
+                <ng-container *ngSwitchCase="'list_checkbox'">
 
                   <mat-form-field>
                     <mat-label>{{mconf.label.en}}</mat-label>
@@ -140,7 +140,7 @@
                   </mat-form-field>
 
                 </ng-container>
-                <ng-container *ngSwitchCase="'select'">
+                <ng-container *ngSwitchCase="'select_horizontal'">
 
                   <mat-form-field>
                     <mat-label>{{mconf.label.en}}</mat-label>
@@ -150,16 +150,14 @@
                   </mat-form-field>
 
                 </ng-container>
-
-                <ng-container *ngSwitchCase="'string'">
+                <ng-container *ngSwitchCase="'input_string'">
                   <mat-form-field>
                     <mat-label>{{mconf.label.en}}</mat-label>
                     <input matInput type="text" [(ngModel)]="mconf._state" placeholder="{{mconf.label.en}}">
                   </mat-form-field>
 
                 </ng-container>
-
-                <ng-container *ngSwitchCase="'number'">
+                <ng-container *ngSwitchCase="'input_number'">
 
                   <mat-form-field>
                     <mat-label>{{mconf.label.en}}</mat-label>
@@ -167,12 +165,25 @@
                   </mat-form-field>
 
                 </ng-container>
-                <ng-container *ngSwitchCase="'readonly'">
+                <ng-container *ngSwitchCase="'input_readonly'">
                   <div style="margin: 5px">
                     <b>{{mconf.label.en}}</b> : {{mconf._state}}
                   </div>
-
-
+                </ng-container>
+                <ng-container *ngSwitchCase="'text'">
+                  <div style="margin: 5px">
+                    <b>{{mconf.label.en}}</b> : {{mconf._state}}
+                  </div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'text_success'">
+                  <div style="margin: 5px;color: #1b8b77">
+                    <b>{{mconf.label.en}}</b> : {{mconf._state}}
+                  </div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'text_error'">
+                  <div style="margin: 5px;color: #c9302c">
+                    <b>{{mconf.label.en}}</b> : {{mconf._state}}
+                  </div>
                 </ng-container>
               </ng-container>
 
@@ -183,7 +194,7 @@
 
         <ng-container *ngFor="let bid of block.buttons">
           <ng-container *ngFor="let mbutton of manifest.ui_buttons">
-            <div *ngIf="bid == mbutton.id" >
+            <div *ngIf="bid == mbutton.id && !mbutton.hidden" >
               <button mat-raised-button (click)="sendButtonAction(mbutton.req.intf_t,mbutton.req.val)" color="primary" style="margin: 5px">{{mbutton.label.en}}</button>
             </div>
           </ng-container>
