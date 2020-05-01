@@ -67,7 +67,18 @@ export class AppsRegistryService{
           if (app.longName==""||app.longName==null)
             app.longName = fimpMsg.val.resource_full_name;
         }else {
-          console.log("No match")
+          let app = new AppRecord();
+          app.name = fimpMsg.val.package_name;
+          app.version = fimpMsg.val.version;
+          app.isInPlaygrounds = false;
+          app.isDiscoverable = true;
+          app.fimpServiceName = fimpMsg.val.resource_name;
+          app.appType = fimpMsg.val.resource_type;
+          app.longName = fimpMsg.val.resource_full_name;
+          app.description = fimpMsg.val.description;
+          app.author = fimpMsg.val.author;
+          app.configRequired = fimpMsg.val.config_required;
+          this.apps.push(app);
         }
         // if (fimpMsg.val.resource_type== "ad") {
         //   this.listOfAdapters.push(fimpMsg.val.resource_name)

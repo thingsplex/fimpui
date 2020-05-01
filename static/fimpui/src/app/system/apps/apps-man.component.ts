@@ -9,6 +9,7 @@ import { Subscription } from "rxjs/Subscription";
 import {FimpService} from "../../fimp/fimp.service";
 import {FimpMessage, NewFimpMessageFromString} from "../../fimp/Message";
 import {AppRecord, AppsRegistryService} from "./apps-registry.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'apps-man',
@@ -20,8 +21,9 @@ import {AppRecord, AppsRegistryService} from "./apps-registry.service";
 export class AppsManComponent implements OnInit {
   globalSub : Subscription;
   apps      : AppRecord[] = [];
+  filter    : string = "user";
   private registrySub: Subscription = null;
-  constructor(private fimp:FimpService,private appsReg:AppsRegistryService) {
+  constructor(private fimp:FimpService,private appsReg:AppsRegistryService,public snackBar: MatSnackBar) {
 
   }
 
@@ -33,6 +35,20 @@ export class AppsManComponent implements OnInit {
         if(fimpMsg.mtype == "evt.app.version_report" )
         {
 
+        }else if(fimpMsg.mtype == "evt.app.ctrl_report" )
+        {
+          /*{
+          "app": "teleport",
+          "app_status": "active",
+          "op": "state",
+          "op_error": "",
+          "op_status": "ok"
+        }
+        */
+          if (fimpMsg.val.app_status=="active")
+            this.snackBar.open('App'+fimpMsg.val.app+' installed successfully',"",{duration:3000});
+          else
+            this.snackBar.open('App'+fimpMsg.val.app+' installation failed . Error:'+fimpMsg.val.op_error,"",{duration:5000});
         }
       }else if (fimpMsg.service == "fhbutler") {
 
@@ -53,15 +69,15 @@ export class AppsManComponent implements OnInit {
 
   }
 
-
-
   controlApp(name:string,op:string){
     let val = {
       "op": op,
       "app": name,
       "ver": ""
     }
-    let msg  = new FimpMessage("fhbutler","cmd.app.ctrl","str_map","",null,null)
+    console.log("Installing "+name);
+    this.snackBar.open('Installing the app '+name+'....',"",{duration:3000});
+    let msg  = new FimpMessage("fhbutler","cmd.app.ctrl","str_map",val,null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
   }
@@ -70,6 +86,11 @@ export class AppsManComponent implements OnInit {
     this.apps = [];
     this.appsReg.requestInstalledApps();
   }
+
+  discoverLocalApps() {
+    this.fimp.discoverResources();
+  }
+
   checkForUpdates() {
     this.apps = [];
     this.appsReg.checkForUpdates();

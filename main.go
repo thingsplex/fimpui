@@ -343,6 +343,7 @@ func main() {
 	e.File("/fimp/registry/admin", index)
 	e.Static("/fimp/static", "static/fimpui/dist/")
 	e.Static("/fimp/help", "static/help/")
+	e.Static("/fimp/libs", "static/libs/")
 
 	e.Logger.Debug(e.Start(fmt.Sprintf(":%d",port) ))
 	//e.Shutdown(context.Background())

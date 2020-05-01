@@ -11,6 +11,17 @@
             <mat-card-subtitle></mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
+          <div style="margin: 10px">
+          <label style="margin: 5px">Filter:</label>
+          <mat-radio-group [(ngModel)] = "filter" class="conf-radio-group">
+            <mat-radio-button class="conf-radio-button"  [value]="'user'">
+              User apps
+            </mat-radio-button>
+            <mat-radio-button class="conf-radio-button"  [value]="'all'">
+              All
+            </mat-radio-button>
+          </mat-radio-group>
+          </div>
           <table >
             <thead>
             <tr>
@@ -23,7 +34,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let app of apps"  >
+            <ng-container *ngFor="let app of apps">
+            <tr *ngIf="filter=='all' || (app.isDiscoverable || app.isInPlaygrounds)" >
               <td >{{app.name}}</td>
               <td >{{app.version}}</td>
               <td >{{app.updateVersion}}</td>
@@ -37,11 +49,19 @@
                 </mat-chip-list>
               </td>
             </tr>
+            </ng-container>
             </tbody>
           </table>
 
-          <p> <button mat-raised-button (click)="requestInstalledApps()" color="primary" > Reload</button> </p>
-          <p> <button mat-raised-button (click)="checkForUpdates()" color="primary" > Check for updates</button> </p>
+          <mat-form-field>
+            <mat-label>Application name</mat-label>
+            <input matInput #appName type="text"  placeholder="">
+          </mat-form-field>
+          <button mat-raised-button (click)="controlApp(appName.value,'install')" color="primary" > Install </button>
+
+          <p> <button mat-raised-button (click)="requestInstalledApps()" color="primary" > Reload</button>
+            <button mat-raised-button (click)="discoverLocalApps()" color="primary" > Discover local apps</button>
+            <button mat-raised-button (click)="checkForUpdates()" color="primary" > Check for updates</button> </p>
         </mat-card-content>
     </mat-card>
 
