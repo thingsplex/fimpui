@@ -82,18 +82,22 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
       }else {
         // device topic
         console.log("Sensor report");
-        for (let svc of this.thing.services){
+        if(this.thing.services) {
+          for (let svc of this.thing.services){
             // console.log("Comparing "+msg.topic+" with "+ "pt:j1/mt:evt"+svc.address);
             var topic = this.fimp.detachGlobalPrefix(msg.topic);
             if (topic == "pt:j1/mt:evt"+svc.address) {
               // console.log("Matching service "+fimpMsg.service);
-              for (let inf of svc.interfaces) {
-                if ( fimpMsg.mtype == inf.msgType ) {
-                  // console.log("Value updated");
-                  inf.lastValue = fimpMsg
+              if(svc.interfaces){
+                for (let inf of svc.interfaces) {
+                  if ( fimpMsg.mtype == inf.msgType ) {
+                    // console.log("Value updated");
+                    inf.lastValue = fimpMsg
+                  }
                 }
               }
             }
+          }
         }
       }
     });

@@ -25,7 +25,8 @@ export function MapJsonToThingObject(val:any):Thing {
     thing.wakeupInterval = val.wakeup_interval;
     thing.locationId = val.location_id;
     thing.locationAlias = val.location_alias;
-    for (let fimpService of val.services ) {
+    if (val.services) {
+      for (let fimpService of val.services ) {
         let service = new Service();
         service.name = fimpService.name;
         service.alias = fimpService.alias;
@@ -33,14 +34,18 @@ export function MapJsonToThingObject(val:any):Thing {
         service.enabled = fimpService.enabled;
         service.groups = fimpService.groups;
         service.props = fimpService.props;
-        for (let fimpIntf of fimpService.interfaces) {
+        if (fimpService.interfaces) {
+          for (let fimpIntf of fimpService.interfaces) {
             let intf = new Interface();
             intf.msgType = fimpIntf.msg_t;
             intf.type = fimpIntf.intf_t;
             intf.valueType = fimpIntf.val_t;
             service.interfaces.push(intf);
+          }
         }
         thing.services.push(service);
+      }
     }
+
     return thing;
 }

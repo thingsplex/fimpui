@@ -2,13 +2,13 @@ package mqtt
 
 import (
 	"github.com/gorilla/websocket"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"net"
 	"net/http"
+	"crypto/tls"
 	//"encoding/hex"
 	log "github.com/sirupsen/logrus"
 	"io"
-	"crypto/tls"
 )
 
 var (
@@ -19,6 +19,12 @@ var (
 		},
 	}
 )
+
+// WebSockets begin life as a standard HTTP request and response. Within that request response chain,
+// the client asks to open a WebSocket connection, and the server responds (if its able to).
+// If this initial handshake is successful, the client and server have agreed to use the existing TCP/IP connection
+// that was established for the HTTP request as a WebSocket connection. Data can now flow over this connection using a basic framed message protocol.
+// Once both parties acknowledge that the WebSocket connection should be closed, the TCP connection is torn down.
 
 type WsUpgrader struct {
 	BrokerAddress string
@@ -31,7 +37,17 @@ func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 			log.Error("!!!!!!!!!!! Mqtt WS proxy (Upgrade) crashed with panic!!!!!!!!!!!!!!!")
 		}
 	}()
+
+	//sess, _ := session.Get("auth", c)
+	//_,ok1 := sess.Values["username"]
+	//if sess.IsNew || !ok1 {
+	//	log.Info("Connection is not authenticated")
+	//	c.NoContent(http.StatusUnauthorized)
+	//	return errors.New("not authenticated")
+	//}
+
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+
 	if err != nil {
 		log.Error("<MqWsProxy> Can't upgrade . Error:", err)
 		return err

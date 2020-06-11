@@ -79,6 +79,7 @@
                   </mat-expansion-panel-header>
 
                   <table  matLine>
+                    <ng-container *ngIf="row.interfaces">
                       <tr><th *ngIf="advancedViewMode">type</th><th *ngIf="advancedViewMode">msg</th><th *ngIf="advancedViewMode">val. type</th><th ></th> </tr>
                       <tr *ngFor="let intf of row.interfaces">
                         <td *ngIf="advancedViewMode">{{ intf.type }}</td>
@@ -86,18 +87,21 @@
                         <td *ngIf="advancedViewMode">{{ intf.valueType }}</td>
                         <td><thing-intf-ui [intf]="intf" [serv]="row" [msgType]="intf.msgType" [addr]="row.address" [service]="row.name" > </thing-intf-ui></td>
                       </tr>
+                    </ng-container>
                     </table>
 
                 </mat-expansion-panel>
 
                <table *ngIf="row.name!='dev_sys'"  matLine>
                  <tr><th *ngIf="advancedViewMode">type</th><th *ngIf="advancedViewMode">msg</th><th *ngIf="advancedViewMode">val. type</th><th ></th> </tr>
+                 <ng-container *ngIf="row.interfaces">
                  <tr *ngFor="let intf of row.interfaces">
                    <td *ngIf="advancedViewMode">{{ intf.type }}</td>
                    <td *ngIf="advancedViewMode">{{ intf.msgType }}</td>
                    <td *ngIf="advancedViewMode">{{ intf.valueType }}</td>
                    <td><thing-intf-ui [intf]="intf" [serv]="row" [msgType]="intf.msgType" [addr]="row.address" [service]="row.name" > </thing-intf-ui></td>
                  </tr>
+                 </ng-container>
                </table>
 
 

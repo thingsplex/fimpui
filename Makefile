@@ -1,4 +1,4 @@
-version="0.16.6"
+version="0.17.1"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -68,6 +68,15 @@ upload-install : upload
 
 remote-install : deb-arm upload
 	ssh -t $(remote_host) "sudo dpkg -i fimpui_$(version)_armhf.deb"
+
+install-mqtt-broker:
+	docker run -p 1883:1883 --name vernemq -d -e "DOCKER_VERNEMQ_ACCEPT_EULA=yes" -e "DOCKER_VERNEMQ_ALLOW_ANONYMOUS=on" erlio/docker-vernemq
+
+start-mqtt-broker:
+	docker start vernemq
+
+stop-mqtt-broker:
+	docker stop vernemq
 
 run :
 	go run main.go -c var/config_local.json

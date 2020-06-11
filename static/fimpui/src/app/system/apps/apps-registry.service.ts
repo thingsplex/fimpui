@@ -12,6 +12,7 @@ export class AppsRegistryService{
 
   globalSub : Subscription;
   apps      : AppRecord[] = [];
+  timeoutId : number;
   private registryStateSource = new BehaviorSubject<string>("");
   public registryState$ = this.registryStateSource.asObservable();
 
@@ -37,7 +38,10 @@ export class AppsRegistryService{
           this.apps = [];
           for (let key in fimpMsg.val){
             let appRecord = new AppRecord();
-            appRecord.name = fimpMsg.val[key].name;
+            if (fimpMsg.val[key].name != undefined)
+              appRecord.name = fimpMsg.val[key].name;
+            else
+              appRecord.name = "unknown";
             appRecord.status = fimpMsg.val[key].status;
             if (appRecord.status.includes("installed"))
               appRecord.status = "installed";
@@ -49,10 +53,11 @@ export class AppsRegistryService{
           }
           // this.notifyRegistryState();
           this.loadAppsFromPlaygrounds();
-
+        }else if (fimpMsg.mtype == "evt.app.ctrl_report") {
+          if (fimpMsg.val["op"]=="install" && fimpMsg.val["op_status"]=="ok") {
+            this.completeResourceDiscovery();
+          }
         }
-      }else if (fimpMsg.service == "fhbutler") {
-
       }else if (fimpMsg.mtype == "evt.discovery.report") {
         console.log("Discovered resource:"+fimpMsg.val.resource_name);
         let app = this.getAppByNameMatch(fimpMsg.val.resource_name);
@@ -60,15 +65,23 @@ export class AppsRegistryService{
           app.appType = fimpMsg.val.resource_type;
           app.fimpServiceName = fimpMsg.val.resource_name;
           app.isDiscoverable = true;
-          if (app.author==""||app.author==null)
-            app.author = fimpMsg.val.author;
-          if (app.description==""||app.description==null)
-            app.description = fimpMsg.val.description;
-          if (app.longName==""||app.longName==null)
-            app.longName = fimpMsg.val.resource_full_name;
+          if (app.author==""||app.author==null) {
+              app.author = fimpMsg.val.author;
+          }
+
+          if (app.description==""||app.description==null) {
+              app.description = fimpMsg.val.description;
+          }
+          if (app.longName==""||app.longName==null) {
+              app.longName = fimpMsg.val.resource_full_name;
+          }
+
         }else {
           let app = new AppRecord();
-          app.name = fimpMsg.val.package_name;
+          if (fimpMsg.val.package_name)
+            app.name = fimpMsg.val.package_name;
+          else
+            app.name = fimpMsg.val.resource_name;
           app.version = fimpMsg.val.version;
           app.isInPlaygrounds = false;
           app.isDiscoverable = true;
@@ -80,12 +93,8 @@ export class AppsRegistryService{
           app.configRequired = fimpMsg.val.config_required;
           this.apps.push(app);
         }
-        // if (fimpMsg.val.resource_type== "ad") {
-        //   this.listOfAdapters.push(fimpMsg.val.resource_name)
-        //   localStorage.setItem("listOfAdapters", JSON.stringify(this.listOfAdapters));
-        // }
+
       }
-      //this.messages.push("topic:"+msg.topic," payload:"+msg.payload);
     });
   }
 
@@ -112,7 +121,6 @@ export class AppsRegistryService{
       .subscribe(result=>{
         result = result["apps"];
         for(let i in result) {
-
           let app = this.getAppByName(result[i].name);
           if (app != null) {
             console.log("App name = "+result[i].name)
@@ -124,20 +132,24 @@ export class AppsRegistryService{
             app.author = result[i].author;
             app.configRequired = result[i].config_required;
           }
-
         }
         this.notifyRegistryState();
         this.saveToLocalStorage();
         this.fimp.discoverResources();
         setTimeout(args => this.completeResourceDiscovery(),5000);
+
       });
   }
 
   completeResourceDiscovery() {
     console.log("discovery process completed")
-
     this.saveToLocalStorage();
     this.notifyRegistryState();
+  }
+
+  discoverLocalApps() {
+    this.fimp.discoverResources();
+    setTimeout(args => this.completeResourceDiscovery(),5000);
   }
 
   saveToLocalStorage() {

@@ -58,6 +58,7 @@ export class AppsManComponent implements OnInit {
     this.registrySub = this.appsReg.registryState$.subscribe((state) => {
       if(state=="allLoaded") {
         this.apps = this.appsReg.getListOfApps();
+        this.snackBar.open('Done!',"",{duration:3000});
       }
       console.log("new registry state = "+state);
 
@@ -83,15 +84,18 @@ export class AppsManComponent implements OnInit {
   }
 
   requestInstalledApps() {
+    this.snackBar.open('Reloading list of apps ',"",{duration:10000});
     this.apps = [];
     this.appsReg.requestInstalledApps();
   }
 
   discoverLocalApps() {
-    this.fimp.discoverResources();
+    this.snackBar.open('Discovering local apps ',"",{duration:10000});
+    this.appsReg.discoverLocalApps();
   }
 
   checkForUpdates() {
+    this.snackBar.open('Downloading list of available updates ',"",{duration:10000});
     this.apps = [];
     this.appsReg.checkForUpdates();
   }
