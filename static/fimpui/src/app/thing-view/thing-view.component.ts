@@ -5,9 +5,9 @@ import { MapFimpInclusionReportToThing ,MapJsonToThingObject } from '../things-d
 import { Thing } from '../things-db/thing-model';
 import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message';
 import { Subscription } from 'rxjs/Subscription';
-import { Http, Response,URLSearchParams,RequestOptions,Headers }  from '@angular/http';
 import { BACKEND_ROOT } from "app/globals";
 import {Location} from '@angular/common';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
   selector: 'app-thing-view',
@@ -27,7 +27,7 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
   //   { prop: 'groups' },
   // ];
 
-  constructor(private fimp:FimpService,private route: ActivatedRoute,private http : Http,private _location: Location) {
+  constructor(private fimp:FimpService,private route: ActivatedRoute,private http : HttpClient,private _location: Location) {
     this.thing = new Thing();
     this.advancedViewMode = true;
   }
@@ -118,11 +118,11 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
 
   saveThingToRegistry(alias:string){
     this.thing.alias = alias;
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({headers:headers});
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let options = {headers:headers};
     console.log(this.thing.alias);
      this.http
-      .put(BACKEND_ROOT+'/fimp/api/registry/thing',JSON.stringify(this.thing),  options )
+      .put(BACKEND_ROOT+'/fimp/api/registry/thing',this.thing,  options )
       .subscribe ((result) => {
          console.log("Thing was saved");
       });
@@ -131,10 +131,7 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
   loadThingFromRegistry(techAdapterName:string,address:string) {
      this.http
       .get(BACKEND_ROOT+'/fimp/api/registry/thing/'+techAdapterName+"/"+address)
-      .map(function(res: Response){
-        let body = res.json();
-        return body;
-      }).subscribe ((result) => {
+      .subscribe ((result) => {
           this.thing = MapJsonToThingObject(result);
           console.dir(this.thing)
           this.rows = this.thing.services;

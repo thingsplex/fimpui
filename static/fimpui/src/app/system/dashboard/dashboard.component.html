@@ -13,7 +13,7 @@
         <mat-card-content>
           <p> Cloud communication statistics </p>
           <table *ngIf="cbInfo">
-            <thead>
+            <tbody>
             <tr><td width="190px">Bridge state </td><td>{{cbInfo.AppState}}</td></tr>
             <tr><td>Connection state </td><td>{{cbInfo.ConnectionState}}</td></tr>
             <tr><td>Backend version </td><td>{{cbInfo.BackendVersion}}</td></tr>
@@ -29,11 +29,13 @@
             <tr><td>Started at  </td><td>{{cbInfo.StartTime}}</td></tr>
             <tr><td>Last connected at </td><td>{{cbInfo.LastConnectedAt}}</td></tr>
             <tr><td>Last disconnected at </td><td>{{cbInfo.LastDisconnectedAt}}</td></tr>
-            </thead>
+            <tr><td>Hub Id </td><td>{{cbInfo.HubId}}</td></tr>
+            <tr><td>Site Id </td><td>{{cbInfo.SiteId}}</td></tr>
+            </tbody>
           </table>
           <p> Site structure statistics </p>
           <table *ngIf="cbInfo">
-            <thead>
+            <tbody>
             <tr><td width="190px">Number of updates </td><td>{{cbInfo.SiteStruct.UpdatesCnt}}</td></tr>
             <tr><td width="190px">Number of errors </td><td>{{cbInfo.SiteStruct.ErrorsCnt}}</td></tr>
             <tr><td width="190px">Max cloud response time  </td><td>{{cbInfo.SiteStruct.MaxUpdateTime}}</td></tr>
@@ -41,9 +43,27 @@
             <tr><td width="190px">Last updated at  </td><td>{{cbInfo.SiteStruct.LastUpdatedAt}}</td></tr>
             <tr><td width="190px">Last error at  </td><td>{{cbInfo.SiteStruct.LastErrorAt}}</td></tr>
             <tr><td width="190px">Last error  </td><td>{{cbInfo.SiteStruct.LastError}}</td></tr>
-            </thead>
+            </tbody>
           </table>
-          <p> <button mat-raised-button (click)="requestCBDiagnosticReport()" color="primary" > Reload</button> </p>
+          <p> Connected users </p>
+          <table>
+            <thead>
+            <tr> <th>Username</th><th>Device Id</th><th>Started at</th> <th>Is active</th> </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor = "let ses of cbInfo.Sessions">
+              <td>{{ses.Username}}</td>
+              <td>{{ses.DeviceId}}</td>
+              <td>{{ses.StartTime}}</td>
+              <td>{{ses.IsActive}}</td>
+            </tr>
+            </tbody>
+          </table>
+          <p>
+            <button mat-raised-button (click)="requestCBDiagnosticReport()" color="primary" > Reload</button>
+            <button mat-raised-button (click)="syncSiteStruct()" color="primary" > Sync site structure</button>
+            <button mat-raised-button (click)="getRoutes()" color="primary" > Get routes </button>
+          </p>
         </mat-card-content>
     </mat-card>
 

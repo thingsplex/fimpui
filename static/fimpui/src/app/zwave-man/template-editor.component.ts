@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {Headers, Http, RequestOptions, Response} from "@angular/http";
 import {BACKEND_ROOT} from "../globals";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
   selector: 'template-editor-dialog',
@@ -12,7 +12,7 @@ export class TemplateEditorDialog implements OnInit, OnDestroy  {
   templateStr : string;
   templateName :string;
   templateType :string;
-  constructor(public dialogRef: MatDialogRef<TemplateEditorDialog>,@Inject(MAT_DIALOG_DATA) public data: any,private http : Http) {
+  constructor(public dialogRef: MatDialogRef<TemplateEditorDialog>,@Inject(MAT_DIALOG_DATA) public data: any,private http : HttpClient) {
     this.templateName = data["name"];
     this.templateType = data["type"]
     this.template = {};
@@ -29,10 +29,7 @@ export class TemplateEditorDialog implements OnInit, OnDestroy  {
 
   loadTemplate(){
     this.http.get(BACKEND_ROOT+'/fimp/api/zwave/products/template?name='+this.templateName+'&type='+this.templateType)
-      .map(function(res: Response){
-        let body = res.json();
-        return body;
-      }).subscribe ((result) => {
+      .subscribe ((result) => {
       this.template = result;
       if(this.template.auto_configs == undefined) {
         this.template["auto_configs"] = {"assoc":[],"configs":[]}
@@ -265,8 +262,8 @@ export class TemplateEditorDialog implements OnInit, OnDestroy  {
   }
 
   templateOperation(opName:string) {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({headers:headers});
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let options = {headers:headers};
     this.http
       .post(BACKEND_ROOT+'/fimp/api/zwave/products/template-op/'+opName+'/'+this.templateName,null,  options )
       .subscribe ((result) => {
@@ -310,8 +307,8 @@ export class TemplateEditorDialog implements OnInit, OnDestroy  {
   saveTemplate(){
     this.prepareTemplate();
     console.dir(this.template)
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({headers:headers});
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let options = {headers:headers};
 
 
     this.http

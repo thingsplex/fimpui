@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Http, Response }  from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { FimpService} from 'app/fimp/fimp.service';
 import {BACKEND_ROOT, MQTT_PORT, setGlobals} from "./globals";

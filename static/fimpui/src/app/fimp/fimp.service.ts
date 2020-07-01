@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable} from 'rxjs';
 import {
-  MqttMessage,
+  IMqttMessage,
   MqttService
-} from 'angular2-mqtt';
+} from 'ngx-mqtt';
 import { FimpMessage, NewFimpMessageFromString } from "app/fimp/Message";
 import { ConfigsService } from 'app/configs.service';
 import {WebRtcService} from "./web-rtc.service";
@@ -14,6 +14,7 @@ export class FimpFilter {
   public topicFilter:string;
   public serviceFilter:string;
   public msgTypeFilter:string;
+  public srcFilter:string;
 }
 
 
@@ -33,7 +34,7 @@ export class FimpService{
   private messages:FimpMessage[]=[];
   private filteredMessages:FimpMessage[]=[];
   public observable: any = null;
-  public wrtcObservable: Observable<MqttMessage> ;
+  public wrtcObservable: Observable<IMqttMessage> ;
   public maxLogSize:number = 200;
   private fimpFilter : FimpFilter;
   private isFilteringEnabled:boolean;
@@ -42,6 +43,7 @@ export class FimpService{
   private _transportType:string;
   private brokerPort :number = 0;
   public mqttConnState  = 0;
+  public isMessageCaptureEnabled :boolean = true;
 
   constructor(public mqtt: MqttService,private configs:ConfigsService,private _webRtcService:WebRtcService) {
     this.fimpFilter = new FimpFilter();
@@ -85,6 +87,14 @@ export class FimpService{
     }
     return topic;
   }
+  public enableMessageCapture(state:boolean) {
+    this.isMessageCaptureEnabled = state;
+  }
+
+  public getMessageCaptureState() {
+    return this.isMessageCaptureEnabled;
+  }
+
   public detachGlobalPrefix(topic:string):string{
     if (this.globalTopicPrefix!="") {
       if (topic != undefined) {
@@ -103,7 +113,7 @@ export class FimpService{
     }
   }
 
-  private subscribeToAll(topic: string):Observable<MqttMessage>{
+  private subscribeToAll(topic: string):Observable<IMqttMessage>{
     console.log("Subscribing to all messages ")
     // topic = this.prepareTopic(topic);
     console.log("Subscribing to topic "+topic);
@@ -118,7 +128,7 @@ export class FimpService{
     });
     return this.observable
   }
-  public getGlobalObservable():Observable<MqttMessage>{
+  public getGlobalObservable():Observable<IMqttMessage>{
     console.log("Getting global observable");
     if (this.observable == null){
         this.subscribeToAll("pt:j1/#");
@@ -126,7 +136,7 @@ export class FimpService{
     return this.observable;
   }
 
-  public getMqttSignalingOservable():Observable<MqttMessage>{
+  public getMqttSignalingOservable():Observable<IMqttMessage>{
     console.log("Getting global observable");
     if (this.observable == null){
       // var topic =  this.prepareTopic("pt:j1/#");
@@ -205,7 +215,9 @@ export class FimpService{
     }
  }
 
- private saveMessage(msg:MqttMessage){
+ private saveMessage(msg:IMqttMessage){
+    if (!this.isMessageCaptureEnabled)
+      return
     try {
       // console.log("Saving new message to log")
       let fimpMsg  = NewFimpMessageFromString(msg.payload.toString());
@@ -229,9 +241,9 @@ export class FimpService{
     fimpMsg.val = "content deleted"
   }
   if (this.isFilteringEnabled) {
-    if ( ( (this.fimpFilter.topicFilter== undefined || this.fimpFilter.topicFilter == "") || this.fimpFilter.topicFilter == fimpMsg.topic) &&
-        ( (this.fimpFilter.serviceFilter== undefined || this.fimpFilter.serviceFilter == "") || this.fimpFilter.serviceFilter == fimpMsg.service) &&
-        ( (this.fimpFilter.msgTypeFilter== undefined || this.fimpFilter.msgTypeFilter == "") || this.fimpFilter.msgTypeFilter == fimpMsg.mtype)  ) {
+    if ( ( (this.fimpFilter.topicFilter== undefined || this.fimpFilter.topicFilter == "") ||  fimpMsg.topic.includes(this.fimpFilter.topicFilter)) &&
+        ( (this.fimpFilter.serviceFilter== undefined || this.fimpFilter.serviceFilter == "") || fimpMsg.service.includes(this.fimpFilter.serviceFilter)) &&
+        ( (this.fimpFilter.msgTypeFilter== undefined || this.fimpFilter.msgTypeFilter == "") ||  fimpMsg.mtype.includes(this.fimpFilter.msgTypeFilter))  ) {
       // this.filteredMessages.unshift(fimpMsg);
       this.filteredMessages.push(fimpMsg);
     }

@@ -3,7 +3,6 @@ import {Component, ElementRef, ViewChild,OnInit,Input,Output,EventEmitter} from 
 import {DataSource} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import { Http, Response,URLSearchParams }  from '@angular/http';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -12,6 +11,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 import { BACKEND_ROOT } from "app/globals";
 import {MatSnackBar,MatTableDataSource,MatSort} from '@angular/material';
+import {HttpClient} from "@angular/common/http";
 
 class MeterMetric {
   name:string;
@@ -30,13 +30,13 @@ class MeterMetric {
 export class SystemMetricsComponent implements OnInit {
   displayedColumns = ['name','count','meanRate','rate1m','rate5m','rate15m'];
   dataSource = new MatTableDataSource();
-  restartTime:string; 
+  restartTime:string;
   @ViewChild(MatSort) sort: MatSort;
-  constructor(private http : Http) { 
+  constructor(private http : HttpClient) {
   }
 
   ngOnInit() {
-    this.loadData()  
+    this.loadData()
   }
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
@@ -48,19 +48,16 @@ export class SystemMetricsComponent implements OnInit {
 
   loadData() {
     this.http.get(BACKEND_ROOT+'/fimp/api/stats/metrics/meters',{})
-    .map((res: Response)=>{
-      let result = res.json();
-      return result;
-    }).subscribe(result=>{
+    .subscribe(result=>{
       let metrics:MeterMetric[] = [];
-      for(var key in result.metrics){
+      for(var key in result["metrics"]){
         let metric = new MeterMetric();
         metric.name = key;
-        metric.count = result.metrics[key]["count"];
-        metric.rate1m = this.round(result.metrics[key]["1m.rate"]);
-        metric.rate5m = this.round(result.metrics[key]["5m.rate"]);
-        metric.rate15m = this.round(result.metrics[key]["15m.rate"]);
-        metric.meanRate = this.round(result.metrics[key]["mean.rate"]);  
+        metric.count = result["metrics"][key]["count"];
+        metric.rate1m = this.round(result["metrics"][key]["1m.rate"]);
+        metric.rate5m = this.round(result["metrics"][key]["5m.rate"]);
+        metric.rate15m = this.round(result["metrics"][key]["15m.rate"]);
+        metric.meanRate = this.round(result["metrics"][key]["mean.rate"]);
         metrics.push(metric)
       }
       console.dir(metrics);

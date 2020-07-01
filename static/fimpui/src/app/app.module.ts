@@ -2,7 +2,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
@@ -56,10 +55,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 // import { ThingIntfUiComponent , KeysPipe }from './thing-intf-ui/thing-intf-ui.component'
 import 'hammerjs';
 import {
-  MqttMessage,
+  IMqttMessage,
   MqttModule,
   MqttService
-} from 'angular2-mqtt';
+} from 'ngx-mqtt';
 import { ThingViewComponent } from './thing-view/thing-view.component';
 import { ThingsTableComponent } from './things-table/things-table.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -146,14 +145,10 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
     HttpClientModule,
     BrowserAnimationsModule,
     // MaterialModule,
-    MqttModule.forRoot({
-      provide: MqttService,
-      useFactory: mqttServiceFactory
-    }),
+    MqttModule.forRoot(MQTT_SERVICE_OPTIONS),
     // AngularFireModule.initializeApp(environment.firebase),
     // AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     MatButtonModule,

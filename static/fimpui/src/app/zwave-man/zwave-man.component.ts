@@ -5,7 +5,6 @@ import { FimpService} from 'app/fimp/fimp.service';
 import { Subscription } from 'rxjs/Subscription';
 import {Router} from '@angular/router';
 import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message';
-import { Http, Response,URLSearchParams,RequestOptions,Headers }  from '@angular/http';
 import { BACKEND_ROOT } from "app/globals";
 // import {MatSnackBar} from '@angular/material';
 // import {
@@ -15,6 +14,7 @@ import { BACKEND_ROOT } from "app/globals";
 // }  from 'angular2-mqtt';
 import {TemplateEditorDialog} from "./template-editor.component";
 import {ThingsRegistryService} from "../tpui-modules/registry/registry.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 declare var vis: any;
 
@@ -50,7 +50,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   homeId : string;
   graphType = 'lwr';
 
-  constructor(public dialog: MatDialog,private fimp:FimpService,private router: Router,private http : Http,private registry:ThingsRegistryService) {
+  constructor(public dialog: MatDialog,private fimp:FimpService,private router: Router,private http : HttpClient,private registry:ThingsRegistryService) {
   }
 
   ngOnInit() {
@@ -627,34 +627,28 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   loadLocalTemplates () {
     ///fimp/api/products/list-local-templates?type=cache
     this.http.get(BACKEND_ROOT+'/fimp/api/zwave/products/list-local-templates')
-    .map(function(res: Response){
-      let body = res.json();
-      return body;
-    }).subscribe ((result) => {
+    .subscribe ((result:any) => {
          this.localTemplates = result
     });
     this.http.get(BACKEND_ROOT+'/fimp/api/zwave/products/list-local-templates?type=cache')
-    .map(function(res: Response){
-      let body = res.json();
-      return body;
-    }).subscribe ((result) => {
+    .subscribe ((result:any) => {
          this.localTemplatesCache = result
     });
   }
   downloadTemplatesFromCloud(){
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({headers:headers});
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let options = {headers:headers};
     this.http
-    .post(BACKEND_ROOT+'/fimp/api/zwave/products/download-from-cloud',  options )
+    .post(BACKEND_ROOT+'/fimp/api/zwave/products/download-from-cloud',null,options )
     .subscribe ((result) => {
        console.log("Flow was saved");
     });
   }
   uploadCacheToCloud() {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({headers:headers});
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let options = {headers:headers};
     this.http
-    .post(BACKEND_ROOT+'/fimp/api/zwave/products/upload-to-cloud',  options )
+    .post(BACKEND_ROOT+'/fimp/api/zwave/products/upload-to-cloud', null , options )
     .subscribe ((result) => {
        console.log("Flow was saved");
     });

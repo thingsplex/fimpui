@@ -4,7 +4,6 @@ import {Component, ElementRef, ViewChild,OnInit,Input,Output,EventEmitter,Inject
 import {DataSource} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import { Http, Response,URLSearchParams }  from '@angular/http';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -31,8 +30,10 @@ export class TimelineComponent implements OnInit {
   displayedColumns = ['time','topic','src','service','msgType','value'];
   // dataSource: MatTableDataSource<FimpMessage>;
   dataSource: TimelineDataSource|null;
+  isStreamEnabled : boolean;
   constructor(private fimp: FimpService,public dialog: MatDialog) {
     this.fimpService = fimp;
+    this.isStreamEnabled = fimp.getMessageCaptureState()
     var filter = fimp.getFilter();
     this.topicFilter = filter.topicFilter;
     this.serviceFilter = filter.serviceFilter;
@@ -84,7 +85,10 @@ export class TimelineComponent implements OnInit {
   sendMessage(topic:string,payload:string) {
     this.fimp.publish(topic,payload);
   }
-
+  startStream(state:boolean) {
+    this.fimp.enableMessageCapture(state);
+    this.isStreamEnabled = state;
+  }
   openDialog(fimpMsg:FimpMessage): void {
     let dialogRef = this.dialog.open(MsgDetailsDialog, {
       width: '600px',

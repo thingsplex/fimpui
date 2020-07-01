@@ -57,7 +57,26 @@
             <mat-label>Application name</mat-label>
             <input matInput #appName type="text"  placeholder="">
           </mat-form-field>
+
           <button mat-raised-button (click)="controlApp(appName.value,'install')" color="primary" > Install </button>
+          <p>
+            <mat-form-field>
+              <mat-label>Application service name</mat-label>
+              <input matInput #appServiceName type="text"  placeholder="">
+            </mat-form-field>
+            <mat-form-field style="height: 35px;margin: 10px;width: 150px"  >
+              <mat-label> Application log level </mat-label>
+              <mat-select matNativeControl #logLevel  placeholder="level" >
+                <mat-option value="trace">Trace</mat-option>
+                <mat-option value="debug">Debug</mat-option>
+                <mat-option value="info">Info</mat-option>
+                <mat-option value="warn">Warning</mat-option>
+                <mat-option value="error">Error</mat-option>
+                <mat-option value="fatal">Fatal</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button mat-raised-button (click)="setLogLevel(appServiceName.value,logLevel.value)" color="primary" > Set log level </button>
+          </p>
 
           <p> <button mat-raised-button (click)="requestInstalledApps()" color="primary" > Reload</button>
             <button mat-raised-button (click)="discoverLocalApps()" color="primary" > Discover local apps</button>

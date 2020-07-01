@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
 import { BACKEND_ROOT } from "app/globals";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 export class ConfigsService {
 
     private _startupData: any;
     public configs : any;
-    constructor(private http: Http) { }
+    constructor(private http: HttpClient) { }
 
     // This is the method you want to call at bootstrap
     // Important: It should return a Promise
@@ -23,12 +23,12 @@ export class ConfigsService {
         //     .toPromise()
         //     .then((data: any) => this._startupData = data)
         //     .catch((err: any) => Promise.resolve());
-        
+
         return this.http
             .get(BACKEND_ROOT+'/fimp/api/configs',{})
             .map((res: Response)=>{
-              let result = res.json();
-              return result;
+              // let result = res.json();
+              return res;
             }).toPromise()
               .then((result: any) => {
                     console.log("Config loaded:");
@@ -46,7 +46,7 @@ export class ConfigsService {
                     // this.configs["globalTopicPrefix"] = result["mqtt_topic_global_prefix"]
                 })
                 .catch((err: any) => Promise.resolve());
-            
+
     }
 
     get startupData(): any {

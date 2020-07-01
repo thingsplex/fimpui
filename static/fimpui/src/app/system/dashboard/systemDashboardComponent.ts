@@ -65,6 +65,22 @@ export class SystemDashboardComponent implements OnInit {
     this.requestButlerActivitySystemReport();
   }
 
+  syncSiteStruct() {
+    console.log("Sync site struct")
+    let msg  = new FimpMessage("clbridge","cmd.site.sync","string","full",null,null)
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg.toString());
+  }
+
+  getRoutes() {
+    console.log("Sync site struct")
+    let msg  = new FimpMessage("clbridge","cmd.clbridge.get_routes_report","string","full",null,null)
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg.toString());
+  }
+
+
+
   requestCBDiagnosticReport(){
     console.log("Remove device")
     let msg  = new FimpMessage("clbridge","cmd.clbridge.get_diagnostics","string","full",null,null)

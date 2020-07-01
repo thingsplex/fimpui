@@ -3,14 +3,12 @@ import {Component, ElementRef, ViewChild,OnInit,Input,Output,EventEmitter} from 
 import {DataSource} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import { Http, Response,URLSearchParams }  from '@angular/http';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
-import { BACKEND_ROOT } from "app/globals";
 import {MatSnackBar,MatTableDataSource,MatSort} from '@angular/material';
 import {FimpService} from "../../fimp/fimp.service";
 import {FimpMessage, NewFimpMessageFromString} from "../../fimp/Message";
@@ -37,7 +35,7 @@ export class AngrydogComponent implements OnInit {
   globalTimeout = 0;
   noOpTimeout  = 60;
   @ViewChild(MatSort) sort: MatSort;
-  constructor(private http : Http,private fimp:FimpService) {
+  constructor(private fimp:FimpService) {
   }
 
   ngOnInit() {

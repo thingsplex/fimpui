@@ -2,14 +2,12 @@ import {Component, ElementRef, ViewChild,OnInit,Input,Output,EventEmitter} from 
 import {DataSource} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import { Http, Response,URLSearchParams }  from '@angular/http';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
-import { BACKEND_ROOT } from "app/globals";
 import {MatDialog, MatDialogRef,MatSnackBar} from '@angular/material';
 
 @Component({
@@ -20,14 +18,12 @@ import {MatDialog, MatDialogRef,MatSnackBar} from '@angular/material';
 export class EventLogComponent implements OnInit {
   displayedColumns = ['timestamp','resourceType','address','code','errSource','msg'];
   dataSource: EventLogDataSource | null;
-  constructor(private http : Http,public dialog: MatDialog) {
+  constructor(public dialog: MatDialog) {
   }
 
   ngOnInit() {
-    this.dataSource = new EventLogDataSource(this.http);
   }
   dropDb() {
-    this.dataSource.dropDb();
   }
 }
 
@@ -36,9 +32,8 @@ export class EventLogDataSource extends DataSource<any> {
   eventsObs = new BehaviorSubject<any[]>([]);
   aggrErrorsByDevice : any[] = [];
 
-  constructor(private http : Http) {
+  constructor() {
     super();
-    this.getData();
   }
 
   aggregatedErrorsByDevice(events:any[]):any[]{
@@ -67,34 +62,7 @@ export class EventLogDataSource extends DataSource<any> {
     })
   }
 
-  getData() {
-    let params: URLSearchParams = new URLSearchParams();
-    params.set('pageSize', '500');
-    params.set('page', '0');
-    this.http
-        .get(BACKEND_ROOT+'/fimp/api/stats/event-log',{search:params})
-        .map((res: Response)=>{
-          let result = res.json();
-          return result;
-        }).subscribe(result=>{
-          this.aggrErrorsByDevice = this.aggregatedErrorsByDevice(result);
-          console.dir(this.aggrErrorsByDevice);
-          this.eventsObs.next(result);
-        });
 
-  }
-
-  dropDb() {
-    this.http
-      .post(BACKEND_ROOT+'/fimp/api/stats/drop-eventsdb',{})
-      .map((res: Response)=>{
-        let result = res.json();
-        return result;
-      }).subscribe(result=>{
-        this.getData();
-    });
-
-  }
 
   connect(): Observable<Location[]> {
     return this.eventsObs;

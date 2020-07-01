@@ -83,6 +83,13 @@ export class AppsManComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
   }
 
+  setLogLevel(name:string,level:string) {
+      console.log("Setting application log level . Service"+name+" level="+level)
+      let msg  = new FimpMessage(name,"cmd.log.set_level","string",level,null,null)
+      msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
+      this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:"+name+"/ad:1",msg.toString());
+  }
+
   requestInstalledApps() {
     this.snackBar.open('Reloading list of apps ',"",{duration:10000});
     this.apps = [];

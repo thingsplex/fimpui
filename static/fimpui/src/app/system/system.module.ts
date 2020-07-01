@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpModule } from '@angular/http';
 import { SystemRoutingModule } from "./system-routing.module";
 import { last } from 'rxjs/operator/last';
 import { FormsModule } from '@angular/forms';
@@ -51,7 +50,6 @@ import {AppsRegistryService} from "./apps/apps-registry.service";
     MatDialogModule,
     MatExpansionModule,
     MatTabsModule,
-     HttpModule,
   ],
   exports:[],
   providers:[AppsRegistryService],
