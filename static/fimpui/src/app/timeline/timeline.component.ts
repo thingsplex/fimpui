@@ -11,7 +11,9 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 import { BACKEND_ROOT } from "app/globals";
-import {MatDialog, MatDialogRef,MAT_DIALOG_DATA,MatSnackBar, MatTableDataSource} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
 import {HttpClient, HttpParams} from "@angular/common/http";
 
 @Component({

@@ -5,24 +5,24 @@ import { EventLogComponent,EventsPerDeviceChart } from './event-log/event-log.co
 import { SystemMetricsComponent } from './system-metrics/system-metrics.component';
 import { AngrydogComponent } from './angrydog/angrydog.component';
 import { StatsRoutingModule } from "./stats-routing.module";
-import { ChartsModule } from 'ng2-charts';
+// import { ChartsModule } from 'ng2-charts';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule,
-  MatSortModule,
-  MatFormFieldModule,
-  MatCheckboxModule,
-  MatInputModule,
-  MatPaginator,
-  MatChipsModule,
-  MatButtonModule,
-  MatRadioModule,
-  MatCardModule,
-  MatIconModule,
-  MatSliderModule,
-  MatListModule,
-  MatDialogModule,
-  MatTabsModule,
-  MatExpansionModule} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
@@ -46,7 +46,7 @@ import { MatTableModule,
     MatDialogModule,
     MatExpansionModule,
     MatTabsModule,
-     ChartsModule,
+     // ChartsModule,
     StatsRoutingModule
   ],
   exports:[EventsPerDeviceChart],

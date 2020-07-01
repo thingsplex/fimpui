@@ -22,14 +22,14 @@
 
       </mat-select>
     </mat-form-field>
-    <mat-input-container class="example-full-width">
+    <mat-form-field class="example-full-width">
             <input #service matInput placeholder="or provide resource name">
-    </mat-input-container>
+    </mat-form-field>
 
     <p>
-    <mat-input-container *ngFor="let key of configKeys" class="example-full-width">
+    <mat-form-field *ngFor="let key of configKeys" class="example-full-width">
         <input #systemIdInput matInput placeholder="{{key}}" [(ngModel)]="configParams[key]" >
-    </mat-input-container>
+    </mat-form-field>
 
     </p>
 
@@ -50,18 +50,18 @@
       <mat-card-subtitle> Set app configuration parameters or change log level </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <mat-input-container class="example-full-width">
+      <mat-form-field class="example-full-width">
         <input #appName matInput placeholder="app name">
-      </mat-input-container>
+      </mat-form-field>
 
 
       <p>
-        <mat-input-container class="example-full-width">
+        <mat-form-field class="example-full-width">
           <input #configName matInput placeholder="Config name">
-        </mat-input-container>
-        <mat-input-container class="example-full-width">
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
           <input #configValue matInput placeholder="Config value">
-        </mat-input-container>
+        </mat-form-field>
         <button mat-raised-button (click)="setConfigParam(appName.value,configName.value,configValue.value)" >Configure</button>
       </p>
 

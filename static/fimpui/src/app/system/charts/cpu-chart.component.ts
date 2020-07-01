@@ -20,7 +20,7 @@ export class CpuChartComponent implements OnInit  {
   @Input() title : string;
   @Input() dataSrc : any;
   globalSub : Subscription;
-  @ViewChild('canvas')
+  // @ViewChild('canvas')
   canvasElement: ElementRef;
 
   chart : any;

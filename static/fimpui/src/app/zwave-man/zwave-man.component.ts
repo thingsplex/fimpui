@@ -1,5 +1,5 @@
 import { Component, OnInit , OnDestroy ,Input ,ChangeDetectorRef,Inject} from '@angular/core';
-import { MatDialog, MatDialogRef,MAT_DIALOG_DATA} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FimpService} from 'app/fimp/fimp.service';
 // import { Observable }    from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';

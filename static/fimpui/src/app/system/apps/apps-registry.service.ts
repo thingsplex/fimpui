@@ -5,7 +5,6 @@ import {Subscription} from "rxjs/Subscription";
 import {FimpMessage, NewFimpMessageFromString} from "../../fimp/Message";
 import {BACKEND_ROOT} from "../../globals";
 import {HttpClient} from "@angular/common/http";
-import {setTimeout} from "timers";
 
 @Injectable()
 export class AppsRegistryService{

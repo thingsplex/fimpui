@@ -170,15 +170,15 @@
         <p>Advanced settings </p>
 
         <div> Ping device:
-          <mat-input-container >
+          <mat-form-field >
             <input matInput #pingFromInput placeholder="from node">
-          </mat-input-container>
-          <mat-input-container >
+          </mat-form-field>
+          <mat-form-field >
             <input matInput #pingToInput placeholder="to node">
-          </mat-input-container>
-          <mat-input-container style="width:50px">
+          </mat-form-field>
+          <mat-form-field style="width:50px">
             <input matInput #txLevelInput placeholder="lvl">
-          </mat-input-container>
+          </mat-form-field>
           <button mat-raised-button (click)="pingNode(pingFromInput.value,pingToInput.value,txLevelInput.value)">Ping</button>
           <p>Result : {{ pingResult }} </p>
         </div>

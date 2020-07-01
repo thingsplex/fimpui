@@ -6,28 +6,27 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { GaugeModule } from 'angular-gauge';
-import { MatTableModule,
-  MatFormFieldModule,
-  MatButtonModule,
-  MatInputModule,
-  MatChipsModule,
-  MatIconModule,
-  MatSliderModule,
-  MatCheckboxModule,
-  MatListModule,
-  MatSelectModule,
-  MatOptionModule,
-  MatDialogModule,
-  MatCardModule,
-  MatSidenavModule,
-  MatRadioModule,
-  MatExpansionModule,
-  MatMenuModule,
-  MatToolbarModule,
-  MatProgressBarModule,
-  MatTabsModule,
-  MatPaginatorModule,
-  MatCheckbox} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule, MatCheckbox } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { CdkTableModule } from '@angular/cdk/table';
 import {
   ZwaveManComponent,
@@ -49,11 +48,6 @@ import { FimpService} from './fimp/fimp.service';
 import { ThingsDbService } from './things-db.service';
 import { ConfigsService } from './configs.service';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-
-// import { AngularFireModule } from '@angular/fire';
-// import { AngularFirestoreModule } from '@angular/fire/firestore';
-// import { ThingIntfUiComponent , KeysPipe }from './thing-intf-ui/thing-intf-ui.component'
-import 'hammerjs';
 import {
   IMqttMessage,
   MqttModule,

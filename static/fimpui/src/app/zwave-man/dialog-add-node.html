@@ -1,18 +1,18 @@
 <h1 mat-dialog-title> Add new device </h1>
 <mat-dialog-content>
 <div *ngFor="let message of messages">{{message}}</div>
-<mat-input-container class="node-transition-field">
+<mat-form-field class="node-transition-field">
    <input matInput [(ngModel)]="customTemplateName" placeholder="templateName">
-</mat-input-container>    
+</mat-form-field>
 <div style="margin-bottom: 30px" >
    <mat-checkbox [(ngModel)]="forceInterview" > Force interview </mat-checkbox>
 </div>
 <div style="margin-bottom: 30px" >
    <mat-checkbox [(ngModel)]="forceNonSecure" > Force non-secure inclusion </mat-checkbox>
-</div> 
-<mat-input-container class="node-transition-field">
+</div>
+<mat-form-field class="node-transition-field">
     <input matInput [(ngModel)]="s2pin" placeholder="S2 pin" value="0">
-</mat-input-container>       
+</mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
 <button mat-raised-button color="accent" (click)="startInclusion()" >Start </button>
