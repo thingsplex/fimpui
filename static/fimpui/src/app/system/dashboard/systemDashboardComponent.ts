@@ -25,6 +25,9 @@ export class SystemDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+
+  }
+  ngAfterViewInit() {
     console.log("Dashboard initialized");
     this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
       console.log(msg.payload.toString());

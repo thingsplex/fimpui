@@ -63,7 +63,7 @@ import { AnalyticsModule} from './tpui-modules/analytics/analytics.module';
 import { SystemModule} from "./system/system.module";
 import {environment} from "../environments/environment";
 import {JsonInputComponent} from "./tpui-modules/flow/ui-elements/json-input.component";
-import {FireService} from "./firebase/fire.service";
+// import {FireService} from "./firebase/fire.service";
 import {WebRtcService} from 'app/fimp/web-rtc.service';
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
@@ -178,7 +178,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     MatButtonToggleModule
 
   ],
-  providers: [WebRtcService, FimpService,ThingsDbService,ConfigsService,FireService,{
+  providers: [WebRtcService, FimpService,ThingsDbService,ConfigsService,{ //FireService
     // Provider for APP_INITIALIZER
     provide: APP_INITIALIZER,
     useFactory: startupServiceFactory,

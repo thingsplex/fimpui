@@ -23,6 +23,10 @@
           <p> Status : {{appStatus}}</p>
           <p> Operation status : {{lastOpStatus}}</p>
           <p> Last error : {{lastError}}</p>
+
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
           <button mat-raised-button (click)="controlApp('status')" color="primary" >Status</button>
           <button mat-raised-button (click)="controlApp('start')" color="primary" >Start</button>
           <button mat-raised-button (click)="controlApp('stop')" color="primary" >Stop</button>
@@ -30,8 +34,7 @@
           <button mat-raised-button (click)="controlApp('disable')" color="primary" >Disable</button>
           <button mat-raised-button (click)="controlApp('install')" color="primary" >Update</button>
           <button mat-raised-button (click)="controlApp('uninstall')" color="warn" >Uninstall</button>
-          </div>
-        </mat-card-content>
+         </mat-card-actions>
     </mat-card>
 
   <ng-container  *ngIf="manifest">

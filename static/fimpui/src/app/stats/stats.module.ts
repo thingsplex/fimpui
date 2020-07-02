@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkTableModule } from '@angular/cdk/table';
-import { EventLogComponent,EventsPerDeviceChart } from './event-log/event-log.component';
-import { SystemMetricsComponent } from './system-metrics/system-metrics.component';
+// import { EventLogComponent,EventsPerDeviceChart } from './event-log/event-log.component';
+// import { SystemMetricsComponent } from './system-metrics/system-metrics.component';
 import { AngrydogComponent } from './angrydog/angrydog.component';
 import { StatsRoutingModule } from "./stats-routing.module";
 // import { ChartsModule } from 'ng2-charts';
@@ -49,7 +49,7 @@ import { MatTabsModule } from '@angular/material/tabs';
      // ChartsModule,
     StatsRoutingModule
   ],
-  exports:[EventsPerDeviceChart],
-  declarations: [EventLogComponent,SystemMetricsComponent,AngrydogComponent,EventsPerDeviceChart]
+  exports:[],
+  declarations: [AngrydogComponent]
 })
 export class StatsModule { }

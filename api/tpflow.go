@@ -5,7 +5,7 @@ import (
 	"github.com/thingsplex/tpflow/api/client"
 	"github.com/thingsplex/tpflow/model"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"strconv"

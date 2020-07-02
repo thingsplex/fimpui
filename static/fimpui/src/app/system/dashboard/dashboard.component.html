@@ -46,7 +46,7 @@
             </tbody>
           </table>
           <p> Connected users </p>
-          <table>
+          <table *ngIf="cbInfo">
             <thead>
             <tr> <th>Username</th><th>Device Id</th><th>Started at</th> <th>Is active</th> </tr>
             </thead>
@@ -59,12 +59,12 @@
             </tr>
             </tbody>
           </table>
-          <p>
-            <button mat-raised-button (click)="requestCBDiagnosticReport()" color="primary" > Reload</button>
-            <button mat-raised-button (click)="syncSiteStruct()" color="primary" > Sync site structure</button>
-            <button mat-raised-button (click)="getRoutes()" color="primary" > Get routes </button>
-          </p>
         </mat-card-content>
+         <mat-card-actions>
+           <button mat-raised-button (click)="requestCBDiagnosticReport()" color="primary" > Reload</button>
+           <button mat-raised-button (click)="syncSiteStruct()" color="primary" > Sync site structure</button>
+           <button mat-raised-button (click)="getRoutes()" color="primary" > Get routes </button>
+         </mat-card-actions>
     </mat-card>
 
     <mat-card class="card">
@@ -101,7 +101,9 @@
           </table>
 
         </mat-card-content>
-        <p> <button mat-raised-button (click)="requestButlerSystemReport()" color="primary" > Reload</button> </p>
+      <mat-card-actions>
+        <button mat-raised-button (click)="requestButlerSystemReport()" color="primary" > Reload</button>
+      </mat-card-actions>
     </mat-card>
 
     <mat-card class="card">
@@ -162,10 +164,13 @@
             </tr>
           </table>
 
-          <p> <button mat-raised-button (click)="requestButlerActivitySystemReport()" color="primary" > Reload</button> </p>
+
           <cpu-chart [title]="'CPU usage'"></cpu-chart>
 
         </mat-card-content>
+      <mat-card-actions>
+         <button mat-raised-button (click)="requestButlerActivitySystemReport()" color="primary" > Reload</button>
+      </mat-card-actions>
     </mat-card>
 
 
