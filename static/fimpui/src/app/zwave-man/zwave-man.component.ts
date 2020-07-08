@@ -237,7 +237,12 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
       return n;
     });
 
-    const nodes = lwrNodes.map(node => ({id:node["node_id"],label:"Node\n"+node["node_id"],group:'sleep',title:node["alias"]}));
+    const nodes = lwrNodes.map(node => ({
+      id: node['node_id'],
+      label: '' + node['node_id'],
+      group: node['power_source'] === 'ac' ? 'rep' : 'sleep',
+      title: node['alias']
+    }));
 
     // GW node
     const existingGW = nodes.find(n => n.id === 1);
@@ -245,7 +250,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
       existingGW.group = 'gw';
     } else {
       const gw = this.networkStats.find(n => n.node_id === 1);
-      nodes.push({id:gw["node_id"],label:"Node\n"+gw["node_id"],group:"gw",title:gw["alias"]});
+      nodes.push({id: gw['node_id'], label: '' + gw['node_id'], group: 'gw', title: gw['alias']});
     }
 
     for (const node of lwrNodes) {
@@ -256,7 +261,15 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
           from = routeNode;
         }
       }
-      edges.push({from: from, to: node['node_id'], arrows: 'to', color: { inherit: 'to' }, smooth: {type: 'curvedCW', roundness: 0.2}});
+
+      edges.push({
+        id: `${from}-${node['node_id']}`,
+        from: from,
+        to: node['node_id'],
+        arrows: 'to',
+        color: { inherit: 'to' },
+        smooth: {type: 'curvedCW', roundness: 0.2}
+      });
     }
 
     return {nodes, edges};
@@ -278,7 +291,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
         if(skip){
           continue
         }
-        edges.push({from:node["node_id"],to:nbNode["node_id"],arrows:'',color: { inherit: "from" }})
+        edges.push({from:node["node_id"],to:nbNode["node_id"],arrows:'',color: { inherit: "from" }, chosen: true})
         if(nbNode["is_rep"]) {
           this.repeaterNodes.push(nbNode["node_id"])
         }
@@ -294,7 +307,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
         rgroup ="rep"
         // console.log("Node is repater ="+node["node_id"]);
       }
-      nodes.push({id:node["node_id"],label:"Node\n"+node["node_id"],group:rgroup,title:node["alias"]})
+      nodes.push({id:node["node_id"],label:""+node["node_id"],group:rgroup,title:node["alias"]});
     }
 
     return {nodes, edges};
@@ -368,18 +381,49 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
         };
         // initialize your network!
         this.visJsNetwork = new vis.Network(container, data, options);
+
+        if (this.graphType === 'lwr') {
+          // add click listener to nodes to highlight lwr when node is selected
+          this.visJsNetwork.on('click', (event) => {
+            if (event.nodes && event.nodes.length > 0) {
+              const selectedNodeId = event.nodes[0];
+              if (selectedNodeId !== 1) {
+                const selectedNode = this.networkStats.find(node => node['node_id'] === selectedNodeId);
+
+                const edgesToSelect = [];
+                let from = 1;
+                for (const nodeId of selectedNode.lwr.route) {
+                  if (nodeId !== 0) {
+                    edgesToSelect.push(`${from}-${nodeId}`);
+                    from = nodeId;
+                  } else {
+                    edgesToSelect.push(`${from}-${selectedNodeId}`);
+                    break;
+                  }
+                }
+
+                this.visJsNetwork.selectEdges(edgesToSelect);
+             }
+            }
+          });
+        }
+
         // add double click listener to nodes
         this.visJsNetwork.on('doubleClick', (event) => {
           this.dialog.open(PingDeviceDialog, {
             // height: '400px',
             width: '600px',
-            data : {"fimp":this.fimp,"nodeId":event.nodes[0]},
+            data : {fimp: this.fimp, nodeId: event.nodes[0]},
           });
         });
   }
 
   stopSimulation(){
     this.visJsNetwork.stopSimulation()
+  }
+
+  findACNeighbours(neighbours) {
+    return neighbours.filter(node => node.is_rep);
   }
 
   loadThingsFromRegistry() {
