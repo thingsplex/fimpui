@@ -12,10 +12,13 @@
  *    Mike Robertson
  */
 
+// Portions copyright © 2018 TIBCO Software Inc.
+
 package mqtt
 
 import (
 	"crypto/tls"
+	"net/http"
 	"net/url"
 	"strings"
 	"time"
@@ -57,7 +60,7 @@ type ClientOptions struct {
 	WillRetained            bool
 	ProtocolVersion         uint
 	protocolVersionExplicit bool
-	TLSConfig               tls.Config
+	TLSConfig               *tls.Config
 	KeepAlive               int64
 	PingTimeout             time.Duration
 	ConnectTimeout          time.Duration
@@ -69,6 +72,8 @@ type ClientOptions struct {
 	OnConnectionLost        ConnectionLostHandler
 	WriteTimeout            time.Duration
 	MessageChannelDepth     uint
+	ResumeSubs              bool
+	HTTPHeaders             http.Header
 }
 
 // NewClientOptions will create a new ClientClientOptions type with some
@@ -95,7 +100,6 @@ func NewClientOptions() *ClientOptions {
 		WillRetained:            false,
 		ProtocolVersion:         0,
 		protocolVersionExplicit: false,
-		TLSConfig:               tls.Config{},
 		KeepAlive:               30,
 		PingTimeout:             10 * time.Second,
 		ConnectTimeout:          30 * time.Second,
@@ -106,6 +110,8 @@ func NewClientOptions() *ClientOptions {
 		OnConnectionLost:        DefaultConnectionLostHandler,
 		WriteTimeout:            0, // 0 represents timeout disabled
 		MessageChannelDepth:     100,
+		ResumeSubs:              false,
+		HTTPHeaders:             make(map[string][]string),
 	}
 	return o
 }
@@ -131,6 +137,13 @@ func (o *ClientOptions) AddBroker(server string) *ClientOptions {
 		return o
 	}
 	o.Servers = append(o.Servers, brokerURI)
+	return o
+}
+
+// SetResumeSubs will enable resuming of stored (un)subscribe messages when connecting
+// but not reconnecting if CleanSession is false. Otherwise these messages are discarded.
+func (o *ClientOptions) SetResumeSubs(resume bool) *ClientOptions {
+	o.ResumeSubs = resume
 	return o
 }
 
@@ -191,7 +204,7 @@ func (o *ClientOptions) SetOrderMatters(order bool) *ClientOptions {
 // to an MQTT broker. Please read the official Go documentation for more
 // information.
 func (o *ClientOptions) SetTLSConfig(t *tls.Config) *ClientOptions {
-	o.TLSConfig = *t
+	o.TLSConfig = t
 	return o
 }
 
@@ -224,7 +237,7 @@ func (o *ClientOptions) SetPingTimeout(k time.Duration) *ClientOptions {
 // SetProtocolVersion sets the MQTT version to be used to connect to the
 // broker. Legitimate values are currently 3 - MQTT 3.1 or 4 - MQTT 3.1.1
 func (o *ClientOptions) SetProtocolVersion(pv uint) *ClientOptions {
-	if pv >= 3 && pv <= 4 {
+	if (pv >= 3 && pv <= 4) || (pv > 0x80) {
 		o.ProtocolVersion = pv
 		o.protocolVersionExplicit = true
 	}
@@ -316,5 +329,12 @@ func (o *ClientOptions) SetAutoReconnect(a bool) *ClientOptions {
 // ignored.
 func (o *ClientOptions) SetMessageChannelDepth(s uint) *ClientOptions {
 	o.MessageChannelDepth = s
+	return o
+}
+
+// SetHTTPHeaders sets the additional HTTP headers that will be sent in the WebSocket
+// opening handshake.
+func (o *ClientOptions) SetHTTPHeaders(h http.Header) *ClientOptions {
+	o.HTTPHeaders = h
 	return o
 }

@@ -32,6 +32,14 @@ type step struct {
 	args interface{}
 }
 
+func MustCompile(jpath string) *Compiled {
+	c, err := Compile(jpath)
+	if err != nil {
+		panic(err)
+	}
+	return c
+}
+
 func Compile(jpath string) (*Compiled, error) {
 	tokens, err := tokenize(jpath)
 	if err != nil {
@@ -70,14 +78,15 @@ func (c *Compiled) Lookup(obj interface{}) (interface{}, error) {
 				return nil, err
 			}
 		case "idx":
-			//fmt.Println("idx ----------------1")
-			obj, err = get_key(obj, s.key)
-			if err != nil {
-				return nil, err
+			if len(s.key) > 0 {
+				// no key `$[0].test`
+				obj, err = get_key(obj, s.key)
+				if err != nil {
+					return nil, err
+				}
 			}
 
 			if len(s.args.([]int)) > 1 {
-				//fmt.Println("idx ----------------2")
 				res := []interface{}{}
 				for _, x := range s.args.([]int) {
 					//fmt.Println("idx ---- ", x)
@@ -99,9 +108,12 @@ func (c *Compiled) Lookup(obj interface{}) (interface{}, error) {
 				return nil, fmt.Errorf("cannot index on empty slice")
 			}
 		case "range":
-			obj, err = get_key(obj, s.key)
-			if err != nil {
-				return nil, err
+			if len(s.key) > 0 {
+				// no key `$[:1].test`
+				obj, err = get_key(obj, s.key)
+				if err != nil {
+					return nil, err
+				}
 			}
 			if argsv, ok := s.args.([2]interface{}); ok == true {
 				obj, err = get_range(obj, argsv[0], argsv[1])
@@ -244,9 +256,15 @@ func parse_token(token string) (op string, key string, args interface{}, err err
 			var frm interface{}
 			var to interface{}
 			if frm, err = strconv.Atoi(strings.Trim(tails[0], " ")); err != nil {
+				if strings.Trim(tails[0], " ") == "" {
+					err = nil
+				}
 				frm = nil
 			}
 			if to, err = strconv.Atoi(strings.Trim(tails[1], " ")); err != nil {
+				if strings.Trim(tails[1], " ") == "" {
+					err = nil
+				}
 				to = nil
 			}
 			args = [2]interface{}{frm, to}
@@ -379,6 +397,12 @@ func get_range(obj, frm, to interface{}) (interface{}, error) {
 		length := reflect.ValueOf(obj).Len()
 		_frm := 0
 		_to := length
+		if frm == nil {
+			frm = 0
+		}
+		if to == nil {
+			to = length - 1
+		}
 		if fv, ok := frm.(int); ok == true {
 			if fv < 0 {
 				_frm = length + fv
