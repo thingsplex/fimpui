@@ -2,8 +2,8 @@ import { FimpService} from 'app/fimp/fimp.service'
 import { FimpMessage,NewFimpMessageFromString } from '../fimp/Message';
 import {Component, ElementRef, ViewChild,OnInit,Input,Output,EventEmitter,Inject} from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Observable} from 'rxjs/Observable';
+import {BehaviorSubject} from 'rxjs';
+import {Observable} from 'rxjs';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';

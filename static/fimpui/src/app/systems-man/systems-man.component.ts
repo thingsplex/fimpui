@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FimpService} from 'app/fimp/fimp.service';
 import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-systems-man',

@@ -1,11 +1,11 @@
-version="0.17.2"
+version="0.18.0"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
 remote_host = "fh@cube.local"
 
 build-js:
-	cd static/fimpui;ng build --prod="true"
+	cd static/fimpui;ng build --prod --deploy-url=/fimp/static/
 
 build-go-arm:
 	GOOS=linux GOARCH=arm GOARM=6 go build -ldflags="-s -w" -o fimpui

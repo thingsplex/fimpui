@@ -26,10 +26,7 @@ export class ConfigsService {
 
         return this.http
             .get(BACKEND_ROOT+'/fimp/api/configs',{})
-            .map((res: Response)=>{
-              // let result = res.json();
-              return res;
-            }).toPromise()
+            .toPromise()
               .then((result: any) => {
                     console.log("Config loaded:");
                     console.dir(result);

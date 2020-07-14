@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {FimpService} from "app/fimp/fimp.service";
-import {BehaviorSubject, Subject} from "rxjs";
-import {Subscription} from "rxjs/Subscription";
+import {BehaviorSubject, Subscription} from "rxjs";
 import {FimpMessage, NewFimpMessageFromString} from "../../fimp/Message";
 import {BACKEND_ROOT} from "../../globals";
 import {HttpClient} from "@angular/common/http";

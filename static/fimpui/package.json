@@ -37,7 +37,7 @@
     "ng2-charts": "^1.6.0",
     "ngx-mqtt": "^6.13.3",
     "rxjs": "^6.5.5",
-    "rxjs-compat": "^6.0.0-rc.0",
+    "rxjs-compat": "^6.6.0",
     "snapsvg": "^0.5.1",
     "ts-helpers": "^1.1.1",
     "webpack": "^4.43.0",

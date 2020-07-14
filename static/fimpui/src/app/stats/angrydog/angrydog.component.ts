@@ -1,20 +1,16 @@
 
 import {Component, ElementRef, ViewChild,OnInit,Input,Output,EventEmitter} from '@angular/core';
-import {DataSource} from '@angular/cdk/collections';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import {FimpService} from "../../fimp/fimp.service";
 import {FimpMessage, NewFimpMessageFromString} from "../../fimp/Message";
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from "rxjs";
 
 
 @Component({

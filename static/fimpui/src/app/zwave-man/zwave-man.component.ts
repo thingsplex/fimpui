@@ -1,17 +1,10 @@
 import { Component, OnInit , OnDestroy ,Input ,ChangeDetectorRef,Inject} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FimpService} from 'app/fimp/fimp.service';
-// import { Observable }    from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import {Router} from '@angular/router';
 import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message';
 import { BACKEND_ROOT } from "app/globals";
-// import {MatSnackBar} from '@angular/material';
-// import {
-//   MqttMessage,
-//   MqttModule,
-//   MqttService
-// }  from 'angular2-mqtt';
 import {TemplateEditorDialog} from "./template-editor.component";
 import {ThingsRegistryService} from "../tpui-modules/registry/registry.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";

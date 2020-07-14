@@ -5,8 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
-import {BACKEND_ROOT} from "../../globals";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from "rxjs";
 import {FimpService} from "../../fimp/fimp.service";
 import {FimpMessage, NewFimpMessageFromString} from "../../fimp/Message";
 

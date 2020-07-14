@@ -4,7 +4,7 @@ import { FimpService} from 'app/fimp/fimp.service';
 import { MapFimpInclusionReportToThing ,MapJsonToThingObject } from '../things-db/integrations';
 import { Thing } from '../things-db/thing-model';
 import { FimpMessage ,NewFimpMessageFromString } from '../fimp/Message';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { BACKEND_ROOT } from "app/globals";
 import {Location} from '@angular/common';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
