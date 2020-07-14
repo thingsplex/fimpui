@@ -42,7 +42,6 @@ import { SystemsManComponent } from './systems-man/systems-man.component';
 import { TimelineComponent, MsgDetailsDialog } from './timeline/timeline.component';
 
 import { ReportComponent } from './report/report.component';
-import { FlightRecorderComponent } from './flight-recorder/flight-recorder.component';
 import { FimpService} from './fimp/fimp.service';
 
 import { ThingsDbService } from './things-db.service';
@@ -75,7 +74,6 @@ const appRoutes: Routes = [
   { path: 'systems-man', component: SystemsManComponent },
   { path: 'timeline', component: TimelineComponent },
   { path: 'report', component: ReportComponent },
-  { path: 'flight-recorder', component: FlightRecorderComponent },
   { path: 'thing-view/:ad/:id', component: ThingViewComponent },
   { path: 'thing-view-addr/:id', component: ThingViewComponent },
   { path: '',redirectTo:'/analytics/dashboard',pathMatch: 'full'}
@@ -129,7 +127,6 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     ThingsTableComponent,
     SettingsComponent,
     ReportComponent,
-    FlightRecorderComponent,
     TemplateEditorDialog,
     MsgDetailsDialog,
     ConfirmDialogComponent,

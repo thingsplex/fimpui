@@ -30,7 +30,7 @@ export class SystemDashboardComponent implements OnInit {
   ngAfterViewInit() {
     console.log("Dashboard initialized");
     this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      console.log(msg.payload.toString());
+      // console.log(msg.payload.toString());
       let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "clbridge" )
       {

@@ -6,8 +6,6 @@ import { ThingViewComponent } from "app/thing-view/thing-view.component";
 
 @NgModule({
   imports: [RouterModule.forChild([
-    // { path: 'stats/event-log', component: EventLogComponent },
-    // { path: 'stats/system-metrics', component: SystemMetricsComponent },
     { path: 'stats/angrydog', component: AngrydogComponent },
     { path: 'fimp/thing-view-addr/:id', component: ThingViewComponent },
   ])],

@@ -5,7 +5,7 @@ arch="armhf"
 remote_host = "fh@cube.local"
 
 build-js:
-	cd static/fimpui;ng build --prod --deploy '/fimp/static/'
+	cd static/fimpui;ng build --prod="true"
 
 build-go-arm:
 	GOOS=linux GOARCH=arm GOARM=6 go build -ldflags="-s -w" -o fimpui

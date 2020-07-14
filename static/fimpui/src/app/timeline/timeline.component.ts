@@ -134,6 +134,7 @@ export class TimelineDataSource extends DataSource<any> {
 @Component({
   selector: 'msg-details-dialog',
   templateUrl: 'msg-details-dialog.html',
+  styleUrls: ['./timeline.component.css']
 })
 export class MsgDetailsDialog {
   fimpMsg : FimpMessage;

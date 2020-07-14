@@ -19,10 +19,10 @@
     <button mat-raised-button (click)="resetFilter()" >Reset</button>
 
     <p>
-       <mat-form-field style="width:250px ">
+       <mat-form-field style="width:70px;margin-right: 10px ">
           <input matInput #maxLogSizeInput type="number" [(ngModel)] = "fimpService.maxLogSize"  placeholder="Max log size" >
        </mat-form-field>
-      <button *ngIf="!isStreamEnabled" mat-raised-button (click)="startStream(true)" >Start stream</button>
+      <button *ngIf="!isStreamEnabled" mat-raised-button color="accent" (click)="startStream(true)" >Resume stream</button>
       <button *ngIf="isStreamEnabled" mat-raised-button (click)="startStream(false)" >Pause stream</button>
        <button style="margin: 10px" mat-raised-button (click)="settings.hidden = !settings.hidden" >Open mqtt client</button>
     </p>

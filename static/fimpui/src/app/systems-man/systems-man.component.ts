@@ -64,6 +64,10 @@ export class SystemsManComponent implements OnInit {
     });
 
   }
+  ngOnDestroy() {
+    if(this.globalSub)
+      this.globalSub.unsubscribe();
+  }
   discover() {
     this.listOfDiscoveredResources = [];
     this.listOfDiscoveredResourceObjects = [];

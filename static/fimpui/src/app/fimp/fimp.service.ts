@@ -248,7 +248,7 @@ export class FimpService{
       this.filteredMessages.push(fimpMsg);
     }
   }else {
-    console.log("Adding message to filtered list")
+    // console.log("Adding message to filtered list")
     this.filteredMessages.push(fimpMsg);
   }
 
