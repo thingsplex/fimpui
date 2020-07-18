@@ -10,11 +10,9 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
-import { BACKEND_ROOT } from "app/globals";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
-import {HttpClient, HttpParams} from "@angular/common/http";
 
 @Component({
   selector: 'timeline',
@@ -141,7 +139,7 @@ export class MsgDetailsDialog {
   parentComp : TimelineComponent;
   service :any;
   constructor(
-    public dialogRef: MatDialogRef<MsgDetailsDialog>,private http: HttpClient,
+    public dialogRef: MatDialogRef<MsgDetailsDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
       this.fimpMsg = data.fimp;
       this.fimpMsg.raw = JSON.stringify(JSON.parse(this.fimpMsg.raw),null,2)
@@ -154,8 +152,6 @@ export class MsgDetailsDialog {
   }
 
   getServiceByAddress(address:string) {
-    this.http.get(BACKEND_ROOT+'/fimp/api/registry/service', { params: new HttpParams().set('address', address) } )
-      .subscribe(result=>{this.service = result; });
 
   }
 
