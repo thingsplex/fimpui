@@ -107,7 +107,7 @@
               <th>Route change</th>
               <th>Has LWR</th>
               <th>LWR speed (kbps)</th>
-              <th class="col-long">Last working route (LWR)</th>
+              <th class="col-long">LWR</th>
               <th class="col-long">Neighbors</th>
             </tr>
           </thead>
@@ -142,7 +142,7 @@
               </span>
             </td>
             <td class="col-long">
-              <span *ngFor="let  nbl of node.nb_info">
+              <span *ngFor="let  nbl of findACNeighbours(node.nb_info)">
                 {{ nbl.node_id }},
               </span>
             </td>
