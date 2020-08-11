@@ -1,4 +1,4 @@
-version="0.18.1"
+version="0.18.2"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -19,6 +19,9 @@ build-go-amd:
 build-tsdb-loader-osx:
 	cd  process/tsdb/cli/;go build -o fimp-inxlux-loader
 
+clean-deb:
+	find debian -name ".DS_Store" -delete
+
 clean:
 	-rm -R debian/opt/fimpui/static/fhcore/*
 	-rm -R debian/opt/fimpui/static/fimpui/dist/*
@@ -37,7 +40,7 @@ configure-dev-js:
 package-tar:
 	tar cvzf fimpui.tar.gz fimpui VERSION static/fimpui/dist static/fhcore
 
-package-deb-doc:
+package-deb-doc:clean-deb
 	@echo "Packaging application as debian package"
 	chmod a+x debian/DEBIAN/*
 	cp fimpui debian/opt/fimpui
