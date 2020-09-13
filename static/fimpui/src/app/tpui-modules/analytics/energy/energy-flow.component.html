@@ -1,0 +1,138 @@
+<div id="EnergyFlowEditorCanvas" class="canvas-area">
+  <img style="position:absolute;top:150px" src="assets/img/el-grid.png">
+
+  <div class="node-card" style="left: 200px">
+          <p style="margin-left: 30px;font-size: large;">Import (W)</p>
+          <mwl-gauge class="pimport"
+                  [max]="pImportMaxValue"
+                  [min]="0"
+                  [value]="importPower"
+                  [animated]="true"
+                  [animationDuration]="1">
+          </mwl-gauge>
+  </div>
+
+  <div class="node-card" style="left: 500px">
+        <p style="margin-left: 30px;font-size: large;">Consumption (W)</p>
+        <mwl-gauge class="pimport"
+                   [max]="pImportMaxValue"
+                   [min]="0"
+                   [value]="consumptionPower"
+                   [animated]="true"
+                   [animationDuration]="1">
+        </mwl-gauge>
+  </div>
+
+  <div class="node-card" style="left: 200px;top: 350px">
+    <p style="margin-left: 30px;font-size: large;">Export (W)</p>
+    <mwl-gauge class="pexport"
+               [max]="pImportMaxValue"
+               [min]="0"
+               [value]="0"
+               [animated]="true"
+               [animationDuration]="1">
+    </mwl-gauge>
+  </div>
+  <div class="node-card" style="left: 500px;top:350px">
+    <p style="margin-left: 30px;font-size: large;">Production (W)</p>
+    <mwl-gauge class="pexport"
+               [max]="pImportMaxValue"
+               [min]="0"
+               [value]="0"
+               [animated]="true"
+               [animationDuration]="1">
+    </mwl-gauge>
+  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" style="position: absolute;width:160px;left:350px;top:180px;fill: #ffe341;visibility: {{importLineVisibility}}">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7"
+              refX="0" refY="3.5" orient="auto">
+        <polygon points="0 2, 5 3.5, 0 5" />
+      </marker>
+    </defs>
+    <line x1="0" y1="50" x2="250" y2="50"
+           marker-end="url(#arrowhead)" class="import-active-flow active-energy-flow" />
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" style="position: absolute;width:160px;left:650px;top:180px;fill: #ffe341;visibility: {{consumptionLineVisibility}}">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7"
+              refX="0" refY="3.5" orient="auto">
+        <polygon points="0 2, 5 3.5, 0 5" />
+      </marker>
+    </defs>
+    <line x1="0" y1="50" x2="250" y2="50"
+          marker-end="url(#arrowhead)" class="import-active-flow active-energy-flow" />
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" style="visibility: hidden; position: absolute;width:160px;left:350px;top:450px;fill:greenyellow;visibility:{{productionLineVisibility}}">
+    <defs>
+      <marker id="arrowhead2" markerWidth="10" markerHeight="7"
+              refX="0" refY="3.5" orient="auto" >
+        <polygon points="0 2, 5 3.5, 0 5" />
+      </marker>
+    </defs>
+    <line x1="300" y1="50" x2="70" y2="50"  marker-end="url(#arrowhead2)" class="active-energy-flow export-active-flow"/>
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 350" style="position: absolute;width:70px;left:560px;top:280px;fill:greenyellow;visibility:{{productionToConsumptionLineVisibility}}">
+    <defs>
+      <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+        <polygon points="0 2, 5 3.5, 0 5" />
+      </marker>
+    </defs>
+    <line x1="30" y1="160" x2="30" y2="70" marker-end="url(#arrowhead3)" class="active-energy-flow export-active-flow"/>
+  </svg>
+
+  <div style="position: absolute;overflow: auto;left: 800px;max-height: 400px;border-style:solid;border-color: #ffe341">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width: 700px;" >
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef> Type </th>
+      <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="power">
+      <th mat-header-cell *matHeaderCellDef> Power </th>
+      <td mat-cell *matCellDef="let element"> {{element.power}} W </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="eToday">
+      <th mat-header-cell *matHeaderCellDef> Energy today </th>
+      <td mat-cell *matCellDef="let element"> {{element.eToday}} kWh </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="eWeek">
+      <th mat-header-cell *matHeaderCellDef> Energy week </th>
+      <td mat-cell *matCellDef="let element"> {{element.eWeek}} kWh</td>
+    </ng-container>
+
+    <ng-container matColumnDef="eMonth">
+      <th mat-header-cell *matHeaderCellDef> Energy month </th>
+      <td mat-cell *matCellDef="let element"> {{element.eMonth}} kWh</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  </div>
+
+
+</div>
+
+
+
+

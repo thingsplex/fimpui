@@ -141,12 +141,23 @@
   </mat-card-actions>
   </mat-expansion-panel>
   </p>
+  <mat-card class="card" style="margin: 5px">
+    <mat-card-header>
+      <mat-card-title><h5> Realtime data</h5></mat-card-title>
+      <mat-card-subtitle></mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content style="display:flex;">
+      <energy-flow></energy-flow>
+    </mat-card-content>
+  </mat-card>
 
 
-<line-chart  [measurement]="'electricity_meter_power'" [isFilterEnabled]="false" [title]="'Power (W)'" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTime" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataTransformFunc]="dataTransformFuncV"  [dataProcFunc]="dataProcFunc" [fromTime]="fromTime" [toTime]="toTime" ></line-chart>
-<line-chart  [measurement]="'electricity_meter_energy'" [isFilterEnabled]="false" [title]="'Energy (kWh) '" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTime" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataTransformFunc]="'difference'" [dataProcFunc]="dataProcFunc" [fromTime]="fromTime" [toTime]="toTime" ></line-chart>
+
+<line-chart  [measurement]="'electricity_meter_power'" [isFilterEnabled]="false" [title]="'Imported power (W)'" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTime" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataTransformFunc]="dataTransformFuncV"  [dataProcFunc]="dataProcFunc" [fromTime]="fromTime" [toTime]="toTime" [filters]="importFilter" ></line-chart>
+<line-chart  [measurement]="'electricity_meter_energy'" [isFilterEnabled]="false" [title]="'Imported energy (kWh) '" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTime" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataTransformFunc]="'difference'" [dataProcFunc]="'max'" [fromTime]="fromTime" [toTime]="toTime" [filters]="importFilter" ></line-chart>
 
 <br>
 <line-chart  [measurement]="'battery.evt.lvl.report'" [isFilterEnabled]="false" [title]="'Battery charge level'" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTime" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataProcFunc]="dataProcFunc" [fromTime]="fromTime" [toTime]="toTime" ></line-chart>
 
 </div>
+

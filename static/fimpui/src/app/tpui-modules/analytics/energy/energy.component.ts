@@ -7,6 +7,9 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 import {ThingsRegistryService} from "../../registry/registry.service";
 import {AnalyticsSettingsService} from "../charts/settings.service";
+import {FimpService} from "../../../fimp/fimp.service";
+import {Subscription} from "rxjs";
+import {NewFimpMessageFromString} from "../../../fimp/Message";
 
 @Component({
   selector: 'app-analytics-explore',
@@ -20,6 +23,7 @@ export class EnergyComponent implements OnInit {
   groupByTag  :string = "location_id";
   private _refreshRate :number = 60;
   gSize : number = 350;
+  importFilter = {"tags":{"dir":"import"}}
   fillGaps : boolean = false;
   dataProcFunc : string = "mean";
   dataTransformFuncV : string = "";
@@ -27,6 +31,7 @@ export class EnergyComponent implements OnInit {
   intervalTimer:any;
   toTime :string = "";
   fromTime:string = "";
+  globalSub : Subscription;
   set refreshRate(rate : number) {
     if (rate==-1)
       return;
@@ -40,10 +45,22 @@ export class EnergyComponent implements OnInit {
   get refreshRate():number {
     return this._refreshRate;
   }
-  constructor(private registry:ThingsRegistryService,private settings:AnalyticsSettingsService) {
+  constructor(private registry:ThingsRegistryService,private fimp : FimpService,private settings:AnalyticsSettingsService) {
   }
   ngOnInit() {
     this.loadFromStorage();
+  }
+
+  ngOnDestroy() {
+    if(this.globalSub)
+      this.globalSub.unsubscribe();
+  }
+
+  ngAfterViewInit() {
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+
+    });
   }
 
   reload() {

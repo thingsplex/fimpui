@@ -22,12 +22,14 @@ export class ThingsRegistryService{
   private devicesQueryRequestId:string;
   constructor(private fimp: FimpService,private http: HttpClient) {
     console.log("registry service constructor")
-    this.configureFimpListener()
+    this.fimp.mqtt.state.subscribe((state: any) => {
+        console.log(" reg: FimpService onConnect . State = ",state);
+        if (this.fimp.isConnected()) {
+          this.configureFimpListener()
+          this.loadAllComponents();
+        }
+      });
 
-    this.fimp.mqtt.onConnect.subscribe((message: any) => {
-      console.log(" reg - FimpService onConnect");
-      this.loadAllComponents();
-    });
   }
   public init() {
   }
@@ -91,6 +93,7 @@ export class ThingsRegistryService{
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
   }
   loadLocations() {
+    console.log("reg: Requesting locations")
     let msg  = new FimpMessage("tpflow","cmd.registry.get_locations","str_map",null,null,null)
     msg.src = "tplex-ui"
     this.lastRequestId = msg.uid;

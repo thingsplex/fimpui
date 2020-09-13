@@ -81,6 +81,12 @@ export class FimpService{
     this.globalTopicPrefix = this.configs.configs.mqtt_topic_global_prefix;
     this.mqtt.connect(this.mqttSeviceOptions);
   }
+  public isConnected():boolean {
+    if (this.mqttConnState == 2) {
+      return true
+    }
+    return false
+  }
   private prepareTopic(topic:string):string {
     if (this.globalTopicPrefix != "") {
      topic = this.globalTopicPrefix+"/"+topic;
