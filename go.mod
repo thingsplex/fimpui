@@ -13,10 +13,12 @@ require (
 	github.com/gorilla/websocket v1.4.0
 	github.com/labstack/echo-contrib v0.9.0
 	github.com/labstack/echo/v4 v4.1.16
+	github.com/labstack/gommon v0.3.0
 	github.com/sirupsen/logrus v1.3.0
 	github.com/thingsplex/tpflow v0.14.1-0.20200408142336-c831953b0787
 	go.etcd.io/bbolt v1.3.0 // indirect
 	go.opencensus.io v0.8.0 // indirect
+	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/net v0.0.0-20200226121028-0de0cce0169b
 	golang.org/x/oauth2 v0.0.0-20180416194528-6881fee410a5 // indirect
 	google.golang.org/api v0.0.0-20180420000906-b08f8989af48

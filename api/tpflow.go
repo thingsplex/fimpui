@@ -2,10 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/thingsplex/tpflow/api/client"
-	"github.com/thingsplex/tpflow/model"
 	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
+	"github.com/thingsplex/tpflow/api/client"
+	"github.com/thingsplex/tpflow/model"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -21,57 +21,7 @@ func RegisterTpFlowApi(e *echo.Echo,api *client.ApiRemoteClient) {
 		}
 
 	})
-	e.GET("/fimp/flow/definition/:id", func(c echo.Context) error {
-		id := c.Param("id")
-		resp,err := api.GetFlowDefinition(id)
-		if err == nil {
-			return c.JSON(http.StatusOK, resp)
-		}else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
 
-	e.GET("/fimp/connector/template/:id", func(c echo.Context) error {
-		id := c.Param("id")
-		resp,err := api.GetConnectorTemplate(id)
-		if err == nil {
-			return c.JSON(http.StatusOK, resp)
-		}else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
-
-	e.GET("/fimp/connector/plugins", func(c echo.Context) error {
-		resp,err := api.GetConnectorPlugins()
-		if err == nil {
-			return c.JSON(http.StatusOK, resp)
-		}else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
-
-	e.GET("/fimp/connector/list", func(c echo.Context) error {
-		resp,err := api.GetConnectorInstances()
-		if err == nil {
-			return c.JSON(http.StatusOK, resp)
-		}else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
-
-	e.POST("/fimp/flow/definition/:id", func(c echo.Context) error {
-		//id := c.Param("id")
-		body, err := ioutil.ReadAll(c.Request().Body)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-		resp,err := api.UpdateFlowBin(body)
-		if err == nil {
-			return c.JSON(http.StatusOK, resp)
-		}else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
 
 	e.PUT("/fimp/flow/definition/import", func(c echo.Context) error {
 		body, err := ioutil.ReadAll(c.Request().Body)
@@ -85,27 +35,6 @@ func RegisterTpFlowApi(e *echo.Echo,api *client.ApiRemoteClient) {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 
-	})
-
-	e.PUT("/fimp/flow/definition/import_from_url", func(c echo.Context) error {
-		var request map[string]string
-		body, err := ioutil.ReadAll(c.Request().Body)
-		if err != nil {
-			return err
-		}
-
-		err = json.Unmarshal(body, &request)
-		if err != nil {
-			log.Error("Can't parse request ", err)
-		}
-		url , _ := request["Url"]
-		token, _ := request["Token"]
-		resp,err := api.ImportFlowFromUrl(url,token)
-		if err == nil {
-			return c.JSON(http.StatusOK, resp)
-		}else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
 	})
 
 	e.POST("/fimp/flow/ctrl/:id/:op", func(c echo.Context) error {
@@ -178,26 +107,6 @@ func RegisterTpFlowApi(e *echo.Echo,api *client.ApiRemoteClient) {
 	})
 
 
-	e.GET("/fimp/api/registry/things", func(c echo.Context) error {
-		locationIdStr := c.QueryParam("locationId")
-		thingsWithLocation,err := api.RegistryGetListOfThings(locationIdStr)
-		if err == nil {
-			return c.JSON(http.StatusOK, thingsWithLocation)
-		} else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
-
-	e.GET("/fimp/api/registry/devices", func(c echo.Context) error {
-		locationIdStr := c.QueryParam("locationId")
-		thingsWithLocation,err := api.RegistryGetListOfDevices(locationIdStr)
-		if err == nil {
-			return c.JSON(http.StatusOK, thingsWithLocation)
-		} else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
-
 	e.GET("/fimp/api/registry/thing/:tech/:address", func(c echo.Context) error {
 		things, err := api.RegistryGetThing(c.Param("tech"), c.Param("address"))
 		if err == nil {
@@ -214,16 +123,6 @@ func RegisterTpFlowApi(e *echo.Echo,api *client.ApiRemoteClient) {
 		thingIdStr := c.QueryParam("thingId")
 		filterWithoutAliasStr := c.QueryParam("filterWithoutAlias")
 		services,err := api.RegistryGetListOfServices(serviceName,locationIdStr,thingIdStr,filterWithoutAliasStr)
-		if err == nil {
-			return c.JSON(http.StatusOK, services)
-		} else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
-
-	e.GET("/fimp/api/registry/service", func(c echo.Context) error {
-		serviceAddress := c.QueryParam("address")
-		services,err := api.RegistryGetService(serviceAddress)
 		if err == nil {
 			return c.JSON(http.StatusOK, services)
 		} else {
@@ -260,15 +159,6 @@ func RegisterTpFlowApi(e *echo.Echo,api *client.ApiRemoteClient) {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 		return c.NoContent(http.StatusOK)
-	})
-
-	e.GET("/fimp/api/registry/locations", func(c echo.Context) error {
-		locations,err := api.RegistryGetListOfLocations()
-		if err == nil {
-			return c.JSON(http.StatusOK, locations)
-		} else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
 	})
 
 	e.DELETE("/fimp/api/registry/thing/:id", func(c echo.Context) error {

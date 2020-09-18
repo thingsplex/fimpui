@@ -1,4 +1,4 @@
-import {Component,OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -16,6 +16,7 @@ export interface EnergyRecord {
   name: string;
   type: string;
   power: number;
+  powerRatio:number;
   eToday: number;
   eWeek: number;
   eMonth: number;
@@ -32,7 +33,8 @@ export class EnergyFlowComponent implements OnInit {
   importFilter = {"tags":{"dir":"import"}}
   toTime :string = "";
   fromTime:string = "";
-  pImportMaxValue:number = 5000;
+  @Input() pMaxValue:number;
+  @Input() productionMeterId:number;
   globalSub : Subscription;
   thingAlias : string = "";
 
@@ -53,13 +55,13 @@ export class EnergyFlowComponent implements OnInit {
 
   constructor(private registry:ThingsRegistryService,private fimp : FimpService,private settings:AnalyticsSettingsService) {
     this.eData = [
-      {deviceId:-1, name: "Total", type: '', power: 0, eToday: 0,eWeek:0,eMonth:0},
-      {deviceId:-2, name: "Unknown", type: '', power: 0, eToday: 0,eWeek:0,eMonth:0},
+      {deviceId:-1, name: "Total",powerRatio:100,type: '', power: 0, eToday: 0,eWeek:0,eMonth:0},
+      {deviceId:-2, name: "Unknown",powerRatio:100 ,type: '', power: 0, eToday: 0,eWeek:0,eMonth:0},
     ];
     this.dataSource = this.eData;
   }
   ngOnInit() {
-    this.loadFromStorage();
+    console.log("eFlow - Production meter id =",this.productionMeterId);
   }
 
   ngOnDestroy() {
@@ -70,43 +72,66 @@ export class EnergyFlowComponent implements OnInit {
   ngAfterViewInit() {
     this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
       let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
-      if (fimpMsg.service == "meter_elec" ){
+      if (fimpMsg.service == "meter_elec" || fimpMsg.service == "sensor_power" ){
         let importPower:number = 0;
+        let exportPower:number = 0;
         if (fimpMsg.mtype == "evt.meter_ext.report") {
           if (fimpMsg.val) {
-           importPower = fimpMsg.val.p_import
+           if (fimpMsg.val.p_import)
+              importPower = fimpMsg.val.p_import;
+            if (fimpMsg.val.p_export)
+              exportPower = fimpMsg.val.p_export;
           }
-        }else if (fimpMsg.mtype == "evt.meter.report") {
+        }else if (fimpMsg.mtype == "evt.meter.report" || fimpMsg.mtype == "evt.sensor.report") {
           if(fimpMsg.props["unit"]=="W")
             importPower = fimpMsg.val;
           else
             return;
         }
         importPower = this.roundPower(importPower)
-
+        exportPower = this.roundPower(exportPower)
+        // some meters can report export using negative values
+        if (importPower<0) {
+          exportPower = Math.abs(importPower);
+          importPower = 0;
+        }
         let t = this.registry.getServiceByAddress(msg.topic)
         if(t.length > 0) {
           let dev = this.registry.getDeviceById(t[0].container_id)
           if(dev) {
-            if (dev.type == "meter.main_elec") {
-              this.importPower =
-              this.thingAlias = dev.alias
-              this.importPower =  importPower;
-              this.consumptionPower = importPower;
+            if (dev.id == this.productionMeterId) {
+              this.productionPower = exportPower;
+              console.log("Production report "+this.productionPower)
+              this.calculateConsumption();
               this.updateFlowLines();
-              if(this.importPower>this.pImportMaxValue)
-                this.pImportMaxValue = this.importPower + 20;
+              this.calculatePowerDistribution();
+            }else if (dev.type == "meter.main_elec") {
+              this.thingAlias = dev.alias
+              this.importPower = importPower;
+              this.exportPower = exportPower;
+              if (this.productionPower==0 && this.exportPower>0) // This is the case if production meter is not present
+                this.productionPower = this.exportPower;
+              this.calculateConsumption();
+              this.updateFlowLines();
+              this.calculatePowerDistribution();
               this.dataSource[0].power = importPower;
             }else {
-              console.log("New non meter report")
-              let rec : EnergyRecord = {deviceId:dev.id,name:dev.alias,type:"",power:importPower,eMonth:0,eToday:0,eWeek:0}
-              this.updateEnergyDataRecord(rec)
-
+              let rec : EnergyRecord = {deviceId:dev.id,name:dev.alias,type:dev.type,power:importPower,powerRatio:0,eMonth:0,eToday:0,eWeek:0}
+              this.updateEnergyDataRecord(rec);
+              this.calculatePowerDistribution();
             }
           }
         }
       }
     });
+  }
+
+  calculateConsumption() {
+    if (this.productionPower > 0) {
+      this.consumptionPower = this.productionPower + this.importPower - this.exportPower;
+    }else {
+      this.consumptionPower = Math.abs(this.importPower - this.exportPower);
+    }
   }
 
   roundPower(power:number):number {
@@ -119,19 +144,49 @@ export class EnergyFlowComponent implements OnInit {
   updateEnergyDataRecord(rec:EnergyRecord) {
     let sRecs = this.eData.filter(drec => drec.deviceId == rec.deviceId)
     if(sRecs.length>0) {
-      sRecs[0] = rec
+      sRecs[0].power =  rec.power
     }else {
-      this.eData.push(rec)
+      this.eData.push(rec);
+      this.dataSource = [...this.eData];
     }
-    this.dataSource = [...this.eData];
+  }
+  calculatePowerDistribution() {
+    let sumPower = 0;
+    for (let rec of this.eData) {
+      if (rec.deviceId>=0) {
+        sumPower+=rec.power;
+        rec.powerRatio = Math.round(((rec.power*100)/this.consumptionPower)*10)/10;
+      }
+    }
+    this.eData.filter(drec =>drec.deviceId == -1)[0].power = this.consumptionPower;
+    let unknownPower = (this.consumptionPower-sumPower);
+    let unknownDev = this.eData.filter(drec =>drec.deviceId == -2)[0];
+    unknownDev.power = unknownPower
+    unknownDev.powerRatio = Math.round( ((unknownPower*100)/this.consumptionPower)*10)/10
   }
 
-    updateFlowLines() {
+  updateFlowLines() {
       if(this.importPower>0)
         this.importLineVisibility = "visible"
+      else
+        this.importLineVisibility = "hidden"
+
       if(this.consumptionPower>0)
         this.consumptionLineVisibility = "visible"
-    }
+      else
+        this.consumptionLineVisibility = "hidden"
+
+      if(this.exportPower>0)
+        this.productionLineVisibility = "visible"
+      else
+        this.productionLineVisibility = "hidden"
+
+      if(this.productionPower>0)
+        this.productionToConsumptionLineVisibility = "visible"
+      else
+        this.productionToConsumptionLineVisibility = "hidden"
+
+  }
 
    saveToStorage() {
     let configs = {};

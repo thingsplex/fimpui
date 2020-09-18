@@ -19,6 +19,12 @@
   animation: move 1s linear infinite;
 }
 
+@keyframes move {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
 .inactive-energy-flow {
   stroke-width:15;
   stroke: #b8b7b7;
@@ -32,11 +38,7 @@
   stroke: #a4e060;
 }
 
-@keyframes move {
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
+
 
 
 mwl-gauge {
@@ -75,6 +77,11 @@ mwl-gauge.pimport >>> .gauge >>> .value {
 }
 mwl-gauge.pimport >>> .gauge >>> .value-text {
   fill: orange;
+}
+
+mwl-gauge.pexport >>> .gauge >>> .dial {
+  stroke: #858c91;
+  stroke-width: 7;
 }
 
 mwl-gauge.pexport >>> .gauge >>> .value {

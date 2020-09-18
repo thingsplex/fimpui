@@ -5,7 +5,7 @@ RUN mkdir -p /opt/fimpui/static/fimpui \
 
 COPY ./static/fimpui/dist /opt/fimpui/static/fimpui/dist
 COPY ./fimpui /opt/fimpui/fimpui
-COPY ./var/config_local.json /opt/fimpui/config.json
+COPY var/data/config_local.json /opt/fimpui/config.json
 
 
 ENV MQTT_HOST=host.docker.internal \

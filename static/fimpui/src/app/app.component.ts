@@ -17,6 +17,14 @@ export class AppComponent {
     this.showHeading = !this.showHeading;
   }
 
+  public logout() {
+    window.location.href = "/fimp/logout";
+  }
+
+  public users() {
+    window.location.href = "/fimp/auth-config";
+  }
+
   public loadSystemInfo() {
     this.http.get(BACKEND_ROOT+"/fimp/system-info")
       .subscribe((data: any) => {

@@ -1,4 +1,4 @@
-import {Component,OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -17,13 +17,15 @@ import {NewFimpMessageFromString} from "../../../fimp/Message";
   styleUrls: ['./energy.component.css']
 })
 export class EnergyComponent implements OnInit {
-  selectedSensorTypes = [];
+  public selectedChartTypes :any[] = ["pImport","eImport","battery"];
+  public listOfChartTypes : any[] = ["pImport","pExport","eImport","eExport","battery"] ;
   timeFromNow :string = "1d";
   groupByTime :string = "1h";
   groupByTag  :string = "location_id";
   private _refreshRate :number = 60;
   gSize : number = 350;
   importFilter = {"tags":{"dir":"import"}}
+  exportFilter = {"tags":{"dir":"export"}}
   fillGaps : boolean = false;
   dataProcFunc : string = "mean";
   dataTransformFuncV : string = "";
@@ -32,6 +34,10 @@ export class EnergyComponent implements OnInit {
   toTime :string = "";
   fromTime:string = "";
   globalSub : Subscription;
+  selectedProductionMeter:string;
+  productionMeterId:number;
+  pMaxValue:number;
+
   set refreshRate(rate : number) {
     if (rate==-1)
       return;
@@ -45,6 +51,11 @@ export class EnergyComponent implements OnInit {
   get refreshRate():number {
     return this._refreshRate;
   }
+
+  get availableMeters():any {
+    return this.registry.getDevicesFilteredByService("meter_elec")
+  }
+
   constructor(private registry:ThingsRegistryService,private fimp : FimpService,private settings:AnalyticsSettingsService) {
   }
   ngOnInit() {
@@ -90,7 +101,7 @@ export class EnergyComponent implements OnInit {
 
   saveToStorage() {
     let configs = {};
-    configs["selectedSensorTypes"] = this.selectedSensorTypes;
+    configs["selectedChartTypes"] = this.selectedChartTypes;
     configs["groupByTag"] = this.groupByTag;
     configs["groupByTime"] = this.groupByTime;
     configs["timeFromNow"] = this.timeFromNow;
@@ -98,6 +109,8 @@ export class EnergyComponent implements OnInit {
     configs["refreshRate"] = this.refreshRate;
     configs["fillGaps"] = this.fillGaps;
     configs["dataProcFunc"] = this.dataProcFunc;
+    configs["productionMeterId"] = this.productionMeterId;
+    configs["pMaxValue"] = this.pMaxValue;
     this.settings.updateDashboardConfigs("genericEnergy",configs);
     this.settings.save();
   }
@@ -105,7 +118,8 @@ export class EnergyComponent implements OnInit {
   loadFromStorage():boolean {
     let configs = this.settings.getDashboardConfigs("genericEnergy");
     if (configs) {
-      this.selectedSensorTypes = configs["selectedSensorTypes"];
+      if (configs["selectedChartTypes"])
+        this.selectedChartTypes = configs["selectedChartTypes"];
       this.groupByTag = configs["groupByTag"];
       this.groupByTime = configs["groupByTime"];
       this.timeFromNow = configs["timeFromNow"];
@@ -113,9 +127,26 @@ export class EnergyComponent implements OnInit {
       this.refreshRate = configs["refreshRate"];
       this.fillGaps = configs["fillGaps"];
       this.dataProcFunc = configs["dataProcFunc"];
+      this.productionMeterId = configs["productionMeterId"];
+      if (configs["pMaxValue"])
+        this.pMaxValue = configs["pMaxValue"];
+      else
+        this.pMaxValue = 7000;
+      if (this.productionMeterId)
+        this.selectedProductionMeter = this.productionMeterId.toString();
+
       return true
     }
+    console.log("GMaxValue = "+this.pMaxValue)
     return false;
+  }
+
+  updateListOfChartTypes() {
+
+  }
+  updateProductionMeter() {
+    this.productionMeterId = Number(this.selectedProductionMeter)
+    console.log("Production meter id = "+this.productionMeterId);
   }
 
 }

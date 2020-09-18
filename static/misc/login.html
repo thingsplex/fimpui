@@ -1,0 +1,28 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="misc/login.css?4">
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thingsplex Sign in</title>
+</head>
+
+<body>
+<div class="main">
+  <p class="sign" align="center">Thingsplex Sign in</p>
+  <form name="loginForm" class="form1" method="post" action="/fimp/login">
+    <input class="un " name="username" type="text" align="center" placeholder="Username">
+    <input class="pass" name="password" type="password" align="center" placeholder="Password">
+    <a class="submit" align="center" href="javascript: submitform()">Sign in</a>
+    <script type="text/javascript">
+      function submitform()
+      {
+        document.loginForm.submit();
+      }
+    </script>
+  </form>
+</div>
+
+</body>
+
+</html>

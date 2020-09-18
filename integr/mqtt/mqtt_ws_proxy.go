@@ -1,11 +1,12 @@
 package mqtt
 
 import (
+	"crypto/tls"
+	"github.com/alivinco/thingsplex/api"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"net"
 	"net/http"
-	"crypto/tls"
 	//"encoding/hex"
 	log "github.com/sirupsen/logrus"
 	"io"
@@ -28,7 +29,17 @@ var (
 
 type WsUpgrader struct {
 	BrokerAddress string
-	IsSSL bool
+	IsSSL         bool
+	auth          *api.Auth
+}
+
+func NewWsUpgrader(brokerAddress string,auth *api.Auth, isSSL bool) *WsUpgrader {
+	return &WsUpgrader{BrokerAddress: brokerAddress, IsSSL: isSSL,auth: auth}
+}
+
+func (wu *WsUpgrader) UpdateBrokerConfig(brokerAddress string, isSSL bool) {
+	wu.BrokerAddress = brokerAddress
+	wu.IsSSL = isSSL
 }
 
 func (wu *WsUpgrader) Upgrade(c echo.Context) error {
@@ -37,14 +48,9 @@ func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 			log.Error("!!!!!!!!!!! Mqtt WS proxy (Upgrade) crashed with panic!!!!!!!!!!!!!!!")
 		}
 	}()
-
-	//sess, _ := session.Get("auth", c)
-	//_,ok1 := sess.Values["username"]
-	//if sess.IsNew || !ok1 {
-	//	log.Info("Connection is not authenticated")
-	//	c.NoContent(http.StatusUnauthorized)
-	//	return errors.New("not authenticated")
-	//}
+	if !wu.auth.IsRequestAuthenticated(c,true) {
+		return nil
+	}
 
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 
@@ -54,7 +60,7 @@ func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 	}
 
 	log.Info("<MqWsProxy> Upgraded ")
-	session := MqttWsProxySession{wsConn: ws,isSSL:wu.IsSSL}
+	session := MqttWsProxySession{wsConn: ws, isSSL: wu.IsSSL}
 	session.Connect(wu.BrokerAddress)
 	session.WsReader()
 	return nil
@@ -63,14 +69,14 @@ func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 type MqttWsProxySession struct {
 	wsConn     *websocket.Conn
 	brokerConn net.Conn
-	isSSL bool
+	isSSL      bool
 }
 
 func (mp *MqttWsProxySession) Connect(address string) error {
 	var err error
 	if mp.isSSL {
-		mp.brokerConn, err = tls.Dial("tcp", address,nil)
-	}else {
+		mp.brokerConn, err = tls.Dial("tcp", address, nil)
+	} else {
 		mp.brokerConn, err = net.Dial("tcp", address)
 	}
 	if err != nil {

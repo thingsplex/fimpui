@@ -27,7 +27,6 @@ github.com/asdine/storm
 github.com/asdine/storm/codec
 github.com/asdine/storm/codec/gob
 github.com/asdine/storm/codec/json
-github.com/asdine/storm/codec/protobuf
 github.com/asdine/storm/index
 github.com/asdine/storm/internal
 github.com/asdine/storm/q
@@ -94,8 +93,6 @@ github.com/nathan-osman/go-sunrise
 github.com/oliveagle/jsonpath
 # github.com/pkg/errors v0.8.1
 github.com/pkg/errors
-# github.com/rcrowley/go-metrics v0.0.0-20180406234716-d932a24a8ccb
-github.com/rcrowley/go-metrics
 # github.com/robfig/cron/v3 v3.0.0
 github.com/robfig/cron/v3
 # github.com/satori/go.uuid v1.2.0
@@ -147,9 +144,11 @@ go.opencensus.io/tag
 go.opencensus.io/trace
 go.opencensus.io/trace/internal
 go.opencensus.io/trace/propagation
-# golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d
+# golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 golang.org/x/crypto/acme
 golang.org/x/crypto/acme/autocert
+golang.org/x/crypto/bcrypt
+golang.org/x/crypto/blowfish
 golang.org/x/crypto/ssh/terminal
 # golang.org/x/net v0.0.0-20200226121028-0de0cce0169b
 golang.org/x/net/context

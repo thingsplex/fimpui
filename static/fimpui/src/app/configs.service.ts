@@ -42,7 +42,9 @@ export class ConfigsService {
                     // };
                     // this.configs["globalTopicPrefix"] = result["mqtt_topic_global_prefix"]
                 })
-                .catch((err: any) => Promise.resolve());
+                .catch((err: any) => {
+                  window.location.href = "/fimp/login";
+                });
 
     }
 

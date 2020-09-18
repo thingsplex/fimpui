@@ -1,13 +1,14 @@
 <div id="EnergyFlowEditorCanvas" class="canvas-area">
-  <img style="position:absolute;top:150px" src="assets/img/el-grid.png">
+  <img style="position:absolute;top:150px" src="fimp/static/assets/img/el-grid.png">
+  <img style="position:absolute;top:430px;width: 100px;left: 670px; " src="fimp/static/assets/img/renpower.png">
 
   <div class="node-card" style="left: 200px">
           <p style="margin-left: 30px;font-size: large;">Import (W)</p>
           <mwl-gauge class="pimport"
-                  [max]="pImportMaxValue"
+                  [max]="pMaxValue"
                   [min]="0"
                   [value]="importPower"
-                  [animated]="true"
+                  [animated]="false"
                   [animationDuration]="1">
           </mwl-gauge>
   </div>
@@ -15,10 +16,10 @@
   <div class="node-card" style="left: 500px">
         <p style="margin-left: 30px;font-size: large;">Consumption (W)</p>
         <mwl-gauge class="pimport"
-                   [max]="pImportMaxValue"
+                   [max]="pMaxValue"
                    [min]="0"
                    [value]="consumptionPower"
-                   [animated]="true"
+                   [animated]="false"
                    [animationDuration]="1">
         </mwl-gauge>
   </div>
@@ -26,20 +27,20 @@
   <div class="node-card" style="left: 200px;top: 350px">
     <p style="margin-left: 30px;font-size: large;">Export (W)</p>
     <mwl-gauge class="pexport"
-               [max]="pImportMaxValue"
+               [max]="pMaxValue"
                [min]="0"
-               [value]="0"
-               [animated]="true"
+               [value]="exportPower"
+               [animated]="false"
                [animationDuration]="1">
     </mwl-gauge>
   </div>
   <div class="node-card" style="left: 500px;top:350px">
     <p style="margin-left: 30px;font-size: large;">Production (W)</p>
     <mwl-gauge class="pexport"
-               [max]="pImportMaxValue"
+               [max]="pMaxValue"
                [min]="0"
-               [value]="0"
-               [animated]="true"
+               [value]="productionPower"
+               [animated]="false"
                [animationDuration]="1">
     </mwl-gauge>
   </div>
@@ -56,13 +57,13 @@
 
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" style="position: absolute;width:160px;left:650px;top:180px;fill: #ffe341;visibility: {{consumptionLineVisibility}}">
     <defs>
-      <marker id="arrowhead" markerWidth="10" markerHeight="7"
+      <marker id="arrowhead11" markerWidth="10" markerHeight="7"
               refX="0" refY="3.5" orient="auto">
         <polygon points="0 2, 5 3.5, 0 5" />
       </marker>
     </defs>
     <line x1="0" y1="50" x2="250" y2="50"
-          marker-end="url(#arrowhead)" class="import-active-flow active-energy-flow" />
+          marker-end="url(#arrowhead11)" class="import-active-flow active-energy-flow" />
   </svg>
 
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100" style="visibility: hidden; position: absolute;width:160px;left:350px;top:450px;fill:greenyellow;visibility:{{productionLineVisibility}}">
@@ -105,7 +106,7 @@
     <!-- Weight Column -->
     <ng-container matColumnDef="power">
       <th mat-header-cell *matHeaderCellDef> Power </th>
-      <td mat-cell *matCellDef="let element"> {{element.power}} W </td>
+      <td mat-cell *matCellDef="let element"> {{element.power}} W ({{element.powerRatio}}%) </td>
     </ng-container>
 
     <!-- Symbol Column -->
