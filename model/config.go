@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/alivinco/thingsplex/utils"
+	"github.com/futurehomeno/fimpgo/edgeapp"
 	"github.com/labstack/gommon/log"
 	"io/ioutil"
 	"os"
@@ -11,7 +12,7 @@ import (
 	"time"
 )
 
-
+const ServiceName = "tplexui"
 
 type Configs struct {
 	path                  string
@@ -24,7 +25,6 @@ type Configs struct {
 	LogLevel              string `json:"log_level"`
 	ZwaveProductTemplates string `json:"zwave_product_templates"`
 	IsDevMode             bool   `json:"is_dev_mode"`
-	AuthMode              string `json:"auth_mode"`
 	WorkDir               string `json:"-"`
 	ConfiguredAt          string `json:"configured_at"`
 	ConfiguredBy          string `json:"configured_by"`
@@ -90,3 +90,7 @@ func (cf *Configs) IsConfigured()bool {
 	return true
 }
 
+type ConfigReport struct {
+	OpStatus string `json:"op_status"`
+	AppState edgeapp.AppStates `json:"app_state"`
+}

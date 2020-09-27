@@ -1,17 +1,17 @@
 import {Component, ElementRef, ViewChild, OnInit, Input} from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
-import {BehaviorSubject,Observable} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
-import { BACKEND_ROOT } from "app/globals";
 import { MatDialog } from "@angular/material/dialog";
 import {RecordEditorDialog} from "./record-editor-dialog.component";
 import {TableContextRec} from "./model"
-import {HttpClient} from "@angular/common/http";
+import {FimpService} from "../../../fimp/fimp.service";
+import {FimpMessage, NewFimpMessageFromString} from "../../../fimp/Message";
 
 
 @Component({
@@ -25,13 +25,16 @@ export class FlowContextComponent implements OnInit {
   loadMode : string
   displayedColumns = ['flowId','name','description','valueType','value','updatedAt','action'];
   dataSource: FlowContextDataSource | null;
-  constructor(private http : HttpClient,public dialog: MatDialog) {
+  dialogRef : any;
+  private globalSub : Subscription;
+  constructor(private fimp : FimpService,public dialog: MatDialog) {
   }
   ngOnInit() {
+    this.configureFimpListener();
     if (!this.flowId) {
       this.flowId = "global";
     }
-    this.dataSource = new FlowContextDataSource(this.http,this.flowId);
+    this.dataSource = new FlowContextDataSource(this.fimp,this.flowId);
     // console.log("Is embedded = "+this.isEmbedded);
     if (this.isEmbedded) {
       this.loadMode = "local"
@@ -40,13 +43,38 @@ export class FlowContextComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+   this.dataSource.disconnect();
+   if(this.globalSub)
+      this.globalSub.unsubscribe();
+  }
+
+  configureFimpListener(){
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+      if (fimpMsg.service == "tpflow" ){
+        if (!fimpMsg.val) {
+          return
+        }
+        if (fimpMsg.mtype == "evt.flow.ctx_records_report") {
+          this.dataSource.setDateRecords(fimpMsg.val);
+        }else if (fimpMsg.mtype == "evt.flow.ctx_update_report" || fimpMsg.mtype =="evt.flow.ctx_delete_report") {
+          this.reload();
+          if(this.dialogRef)
+            this.dialogRef.close();
+        }
+      }
+    });
+  }
+
   showRecordEditorDialog(ctxRec:TableContextRec) {
     ctxRec.FlowId = "global";
-    let dialogRef = this.dialog.open(RecordEditorDialog,{
+    this.dialogRef = this.dialog.open(RecordEditorDialog,{
       width: '450px',
       data:ctxRec
     });
-    dialogRef.afterClosed().subscribe(result => {
+
+    this.dialogRef.afterClosed().subscribe(result => {
       if (result)
       {
         this.dataSource.getData("global")
@@ -81,33 +109,35 @@ export class FlowContextComponent implements OnInit {
     this.dataSource.getData(this.flowId);
   }
 
-
 }
 
 
 export class FlowContextDataSource extends DataSource<any> {
   ctxRecordsObs = new BehaviorSubject<TableContextRec[]>([]);
-
-  constructor(private http : HttpClient,private flowId:string) {
+  constructor(private fimp : FimpService,private flowId:string) {
     super();
-    console.log("Getting context data")
     this.getData(flowId);
   }
 
+  setDateRecords(data:any) {
+    let result = this.mapContext(data,this.flowId)
+    this.ctxRecordsObs.next(result);
+  }
+
   getData(flowId:string) {
-    this.http
-        .get(BACKEND_ROOT+'/fimp/api/flow/context/'+flowId)
-        .subscribe((result:any)=>{
-          result = this.mapContext(result,flowId)
-          this.ctxRecordsObs.next(result);
-          console.log("Mappping global variable")
-        });
+    let val = {"flow_id":flowId};
+    let msg  = new FimpMessage("tpflow","cmd.flow.ctx_get_records","str_map",val,null,null)
+    msg.src = "tplex-ui";
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
   }
 
   connect(): Observable<TableContextRec[]> {
     return this.ctxRecordsObs ;
   }
-  disconnect() {}
+  disconnect() {
+
+  }
 
   mapContext(result:any,flowId:string):TableContextRec[] {
     let contexts : TableContextRec[] = [];

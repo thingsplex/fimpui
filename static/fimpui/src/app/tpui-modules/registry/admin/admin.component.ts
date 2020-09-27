@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BACKEND_ROOT } from "app/globals";
 import {FimpService} from "app/fimp/fimp.service";
 import {FimpMessage} from "app/fimp/Message";
 import {ThingsRegistryService} from "../registry.service";
-import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-admin',
@@ -12,7 +10,7 @@ import {HttpClient} from "@angular/common/http";
 })
 export class AdminComponent implements OnInit {
 
-  constructor(private http : HttpClient, private fimp:FimpService,private registry:ThingsRegistryService) { }
+  constructor( private fimp:FimpService,private registry:ThingsRegistryService) { }
 
   ngOnInit() {
   }
@@ -39,11 +37,6 @@ export class AdminComponent implements OnInit {
   }
 
   public reindexRegistry(){
-    this.http
-    .post(BACKEND_ROOT+'/fimp/api/registry/reindex',null)
-    .subscribe ((result) => {
-       console.log("DB reindexed successfully");
-    });
   }
 
   public sendExclusionEvent(adapter,address: string) {

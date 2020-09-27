@@ -7,6 +7,9 @@ import {Variable} from "../flow-editor/flow-editor.component";
 import {TableContextRec} from "./model";
 import {ContextRecord} from "./model"
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {FimpService} from "../../../fimp/fimp.service";
+import {Subscription} from "rxjs";
+import {FimpMessage} from "../../../fimp/Message";
 
 @Component({
     selector: 'record-editor-dialog',
@@ -15,14 +18,13 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
   })
   export class RecordEditorDialog {
     ctxRec : TableContextRec;
-    constructor(public dialogRef: MatDialogRef<RecordEditorDialog>, @Inject(MAT_DIALOG_DATA) public data: TableContextRec, public snackBar: MatSnackBar, private http : HttpClient) {
+    private globalSub : Subscription;
+    constructor(public dialogRef: MatDialogRef<RecordEditorDialog>, @Inject(MAT_DIALOG_DATA) public data: TableContextRec, public snackBar: MatSnackBar, private fimp : FimpService) {
           this.ctxRec = data;
           console.dir(data)
     }
 
     save(){
-      let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-      let options = {headers:headers};
       let request = new ContextRecord();
       request.Name = this.ctxRec.Name;
       request.Variable = new Variable();
@@ -34,18 +36,16 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 
       request.Variable.ValueType = this.ctxRec.ValueType;
       request.Description = this.ctxRec.Description;
-      if (this.ctxRec.FlowId == null ) {
-        this.ctxRec.FlowId = "global";
+      let payload = {"flow_id":"global","rec":request}
+      if (this.ctxRec.FlowId ) {
+        payload["flow_id"] = this.ctxRec.FlowId;
       }
-      this.http
-        .post(BACKEND_ROOT+'/fimp/api/flow/context/record/'+this.ctxRec.FlowId,request,  options )
-        .subscribe ((result) => {
-           console.log("Context record was saved");
-          this.snackBar.open('Saved',null,{duration: 2000});
-           this.dialogRef.close(this.ctxRec);
-        },(result)=> {
-          this.snackBar.open('Error !!! . Save the flow and try again.',null,{duration: 10000});
-        });
+      let msg  = new FimpMessage("tpflow","cmd.flow.ctx_update_record","object",payload,null,null)
+      msg.src = "tplex-ui";
+      msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
+      this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+
+
     }
     onTypeSelected(event) {
       console.log("Type selected")
@@ -66,11 +66,14 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 
     }
     delete() {
-    this.http
-      .delete(BACKEND_ROOT+'/fimp/api/flow/context/record/'+this.ctxRec.FlowId+'/'+this.ctxRec.Name)
-      .subscribe ((result) => {
-        this.dialogRef.close("ok");
-      });
+      let val = {"flow_id":"global","name":this.ctxRec.Name}
+      if (this.ctxRec.FlowId ) {
+        val["flow_id"] = this.ctxRec.FlowId;
+      }
+      let msg  = new FimpMessage("tpflow","cmd.flow.ctx_delete","str_map",val,null,null)
+      msg.src = "tplex-ui";
+      msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
+      this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
     }
 
 }

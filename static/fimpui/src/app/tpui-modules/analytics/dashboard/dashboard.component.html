@@ -20,8 +20,10 @@
         </mat-card-header>
         <mat-card-content>
             <p>Number of locations : {{totalLocations}}</p>
-            <div class="chart-container">
+            <div class="chart-container" >
+               <div style="width: 370px">
                 <simple-pie-chart #locationsChart [data]="thingsPerLocation" [labels]="locationNames" [title]="'Things per location'" ></simple-pie-chart>
+               </div>
             </div>
 
         </mat-card-content>
@@ -37,27 +39,12 @@
             <p>Number of services  : {{totalServices}}</p>
             <p></p>
             <div class="chart-container">
+                <div >
                 <simple-pie-chart #thingsByTechChart  [data]="thingsByTechnology" [labels]="thingsTechLabels" [title]="'Things by technology'" ></simple-pie-chart>
+                </div>
                 <simple-pie-chart #thingsByPowerChart [data]="thingsByPower" [labels]="thingsPowerLabels" [title]="'Things by power supply'" ></simple-pie-chart>
             </div>
 
         </mat-card-content>
     </mat-card>
-
-    <mat-card class="card">
-        <mat-card-header>
-            <mat-card-title><h3> Flows overview</h3></mat-card-title>
-            <mat-card-subtitle ></mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-            <p>Number Flows  : {{totalFlows}}</p>
-            <p>Number Nodes  : {{totalFlowNodes}}</p>
-            <div class="chart-container">
-                <simple-pie-chart #flowExecutionStatsChart [data]="flowExecutionStats" [labels]="flowExecutionLabels" [title]="'Aggregated execution results'" ></simple-pie-chart>
-                <simple-pie-chart #flowStateChart [data]="flowStateStats" [labels]="flowStateLabels" [title]="'Flow states'" ></simple-pie-chart>
-            </div>
-        </mat-card-content>
-    </mat-card>
-
-
 </div>

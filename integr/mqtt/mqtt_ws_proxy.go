@@ -7,6 +7,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"net"
 	"net/http"
+	"strings"
+
 	//"encoding/hex"
 	log "github.com/sirupsen/logrus"
 	"io"
@@ -33,12 +35,21 @@ type WsUpgrader struct {
 	auth          *api.Auth
 }
 
-func NewWsUpgrader(brokerAddress string,auth *api.Auth, isSSL bool) *WsUpgrader {
-	return &WsUpgrader{BrokerAddress: brokerAddress, IsSSL: isSSL,auth: auth}
+func NewWsUpgrader(mqttServerURI string,auth *api.Auth) *WsUpgrader {
+	upg := &WsUpgrader{auth: auth}
+	upg.UpdateBrokerConfig(mqttServerURI)
+	return upg
 }
 
-func (wu *WsUpgrader) UpdateBrokerConfig(brokerAddress string, isSSL bool) {
-	wu.BrokerAddress = brokerAddress
+func (wu *WsUpgrader) UpdateBrokerConfig(mqttServerURI string) {
+	var isSSL bool
+	if strings.Contains(mqttServerURI, "ssl") {
+		wu.BrokerAddress = strings.Replace(mqttServerURI, "ssl://", "", -1)
+		isSSL = true
+	} else {
+		wu.BrokerAddress = strings.Replace(mqttServerURI, "tcp://", "", -1)
+		isSSL = false
+	}
 	wu.IsSSL = isSSL
 }
 

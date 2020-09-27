@@ -87,7 +87,7 @@ export const MY_FORMATS = {
     RegistryModule,
     GaugeModule.forRoot(),
   ],
-  exports:[],
+  exports:[SimplePieChartComponent],
   providers:[AnalyticsSettingsService,{provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
 
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}],

@@ -9,19 +9,17 @@ import (
 	"github.com/alivinco/thingsplex/integr/zwave"
 	"github.com/alivinco/thingsplex/model"
 	"github.com/alivinco/thingsplex/utils"
-	"github.com/futurehomeno/fimpgo"
+	"github.com/futurehomeno/fimpgo/edgeapp"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	log "github.com/sirupsen/logrus"
-	"github.com/thingsplex/tpflow/api/client"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"io/ioutil"
 	"net/http"
 	"runtime"
-	"strings"
 )
 
 type SystemInfo struct {
@@ -58,8 +56,12 @@ func SetupLog(logfile string, level string) {
 		}
 		log.SetOutput(&l)
 	}
-
 }
+
+func ConfigureTpFlowApi(configs *model.Configs,e *echo.Echo)  {
+	return
+}
+
 
 func main() {
 	// pprof server
@@ -74,7 +76,7 @@ func main() {
 	if workDir == "" {
 		workDir = "./"
 	} else {
-		fmt.Println("Work dir ", workDir)
+		fmt.Println("Work dir = ", workDir)
 	}
 	configs := model.NewConfigs(workDir)
 	if err := configs.LoadFromFile();err != nil {
@@ -95,15 +97,6 @@ func main() {
 		sysInfo.Version = string(versionFile)
 	}
 	//--------------------------------------
-	var brokerAddress string
-	var isSSL bool
-	if strings.Contains(configs.MqttServerURI, "ssl") {
-		brokerAddress = strings.Replace(configs.MqttServerURI, "ssl://", "", -1)
-		isSSL = true
-	} else {
-		brokerAddress = strings.Replace(configs.MqttServerURI, "tcp://", "", -1)
-		isSSL = false
-	}
 
 	authType := "password"
 	if configs.IsDevMode {
@@ -112,20 +105,21 @@ func main() {
 	auth := api.NewAuth("./var/data", authType)
 	auth.LoadUserDB()
 
-	wsUpgrader := mqtt.NewWsUpgrader(brokerAddress,auth, isSSL)
+	lifecycle := edgeapp.NewAppLifecycle()
+	lifecycle.SetConfigState(edgeapp.ConfigStateConfigured)
+	lifecycle.SetAppState(edgeapp.AppStateRunning,nil)
+	lifecycle.SetConnectionState(edgeapp.ConnStateConnected)
+
+	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs)
+	controlApi.Start()
+
+	wsUpgrader := mqtt.NewWsUpgrader(configs.MqttServerURI, auth)
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// TODO : discontinue the code block
-	log.Info("Async client connecting... ")
-	sClient := fimpgo.NewSyncClient(nil)
-	sClient.Connect(configs.MqttServerURI, configs.MqttClientIdPrefix+"_fimpui_tpflow_client", configs.MqttUsername, configs.MqttPassword, true, 1, 1)
+	log.Info("My outbound IP = ",utils.GetOutboundIP())
 
-	log.Info("Async client connected ")
-	tpflowApi := client.NewApiRemoteClient(sClient, "1", "tplex-ui")
-	api.RegisterTpFlowApi(e, tpflowApi)
-    //--------- discontinue the block --------------------
 	if configs.CookieKey == "" {
 		cookie := securecookie.GenerateRandomKey(32)
 		configs.CookieKey =  base64.StdEncoding.EncodeToString(cookie)
@@ -191,13 +185,37 @@ func main() {
 	})
 
 	e.GET("/fimp/system-info", func(c echo.Context) error {
-
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		return c.JSON(http.StatusOK, sysInfo)
 	})
 	e.GET("/fimp/api/configs", func(c echo.Context) error {
 		if !auth.IsRequestAuthenticated(c,true) {
 			return nil
 		}
+		return c.JSON(http.StatusOK, configs)
+	})
+
+	e.POST("/fimp/api/configs", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
+
+		req:= model.Configs{}
+		if err := c.Bind(&req); err != nil {
+			log.Error("Invalid configuration request format .Err:",err.Error())
+			return fmt.Errorf("invalid request format")
+		}
+		configs.MqttServerURI = req.MqttServerURI
+		configs.MqttUsername = req.MqttUsername
+		configs.MqttPassword = req.MqttPassword
+		err = configs.SaveToFile()
+		if err != nil {
+			log.Error("Failed to save config file. Err:",err.Error())
+		}
+		//sClient.Stop()
+		//sClient  = ConfigureTpFlowApi(configs,e)
 		return c.JSON(http.StatusOK, configs)
 	})
 
@@ -219,6 +237,9 @@ func main() {
 	//})
 
 	e.GET("/fimp/api/get-apps-from-playgrounds", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		resp, err := http.Get("https://app-store.s3-eu-west-1.amazonaws.com/registry/list.json")
 		defer resp.Body.Close()
 		c.Stream(http.StatusOK, "application/json", resp.Body)
@@ -226,6 +247,9 @@ func main() {
 	})
 
 	e.GET("/fimp/api/get-site-info", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		siteId := utils.GetFhSiteId("")
 		if siteId == "" {
 			siteId = "unknown"
@@ -238,6 +262,9 @@ func main() {
 	})
 
 	e.POST("/fimp/api/zwave/products/upload-to-cloud", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		cloud, err := zwave.NewProductCloudStore(configs.ZwaveProductTemplates, "fh-products")
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
@@ -251,6 +278,9 @@ func main() {
 	})
 
 	e.GET("/fimp/api/zwave/products/list-local-templates", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		templateType := c.QueryParam("type")
 		returnStable := true
 		if templateType == "cache" {
@@ -272,6 +302,9 @@ func main() {
 	})
 
 	e.GET("/fimp/api/zwave/products/template", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		templateType := c.QueryParam("type")
 		fileName := c.QueryParam("name")
 		returnStable := true
@@ -293,6 +326,9 @@ func main() {
 	})
 
 	e.POST("/fimp/api/zwave/products/template-op/:operation/:name", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		operation := c.Param("operation")
 		name := c.Param("name")
 		store, _ := zwave.NewProductCloudStore(configs.ZwaveProductTemplates, "fh-products")
@@ -310,6 +346,9 @@ func main() {
 	})
 
 	e.DELETE("/fimp/api/zwave/products/template/:type/:name", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		templateType := c.Param("type")
 		templateName := c.Param("name")
 		var isStable bool
@@ -331,6 +370,9 @@ func main() {
 	})
 
 	e.POST("/fimp/api/zwave/products/template/:type/:name", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		templateType := c.Param("type")
 		templateName := c.Param("name")
 		var isStable bool
@@ -356,6 +398,9 @@ func main() {
 	})
 
 	e.POST("/fimp/api/zwave/products/download-from-cloud", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		cloud, err := zwave.NewProductCloudStore(configs.ZwaveProductTemplates, "fh-products")
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
@@ -369,6 +414,9 @@ func main() {
 	})
 
 	e.GET("/debug/mem", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		memStats := runtime.MemStats{}
 		runtime.ReadMemStats(&memStats)
 		return c.JSON(http.StatusOK, memStats)

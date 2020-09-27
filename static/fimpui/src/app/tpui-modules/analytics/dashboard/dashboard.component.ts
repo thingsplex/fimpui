@@ -6,8 +6,6 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 import {ThingsRegistryService} from "../../registry/registry.service";
-import {BACKEND_ROOT} from "../../../globals";
-import {HttpClient, HttpParams} from "@angular/common/http";
 import {SimplePieChartComponent} from "../charts/simple-pie-chart.component";
 import {Subscription} from "rxjs";
 import {AnalyticsSettingsService} from "../charts/settings.service";
@@ -19,8 +17,7 @@ import {AnalyticsSettingsService} from "../charts/settings.service";
 })
 export class DashboardComponent implements OnInit {
 
-  @ViewChild('flowStateChart') flowStateChartRef: SimplePieChartComponent;
-  @ViewChild('flowExecutionStatsChart') flowExecutionStatsRef: SimplePieChartComponent;
+
   @ViewChild('locationsChart') locationsChartRef: SimplePieChartComponent;
   @ViewChild('thingsByTechChart') thingsByTechChartRef: SimplePieChartComponent;
   @ViewChild('thingsByPowerChart') thingsByPowerChartRef: SimplePieChartComponent;
@@ -29,20 +26,6 @@ export class DashboardComponent implements OnInit {
   public totalThings :number;
   public totalServices : number;
   public totalLocations :number;
-
-  public totalFlows : number = 0;
-  public totalFlowNodes : number = 0;
-  public totalFlowTriggers : number;
-  public totalFlowsExecuted :number;
-  public totalFlowsFailed :number;
-  public totalActiveFlows :number;
-
-  public flowExecutionStats : number[] = [];
-  public flowExecutionLabels : string[] = [];
-
-  public flowStateStats : number[] = [];
-  public flowStateLabels : string[] = [];
-
 
   public thingsByTechnology : number[];
   public thingsTechLabels : string[];
@@ -55,7 +38,7 @@ export class DashboardComponent implements OnInit {
 
   private registrySub: Subscription = null;
 
-  constructor(private registry:ThingsRegistryService,private http:HttpClient,private settings:AnalyticsSettingsService ) {
+  constructor(private registry:ThingsRegistryService,private settings:AnalyticsSettingsService ) {
 
   }
 
@@ -152,46 +135,6 @@ export class DashboardComponent implements OnInit {
   }
 
   calculateFlowStats() {
-      let flows : any;
-      this.http.get(BACKEND_ROOT+'/fimp/flow/list', { } )
-        .subscribe(result=>{
-          flows = result;
-          this.totalFlows = flows.length ;
-          let flowsByState : any = {};
-          let successCount = 0;
-          let failedCount = 0;
-          for(let n of flows) {
-            this.totalFlowNodes += n.Stats.NumberOfNodes
-            successCount += n.TriggerCounter-n.ErrorCounter;
-            failedCount += n.ErrorCounter;
-
-
-            if (flowsByState[n.State]==undefined)
-              flowsByState[n.State] = 1 ;
-            else
-              flowsByState[n.State]++;  // power source
-          }
-          this.flowExecutionLabels.push("success: "+successCount);
-          this.flowExecutionLabels.push("failed: "+failedCount);
-          this.flowExecutionStats.push(successCount);
-          this.flowExecutionStats.push(failedCount);
-
-
-          for (let t in flowsByState) {
-            this.flowStateLabels.push(t+": "+flowsByState[t]);
-            this.flowStateStats.push(flowsByState[t]);
-          }
-
-          console.dir(this.flowExecutionLabels);
-          console.dir(this.flowExecutionStats);
-
-          console.dir(this.flowStateLabels);
-          console.dir(this.flowStateStats);
-
-          this.flowStateChartRef.update();
-          this.flowExecutionStatsRef.update();
-
-        });
 
   }
 

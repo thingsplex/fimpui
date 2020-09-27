@@ -69,7 +69,7 @@ export class SimplePieChartComponent implements OnInit  {
         maintainAspectRatio:true,
         aspectRatio:1,
         title:{text:this.title,display:true},
-        legend:{position:'right'}
+        legend:{position:'bottom'}
       }
     });
   }

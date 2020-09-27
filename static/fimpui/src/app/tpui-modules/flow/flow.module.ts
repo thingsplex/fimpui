@@ -39,6 +39,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import {AnalyticsModule} from "../analytics/analytics.module";
 // import {MsgDetailsDialog} from "../timeline/timeline.component";
 import {FlowPropsDialog} from "./flow-editor/flow-props-editor.component";
 import {MatMenuModule} from '@angular/material/menu';
@@ -46,6 +47,7 @@ import {MatMenuModule} from '@angular/material/menu';
 @NgModule({
   imports: [
     CommonModule,
+    AnalyticsModule,
     FlowRoutingModule,
     MatInputModule,
     MatMenuModule,
@@ -67,7 +69,8 @@ import {MatMenuModule} from '@angular/material/menu';
     FormsModule,
     RegistryModule,
     MatTabsModule,
-    CdkTableModule
+    CdkTableModule,
+
   ],
   declarations: [
      FlowOverviewComponent,

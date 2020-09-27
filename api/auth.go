@@ -63,7 +63,7 @@ func (cf *Auth) SaveUserToSession(c echo.Context,username string) {
 	sess, _ := session.Get("tplex", c)
 	sess.Values["username"] = username
 	sess.Values["authenticated"] = true
-	sess.Options.MaxAge = 120 // time in seconds
+	sess.Options.MaxAge = 7200 // time in seconds
 	sess.Save(c.Request(), c.Response())
 }
 

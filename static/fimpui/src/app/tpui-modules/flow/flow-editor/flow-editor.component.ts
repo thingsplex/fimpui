@@ -184,17 +184,12 @@ export class FlowEditorComponent implements OnInit {
   }
 
   sendFlowControllCommands(command:string) {
-    this.http
-      .post(BACKEND_ROOT+'/fimp/flow/ctrl/'+this.flow.Id+'/'+command,null,  {} )
-      .subscribe ((result) => {
-         console.log("Cmd was sent");
-         if (command=="send-inclusion-report")
-           this.snackBar.open('Flow is registered',"",{duration:1000});
-         else
-           this.snackBar.open('Flow is unregistered',"",{duration:1000});
-      });
+    let val = {"op":command,"id":this.flow.Id}
+    let msg  = new FimpMessage("tpflow","cmd.flow.ctrl","str_map",val,null,null)
+    msg.src = "tplex-ui"
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
   }
-
 
  getNewNodeId():string {
    let id = 0;
