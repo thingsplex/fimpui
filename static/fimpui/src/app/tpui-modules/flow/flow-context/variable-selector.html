@@ -3,11 +3,12 @@
     <mat-select style="width: 270px"   placeholder="{{label}}" [(ngModel)]="variableName" (selectionChange)="onSelected()" >
       <mat-option value = "">Input variable</mat-option>
       <ng-container *ngFor="let vari of vars">
-        <mat-option *ngIf="vari.isGlobal==isGlobal" [value]="vari.Name" >{{vari.Name}}({{vari.Type}})</mat-option>
+        <mat-option *ngIf="vari.IsGlobal==isGlobal" [value]="vari.Name" >{{vari.Name}}({{vari.ValueType}})</mat-option>
       </ng-container>
 
     </mat-select>
   </mat-form-field>
   <mat-checkbox style="margin-bottom: 5px; margin-right: 10px;" [(ngModel)]="isGlobal" > Is global </mat-checkbox>
-  <button class="add-button" (click)="showContextVariableDialog()" mat-mini-fab>Add</button>
+
+  <button *ngIf="mode=='write'" class="add-button" (click)="showContextVariableDialog()" mat-mini-fab>Add</button>
 </div>

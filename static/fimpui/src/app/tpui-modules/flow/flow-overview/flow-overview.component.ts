@@ -32,14 +32,25 @@ export class FlowOverviewComponent implements OnInit {
   public flowStateStats : number[] = [];
   public flowStateLabels : string[] = [];
 
+  private connSub : Subscription;
   private globalSub : Subscription;
+
   constructor(public dialog: MatDialog,private fimp : FimpService) {
     this.filter = "RUNNING"
   }
 
   ngOnInit() {
     this.configureFimpListener();
-    this.loadListOfFlows()
+    this.loadData();
+  }
+
+  loadData() {
+    if (this.fimp.isConnected())
+      this.loadListOfFlows();
+    else
+      this.connSub = this.fimp.mqtt.onConnect.subscribe((message: any) => {
+        this.loadListOfFlows();
+      });
   }
 
   configureFimpListener() {
@@ -79,6 +90,8 @@ export class FlowOverviewComponent implements OnInit {
   ngOnDestroy() {
     if(this.globalSub)
       this.globalSub.unsubscribe();
+    if(this.connSub)
+      this.connSub.unsubscribe();
   }
 
   loadListOfFlows() {
@@ -120,7 +133,7 @@ export class FlowOverviewComponent implements OnInit {
   }
 
   importFlow(flow){
-    let msg  = new FimpMessage("tpflow","cmd.flow.import","str_map",flow,null,null)
+    let msg  = new FimpMessage("tpflow","cmd.flow.import","object",flow,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());

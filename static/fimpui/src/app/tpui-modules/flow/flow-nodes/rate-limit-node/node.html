@@ -1,0 +1,21 @@
+<div style="margin-bottom: 10px">
+  Rate limit :
+  <mat-form-field class="node-transition-field" style="width: 60px">
+    <input matInput type="number" [(ngModel)]="node.Config.Limit" placeholder="Limit" >
+  </mat-form-field>
+  requests per
+  <mat-form-field class="node-transition-field" style="width: 80px">
+    <input matInput type="number" [(ngModel)]="node.Config.TimeInterval" placeholder="Time interval" >
+  </mat-form-field>
+  seconds
+  <div>
+    When event exceeds rate limit ,
+  <mat-form-field class="value-selector" style="width: 100px" >
+    <mat-select #nodeTypeInput  placeholder="Action" [(ngModel)]="node.Config.Action">
+      <mat-option value="skip">skip event</mat-option>
+      <mat-option value="wait">wait </mat-option>
+    </mat-select>
+  </mat-form-field>
+  </div>
+</div>
+

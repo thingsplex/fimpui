@@ -15,6 +15,7 @@ type FimpConfigInterface struct {
 	AuthType string `json:"auth_type"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+	OneTimeCode string `json:"one_time_code"`
 }
 
 type AppControlApiRouter struct {
@@ -23,10 +24,11 @@ type AppControlApiRouter struct {
 	instanceId   string
 	appLifecycle *edgeapp.Lifecycle
 	configs      *model.Configs
+	auth         *Auth
 }
 
-func NewAppControlApiRouter(mqt *fimpgo.MqttTransport, appLifecycle *edgeapp.Lifecycle, configs *model.Configs) *AppControlApiRouter {
-	fc := AppControlApiRouter{inboundMsgCh: make(fimpgo.MessageCh, 5), mqt: mqt, appLifecycle: appLifecycle, configs: configs}
+func NewAppControlApiRouter(mqt *fimpgo.MqttTransport, appLifecycle *edgeapp.Lifecycle, configs *model.Configs, auth *Auth) *AppControlApiRouter {
+	fc := AppControlApiRouter{inboundMsgCh: make(fimpgo.MessageCh, 5), mqt: mqt, appLifecycle: appLifecycle, configs: configs,auth: auth}
 	if mqt!=nil {
 		fc.mqt.RegisterChannel("ch1", fc.inboundMsgCh)
 	}
@@ -91,10 +93,41 @@ func (fc *AppControlApiRouter) routeFimpMessage(newMsg *fimpgo.Message) {
 				}
 				uiConfig.Val.Default = fmt.Sprintf("http://%s:8081",ip)
 			}
+			configState := FimpConfigInterface{AuthType: fc.auth.AuthType}
 
+			if fc.auth.AuthType == AuthTypeCode {
+
+				if uiConfig := manifest.GetAppConfig("one_time_code");uiConfig != nil {
+					uiConfig.Hidden = true // This is temp flag
+					//uiConfig.Val.Default =
+					configState.OneTimeCode = fc.auth.GenerateCode()
+				}
+				if uiConfig := manifest.GetAppConfig("username");uiConfig != nil {
+					uiConfig.Hidden = true
+				}
+				if uiConfig := manifest.GetAppConfig("password");uiConfig != nil {
+					uiConfig.Hidden = true
+				}
+			}else {
+				configState.OneTimeCode = ""
+				if uiConfig := manifest.GetAppConfig("one_time_code");uiConfig != nil {
+					uiConfig.Hidden = true
+				}
+				if uiConfig := manifest.GetAppConfig("username");uiConfig != nil {
+					uiConfig.Hidden = false
+				}
+				if uiConfig := manifest.GetAppConfig("password");uiConfig != nil {
+					uiConfig.Hidden = false
+				}
+			}
+
+			manifest.ConfigState = configState
 			if mode == "manifest_state" {
 				manifest.AppState = *fc.appLifecycle.GetAllStates()
 			}
+
+
+
 			msg := fimpgo.NewMessage("evt.app.manifest_report", model.ServiceName, fimpgo.VTypeObject, manifest, nil, nil, newMsg.Payload)
 			if err := fc.mqt.RespondToRequest(newMsg.Payload, msg); err != nil {
 				// if response topic is not set , sending back to default application event topic
@@ -119,14 +152,27 @@ func (fc *AppControlApiRouter) routeFimpMessage(newMsg *fimpgo.Message) {
 			conf := FimpConfigInterface{}
 			err := newMsg.Payload.GetObjectValue(&conf)
 			if err != nil {
-				// TODO: This is an example . Add your logic here or remove
 				log.Error("Can't parse configuration object")
 				return
 			}
+			state := "ok"
+			if  conf.AuthType == AuthTypePassword {
+				if conf.Username != "" && conf.Password != "" {
+					fc.auth.AddUser(conf.Username,conf.Password)
+				}
+				fc.auth.SetAuthType(conf.AuthType)
+				err = fc.auth.SaveUserDB()
+			}else if conf.AuthType == AuthTypeCode || conf.AuthType == AuthTypeNone {
+				fc.auth.SetAuthType(conf.AuthType)
+				err = fc.auth.SaveUserDB()
+			}else {
+				state = "error"
+			}
+
 			log.Debugf("App reconfigured . New parameters : %v", fc.configs)
-			// TODO: This is an example . Add your logic here or remove
+
 			configReport := model.ConfigReport{
-				OpStatus: "ok",
+				OpStatus: state,
 				AppState:  *fc.appLifecycle.GetAllStates(),
 			}
 			msg := fimpgo.NewMessage("evt.app.config_report",model.ServiceName,fimpgo.VTypeObject,configReport,nil,nil,newMsg.Payload)

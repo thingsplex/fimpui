@@ -17,8 +17,9 @@ export class IfNodeComponent implements OnInit {
   globalVars:any;
   constructor(public dialog: MatDialog,private http : HttpClient) { }
   ngOnInit() {
-    this.loadContext();
+
   }
+
   addIfExpression(node:MetaNode){
     let rightVariable = {};
     let expr = {};
@@ -31,29 +32,19 @@ export class IfNodeComponent implements OnInit {
     expr["BooleanOperator"] = "";
     node.Config["Expression"].push(expr);
   }
-  loadContext() {
-    if (this.flowId) {
-      this.http
-        .get(BACKEND_ROOT+'/fimp/api/flow/context/'+this.flowId)
-        .subscribe ((result) => {
-        this.localVars = [];
-        for (var key in result){
-          this.node
-          this.localVars.push(result[key].Name);
-        }
 
-      });
-    }
-
-
-    this.http
-      .get(BACKEND_ROOT+'/fimp/api/flow/context/global')
-      .subscribe ((result) => {
-      this.globalVars = [];
-      for (var key in result){
-        this.globalVars.push(result[key].Name);
-      }
-    });
+  resultVariableSelected(cvar,rightVar) {
+    console.log("Variable selected = "+cvar.Name);
+    console.dir(cvar);
+    rightVar.ValueType = cvar.Type;
+    // this.node.Config.Name = cvar.Name;
+    // if (this.valueSource=="value")
+    //   this.node.Config.DefaultValue.ValueType = cvar.Type;
+    // else
+    //   this.node.Config.DefaultValue.ValueType = "";
+    //
+    // this.node.Config.UpdateGlobal = cvar.isGlobal;
+    // // this.node.Config.IsTargetVariableInMemory = cvar.InMemory;
   }
 
   variableSelected(event:any,config:any){

@@ -1,0 +1,29 @@
+<div #nodebody style="margin-bottom: 10px">
+    <div *ngFor="let exp of node.Config.Expression;let index2 = index;">
+
+      <div style="margin-top: 10px;">
+        <mat-select style="width: 120px" class="value-selector" placeholder="Weekday" [(ngModel)]="node.Config.Expression[index2].Weekday" >
+          <mat-option value = "1">Monday</mat-option>
+          <mat-option value = "2">Tuesday</mat-option>
+          <mat-option value = "3">Wednesday</mat-option>
+          <mat-option value = "4">Thursday</mat-option>
+          <mat-option value = "5">Friday</mat-option>
+          <mat-option value = "6">Saturday</mat-option>
+          <mat-option value = "0">Sunday</mat-option>
+        </mat-select>
+        <mat-form-field class="node-transition-field" style="width: 80px">
+          <input matInput type="text" [(ngModel)]="node.Config.Expression[index2].From" placeholder="From time" >
+        </mat-form-field>
+        <mat-form-field class="node-transition-field" style="width: 80px">
+          <input matInput type="text" [(ngModel)]="node.Config.Expression[index2].To" placeholder="To time" >
+        </mat-form-field>
+        <mat-select style="width: 70px" class="value-selector" placeholder="Action" [(ngModel)]="node.Config.Expression[index2].Action" >
+          <mat-option value = "a">Allow</mat-option>
+          <mat-option value = "d">Deny</mat-option>
+        </mat-select>
+
+      </div>
+
+    </div>
+    <button mat-raised-button (click)="addIfExpression(node)" >Add</button>
+ </div>

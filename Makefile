@@ -1,4 +1,4 @@
-version="0.18.6"
+version="1.0.0"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -6,11 +6,9 @@ remote_host = "fh@cube.local"
 
 build-js:
 	cd static/fimpui;ng build --prod --deploy-url=/fimp/static/
-	cp fimpui debian/opt/fimpui
-	cp VERSION debian/opt/fimpui
 	cp -R static/fimpui/dist debian/opt/fimpui/static/fimpui/
 	cp -R static/help debian/opt/fimpui/static/
-	cp -R static/misc debian/opt/fimpui/static/misc/
+	cp -R static/misc debian/opt/fimpui/static/
 
 build-go-arm:
 	GOOS=linux GOARCH=arm GOARM=6 go build -ldflags="-s -w" -o fimpui
@@ -52,7 +50,7 @@ package-deb-doc:clean-deb
 	cp VERSION debian/opt/fimpui
 	cp -R static/fimpui/dist debian/opt/fimpui/static/fimpui/
 	cp -R static/help debian/opt/fimpui/static/
-	cp -R static/misc debian/opt/fimpui/static/misc/
+	cp -R static/misc debian/opt/fimpui/static/
 	docker run --rm -v ${working_dir}:/build -w /build --name debuild debian dpkg-deb --build debian
 	@echo "Done"
 

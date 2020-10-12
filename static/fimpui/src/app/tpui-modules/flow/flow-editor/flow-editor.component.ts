@@ -47,9 +47,8 @@ export class Variable {
 })
 export class FlowEditorComponent implements OnInit {
   flow :Flow;
+  id   :string;
   selectedNewNodeType:string;
-  localVars:any;
-  globalVars:any;
   // properties for drag-and-drop
   currentDraggableNode:any;
   dragStartPosX:number;
@@ -60,24 +59,36 @@ export class FlowEditorComponent implements OnInit {
   canvasInitHeight:number;
   lastRequestId:string;
   private globalSub : Subscription;
+  private connSub : Subscription;
 
   constructor(private route: ActivatedRoute,private router: Router,private http : HttpClient,public dialog: MatDialog,public snackBar: MatSnackBar,private fimp : FimpService) {
     this.flow = new Flow();
    }
 
   ngOnInit(){
-    let id  = this.route.snapshot.params['id'];
-    if (id=="-" || id=="") {
-      this.showPropsDialog(id);
+    this.id  = this.route.snapshot.params['id'];
+    if (this.id=="-" || this.id=="") {
+      this.showPropsDialog(this.id);
     }
     this.canvasHeight = 0;
     this.configureFimpListener();
-    this.loadFlow(id);
-
+    this.loadData();
   }
+
+  loadData() {
+    if (this.fimp.isConnected())
+      this.loadFlow(this.id);
+    else
+      this.connSub = this.fimp.mqtt.onConnect.subscribe((message: any) => {
+        this.loadFlow(this.id);
+      });
+  }
+
   ngOnDestroy() {
     if(this.globalSub)
       this.globalSub.unsubscribe();
+    if(this.connSub)
+      this.connSub.unsubscribe();
   }
 
   configureFimpListener() {
@@ -92,7 +103,6 @@ export class FlowEditorComponent implements OnInit {
             setTimeout(()=>{this.redrawAllLines()},100);
             let canvas = document.getElementById("flowEditorCanvasId");
             this.canvasInitHeight = canvas.clientHeight;
-            this.loadContext();
           }
         }else if(fimpMsg.mtype == "evt.flow.update_report") {
           this.snackBar.open('Flow is saved',"",{duration:1000});
@@ -109,26 +119,8 @@ export class FlowEditorComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
   }
 
-  loadContext() {
-    this.http
-      .get(BACKEND_ROOT+'/fimp/api/flow/context/'+this.flow.Id)
-      .subscribe ((result) => {
-         this.localVars = [];
-         for (var key in result){
-            this.localVars.push(result[key].Name);
-         }
 
-      });
 
-    this.http
-      .get(BACKEND_ROOT+'/fimp/api/flow/context/global')
-      .subscribe ((result) => {
-        this.globalVars = [];
-        for (var key in result){
-            this.globalVars.push(result[key].Name);
-         }
-      });
-  }
   variableSelected(event:any,config:any){
     if (config.LeftVariableName.indexOf("__global__")!=-1) {
       config.LeftVariableName = config.LeftVariableName.replace("__global__","");

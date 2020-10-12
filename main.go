@@ -20,6 +20,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"runtime"
+	"strconv"
 )
 
 type SystemInfo struct {
@@ -33,8 +34,6 @@ type LoginRequest struct {
 	RePassword string `json:"re_password" form:"re_password" query:"re_password"`
 	AuthType   string `json:"auth_type" form:"auth_type" query:"auth_type"`
 }
-
-//22kVUwLgIl0yJPU1s4y2rZGQ
 
 // SetupLog configures default logger
 // Supported levels : info , degug , warn , error
@@ -102,7 +101,7 @@ func main() {
 	if configs.IsDevMode {
 		authType = api.AuthTypeNone
 	}
-	auth := api.NewAuth("./var/data", authType)
+	auth := api.NewAuth(configs.GetDataDir(), authType)
 	auth.LoadUserDB()
 
 	lifecycle := edgeapp.NewAppLifecycle()
@@ -110,7 +109,7 @@ func main() {
 	lifecycle.SetAppState(edgeapp.AppStateRunning,nil)
 	lifecycle.SetConnectionState(edgeapp.ConnStateConnected)
 
-	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs)
+	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs,auth)
 	controlApi.Start()
 
 	wsUpgrader := mqtt.NewWsUpgrader(configs.MqttServerURI, auth)
@@ -175,7 +174,10 @@ func main() {
 		if auth.IsRequestAuthenticated(c,false) || auth.IsUserDdEmpty() {
 			auth.SetAuthType(req.AuthType)
 			auth.AddUser(req.Username, req.Password)
-			auth.SaveUserDB()
+			err := auth.SaveUserDB()
+			if err != nil {
+				log.Error("<main> Can't save new user to disk. Err:",err.Error())
+			}
 			auth.SaveUserToSession(c, req.Username)
 			c.Redirect(http.StatusMovedPermanently, "/fimp/analytics/dashboard")
 		} else {
@@ -219,22 +221,24 @@ func main() {
 		return c.JSON(http.StatusOK, configs)
 	})
 
-	//e.GET("/fimp/api/get-log", func(c echo.Context) error {
-	//
-	//	limitS := c.QueryParam("limit")
-	//	limit , err := strconv.Atoi(limitS)
-	//	if err != nil {
-	//		limit = 10000
-	//	}
-	//	flowId := c.QueryParam("flowId")
-	//
-	//	//out, err := exec.Command("bash", "-c", cmd).Output()
-	//	//result := map[string]string{"result":"","error":""}
-	//	filter := utils.LogFilter{FlowId:flowId}
-	//	result := utils.GetLogs(configs.LogFile,&filter,int64(limit),true)
-	//
-	//	return c.Blob(http.StatusOK,"text/plain", result)
-	//})
+	e.GET("/fimp/api/get-log", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
+		limitS := c.QueryParam("limit")
+		limit , err := strconv.Atoi(limitS)
+		if err != nil {
+			limit = 10000
+		}
+		flowId := c.QueryParam("flowId")
+
+		//out, err := exec.Command("bash", "-c", cmd).Output()
+		//result := map[string]string{"result":"","error":""}
+		filter := utils.LogFilter{FlowId:flowId}
+		result := utils.GetLogs(configs.LogFile,&filter,int64(limit),true)
+
+		return c.Blob(http.StatusOK,"text/plain", result)
+	})
 
 	e.GET("/fimp/api/get-apps-from-playgrounds", func(c echo.Context) error {
 		if !auth.IsRequestAuthenticated(c,true) {
@@ -261,21 +265,6 @@ func main() {
 		return c.JSON(http.StatusOK, siteInfoResponse)
 	})
 
-	e.POST("/fimp/api/zwave/products/upload-to-cloud", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
-			return nil
-		}
-		cloud, err := zwave.NewProductCloudStore(configs.ZwaveProductTemplates, "fh-products")
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-		err = cloud.UploadProductCacheToCloud()
-		if err == nil {
-			return c.NoContent(http.StatusOK)
-		} else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
 
 	e.GET("/fimp/api/zwave/products/list-local-templates", func(c echo.Context) error {
 		if !auth.IsRequestAuthenticated(c,true) {
@@ -337,7 +326,6 @@ func main() {
 		case "move":
 			err = store.MoveToStable(name)
 		case "upload":
-			err = store.UploadSingleProductToStageCloud(name)
 		}
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
@@ -395,22 +383,6 @@ func main() {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 		return c.NoContent(http.StatusOK)
-	})
-
-	e.POST("/fimp/api/zwave/products/download-from-cloud", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
-			return nil
-		}
-		cloud, err := zwave.NewProductCloudStore(configs.ZwaveProductTemplates, "fh-products")
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-		prodNames, err := cloud.DownloadProductsFromCloud()
-		if err == nil {
-			return c.JSON(http.StatusOK, prodNames)
-		} else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
 	})
 
 	e.GET("/debug/mem", func(c echo.Context) error {

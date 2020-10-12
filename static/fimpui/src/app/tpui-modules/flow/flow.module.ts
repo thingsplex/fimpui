@@ -43,6 +43,9 @@ import {AnalyticsModule} from "../analytics/analytics.module";
 // import {MsgDetailsDialog} from "../timeline/timeline.component";
 import {FlowPropsDialog} from "./flow-editor/flow-props-editor.component";
 import {MatMenuModule} from '@angular/material/menu';
+import { FlowContextService } from './flow-context/flow-context.service';
+import {IfTimeNodeComponent} from "./flow-nodes/if-time-node/node.component";
+import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.component";
 
 @NgModule({
   imports: [
@@ -81,6 +84,8 @@ import {MatMenuModule} from '@angular/material/menu';
      FlowRunDialog,
      FlowPropsDialog,
      FlowLogDialog,
+     IfTimeNodeComponent,
+    RateLimitNodeComponent,
     // SignInDialog,
     // FirebaseAuthCheckComponent,
      VariableSelectorComponent,
@@ -111,7 +116,7 @@ import {MatMenuModule} from '@angular/material/menu';
     SceneTriggerNodeComponent
 
   ],
-  providers:[],
+  providers:[FlowContextService],
   exports:[JsonInputComponent],
   entryComponents: [FlowSourceDialog,FlowLogDialog,FlowRunDialog,FlowPropsDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,HelpDialog,RecordEditorDialog] // SignInDialog
 })
