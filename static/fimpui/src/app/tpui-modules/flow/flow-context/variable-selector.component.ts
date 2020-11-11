@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {BACKEND_ROOT} from "app/globals";
 import {TableContextRec} from "./model";
 import {RecordEditorDialog} from "./record-editor-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
@@ -40,67 +39,9 @@ export class VariableSelectorComponent implements OnInit {
 
   loadContext() {
     this.vars = [];
-
     if (this.flowId) {
       this.vars = this.ctxService.getContextData(this.flowId);
-      // this.http
-      //   .get(BACKEND_ROOT+'/fimp/api/flow/context/'+this.flowId)
-      //   .subscribe ((result) => {
-      //   let isVariableInList = false;
-      //   for (var key in result){
-      //     let v = new ContextVariable()
-      //     v.isGlobal = false
-      //     v.Name  = result[key].Name
-      //     v.Type = result[key].Variable.ValueType;
-      //     v.Value = result[key].Variable.Value;
-      //     if (result[key].InMemory != undefined) {
-      //       v.InMemory = result[key].InMemory
-      //     }else {
-      //       v.InMemory = false
-      //     }
-      //     this.vars.push(v);
-      //     if ( v.Name == this.variableName)
-      //       isVariableInList = true ;
-      //   }
-      //   if (!this.isGlobal && !isVariableInList) {
-      //     let v = new ContextVariable()
-      //     v.isGlobal = false
-      //     v.Name  = this.variableName;
-      //     v.Type = this.variableType;
-      //     v.InMemory = this.inMemory;
-      //     this.vars.push(v);
-      //   }
-      //
-      // });
     }
-
-
-    // this.http
-    //   .get(BACKEND_ROOT+'/fimp/api/flow/context/global')
-    //   .subscribe ((result) => {
-    //   let isVariableInList = false;
-    //   for (var key in result){
-    //     let v = new ContextVariable()
-    //     v.isGlobal = true
-    //     v.Name  = result[key].Name;
-    //     v.Type = result[key].Variable.ValueType;
-    //     v.Value = result[key].Variable.Value;
-    //     v.InMemory = result[key].InMemory;
-    //     this.vars.push(v);
-    //     if (v.isGlobal == this.isGlobal && v.Name == this.variableName)
-    //       isVariableInList = true ;
-    //
-    //     if (this.isGlobal && !isVariableInList) {
-    //       let v = new ContextVariable()
-    //       v.isGlobal = false
-    //       v.Name  = this.variableName;
-    //       v.Type = this.variableType;
-    //       v.InMemory = this.inMemory;
-    //       this.vars.push(v);
-    //     }
-    //   }
-    // });
-
   }
 
   showContextVariableDialog() {
@@ -116,11 +57,12 @@ export class VariableSelectorComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result)
       {
-        this.variableName = result.Name
-        this.variableType = result.ValueType
+        this.variableName = result.Name;
+        this.variableType = result.Variable.ValueType;
+        this.ctxService.addNewRecord(this.flowId,this.variableName,"",this.isGlobal,this.variableType);
         this.onSelected();
         this.loadContext();
-
+        this.ctxService.reloadFullContext(this.flowId)
       }
     });
   }

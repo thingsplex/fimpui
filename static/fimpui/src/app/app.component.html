@@ -17,6 +17,14 @@
         <mat-icon>devices_other</mat-icon>
         <span>Users</span>
       </button>
+      <button mat-menu-item [routerLink]="['/stats/angrydog']">
+        <mat-icon>devices_other</mat-icon>
+        <span>Monitoring</span>
+      </button>
+      <button mat-menu-item (click)="goToLink('https://thingsplex.github.io/docs/thingsplex-ui/')">
+        <mat-icon>devices_other</mat-icon>
+        <span>Help</span>
+      </button>
       <button mat-menu-item (click)="logout()">
         <mat-icon>follow_the_signs</mat-icon>
         <span>Log Out</span>
@@ -29,8 +37,7 @@
 <a mat-tab-link [routerLink]="['/registry/locations']" >Registry</a>
 <a mat-tab-link [routerLink]="['/flow/overview']" >Flow</a>
 <a mat-tab-link [routerLink]="['/zwave-man']" >Adapters</a>
-<a mat-tab-link [routerLink]="['/system/apps-man']" >System</a>
-<a mat-tab-link [routerLink]="['/stats/angrydog']" >Tools</a>
+<a mat-tab-link [routerLink]="['/system/apps-man']" >Hub</a>
 <a mat-tab-link [routerLink]="['timeline']" >Message stream</a>
 </nav>
 

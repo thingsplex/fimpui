@@ -2,11 +2,15 @@ package mqtt
 
 import (
 	"crypto/tls"
+	"crypto/x509"
+	"fmt"
 	"github.com/alivinco/thingsplex/api"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
+	"io/ioutil"
 	"net"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	//"encoding/hex"
@@ -33,10 +37,11 @@ type WsUpgrader struct {
 	BrokerAddress string
 	IsSSL         bool
 	auth          *api.Auth
+	certDir       string
 }
 
-func NewWsUpgrader(mqttServerURI string,auth *api.Auth) *WsUpgrader {
-	upg := &WsUpgrader{auth: auth}
+func NewWsUpgrader(mqttServerURI string, auth *api.Auth,certDir string ) *WsUpgrader {
+	upg := &WsUpgrader{auth: auth,certDir: certDir}
 	upg.UpdateBrokerConfig(mqttServerURI)
 	return upg
 }
@@ -59,7 +64,7 @@ func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 			log.Error("!!!!!!!!!!! Mqtt WS proxy (Upgrade) crashed with panic!!!!!!!!!!!!!!!")
 		}
 	}()
-	if !wu.auth.IsRequestAuthenticated(c,true) {
+	if !wu.auth.IsRequestAuthenticated(c, true) {
 		return nil
 	}
 
@@ -71,7 +76,7 @@ func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 	}
 
 	log.Info("<MqWsProxy> Upgraded ")
-	session := MqttWsProxySession{wsConn: ws, isSSL: wu.IsSSL}
+	session := MqttWsProxySession{wsConn: ws, isSSL: wu.IsSSL,certDir: wu.certDir}
 	session.Connect(wu.BrokerAddress)
 	session.WsReader()
 	return nil
@@ -81,15 +86,20 @@ type MqttWsProxySession struct {
 	wsConn     *websocket.Conn
 	brokerConn net.Conn
 	isSSL      bool
+	certDir    string
 }
 
 func (mp *MqttWsProxySession) Connect(address string) error {
 	var err error
 	if mp.isSSL {
-		mp.brokerConn, err = tls.Dial("tcp", address, nil)
+		err, config := mp.getAwsIotCoreTlsConfig()
+		if err == nil {
+			mp.brokerConn, err = tls.Dial("tcp", address, config)
+		}
 	} else {
 		mp.brokerConn, err = net.Dial("tcp", address)
 	}
+
 	if err != nil {
 		log.Error("<MqWsProxy> Can't connect to broker . Error :", err)
 		return err
@@ -116,6 +126,72 @@ func (mp *MqttWsProxySession) WsReader() {
 
 	}
 	log.Info("<MqWsProxy> Quit from WsReader loop")
+}
+
+func (mp *MqttWsProxySession) getAwsIotCoreTlsConfig() (error, *tls.Config) {
+	privateKeyFileName := filepath.Join(mp.certDir, "awsiot.private.key")
+	certFileName := filepath.Join(mp.certDir, "awsiot.crt")
+	TLSConfig := &tls.Config{InsecureSkipVerify: false}
+	TLSConfig.NextProtos = []string{"x-amzn-mqtt-ca"}
+
+	certPool, err := mp.getCACertPool()
+	if err != nil {
+		return err, nil
+	}
+	TLSConfig.RootCAs = certPool
+
+	if certFileName != "" {
+		certPool, err := mp.getCertPool(certFileName)
+		if err != nil {
+			return err, nil
+		}
+		TLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
+		TLSConfig.ClientCAs = certPool
+	}
+	if privateKeyFileName != "" {
+		if certFileName == "" {
+			return fmt.Errorf("key specified but cert is not specified"), nil
+		}
+		cert, err := tls.LoadX509KeyPair(certFileName, privateKeyFileName)
+		if err != nil {
+			return err, nil
+		}
+		TLSConfig.Certificates = []tls.Certificate{cert}
+	}
+	return nil, TLSConfig
+}
+
+// configuring certificate pool
+func (mp *MqttWsProxySession) getCertPool(certFile string) (*x509.CertPool, error) {
+	certs := x509.NewCertPool()
+	pemData, err := ioutil.ReadFile(certFile)
+	if err != nil {
+		return nil, err
+	}
+	certs.AppendCertsFromPEM(pemData)
+	log.Infof("Certificate is loaded.")
+	return certs, nil
+}
+
+// configuring CA certificate pool
+func (mp *MqttWsProxySession) getCACertPool() (*x509.CertPool, error) {
+	certs := x509.NewCertPool()
+	cafile := filepath.Join(mp.certDir, "root-ca-1.pem")
+	pemData, err := ioutil.ReadFile(cafile)
+	if err != nil {
+		return nil, err
+	}
+	certs.AppendCertsFromPEM(pemData)
+
+	cafile = filepath.Join(mp.certDir, "root-ca-2.pem")
+	pemData, err = ioutil.ReadFile(cafile)
+	certs.AppendCertsFromPEM(pemData)
+
+	cafile = filepath.Join(mp.certDir, "root-ca-3.pem")
+	pemData, err = ioutil.ReadFile(cafile)
+	certs.AppendCertsFromPEM(pemData)
+	log.Infof("CA certificates are loaded.")
+	return certs, nil
 }
 
 func (mp *MqttWsProxySession) brokerReader() {

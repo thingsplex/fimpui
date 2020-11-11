@@ -24,6 +24,26 @@ export class AdminComponent implements OnInit {
     },1000)
   }
 
+  public requestFullState(){
+    let val = {
+      "cmd": "get",
+      "component": null,
+      "id": null,
+      "client": null,
+      "param": {
+        "components": [
+          "state"
+        ]
+      },
+      "requestId": "160276012568854"
+    }
+    let msg  = new FimpMessage("vinculum","cmd.pd7.request","object",val,null,null)
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
+    msg.src = "tplex-ui";
+
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
+  }
+
   public vinculumSyncDevices(){
     let msg  = new FimpMessage("tpflow","cmd.registry.sync_devices","null",null,null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg.toString());

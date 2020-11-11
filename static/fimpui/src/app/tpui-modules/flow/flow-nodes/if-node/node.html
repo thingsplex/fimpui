@@ -3,7 +3,7 @@
 
       <div style="margin-top: 10px;">
 
-      <variable-selector style="display: inline-block;margin-right: 10px" [label]="'Variable'" [variableName]="node.Config.Expression[index2].LeftVariableName" [isGlobal]="node.Config.Expression[index2].LeftVariableIsGlobal" [flowId]="flowId" [mode]="'read'" (onSelect)="resultVariableSelected($event,node.Config.Expression[index2].RightVariable)" ></variable-selector>
+      <variable-selector style="display: inline-block;margin-right: 10px" [label]="'Variable'" [variableName]="node.Config.Expression[index2].LeftVariableName" [isGlobal]="node.Config.Expression[index2].LeftVariableIsGlobal" [flowId]="flowId" [mode]="'read'" (onSelect)="resultVariableSelected($event,node.Config.Expression[index2])" ></variable-selector>
 
 
       <mat-select  style="width: 70px;font-size:x-large;color: coral" class="value-selector" placeholder="Operand"[(ngModel)]="node.Config.Expression[index2].Operand" >

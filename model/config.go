@@ -29,6 +29,7 @@ type Configs struct {
 	ConfiguredAt          string `json:"configured_at"`
 	ConfiguredBy          string `json:"configured_by"`
 	CookieKey             string `json:"cookie_key"`
+	TlsCertDir            string `json:"tls_cert_dir"`
 }
 
 func NewConfigs(workDir string) *Configs {

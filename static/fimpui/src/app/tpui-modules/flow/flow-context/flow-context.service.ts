@@ -60,6 +60,18 @@ export class FlowContextService{
     }
   }
 
+  public addNewRecord(flowId:string,name:string,description:string,isGlobal:boolean,valType:string){
+    let loc = new TableContextRec();
+    loc.FlowId = flowId;
+    loc.Name = name;
+    loc.Description = description;
+    loc.ValueType = valType;
+    loc.IsGlobal = isGlobal;
+    if (flowId == "global")
+      loc.IsGlobal = true;
+    this.contextRecords.push(loc)
+  }
+
   public getContextData(flowId:string):TableContextRec[] {
     if (this.contextRecords.length == 0) {
       this.requestContext(flowId);

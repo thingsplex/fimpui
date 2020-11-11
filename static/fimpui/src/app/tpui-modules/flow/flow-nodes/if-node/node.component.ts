@@ -1,7 +1,6 @@
 import {MetaNode} from "../../flow-editor/flow-editor.component";
 import {Component, Input, OnInit} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import {BACKEND_ROOT} from "../../../../globals";
 import {HttpClient} from "@angular/common/http";
 
 @Component({
@@ -33,18 +32,12 @@ export class IfNodeComponent implements OnInit {
     node.Config["Expression"].push(expr);
   }
 
-  resultVariableSelected(cvar,rightVar) {
+  resultVariableSelected(cvar,expr) {
     console.log("Variable selected = "+cvar.Name);
     console.dir(cvar);
-    rightVar.ValueType = cvar.Type;
-    // this.node.Config.Name = cvar.Name;
-    // if (this.valueSource=="value")
-    //   this.node.Config.DefaultValue.ValueType = cvar.Type;
-    // else
-    //   this.node.Config.DefaultValue.ValueType = "";
-    //
-    // this.node.Config.UpdateGlobal = cvar.isGlobal;
-    // // this.node.Config.IsTargetVariableInMemory = cvar.InMemory;
+    expr.RightVariable.ValueType = cvar.Type;
+    expr.LeftVariableName = cvar.Name;
+    expr.LeftVariableIsGlobal = cvar.isGlobal;
   }
 
   variableSelected(event:any,config:any){

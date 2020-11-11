@@ -188,6 +188,9 @@ export class FlowOverviewComponent implements OnInit {
     this.flowStateChartRef.update();
     this.flowExecutionStatsRef.update();
   }
+  goToLink(url: string){
+    window.open(url, "_blank");
+  }
 
 
 }

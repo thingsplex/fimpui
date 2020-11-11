@@ -70,8 +70,8 @@
     <mat-card-actions>
       <button mat-raised-button [routerLink]="['/flow/editor','-']" color="primary" > Add new flow</button>
       <button mat-raised-button (click)="openFlowImportWindow()" color="primary" > Import  </button>
-      <button mat-raised-button (click)="openFlowImportWindow()" color="primary" > Backup  </button>
       <button mat-raised-button (click)="showLog()" color="primary" >Log</button>
+      <button mat-raised-button (click)="goToLink('https://thingsplex.github.io/docs/thingsplex-ui/flow/')" color="primary" >Help</button>
       <button mat-raised-button (click)="loadListOfFlows()">Refresh</button>
     </mat-card-actions>
   </mat-card>

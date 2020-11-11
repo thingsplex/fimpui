@@ -25,6 +25,10 @@ export class AppComponent {
     window.location.href = "/fimp/auth-config";
   }
 
+  goToLink(url: string){
+    window.open(url, "_blank");
+  }
+
   public loadSystemInfo() {
     this.http.get(BACKEND_ROOT+"/fimp/system-info")
       .subscribe((data: any) => {

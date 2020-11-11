@@ -1,3 +1,7 @@
+import {HttpClient} from "@angular/common/http";
+import {BACKEND_ROOT} from "../globals";
+import {Injectable} from "@angular/core";
+
 const FIMP_SERVICE_LIST = [
     {"name":"basic","label":"Generic level","icon":""},
     {"name":"dev_sys","label":"Device system services","icon":""},
@@ -15,7 +19,7 @@ const FIMP_SERVICE_LIST = [
     {"name":"alarm_burglar","label":"Intrusion alarm","icon":""},
     {"name":"battery","label":"Battery level","icon":""},
     {"name":"thermostat","label":"Thermostat","icon":""},
-    {"name":"door_lock","label":"Doorlock","icon":""},
+    {"name":"door_lock","label":"Door lock","icon":""},
     {"name":"color_ctrl","label":"Color control","icon":""},
     {"name":"scene_ctrl","label":"Scene controller","icon":""},
     {"name":"fan_ctrl","label":"Fan speed and modes","icon":""},
@@ -23,14 +27,60 @@ const FIMP_SERVICE_LIST = [
 
 ];
 
-const FIMP_INTERFACE_LIST = [
-    {"name":"cmd.binary.set","label":"On/Off","val_t":"int","icon":""},
-    {"name":"cmd.lvl.set","label":"Level change","val_t":"int","icon":""},
-    {"name":"cmd.lvl.get_report","label":"Request level report","val_t":"null","icon":""},
-    {"name":"evt.lvl.report","label":"Level report","val_t":"int","icon":""},
-    {"name":"cmd.config.set","label":"Set configurations","val_t":"str_map","icon":""},
-    {"name":"evt.config.report","label":"List of configurations","val_t":"str_map","icon":""}
-]
 export function getFimpServiceList() {
     return FIMP_SERVICE_LIST
+}
+
+export interface InterfaceMeta {
+  name :string
+  label:string
+  type :string
+}
+
+export interface ServiceMeta {
+  name :string
+  label:string
+  icon :string
+}
+
+
+@Injectable()
+export class FimpApiMetadataService {
+  private interfaces : InterfaceMeta[];
+  private services : ServiceMeta[];
+  constructor(private http : HttpClient) {
+  this.loadFimpApiMetadata();
+  }
+
+  loadFimpApiMetadata() {
+    this.http
+      .get(BACKEND_ROOT+'/fimp/misc/fimp-api.json',{} )
+      .subscribe ((result) => {
+        console.log("List of autocomplete interfaces 1:")
+        console.dir(result);
+       this.interfaces = result["interfaces"];
+       this.services = result["services"];
+        console.dir(this.interfaces);
+      });
+  }
+  getInterfaceMetaByName(name:string):InterfaceMeta {
+    let r = this.interfaces.filter(rec => rec.name == name)
+    if (r.length > 0)
+      return r[0]
+    else
+      return null
+  }
+
+  getListOfInterfaces():InterfaceMeta[] {
+    return this.interfaces;
+  }
+
+  getServiceMetaByName(name:string):ServiceMeta {
+    let r = this.services.filter(rec => rec.name == name)
+    if (r.length > 0)
+      return r[0]
+    else
+      return null
+  }
+
 }

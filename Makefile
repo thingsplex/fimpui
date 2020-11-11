@@ -1,4 +1,4 @@
-version="1.0.0"
+version="1.0.4"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -85,8 +85,11 @@ start-mqtt-broker:
 stop-mqtt-broker:
 	docker stop vernemq
 
+start-dev-webserver:
+	cd static/fimpui;ng serve
+
 run :
-	go run main.go -c var/config_local.json
+	go run main.go -c var/
 
 
 .phony : clean

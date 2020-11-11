@@ -20,7 +20,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"runtime"
-	"strconv"
 )
 
 type SystemInfo struct {
@@ -112,7 +111,8 @@ func main() {
 	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs,auth)
 	controlApi.Start()
 
-	wsUpgrader := mqtt.NewWsUpgrader(configs.MqttServerURI, auth)
+	// TODO : Move to sessions
+	wsUpgrader := mqtt.NewWsUpgrader(configs.MqttServerURI, auth,configs.TlsCertDir)
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -212,33 +212,33 @@ func main() {
 		configs.MqttServerURI = req.MqttServerURI
 		configs.MqttUsername = req.MqttUsername
 		configs.MqttPassword = req.MqttPassword
+		configs.MqttTopicGlobalPrefix = req.MqttTopicGlobalPrefix
 		err = configs.SaveToFile()
 		if err != nil {
 			log.Error("Failed to save config file. Err:",err.Error())
 		}
-		//sClient.Stop()
-		//sClient  = ConfigureTpFlowApi(configs,e)
+		wsUpgrader.UpdateBrokerConfig(configs.MqttServerURI)
 		return c.JSON(http.StatusOK, configs)
 	})
 
-	e.GET("/fimp/api/get-log", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
-			return nil
-		}
-		limitS := c.QueryParam("limit")
-		limit , err := strconv.Atoi(limitS)
-		if err != nil {
-			limit = 10000
-		}
-		flowId := c.QueryParam("flowId")
-
-		//out, err := exec.Command("bash", "-c", cmd).Output()
-		//result := map[string]string{"result":"","error":""}
-		filter := utils.LogFilter{FlowId:flowId}
-		result := utils.GetLogs(configs.LogFile,&filter,int64(limit),true)
-
-		return c.Blob(http.StatusOK,"text/plain", result)
-	})
+	//e.GET("/fimp/api/get-log", func(c echo.Context) error {
+	//	if !auth.IsRequestAuthenticated(c,true) {
+	//		return nil
+	//	}
+	//	limitS := c.QueryParam("limit")
+	//	limit , err := strconv.Atoi(limitS)
+	//	if err != nil {
+	//		limit = 10000
+	//	}
+	//	flowId := c.QueryParam("flowId")
+	//
+	//	//out, err := exec.Command("bash", "-c", cmd).Output()
+	//	//result := map[string]string{"result":"","error":""}
+	//	filter := utils.LogFilter{FlowId:flowId}
+	//	result := utils.GetLogs(configs.LogFile,&filter,int64(limit),true)
+	//
+	//	return c.Blob(http.StatusOK,"text/plain", result)
+	//})
 
 	e.GET("/fimp/api/get-apps-from-playgrounds", func(c echo.Context) error {
 		if !auth.IsRequestAuthenticated(c,true) {

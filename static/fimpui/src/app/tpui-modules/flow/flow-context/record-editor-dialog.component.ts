@@ -2,11 +2,9 @@ import { Component, OnInit,Inject } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BACKEND_ROOT } from "app/globals";
 import {Variable} from "../flow-editor/flow-editor.component";
 import {TableContextRec} from "./model";
 import {ContextRecord} from "./model"
-import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {FimpService} from "../../../fimp/fimp.service";
 import {Subscription} from "rxjs";
 import {FimpMessage} from "../../../fimp/Message";
@@ -18,7 +16,6 @@ import {FimpMessage} from "../../../fimp/Message";
   })
   export class RecordEditorDialog {
     ctxRec : TableContextRec;
-    private globalSub : Subscription;
     constructor(public dialogRef: MatDialogRef<RecordEditorDialog>, @Inject(MAT_DIALOG_DATA) public data: TableContextRec, public snackBar: MatSnackBar, private fimp : FimpService) {
           this.ctxRec = data;
           console.dir(data)
@@ -44,8 +41,7 @@ import {FimpMessage} from "../../../fimp/Message";
       msg.src = "tplex-ui";
       msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
       this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
-
-
+      this.dialogRef.close(request);
     }
     onTypeSelected(event) {
       console.log("Type selected")
@@ -74,6 +70,7 @@ import {FimpMessage} from "../../../fimp/Message";
       msg.src = "tplex-ui";
       msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
       this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+      this.dialogRef.close();
     }
 
 }
