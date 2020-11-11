@@ -74,9 +74,25 @@
               <mat-option value="nwk_info"> Get network info</mat-option>
               <mat-option value="form_network"> Form new network</mat-option>
               <mat-option value="frst">Reset to factory default</mat-option>
+              <mat-option value="get_stack_trace">Get stack strace</mat-option>
+              <mat-option value="get_goroutine_num">Get num of running goroutines</mat-option>
+              <mat-option value="get_active_status">Get active status</mat-option>
             </mat-select>
           </mat-form-field>
           <button mat-raised-button color="accent" (click)="runZigbeeNetCommand(zcommand.value)">Run</button>
+        </div>
+
+        <div>
+          <mat-form-field>
+            <mat-label>Run with param </mat-label>
+            <mat-select #zcommand_with_val value="16px" >
+              <mat-option value="discovery"> Discover device </mat-option>
+              <mat-option value="ping_device"> Ping device </mat-option>
+              <mat-option value="delete_by_address"> Delete device by nwk address </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <input #param mat-input-element size="4" style="font-size:20px;margin-left: 5px" />
+          <button mat-raised-button color="accent" (click)="runZigbeeNetCommandParam(zcommand_with_val.value,param.value)">Run</button>
         </div>
 
         <button mat-raised-button color="accent" (click)="runZigbeeNetCommand('upload')">Update firmware</button>

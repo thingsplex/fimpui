@@ -40,6 +40,9 @@
           <div>Status = <b>{{ intf.lastValue.val.status }}</b> </div>
         </div>
         <div *ngSwitchCase="'evt.state.report'"> <h3> {{ intf.lastValue.val }} </h3> </div>
+
+        <!-- Metering -->
+
         <div *ngSwitchCase="'evt.meter.report'">
           {{ intf.lastValue.val }} {{ intf.lastValue.props.unit }}
         </div>
@@ -77,6 +80,11 @@
             <tr><td>DC Current </td><td>{{intf.lastValue.dc_i}} </td><td>A</td></tr>
             <tr><td>DC Current min </td><td>{{intf.lastValue.dc_i_min}} </td><td>A</td></tr>
             <tr><td>DC Current max </td><td>{{intf.lastValue.dc_i_max}} </td><td>A</td></tr>
+          </table>
+        </div>
+        <div *ngSwitchCase="'evt.meter_metadata.report'">
+          <table>
+            <tr><td>Serial number</td><td>{{ intf.lastValue.val.serial }}</td></tr>
           </table>
         </div>
          <div *ngSwitchCase="'evt.setpoint.report'">
@@ -312,7 +320,20 @@
           </table>
         </form>
       </div>
-      <div *ngSwitchCase="'cmd.binary.get_report'">
+
+    <div *ngSwitchCase="'cmd.lock.get_report'">
+      <form class="intf-form">
+        <table class="table-full-width" cellspacing="0">
+          <tr>
+            <td>
+              <button mat-raised-button (click)="cmdGetReportNull()">Get</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.binary.get_report'">
         <form class="intf-form">
         <table class="table-full-width" cellspacing="0">
           <tr>
@@ -477,7 +498,15 @@
       <div *ngSwitchCase="'cmd.meter_ext.get_report'">
         <form class="intf-form">
           <table class="table-full-width" cellspacing="0"><tr>
-              <td></td>
+              <td><button mat-raised-button (click)="cmdGetReportNull()" >Get</button></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+
+      <div *ngSwitchCase="'cmd.meter_metadata.get_report'">
+        <form class="intf-form">
+          <table class="table-full-width" cellspacing="0"><tr>
               <td><button mat-raised-button (click)="cmdGetReportNull()" >Get</button></td>
             </tr>
           </table>
@@ -507,7 +536,11 @@
               <td><mat-form-field class="example-full-width">
                   <input  #doormanCode matInput placeholder="Code"  >
                 </mat-form-field></td>
-              <td><button mat-raised-button   (click)="cmdSendMap({'slot_number':doormanSlotNumber.value,'code_type':doormanCodeType.value,'code':doormanCode.value})" >Set</button></td>
+              <td><mat-form-field class="example-full-width">
+                  <input  #doormanName matInput placeholder="Name"  >
+                </mat-form-field></td>
+              <td><button mat-raised-button
+                          (click)="cmdSendMap({'slot_number':doormanSlotNumber.value,'code_type':doormanCodeType.value,'code':doormanCode.value,'name':doormanName.value})">Set</button></td>
             </tr>
           </table>
         </form>
@@ -555,7 +588,10 @@
               <td><mat-form-field class="example-full-width">
                   <input  #doormanSetUserCode matInput placeholder="Code"  >
                 </mat-form-field></td>
-              <td><button mat-raised-button   (click)="cmdSendMap({'slot_number':doormanSetUserSlot.value,'code':doormanSetUserCode.value})" >Set</button></td>
+              <td><mat-form-field class="example-full-width">
+                  <input  #doormanSetUserName matInput placeholder="Name"  >
+                </mat-form-field></td>
+              <td><button mat-raised-button   (click)="cmdSendMap({'slot_number':doormanSetUserSlot.value,'code':doormanSetUserCode.value,'name':doormanSetUserName.value})" >Set</button></td>
             </tr>
           </table>
         </form>
@@ -578,6 +614,17 @@
         <form class="intf-form">
           <table class="table-full-width" cellspacing="0"><tr>
               <td><button mat-raised-button (click)="cmdGetReportNull()" >Get</button></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+
+    <!-- Identify -->
+
+      <div *ngSwitchCase="'cmd.indicator.set_visual_element'">
+        <form class="intf-form">
+          <table class="table-full-width" cellspacing="0"><tr>
+              <td><button mat-raised-button (click)="cmdGetReportNull()">Identify</button></td>
             </tr>
           </table>
         </form>
