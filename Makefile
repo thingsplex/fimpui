@@ -39,7 +39,7 @@ configure-amd64:
 	python ./scripts/config_env.py prod $(version) amd64
 
 configure-dev-js:
-	python ./scripts/config_env.py dev $(version) armhf	
+	python ./scripts/config_env.py dev $(version) armhf
 
 package-tar:
 	tar cvzf fimpui.tar.gz fimpui VERSION static/fimpui/dist static/fhcore
