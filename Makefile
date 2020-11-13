@@ -3,6 +3,7 @@ version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
 remote_host = "fh@cube.local"
+reprepo_host = ""
 
 build-js:
 	cd static/fimpui;ng build --prod --deploy-url=/fimp/static/
@@ -87,6 +88,9 @@ stop-mqtt-broker:
 
 start-dev-webserver:
 	cd static/fimpui;ng serve
+
+publish-reprepo:
+	scp package/build/flex-energy_$(version)_armhf.deb $(reprepo_host):~/apps
 
 run :
 	go run main.go -c var/
