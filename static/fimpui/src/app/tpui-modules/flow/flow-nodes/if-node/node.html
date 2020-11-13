@@ -1,32 +1,19 @@
-<div #nodebody >
+<div #nodebody style="margin-bottom: 10px" >
     <div *ngFor="let exp of node.Config.Expression;let index2 = index;">
 
       <div style="margin-top: 10px;">
 
-     <mat-checkbox style="margin-bottom: 5px; margin-right: 10px;" [(ngModel)]="node.Config.Expression[index2].LeftVariableIsGlobal" > Is global </mat-checkbox>
-      <mat-select *ngIf="!node.Config.Expression[index2].LeftVariableIsGlobal" style="width: 150px" class="value-selector" placeholder="Left value" [(ngModel)]="node.Config.Expression[index2].LeftVariableName" >
-          <mat-option value = "">Default Input</mat-option>
-          <mat-option *ngFor="let vari of localVars" [value]="vari" >{{vari}}</mat-option>
-      </mat-select>
-      <mat-select *ngIf="node.Config.Expression[index2].LeftVariableIsGlobal" style="width: 150px" class="value-selector"  placeholder="Left value" [(ngModel)]="node.Config.Expression[index2].LeftVariableName" >
-          <mat-option *ngFor="let vari of globalVars" value="{{vari}}">{{vari}}</mat-option>
-      </mat-select>
+      <variable-selector style="display: inline-block;margin-right: 10px" [label]="'Variable'" [variableName]="node.Config.Expression[index2].LeftVariableName" [isGlobal]="node.Config.Expression[index2].LeftVariableIsGlobal" [flowId]="flowId" [mode]="'read'" (onSelect)="resultVariableSelected($event,node.Config.Expression[index2])" ></variable-selector>
 
-      <mat-select  style="width: 80px" class="value-selector" placeholder="Operand"[(ngModel)]="node.Config.Expression[index2].Operand" >
-          <mat-option value = "gt">greater</mat-option>
-          <mat-option value = "lt">less</mat-option>
-          <mat-option value = "eq">equals</mat-option>
+
+      <mat-select  style="width: 70px;font-size:x-large;color: coral" class="value-selector" placeholder="Operand"[(ngModel)]="node.Config.Expression[index2].Operand" >
+          <mat-option value = "gt"> > </mat-option>
+          <mat-option value = "lt"> < </mat-option>
+          <mat-option value = "eq"> = </mat-option>
       </mat-select>
 
 
-      <mat-select style="width: 120px" class="value-selector" placeholder="Value type" [(ngModel)]="node.Config.Expression[index2].RightVariable.ValueType" >
-          <mat-option value = "int">int number</mat-option>
-          <mat-option value = "float">float number</mat-option>
-          <mat-option value = "string">string</mat-option>
-          <mat-option value = "bool">bool</mat-option>
-       </mat-select>
-
-       <span [ngSwitch]="node.Config.Expression[index2].RightVariable.ValueType">
+      <span [ngSwitch]="node.Config.Expression[index2].RightVariable.ValueType">
         <span *ngSwitchCase="'string'">
           <mat-form-field class="node-transition-field">
               <input matInput [(ngModel)]="node.Config.Expression[index2].RightVariable.Value" placeholder=" Right value" >
@@ -54,14 +41,22 @@
           </mat-radio-group>
         </span>
       </span>
+
+      (<mat-select style="width: 120px" class="value-selector" placeholder="Value type" [(ngModel)]="node.Config.Expression[index2].RightVariable.ValueType" >
+          <mat-option value = "int">int number</mat-option>
+          <mat-option value = "float">float number</mat-option>
+          <mat-option value = "string">string</mat-option>
+          <mat-option value = "bool">bool</mat-option>
+      </mat-select>)
+
       </div>
-      <mat-select style="width: 200px" class="value-selector" placeholder="Boolean operation"[(ngModel)]="node.Config.Expression[index2].BooleanOperator" >
+      <mat-select style="width: 200px" class="value-selector" placeholder="Boolean operation"[(ngModel)]="node.Config.Expression[index2].BooleanOperator"  >
           <mat-option value = ""></mat-option>
           <mat-option value = "and">and</mat-option>
           <mat-option value = "or">or</mat-option>
           <mat-option value = "not">not</mat-option>
       </mat-select>
-      <button mat-raised-button (click)="addIfExpression(node)" >Add expression</button>
 
     </div>
+    <button mat-raised-button (click)="addIfExpression(node)" >Add expression</button>
  </div>

@@ -1,8 +1,7 @@
 [Unit]
-Description=FimpUI
+Description=ThingsplexUI
 
 [Service]
-Environment=GOOGLE_APPLICATION_CREDENTIALS=/opt/fimpui/storage.json
 Type=simple
 ExecStart=/opt/fimpui/fimpui
 User=fimp

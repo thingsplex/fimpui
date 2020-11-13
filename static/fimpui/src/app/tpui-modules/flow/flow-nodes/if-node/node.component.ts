@@ -1,7 +1,6 @@
 import {MetaNode} from "../../flow-editor/flow-editor.component";
 import {Component, Input, OnInit} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import {BACKEND_ROOT} from "../../../../globals";
 import {HttpClient} from "@angular/common/http";
 
 @Component({
@@ -17,8 +16,9 @@ export class IfNodeComponent implements OnInit {
   globalVars:any;
   constructor(public dialog: MatDialog,private http : HttpClient) { }
   ngOnInit() {
-    this.loadContext();
+
   }
+
   addIfExpression(node:MetaNode){
     let rightVariable = {};
     let expr = {};
@@ -31,29 +31,13 @@ export class IfNodeComponent implements OnInit {
     expr["BooleanOperator"] = "";
     node.Config["Expression"].push(expr);
   }
-  loadContext() {
-    if (this.flowId) {
-      this.http
-        .get(BACKEND_ROOT+'/fimp/api/flow/context/'+this.flowId)
-        .subscribe ((result) => {
-        this.localVars = [];
-        for (var key in result){
-          this.node
-          this.localVars.push(result[key].Name);
-        }
 
-      });
-    }
-
-
-    this.http
-      .get(BACKEND_ROOT+'/fimp/api/flow/context/global')
-      .subscribe ((result) => {
-      this.globalVars = [];
-      for (var key in result){
-        this.globalVars.push(result[key].Name);
-      }
-    });
+  resultVariableSelected(cvar,expr) {
+    console.log("Variable selected = "+cvar.Name);
+    console.dir(cvar);
+    expr.RightVariable.ValueType = cvar.Type;
+    expr.LeftVariableName = cvar.Name;
+    expr.LeftVariableIsGlobal = cvar.isGlobal;
   }
 
   variableSelected(event:any,config:any){

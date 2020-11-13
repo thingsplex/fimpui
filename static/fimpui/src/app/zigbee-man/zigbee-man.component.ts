@@ -115,10 +115,14 @@ export class ZigbeeManComponent implements OnInit {
     var props = new Map<string,string>();
     let msg  = new FimpMessage("zigbee","cmd.custom."+cmd,"null",null,props,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+    this.snackBar.open('Command was sent', "", {duration: 2000});
+  }
 
-    let snackBarRef = this.snackBar.open('Command was sent',"",{
-      duration: 2000
-    });
+  runZigbeeNetCommandParam(cmd: string, param: string) {
+    var props = new Map<string, string>();
+    let msg = new FimpMessage("zigbee", "cmd.custom." + cmd, "int", parseInt(param), props, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg.toString());
+    this.snackBar.open('Command was sent', "", {duration: 2000});
   }
 
   ngOnDestroy() {

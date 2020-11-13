@@ -1,11 +1,15 @@
-version="0.18.2"
+version="1.0.4"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
 remote_host = "fh@cube.local"
+reprepo_host = ""
 
 build-js:
 	cd static/fimpui;ng build --prod --deploy-url=/fimp/static/
+	cp -R static/fimpui/dist debian/opt/fimpui/static/fimpui/
+	cp -R static/help debian/opt/fimpui/static/
+	cp -R static/misc debian/opt/fimpui/static/
 
 build-go-arm:
 	GOOS=linux GOARCH=arm GOARM=6 go build -ldflags="-s -w" -o fimpui
@@ -35,7 +39,7 @@ configure-amd64:
 	python ./scripts/config_env.py prod $(version) amd64
 
 configure-dev-js:
-	python ./scripts/config_env.py dev $(version) armhf	
+	python ./scripts/config_env.py dev $(version) armhf
 
 package-tar:
 	tar cvzf fimpui.tar.gz fimpui VERSION static/fimpui/dist static/fhcore
@@ -47,6 +51,7 @@ package-deb-doc:clean-deb
 	cp VERSION debian/opt/fimpui
 	cp -R static/fimpui/dist debian/opt/fimpui/static/fimpui/
 	cp -R static/help debian/opt/fimpui/static/
+	cp -R static/misc debian/opt/fimpui/static/
 	docker run --rm -v ${working_dir}:/build -w /build --name debuild debian dpkg-deb --build debian
 	@echo "Done"
 
@@ -81,8 +86,14 @@ start-mqtt-broker:
 stop-mqtt-broker:
 	docker stop vernemq
 
+start-dev-webserver:
+	cd static/fimpui;ng serve
+
+publish-reprepo:
+	scp package/build/flex-energy_$(version)_armhf.deb $(reprepo_host):~/apps
+
 run :
-	go run main.go -c var/config_local.json
+	go run main.go -c var/
 
 
 .phony : clean

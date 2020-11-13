@@ -1,21 +1,33 @@
-<div style="margin: 20px">
-    <mat-select placeholder="Location (room,area,house)" style="width:400px" [(ngModel)]="selectedLocationId" (selectionChange)="onLocationSelected()" >
+<div style="margin: 3px">
+  <mat-form-field appearance="outline" style="width:90%;margin-left: 5px">
+    <mat-label>Location</mat-label>
+    <mat-select placeholder="Location (room,area,house)"  [(ngModel)]="selectedLocationId" (selectionChange)="onLocationSelected()" >
        <mat-option *ngFor="let location of registry.locations" [value]="location.id">{{ location.alias }} ({{location.type}}) </mat-option>
     </mat-select>
+  </mat-form-field>
     <p>
-    <mat-select #thingInput placeholder="Thing" style="width:400px" [(ngModel)]="selectedThingId" (selectionChange)="onThingSelected()" >
+  <mat-form-field appearance="outline" style="width:90%;margin-left: 5px">
+    <mat-label>Thing</mat-label>
+    <mat-select #thingInput placeholder="Thing"  [(ngModel)]="selectedThingId" (selectionChange)="onThingSelected()" >
       <mat-option *ngFor="let thing of things" [value]="thing.id" >{{ thing.alias }} ({{thing.type}}) </mat-option>
     </mat-select>
+  </mat-form-field>
     </p>
     <p>
-    <mat-select #serviceInput placeholder="Service" style="width:400px" [(ngModel)]="selectedServiceId" (selectionChange)="onServiceSelected()" >
+   <mat-form-field appearance="outline" style="width:90%;margin-left: 5px">
+    <mat-label>Service</mat-label>
+    <mat-select #serviceInput placeholder="Service"  [(ngModel)]="selectedServiceId" (selectionChange)="onServiceSelected()" >
         <mat-option *ngFor="let service of services" [value]="service.name" >{{ service.alias }} ({{service.name}}) </mat-option>
     </mat-select>
+   </mat-form-field>
     </p>
-    <p>
-      <mat-select *ngIf="activeService" #interfaceInput placeholder="Action" style="width:400px" [(ngModel)]="selectedInterfaceName" (selectionChange)="onInterfaceSelected()" >
-        <mat-option *ngFor="let intf of activeService.interfaces" [value]="intf.msg_t" >{{ intf.msg_t }} </mat-option>
+   <p>
+   <mat-form-field *ngIf="activeService"  appearance="outline" style="width:90%;margin-left: 5px">
+      <mat-label>Functionality:</mat-label>
+      <mat-select #interfaceInput placeholder="Action" [(ngModel)]="selectedInterfaceName" (selectionChange)="onInterfaceSelected()" >
+        <mat-option *ngFor="let intf of activeService.interfaces" [value]="intf.msg_t" >{{intf.alias}} ({{ intf.msg_t }})  </mat-option>
       </mat-select>
-    </p>
+   </mat-form-field>
+   </p>
 
  </div>

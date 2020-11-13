@@ -41,6 +41,8 @@
 
       <mat-menu #flowCtrl="matMenu">
         <button mat-menu-item (click)="addNode('if','')">If switch</button>
+        <button mat-menu-item (click)="addNode('iftime','')">Time filter</button>
+        <button mat-menu-item (click)="addNode('rate_limit','')">Rate limit</button>
         <button mat-menu-item (click)="addNode('loop','')">Loop</button>
         <button mat-menu-item (click)="addNode('wait','')">Wait</button>
         <button mat-menu-item (click)="addNode('receive','')">Wait for event</button>
@@ -78,6 +80,8 @@
                     <mat-icon *ngSwitchCase="'action'" aria-label="Edit node">send</mat-icon>
                     <mat-icon *ngSwitchCase="'rest_action'" aria-label="Edit node">send</mat-icon>
                     <mat-icon *ngSwitchCase="'if'" aria-label="Edit node">call_split</mat-icon>
+                    <mat-icon *ngSwitchCase="'iftime'" aria-label="Edit node">call_split</mat-icon>
+                    <mat-icon *ngSwitchCase="'rate_limit'" aria-label="Edit node">call_split</mat-icon>
                     <mat-icon *ngSwitchCase="'loop'" aria-label="Edit node">loop</mat-icon>
                     <mat-icon *ngSwitchCase="'set_variable'" aria-label="Edit node">edit</mat-icon>
                     <mat-icon *ngSwitchCase="'transform'" aria-label="Edit node">transform</mat-icon>

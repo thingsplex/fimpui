@@ -18,9 +18,21 @@
             <mat-form-field style="width: 130px">
                 <input matInput [(ngModel)]="node.Service" placeholder="Service" >
             </mat-form-field>
-            <mat-form-field style="width: 200px">
-                <input matInput [(ngModel)]="node.ServiceInterface" placeholder="Interface" >
+            <mat-form-field style="width: 200px" >
+                <input type="text"
+                       placeholder="Interface"
+                       aria-label="Number"
+                       matInput
+                       [(ngModel)]="node.ServiceInterface"
+                       [formControl]="myControl"
+                       [matAutocomplete]="auto">
+              <mat-autocomplete  #auto="matAutocomplete">
+                <mat-option *ngFor="let intf of listOfAutoCompleteInterfaces" [value]="intf.name">
+                  {{intf.name}}
+                </mat-option>
+              </mat-autocomplete>
             </mat-form-field>
+
             <mat-form-field style="width: 450px">
                 <input matInput [(ngModel)]="node.Address" placeholder="Address" >
             </mat-form-field>
@@ -35,9 +47,11 @@
                    <mat-form-field style="width: 130px">
                         <input matInput [(ngModel)]="flowPublishService" placeholder="Service" (change)="onPublishServiceChange()" >
                    </mat-form-field>
+
                    <mat-form-field style="width: 200px">
                         <input matInput [(ngModel)]="flowPublishInterface" placeholder="Interface" (change)="onPublishServiceChange()" >
                    </mat-form-field>
+
                    <p>Address: {{ flowPublishAddress }}</p>
                    <button mat-raised-button (click)="publishFlowAsVirtualDevice()" >Copy to service binding</button>
                   <div style="margin-bottom: 5px;margin-top: 10px" >

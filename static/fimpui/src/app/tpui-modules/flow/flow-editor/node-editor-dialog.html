@@ -36,6 +36,9 @@
     <div *ngSwitchCase="'log_action'">
       <log-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </log-node>
     </div>
+    <div *ngSwitchCase="'rate_limit'">
+      <rate-limit-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </rate-limit-node>
+    </div>
     <div *ngSwitchCase="'receive'">
          <receive-node [node]="node" [nodes]="flow.Nodes" > </receive-node>
     </div>
@@ -47,6 +50,9 @@
    </div>
     <div *ngSwitchCase="'if'">
       <if-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </if-node>
+    </div>
+    <div *ngSwitchCase="'iftime'">
+      <if-time-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </if-time-node>
     </div>
  </div>
 </mat-dialog-content>

@@ -9,6 +9,7 @@ import { msgTypeToValueTypeMap } from "app/things-db/mapping";
 import { BACKEND_ROOT } from "app/globals";
 import { ServiceInterface } from "app/tpui-modules/registry/model";
 import {SafeResourceUrl,DomSanitizer} from "@angular/platform-browser"
+import {FimpApiMetadataService} from "app/fimp/fimp-api-metadata.service"
 // import {FireService} from "app/firebase/fire.service";
 import {FlowPropsDialog} from "./flow-props-editor.component";
 import {Subscription} from "rxjs";
@@ -47,9 +48,8 @@ export class Variable {
 })
 export class FlowEditorComponent implements OnInit {
   flow :Flow;
+  id   :string;
   selectedNewNodeType:string;
-  localVars:any;
-  globalVars:any;
   // properties for drag-and-drop
   currentDraggableNode:any;
   dragStartPosX:number;
@@ -60,24 +60,36 @@ export class FlowEditorComponent implements OnInit {
   canvasInitHeight:number;
   lastRequestId:string;
   private globalSub : Subscription;
+  private connSub : Subscription;
 
-  constructor(private route: ActivatedRoute,private router: Router,private http : HttpClient,public dialog: MatDialog,public snackBar: MatSnackBar,private fimp : FimpService) {
+  constructor(private route: ActivatedRoute,private router: Router,public dialog: MatDialog,public snackBar: MatSnackBar,private fimp : FimpService,private fimpMeta : FimpApiMetadataService) {
     this.flow = new Flow();
    }
 
   ngOnInit(){
-    let id  = this.route.snapshot.params['id'];
-    if (id=="-" || id=="") {
-      this.showPropsDialog(id);
+    this.id  = this.route.snapshot.params['id'];
+    if (this.id=="-" || this.id=="") {
+      this.showPropsDialog(this.id);
     }
     this.canvasHeight = 0;
     this.configureFimpListener();
-    this.loadFlow(id);
-
+    this.loadData();
   }
+
+  loadData() {
+    if (this.fimp.isConnected())
+      this.loadFlow(this.id);
+    else
+      this.connSub = this.fimp.mqtt.onConnect.subscribe((message: any) => {
+        this.loadFlow(this.id);
+      });
+  }
+
   ngOnDestroy() {
     if(this.globalSub)
       this.globalSub.unsubscribe();
+    if(this.connSub)
+      this.connSub.unsubscribe();
   }
 
   configureFimpListener() {
@@ -92,7 +104,6 @@ export class FlowEditorComponent implements OnInit {
             setTimeout(()=>{this.redrawAllLines()},100);
             let canvas = document.getElementById("flowEditorCanvasId");
             this.canvasInitHeight = canvas.clientHeight;
-            this.loadContext();
           }
         }else if(fimpMsg.mtype == "evt.flow.update_report") {
           this.snackBar.open('Flow is saved',"",{duration:1000});
@@ -109,26 +120,8 @@ export class FlowEditorComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
   }
 
-  loadContext() {
-    this.http
-      .get(BACKEND_ROOT+'/fimp/api/flow/context/'+this.flow.Id)
-      .subscribe ((result) => {
-         this.localVars = [];
-         for (var key in result){
-            this.localVars.push(result[key].Name);
-         }
 
-      });
 
-    this.http
-      .get(BACKEND_ROOT+'/fimp/api/flow/context/global')
-      .subscribe ((result) => {
-        this.globalVars = [];
-        for (var key in result){
-            this.globalVars.push(result[key].Name);
-         }
-      });
-  }
   variableSelected(event:any,config:any){
     if (config.LeftVariableName.indexOf("__global__")!=-1) {
       config.LeftVariableName = config.LeftVariableName.replace("__global__","");
@@ -184,17 +177,12 @@ export class FlowEditorComponent implements OnInit {
   }
 
   sendFlowControllCommands(command:string) {
-    this.http
-      .post(BACKEND_ROOT+'/fimp/flow/ctrl/'+this.flow.Id+'/'+command,null,  {} )
-      .subscribe ((result) => {
-         console.log("Cmd was sent");
-         if (command=="send-inclusion-report")
-           this.snackBar.open('Flow is registered',"",{duration:1000});
-         else
-           this.snackBar.open('Flow is unregistered',"",{duration:1000});
-      });
+    let val = {"op":command,"id":this.flow.Id}
+    let msg  = new FimpMessage("tpflow","cmd.flow.ctrl","str_map",val,null,null)
+    msg.src = "tplex-ui"
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
   }
-
 
  getNewNodeId():string {
    let id = 0;
@@ -548,7 +536,7 @@ findInputSocketPosition(htmlElement):any {
       data:{flowId:this.flow.Id,mode:"flow"}
     });
     dialogRef.afterClosed().subscribe(result => {
-
+      // dialogRef.componentInstance.cleanup();
     });
   }
 
@@ -701,26 +689,42 @@ export class FlowLogDialog {
   limit : number;
   flowId : string ;
   mode : string;
-  constructor(public dialogRef: MatDialogRef<FlowSourceDialog>,@Inject(MAT_DIALOG_DATA) public data: any,private http : HttpClient) {
+  private globalSub : Subscription;
+  constructor(public dialogRef: MatDialogRef<FlowSourceDialog>,@Inject(MAT_DIALOG_DATA) public data: any,private fimp : FimpService) {
     this.limit = 10;
     this.flowId = data.flowId;
     this.mode = data.mode;
+    this.configureFimpListener();
     this.reload();
   }
-  reload(){
-    let rurl:string;
-    if(this.mode=="flow")
-      rurl = BACKEND_ROOT+'/fimp/api/flow/get-log?limit='+this.limit+"&flowId="+this.flowId;
-    else
-      rurl = BACKEND_ROOT+'/fimp/api/flow/get-log?limit='+this.limit;
 
-    this.http
-      .get(rurl)
-      .subscribe ((result:any) => {
-        this.flowLog = result;
-    });
-
+  reload() {
+    let val = {"flowId":this.flowId,"limit":this.limit}
+    let msg  = new FimpMessage("tpflow","cmd.flow.get_log","str_map",val,null,null)
+    msg.src = "tplex-ui"
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
   }
+
+  ngOnDestroy() {
+    console.log("Cleanup")
+    if(this.globalSub)
+      this.globalSub.unsubscribe();
+  }
+
+  configureFimpListener() {
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+      if (fimpMsg.service == "tpflow" ){
+        if (fimpMsg.mtype == "evt.flow.log_report") {
+          if (fimpMsg.val) {
+            this.flowLog = fimpMsg.val
+          }
+        }
+      }
+    });
+  }
+
 }
 
 @Component({
@@ -885,7 +889,7 @@ export class HelpDialog {
 export class ServiceLookupDialog  implements OnInit {
   interfaces :any;
   msgFlowDirectionD = "";
-  constructor(public dialogRef: MatDialogRef<ServiceLookupDialog>,private http : HttpClient,@Inject(MAT_DIALOG_DATA) msgFlowDirectionD : string) {
+  constructor(public dialogRef: MatDialogRef<ServiceLookupDialog>,@Inject(MAT_DIALOG_DATA) msgFlowDirectionD : string) {
     console.log("Msg flow direction:"+msgFlowDirectionD);
     this.msgFlowDirectionD = msgFlowDirectionD
   }

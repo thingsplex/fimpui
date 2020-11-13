@@ -8,3 +8,50 @@
 .mat-cell:nth-child(0), .mat-header-cell:nth-child(0) {
     flex: 0 0 250px;
 }
+
+mwl-gauge {
+  width: 170px;
+  display: inline-block;
+  padding: 1px;
+}
+mwl-gauge > .gauge > .dial {
+  stroke: #eee;
+  stroke-width: 7;
+  fill: rgba(0,0,0,0);
+}
+mwl-gauge > .gauge > .value {
+  stroke: rgb(47, 227, 255);
+  stroke-width: 7;
+  fill: rgba(0,0,0,0);
+}
+mwl-gauge > .gauge > .value-text {
+  fill: rgb(47, 227, 255);
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+/* ------- Alternate Style ------- */
+mwl-gauge.two {
+}
+mwl-gauge.two >>> .gauge >>> .dial {
+  stroke: #858c91;
+  stroke-width: 7;
+}
+mwl-gauge.two >>> .gauge >>> .value {
+  stroke: orange;
+  stroke-dasharray: none;
+  stroke-width: 13;
+}
+mwl-gauge.two >>> .gauge >>> .value-text {
+  fill: orange;
+}
+
+mwl-gauge.pexport >>> .gauge >>> .value {
+  stroke: #6edb6e;
+  stroke-dasharray: none;
+  stroke-width: 13;
+}
+mwl-gauge.pexport >>> .gauge >>> .value-text {
+  fill: #6edb6e;
+}

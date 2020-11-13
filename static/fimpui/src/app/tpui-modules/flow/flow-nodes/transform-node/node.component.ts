@@ -1,7 +1,6 @@
 import {MetaNode} from "../../flow-editor/flow-editor.component";
 import {Component, Input, OnInit} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import {BACKEND_ROOT} from "../../../../globals";
 import {ContextVariable} from "../../flow-context/variable-selector.component";
 import {HttpClient} from "@angular/common/http";
 
@@ -14,12 +13,9 @@ export class TransformNodeComponent implements OnInit {
   @Input() node :MetaNode;
   @Input() nodes:MetaNode[];
   @Input() flowId:string;
-  localVars:any;
-  globalVars:any;
   constructor(public dialog: MatDialog,private http : HttpClient) { }
   ngOnInit() {
     this.loadDefaultConfig();
-    this.loadContext();
   }
 
   loadDefaultConfig() {
@@ -79,30 +75,6 @@ export class TransformNodeComponent implements OnInit {
   lVariableSelected(cvar:ContextVariable) {
     this.node.Config.LVariableName = cvar.Name;
     this.node.Config.IsLVariableGlobal = cvar.isGlobal;
-  }
-
-  loadContext() {
-    if (this.flowId) {
-      this.http
-        .get(BACKEND_ROOT+'/fimp/api/flow/context/'+this.flowId)
-        .subscribe ((result) => {
-        this.localVars = [];
-        for (var key in result){
-          this.localVars.push(result[key].Name);
-        }
-
-      });
-    }
-
-
-    this.http
-      .get(BACKEND_ROOT+'/fimp/api/flow/context/global')
-      .subscribe ((result) => {
-      this.globalVars = [];
-      for (var key in result){
-        this.globalVars.push(result[key].Name);
-      }
-    });
   }
 
   deleteMappingRecord(record:any) {

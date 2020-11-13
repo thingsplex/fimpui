@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BACKEND_ROOT } from "app/globals";
 import {FimpService} from "app/fimp/fimp.service";
 import {FimpMessage} from "app/fimp/Message";
 import {ThingsRegistryService} from "../registry.service";
-import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-admin',
@@ -12,7 +10,7 @@ import {HttpClient} from "@angular/common/http";
 })
 export class AdminComponent implements OnInit {
 
-  constructor(private http : HttpClient, private fimp:FimpService,private registry:ThingsRegistryService) { }
+  constructor( private fimp:FimpService,private registry:ThingsRegistryService) { }
 
   ngOnInit() {
   }
@@ -24,6 +22,26 @@ export class AdminComponent implements OnInit {
     setTimeout( ()=> {
       this.registry.loadAllComponents()
     },1000)
+  }
+
+  public requestFullState(){
+    let val = {
+      "cmd": "get",
+      "component": null,
+      "id": null,
+      "client": null,
+      "param": {
+        "components": [
+          "state"
+        ]
+      },
+      "requestId": "160276012568854"
+    }
+    let msg  = new FimpMessage("vinculum","cmd.pd7.request","object",val,null,null)
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
+    msg.src = "tplex-ui";
+
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
   }
 
   public vinculumSyncDevices(){
@@ -39,11 +57,6 @@ export class AdminComponent implements OnInit {
   }
 
   public reindexRegistry(){
-    this.http
-    .post(BACKEND_ROOT+'/fimp/api/registry/reindex',null)
-    .subscribe ((result) => {
-       console.log("DB reindexed successfully");
-    });
   }
 
   public sendExclusionEvent(adapter,address: string) {

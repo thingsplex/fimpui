@@ -1,26 +1,114 @@
 {
-  "services": {
+  "services": [{
     "name": "basic",
     "label":"Generic basic",
-    "description":"Meaning of basic service can vary from device to device . It's generic and most simple way to interact with a device"
-    "interfaces": [{
-      "type":"out",
-      "name":"evt.lvl.report",
-      "label":"Generic level report",
-      "value_type":"int",
-      "description":"Reports level over numeric value"
+    "description":"Meaning of basic service can vary from device to device . It's generic and most simple way to interact with a device",
+    "interfaces": [{"name":"evt.lvl.report"},{"name":"cmd.lvl.set"},{"name":"cmd.lvl.get_report"}]
+  },{"name":"basic","label":"Generic level","icon":""},
+    {"name":"dev_sys","label":"Device system services","icon":""},
+    {"name":"out_bin_switch","label":"On/off switch/relay","icon":""},
+    {"name":"out_lvl_switch","label":"Level switch/dimmer","icon":""},
+    {"name":"meter_elec","label":"Electricity meter","icon":""},
+    {"name":"meter_gas","label":"Gas meter","icon":""},
+    {"name":"meter_water","label":"Water meter","icon":""},
+    {"name":"sensor_temp","label":"Temperature sensor","icon":""},
+    {"name":"sensor_lumin","label":"Luminance sensor","icon":""},
+    {"name":"sensor_contact","label":"Open/close sensor","icon":""},
+    {"name":"sensor_presence","label":"Presence detection sensor","icon":""},
+    {"name":"alarm_fire","label":"Fire alarm","icon":""},
+    {"name":"alarm_heat","label":"Heat alarm","icon":""},
+    {"name":"alarm_burglar","label":"Intrusion alarm","icon":""},
+    {"name":"battery","label":"Battery level","icon":""},
+    {"name":"thermostat","label":"Thermostat","icon":""},
+    {"name":"door_lock","label":"Door lock","icon":""},
+    {"name":"color_ctrl","label":"Color control","icon":""},
+    {"name":"scene_ctrl","label":"Scene controller","icon":""},
+    {"name":"fan_ctrl","label":"Fan speed and modes","icon":""},
+    {"name":"siren_ctrl","label":"Siren control","icon":""}
+  ],
+  "interfaces": [
+   {
+     "name" : "evt.lvl.report",
+     "label":"Generic level report",
+     "type":"int",
+     "description":"Reports level over numeric value"
+   },{
+     "name":"cmd.lvl.set",
+     "label":"Set level",
+     "type":"int",
+     "description":"Sets level using numeric value"
+   },{
+     "name":"cmd.lvl.get_report",
+     "label":"Request level report",
+     "type":"null"
+   },{
+     "name":"cmd.binary.set",
+     "label":"On/Off",
+     "type":"bool"
+   },{
+     "name":"cmd.binary.get_report",
+     "label":"Request binary value command",
+     "type":"null"
+   },{
+     "name":"evt.binary.report",
+     "label":"Binary value",
+     "type":"bool"
+   },{
+      "name":"cmd.meter.get_report",
+      "label":"Request meter report in units",
+      "type":"string"
     },{
-      "type":"in",
-      "name":"cmd.lvl.set",
-      "label":"Set generic basic value",
-      "value_type":"int",
-      "description":"Sets level using numeric value"
+      "name":"cmd.meter.reset",
+      "label":"Reset meter",
+      "type":"null"
     },{
-      "type":"in",
-      "name":"cmd.lvl.get_report",
-      "label":"Request basic value",
-      "value_type":"null",
-      "description":""
-    }]
-  }
+      "name":"evt.meter.report",
+      "label":"Meter report",
+      "type":"float"
+    },{
+      "name":"evt.meter_ext.report",
+      "label":"Extended meter report",
+      "type":"float_mat"
+    },{
+      "name":"evt.meter_ext.get_report",
+      "label":"Request extended report",
+      "type":"null"
+    },{
+      "name":"cmd.sensor.get_report",
+      "label":"Request sensor report in desired unit",
+      "type":"string"
+    },{
+      "name":"evt.sensor.report",
+      "label":"Sensor report",
+      "type":"float"
+    },{
+      "name":"cmd.open.get_report",
+      "label":"Request open contact state",
+      "type":"null"
+    },{
+      "name": "evt.open.report",
+      "label":"Open contact state",
+      "type":"bool"
+    },{
+      "name":"cmd.presence.get_report",
+      "label":"Request presence sensor service",
+      "type":"null"
+    },{
+      "name": "evt.presence.report",
+      "label":"Presence state",
+      "type":"bool"
+    },{
+      "name": "cmd.alarm.get_report",
+      "label":"Request alarm state",
+      "type":"null"
+    },{
+      "name":"evt.alarm.report",
+      "label":"Alarm state report",
+      "type":"str_map"
+    },{
+      "name":"cmd.alarm.clear",
+      "label":"Clear alarm state",
+      "type":"string"
+    }
+  ]
 }

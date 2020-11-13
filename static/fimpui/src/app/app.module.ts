@@ -42,7 +42,8 @@ import { SystemsManComponent } from './systems-man/systems-man.component';
 import { TimelineComponent, MsgDetailsDialog } from './timeline/timeline.component';
 
 import { ReportComponent } from './report/report.component';
-import { FimpService} from './fimp/fimp.service';
+import { FimpService } from './fimp/fimp.service';
+import { FimpApiMetadataService } from './fimp/fimp-api-metadata.service';
 
 import { ThingsDbService } from './things-db.service';
 import { ConfigsService } from './configs.service';
@@ -65,7 +66,7 @@ import {JsonInputComponent} from "./tpui-modules/flow/ui-elements/json-input.com
 // import {FireService} from "./firebase/fire.service";
 import {WebRtcService} from 'app/fimp/web-rtc.service';
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
-
+//
 const appRoutes: Routes = [
   { path: 'settings', component: SettingsComponent },
   { path: 'zwave-man', component: ZwaveManComponent },
@@ -130,8 +131,6 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     TemplateEditorDialog,
     MsgDetailsDialog,
     ConfirmDialogComponent,
-    // ThingIntfUiComponent,
-    // KeysPipe,
   ],
   imports: [
     BrowserModule,
@@ -175,7 +174,7 @@ export function startupServiceFactory(startupService: ConfigsService): Function 
     MatButtonToggleModule
 
   ],
-  providers: [WebRtcService, FimpService,ThingsDbService,ConfigsService,{ //FireService
+  providers: [WebRtcService, FimpService,FimpApiMetadataService,ThingsDbService,ConfigsService,{ //FireService
     // Provider for APP_INITIALIZER
     provide: APP_INITIALIZER,
     useFactory: startupServiceFactory,

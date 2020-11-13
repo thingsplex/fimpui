@@ -3,6 +3,9 @@ import { FimpService} from 'app/fimp/fimp.service';
 import {FimpMessage, NewFimpMessageFromString} from "../fimp/Message";
 import {Subscription} from "rxjs";
 import {WebRtcService} from "../fimp/web-rtc.service";
+import {ConfigsService} from "../configs.service";
+import {BACKEND_ROOT} from "../globals";
+import {HttpClient} from "@angular/common/http";
 
 // declare function  GetWebRtcInstance():any;
 
@@ -12,8 +15,6 @@ import {WebRtcService} from "../fimp/web-rtc.service";
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  mqttHost:string = localStorage.getItem("mqttHost") ;
-  mqttPort:number = parseInt(localStorage.getItem("mqttPort"));
   connStatus:string = "disconnected";
   fimpService:FimpService;
   globalSub : Subscription;
@@ -22,7 +23,7 @@ export class SettingsComponent implements OnInit {
   onWrtcLocalDescriptionReady:any;
   fimpTransportType:string = "mqtt"; // Connectivity channel , either mqtt or webrtc
   pc : any;
-  constructor(fimpService:FimpService, private webrtcService: WebRtcService) {
+  constructor(fimpService:FimpService,public configs:ConfigsService, private webrtcService: WebRtcService,private http : HttpClient) {
     // this.pc = GetWebRtcInstance();
     this.fimpService = fimpService;
     this.fimpTransportType = fimpService.transportType;
@@ -35,26 +36,16 @@ export class SettingsComponent implements OnInit {
     }
     let statusMap = {0:"disconnected",1:"connecting",2:"conneted"};
     this.connStatus = statusMap[this.fimpService.mqtt.state.getValue().toString()];
-
   }
 
-  save(mqttHost:string , mqttPort:number) {
-    this.mqttHost = mqttHost;
-    this.mqttPort = mqttPort;
-    localStorage.setItem("mqttHost", mqttHost);
-    localStorage.setItem("mqttPort", mqttPort.toString());
-    location.reload();
-    // let MQTT_SERVICE_OPTIONS_1 = {
-    //     hostname:mqttHost,
-    //     port: mqttPort,
-    //     path: '/mqtt'
-    //   };
-
-    // this.fimpService.mqtt.onConnect.subscribe((message: any) => {
-    //        this.connStatus = "connected";
-    //  });
-    // this.fimpService.mqtt.disconnect();
-    // this.fimpService.mqtt.connect(MQTT_SERVICE_OPTIONS_1);
+  saveBrokerConfigs() {
+    console.log(this.configs.configs)
+    this.http
+      .post(BACKEND_ROOT+'/fimp/api/configs',this.configs.configs )
+      .subscribe ((result) => {
+        console.log("Template is saved");
+        location.reload();
+      });
 
   }
 
@@ -82,9 +73,7 @@ export class SettingsComponent implements OnInit {
 
 
   ngOnInit() {
-
     this.fimpService.subscribeMqtt("pt:j1/mt:evt/rt:ad/rn:fimp2p/ad:1").subscribe((msg)=>{
-
       let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "fimp2p" ) {
         if(fimpMsg.mtype == "evt.system.connect_params_report") {

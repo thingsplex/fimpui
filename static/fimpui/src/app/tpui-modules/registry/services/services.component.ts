@@ -11,11 +11,12 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 import { ActivatedRoute } from '@angular/router';
 import { ServiceInterface,Service} from '../model';
-import { getFimpServiceList} from "app/fimp/service-lookup"
+import { getFimpServiceList} from "app/fimp/fimp-api-metadata.service"
 import {ServiceEditorDialog} from './service-editor.component'
 import {ThingsRegistryService} from "../registry.service";
 import {Subscription} from "rxjs";
 import {ServiceRunDialog} from "./service-run.component";
+import {FimpApiMetadataService} from "app/fimp/fimp-api-metadata.service"
 
 
 @Component({
@@ -49,6 +50,7 @@ export class ServiceSelectorWizardComponent implements OnInit {
   public things:any;
   public activeService:any;
   public services:any;
+  public interfaceMetaName : string;
 
   @Output() onSelect = new EventEmitter<ServiceInterface>();
   ngOnInit() {
@@ -67,7 +69,7 @@ export class ServiceSelectorWizardComponent implements OnInit {
       }
     }
   }
-  constructor(private route: ActivatedRoute,public registry:ThingsRegistryService) {
+  constructor(private route: ActivatedRoute,public registry:ThingsRegistryService,private fimpMeta:FimpApiMetadataService) {
     this.fimpServiceList = getFimpServiceList();
   }
 
@@ -75,8 +77,6 @@ export class ServiceSelectorWizardComponent implements OnInit {
     console.dir(intf);
     this.onSelect.emit(intf);
   }
-
-
 
   onLocationSelected() {
     this.things = this.registry.getDevicesForLocation(this.selectedLocationId);
@@ -88,17 +88,22 @@ export class ServiceSelectorWizardComponent implements OnInit {
     this.services = this.registry.getServicesForThing(this.selectedThingId);
     console.log("Services for thing:")
     console.dir(this.services)
-    this.onInterfaceSelected("");
+    // this.onInterfaceSelected("");
   }
 
   onServiceSelected(){
     // this.loadServices(this.selectedService,"");
+
     this.activeService = this.registry.getServiceByDeviceIdAndName(this.selectedThingId,this.selectedServiceId)
     console.dir(this.activeService);
-    this.onInterfaceSelected("");
+    // this.onInterfaceSelected("");
   }
 
   onInterfaceSelected(service) {
+    let intfMeta = this.fimpMeta.getInterfaceMetaByName(this.selectedInterfaceName);
+    if (intfMeta) {
+      this.interfaceMetaName = intfMeta.label
+    }
     var intf = new ServiceInterface();
     intf.serviceName = this.activeService.name;
     intf.intfMsgType = this.selectedInterfaceName;

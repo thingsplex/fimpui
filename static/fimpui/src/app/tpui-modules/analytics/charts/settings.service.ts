@@ -112,20 +112,20 @@ export class AnalyticsSettingsService{
   }
 
   saveToRemoteStorage() {
-    let body = "adfa";
-    this.http.post(BACKEND_ROOT+"/fimp/api/ui-settings",body)
-      .subscribe(result=>{
-        result = result["apps"];
-
-      });
+    // let body = "adfa";
+    // this.http.post(BACKEND_ROOT+"/fimp/api/ui-settings",body)
+    //   .subscribe(result=>{
+    //     result = result["apps"];
+    //
+    //   });
   }
 
   loadFromRemoteStorage() {
-    this.http.get(BACKEND_ROOT+"/fimp/api/ui-settings")
-      .subscribe(result=>{
-        result = result["apps"];
-
-      });
+    // this.http.get(BACKEND_ROOT+"/fimp/api/ui-settings")
+    //   .subscribe(result=>{
+    //     result = result["apps"];
+    //
+    //   });
   }
 
   resetToDefaults() {

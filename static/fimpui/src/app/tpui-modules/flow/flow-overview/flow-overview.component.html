@@ -3,13 +3,25 @@
     <a mat-tab-link [routerLink]="['/flow/context']" >Context</a>
 </nav>
 <div class="flow">
+
+
   <mat-card class="example-card">
     <mat-card-header>
       <!--<div mat-card-avatar class="example-header-image"></div>-->
-      <mat-card-title><h3>Automation flows</h3></mat-card-title>
       <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
+      <mat-card-title><h3> Automation flows</h3></mat-card-title>
+      <mat-card-subtitle ></mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+      <p>Total flows  : {{totalFlows}} . Total nodes : {{totalFlowNodes}}</p>
+      <div class="chart-container">
+        <div style="width: 250px">
+          <simple-pie-chart #flowExecutionStatsChart [data]="flowExecutionStats" [labels]="flowExecutionLabels" [title]="'Statistics'" ></simple-pie-chart>
+        </div>
+        <div style="width: 250px">
+          <simple-pie-chart #flowStateChart [data]="flowStateStats" [labels]="flowStateLabels" [title]="'State distribution'" ></simple-pie-chart>
+        </div>
+      </div>
 
       <div style="margin: 10px">
         <label style="margin: 5px">Show only :</label>
@@ -58,8 +70,8 @@
     <mat-card-actions>
       <button mat-raised-button [routerLink]="['/flow/editor','-']" color="primary" > Add new flow</button>
       <button mat-raised-button (click)="openFlowImportWindow()" color="primary" > Import  </button>
-      <button mat-raised-button (click)="openFlowImportWindow()" color="primary" > Backup  </button>
       <button mat-raised-button (click)="showLog()" color="primary" >Log</button>
+      <button mat-raised-button (click)="goToLink('https://thingsplex.github.io/docs/thingsplex-ui/flow/')" color="primary" >Help</button>
       <button mat-raised-button (click)="loadListOfFlows()">Refresh</button>
     </mat-card-actions>
   </mat-card>

@@ -5,6 +5,7 @@ import { AnalyticsRoutingModule } from "./analytics-routing.module";
 import { RegistryModule } from "../registry/registry.module";
 import { last } from 'rxjs/operator/last';
 import { FormsModule } from '@angular/forms';
+import { GaugeModule } from 'angular-gauge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -28,6 +29,7 @@ import {ActivityComponent} from "./activity/activity.component";
 import {SensorsComponent} from "./sensors/sensors.component";
 import {ExploreComponent} from "./explore/explore.component";
 import {EnergyComponent} from "./energy/energy.component";
+import {EnergyFlowComponent} from "./energy/energy-flow.component";
 import {TsdbConfigComponent} from "./tsdb/tsdb-config.component";
 import {SimplePieChartComponent} from "./charts/simple-pie-chart.component";
 import {AnalyticsSettingsService} from "./charts/settings.service";
@@ -82,12 +84,13 @@ export const MY_FORMATS = {
     MatDialogModule,
     MatExpansionModule,
     MatTabsModule,
-    RegistryModule
+    RegistryModule,
+    GaugeModule.forRoot(),
   ],
-  exports:[],
+  exports:[SimplePieChartComponent],
   providers:[AnalyticsSettingsService,{provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
 
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}],
-  declarations: [DashboardComponent,BinarySensorChartComponent,LineChartComponent,ActivityComponent,SensorsComponent,ExploreComponent,EnergyComponent,SimplePieChartComponent,TsdbConfigComponent]
+  declarations: [DashboardComponent,BinarySensorChartComponent,LineChartComponent,ActivityComponent,SensorsComponent,ExploreComponent,EnergyComponent,EnergyFlowComponent,SimplePieChartComponent,TsdbConfigComponent]
 })
 export class AnalyticsModule { }

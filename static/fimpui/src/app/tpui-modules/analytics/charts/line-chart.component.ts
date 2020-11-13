@@ -58,6 +58,7 @@ export class LineChartComponent implements OnInit  {
   @Input() fillGaps        : boolean;
   @Input() dataProcFunc    : string;
   @Input() dataTransformFunc    : string;
+  @Input() filters         : any;
   @Input() set height (val: number) {
     console.log("chart height has changed to"+val)
     this._height = String(val)+"px";
@@ -290,6 +291,7 @@ export class LineChartComponent implements OnInit  {
     if (!this.measurement)
       return
     console.log("Time from "+this.fromTime)
+    console.dir(this.filters)
     let request = {
       "proc_id":1,
       "field_name":"value",
@@ -301,7 +303,8 @@ export class LineChartComponent implements OnInit  {
       "group_by_tag":this.groupByTag,
       "fill_type":fillMode,
       "data_function":this.dataProcFunc,
-      "transform_function":this.dataTransformFunc
+      "transform_function":this.dataTransformFunc,
+      "filters":this.filters
     }
     let msg  = new FimpMessage("ecollector","cmd.tsdb.get_data_points","object",request,null,null)
     msg.src = "tplex-ui"

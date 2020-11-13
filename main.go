@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"github.com/alivinco/thingsplex/api"
@@ -9,18 +9,17 @@ import (
 	"github.com/alivinco/thingsplex/integr/zwave"
 	"github.com/alivinco/thingsplex/model"
 	"github.com/alivinco/thingsplex/utils"
-	"github.com/futurehomeno/fimpgo"
+	"github.com/futurehomeno/fimpgo/edgeapp"
+	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	log "github.com/sirupsen/logrus"
-	"github.com/thingsplex/tpflow/api/client"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"io/ioutil"
 	"net/http"
 	"runtime"
-	"strings"
 )
 
 type SystemInfo struct {
@@ -28,13 +27,18 @@ type SystemInfo struct {
 	WsMqttPort int
 }
 
-//22kVUwLgIl0yJPU1s4y2rZGQ
+type LoginRequest struct {
+	Username   string `json:"username" form:"username" query:"username"`
+	Password   string `json:"password" form:"password" query:"password"`
+	RePassword string `json:"re_password" form:"re_password" query:"re_password"`
+	AuthType   string `json:"auth_type" form:"auth_type" query:"auth_type"`
+}
 
 // SetupLog configures default logger
 // Supported levels : info , degug , warn , error
 func SetupLog(logfile string, level string) {
-	//log.SetFormatter(&log.TextFormatter{FullTimestamp: true, ForceColors: false,TimestampFormat:"2006-01-02T15:04:05.999"})
-	log.SetFormatter(&log.JSONFormatter{TimestampFormat: "2006-01-02 15:04:05.999"})
+	log.SetFormatter(&log.TextFormatter{FullTimestamp: true, ForceColors: true, TimestampFormat: "2006-01-02T15:04:05.999"})
+	//log.SetFormatter(&log.JSONFormatter{TimestampFormat: "2006-01-02 15:04:05.999"})
 	logLevel, err := log.ParseLevel(level)
 	if err == nil {
 		log.SetLevel(logLevel)
@@ -50,31 +54,33 @@ func SetupLog(logfile string, level string) {
 		}
 		log.SetOutput(&l)
 	}
-
 }
+
+func ConfigureTpFlowApi(configs *model.Configs,e *echo.Echo)  {
+	return
+}
+
 
 func main() {
 	// pprof server
 	//go func() {
 	//	log.Println(http.ListenAndServe("localhost:6060", nil))
 	//}()
-	configs := &model.FimpUiConfigs{}
-	var configFile string
 	var port int
-	flag.StringVar(&configFile, "c", "", "Config file")
+	var workDir string
+	flag.StringVar(&workDir, "c", "", "Work dir")
 	flag.IntVar(&port, "p", 8081, "Port")
 	flag.Parse()
-	if configFile == "" {
-		configFile = "/opt/fimpui/config.json"
+	if workDir == "" {
+		workDir = "./"
 	} else {
-		fmt.Println("Loading configs from file ", configFile)
+		fmt.Println("Work dir = ", workDir)
 	}
-	configFileBody, err := ioutil.ReadFile(configFile)
-	err = json.Unmarshal(configFileBody, configs)
-	if err != nil {
-		panic("Can't load config file.")
+	configs := model.NewConfigs(workDir)
+	if err := configs.LoadFromFile();err != nil {
+		log.Error("<main> Failed to load configs from file . Err:",err)
+		return
 	}
-
 	SetupLog(configs.LogFile, configs.LogLevel)
 	log.Info("--------------Starting FIMPUI----------------")
 	log.Info("---------------------------------------------")
@@ -89,52 +95,136 @@ func main() {
 		sysInfo.Version = string(versionFile)
 	}
 	//--------------------------------------
-	var brokerAddress string
-	var isSSL bool
-	if strings.Contains(configs.MqttServerURI, "ssl") {
-		brokerAddress = strings.Replace(configs.MqttServerURI, "ssl://", "", -1)
-		isSSL = true
-	} else {
-		brokerAddress = strings.Replace(configs.MqttServerURI, "tcp://", "", -1)
-		isSSL = false
+
+	authType := "password"
+	if configs.IsDevMode {
+		authType = api.AuthTypeNone
 	}
-	wsUpgrader := mqtt.WsUpgrader{brokerAddress, isSSL}
+	auth := api.NewAuth(configs.GetDataDir(), authType)
+	auth.LoadUserDB()
+
+	lifecycle := edgeapp.NewAppLifecycle()
+	lifecycle.SetConfigState(edgeapp.ConfigStateConfigured)
+	lifecycle.SetAppState(edgeapp.AppStateRunning,nil)
+	lifecycle.SetConnectionState(edgeapp.ConnStateConnected)
+
+	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs,auth)
+	controlApi.Start()
+
+	// TODO : Move to sessions
+	wsUpgrader := mqtt.NewWsUpgrader(configs.MqttServerURI, auth,configs.TlsCertDir)
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	log.Info("Async client connecting... ")
-	sClient := fimpgo.NewSyncClient(nil)
-	sClient.Connect(configs.MqttServerURI, configs.MqttClientIdPrefix+"_fimpui_tpflow_client", configs.MqttUsername, configs.MqttPassword, true, 1, 1)
 
-	log.Info("Async client connected ")
-	tpflowApi := client.NewApiRemoteClient(sClient, "1", "tplex-ui")
-	api.RegisterTpFlowApi(e, tpflowApi)
+	log.Info("My outbound IP = ",utils.GetOutboundIP())
+
+	if configs.CookieKey == "" {
+		cookie := securecookie.GenerateRandomKey(32)
+		configs.CookieKey =  base64.StdEncoding.EncodeToString(cookie)
+		configs.SaveToFile()
+	}
+
+ 	bCookie,err := base64.StdEncoding.DecodeString(configs.CookieKey)
+	if err != nil {
+		log.Error("Can't decode cookie.Err:",err.Error())
+	}
+	e.Use(session.Middleware(sessions.NewCookieStore(bCookie)))
+
+	e.GET("/fimp/login",  func(c echo.Context) error {
+		c.Response().Header().Set("Cache-Control","no-store")
+		if auth.IsUserDdEmpty() {
+			c.Redirect(http.StatusMovedPermanently, "/fimp/auth-config")
+		}else {
+			c.File("static/misc/login.html")
+		}
+		return nil
+	})
+	e.POST("/fimp/login", func(c echo.Context) error {
+		req := LoginRequest{}
+		if err := c.Bind(&req); err != nil {
+			return fmt.Errorf("invalid request format")
+		}
+		log.Info("Login request from user ", req.Username)
+		if auth.Authenticate(req.Username, req.Password) {
+			auth.SaveUserToSession(c, req.Username)
+			c.Redirect(http.StatusMovedPermanently, "/fimp/analytics/dashboard")
+		} else {
+			c.HTML(http.StatusUnauthorized, "Unauthorized access")
+		}
+		return err
+	})
+
+	e.GET("/fimp/logout", func(c echo.Context) error {
+		log.Info("User logged out")
+		auth.LogoutUsers(c)
+		c.Response().Header().Set("Cache-Control","no-store")
+		return c.HTML(http.StatusOK, "User has been logged out from the system")
+	})
+
+	e.POST("/fimp/auth-config", func(c echo.Context) error {
+		req := LoginRequest{}
+		if err := c.Bind(&req); err != nil {
+			return fmt.Errorf("invalid request format")
+		}
+		if req.Password != req.RePassword {
+			return c.HTML(http.StatusOK, "Passwords don't match. Try again.")
+		}
+		log.Info("Auth config request from user ", req.Username)
+		if auth.IsRequestAuthenticated(c,false) || auth.IsUserDdEmpty() {
+			auth.SetAuthType(req.AuthType)
+			auth.AddUser(req.Username, req.Password)
+			err := auth.SaveUserDB()
+			if err != nil {
+				log.Error("<main> Can't save new user to disk. Err:",err.Error())
+			}
+			auth.SaveUserToSession(c, req.Username)
+			c.Redirect(http.StatusMovedPermanently, "/fimp/analytics/dashboard")
+		} else {
+			c.HTML(http.StatusUnauthorized, "Unauthorized access")
+		}
+		return err
+	})
 
 	e.GET("/fimp/system-info", func(c echo.Context) error {
-
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		return c.JSON(http.StatusOK, sysInfo)
 	})
 	e.GET("/fimp/api/configs", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		return c.JSON(http.StatusOK, configs)
 	})
 
-	//e.GET("/fimp/api/fr/run-cmd", func(c echo.Context) error {
-	//
-	//	cmd := c.QueryParam("cmd")
-	//	out, err := exec.Command("bash", "-c", cmd).Output()
-	//	result := map[string]string{"result":"","error":""}
-	//
-	//	if err != nil {
-	//		log.Error(err)
-	//		result["result"] = err.Error()
-	//	}else {
-	//		result["result"] = string(out)
-	//	}
-	//	return c.JSON(http.StatusOK, result)
-	//})
+	e.POST("/fimp/api/configs", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
+
+		req:= model.Configs{}
+		if err := c.Bind(&req); err != nil {
+			log.Error("Invalid configuration request format .Err:",err.Error())
+			return fmt.Errorf("invalid request format")
+		}
+		configs.MqttServerURI = req.MqttServerURI
+		configs.MqttUsername = req.MqttUsername
+		configs.MqttPassword = req.MqttPassword
+		configs.MqttTopicGlobalPrefix = req.MqttTopicGlobalPrefix
+		err = configs.SaveToFile()
+		if err != nil {
+			log.Error("Failed to save config file. Err:",err.Error())
+		}
+		wsUpgrader.UpdateBrokerConfig(configs.MqttServerURI)
+		return c.JSON(http.StatusOK, configs)
+	})
 
 	//e.GET("/fimp/api/get-log", func(c echo.Context) error {
-	//
+	//	if !auth.IsRequestAuthenticated(c,true) {
+	//		return nil
+	//	}
 	//	limitS := c.QueryParam("limit")
 	//	limit , err := strconv.Atoi(limitS)
 	//	if err != nil {
@@ -151,6 +241,9 @@ func main() {
 	//})
 
 	e.GET("/fimp/api/get-apps-from-playgrounds", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		resp, err := http.Get("https://app-store.s3-eu-west-1.amazonaws.com/registry/list.json")
 		defer resp.Body.Close()
 		c.Stream(http.StatusOK, "application/json", resp.Body)
@@ -158,6 +251,9 @@ func main() {
 	})
 
 	e.GET("/fimp/api/get-site-info", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		siteId := utils.GetFhSiteId("")
 		if siteId == "" {
 			siteId = "unknown"
@@ -169,20 +265,11 @@ func main() {
 		return c.JSON(http.StatusOK, siteInfoResponse)
 	})
 
-	e.POST("/fimp/api/zwave/products/upload-to-cloud", func(c echo.Context) error {
-		cloud, err := zwave.NewProductCloudStore(configs.ZwaveProductTemplates, "fh-products")
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-		err = cloud.UploadProductCacheToCloud()
-		if err == nil {
-			return c.NoContent(http.StatusOK)
-		} else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
 
 	e.GET("/fimp/api/zwave/products/list-local-templates", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		templateType := c.QueryParam("type")
 		returnStable := true
 		if templateType == "cache" {
@@ -204,6 +291,9 @@ func main() {
 	})
 
 	e.GET("/fimp/api/zwave/products/template", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		templateType := c.QueryParam("type")
 		fileName := c.QueryParam("name")
 		returnStable := true
@@ -225,6 +315,9 @@ func main() {
 	})
 
 	e.POST("/fimp/api/zwave/products/template-op/:operation/:name", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		operation := c.Param("operation")
 		name := c.Param("name")
 		store, _ := zwave.NewProductCloudStore(configs.ZwaveProductTemplates, "fh-products")
@@ -233,7 +326,6 @@ func main() {
 		case "move":
 			err = store.MoveToStable(name)
 		case "upload":
-			err = store.UploadSingleProductToStageCloud(name)
 		}
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
@@ -242,6 +334,9 @@ func main() {
 	})
 
 	e.DELETE("/fimp/api/zwave/products/template/:type/:name", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		templateType := c.Param("type")
 		templateName := c.Param("name")
 		var isStable bool
@@ -263,6 +358,9 @@ func main() {
 	})
 
 	e.POST("/fimp/api/zwave/products/template/:type/:name", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		templateType := c.Param("type")
 		templateName := c.Param("name")
 		var isStable bool
@@ -287,20 +385,10 @@ func main() {
 		return c.NoContent(http.StatusOK)
 	})
 
-	e.POST("/fimp/api/zwave/products/download-from-cloud", func(c echo.Context) error {
-		cloud, err := zwave.NewProductCloudStore(configs.ZwaveProductTemplates, "fh-products")
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-		prodNames, err := cloud.DownloadProductsFromCloud()
-		if err == nil {
-			return c.JSON(http.StatusOK, prodNames)
-		} else {
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-	})
-
 	e.GET("/debug/mem", func(c echo.Context) error {
+		if !auth.IsRequestAuthenticated(c,true) {
+			return nil
+		}
 		memStats := runtime.MemStats{}
 		runtime.ReadMemStats(&memStats)
 		return c.JSON(http.StatusOK, memStats)
@@ -311,19 +399,11 @@ func main() {
 		AllowOrigins: []string{"http://localhost:4200", "http://127.0.0.1:4200", "https://app-store.s3-eu-west-1.amazonaws.com"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
-	//e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
-	//	if username == "fh" && password == "Hemmelig1" {
-	//		return true, nil
-	//	}
-	//	return false, nil
-	//}))
-	//cookieKey := securecookie.GenerateRandomKey(32)
-	//log.Info("Cookie key :",string(cookieKey))
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte("liepkalnu-81a-1793"))))
 
 	e.GET("/mqtt", wsUpgrader.Upgrade)
 	e.File("/fimp", index)
 	e.File("/", index)
+	e.File("/fimp/auth-config", "static/misc/auth-config.html")
 	e.File("/fimp/zwave-man", index)
 	e.File("/fimp/zigbee-man", index)
 	e.File("/fimp/settings", index)
@@ -345,6 +425,7 @@ func main() {
 	e.File("/fimp/registry/admin", index)
 	e.Static("/fimp/static", "static/fimpui/dist/")
 	e.Static("/fimp/help", "static/help/")
+	e.Static("/fimp/misc", "static/misc/")
 	e.Static("/fimp/libs", "static/libs/")
 
 	e.Logger.Debug(e.Start(fmt.Sprintf(":%d", port)))

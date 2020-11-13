@@ -16,4 +16,5 @@ export class TableContextRec {
   Value:any;
   ValueType:string;
   InMemory:boolean;
+  IsGlobal:boolean;
 }

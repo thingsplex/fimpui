@@ -5,7 +5,8 @@ import {ServiceInterface} from "../../../registry/model";
 import {FimpService} from "../../../../fimp/fimp.service";
 import {FimpMessage, NewFimpMessageFromString} from "../../../../fimp/Message";
 import {Subscription} from "rxjs";
-
+import {FimpApiMetadataService} from "../../../../fimp/fimp-api-metadata.service";
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'trigger-node',
@@ -13,14 +14,18 @@ import {Subscription} from "rxjs";
   styleUrls: ['../flow-nodes.component.css']
 })
 export class TriggerNodeComponent implements OnInit {
+  myControl = new FormControl();
   @Input() node :MetaNode;
   @Input() nodes:MetaNode[];
   @Input() flowId:string;
   flowPublishService: string;
   flowPublishInterface : string;
   flowPublishAddress : string;
-  constructor(public dialog: MatDialog) {
-
+  listOfAutoCompleteInterfaces : any;
+  constructor(public dialog: MatDialog,private fimpMeta:FimpApiMetadataService) {
+    this.listOfAutoCompleteInterfaces = fimpMeta.getListOfInterfaces();
+    console.log("Autocomplete interfaces:")
+    console.dir(this.listOfAutoCompleteInterfaces);
   }
 
   ngOnInit() {

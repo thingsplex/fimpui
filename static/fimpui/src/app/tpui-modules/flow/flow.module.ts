@@ -17,7 +17,7 @@ import { LogNodeComponent  } from './flow-nodes/log-node/node.component';
 import { ActionNodeComponent,VincActionNodeComponent,NotificationActionNodeComponent,TimelineActionNodeComponent } from './flow-nodes/action-node/node.component';
 import { ReceiveNodeComponent } from './flow-nodes/flow-nodes.component';
 import { FlowRoutingModule } from "app/tpui-modules/flow/flow-routing.module";
-import { FormsModule } from '@angular/forms';
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { RegistryModule} from 'app/tpui-modules/registry/registry.module'
 import { VariableElementComponent} from 'app/tpui-modules/flow/flow-nodes/ui-elements/ui-elements.component'
 import { RecordEditorDialog} from "./flow-context/record-editor-dialog.component";
@@ -39,19 +39,27 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import {AnalyticsModule} from "../analytics/analytics.module";
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 // import {MsgDetailsDialog} from "../timeline/timeline.component";
 import {FlowPropsDialog} from "./flow-editor/flow-props-editor.component";
 import {MatMenuModule} from '@angular/material/menu';
+import { FlowContextService } from './flow-context/flow-context.service';
+import {IfTimeNodeComponent} from "./flow-nodes/if-time-node/node.component";
+import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.component";
 
 @NgModule({
   imports: [
     CommonModule,
+    AnalyticsModule,
     FlowRoutingModule,
+    ReactiveFormsModule,
     MatInputModule,
     MatMenuModule,
     MatButtonModule,
     MatFormFieldModule,
     MatTableModule,
+    MatAutocompleteModule,
     MatChipsModule,
     MatOptionModule,
     MatSelectModule,
@@ -67,7 +75,8 @@ import {MatMenuModule} from '@angular/material/menu';
     FormsModule,
     RegistryModule,
     MatTabsModule,
-    CdkTableModule
+    CdkTableModule,
+
   ],
   declarations: [
      FlowOverviewComponent,
@@ -78,6 +87,8 @@ import {MatMenuModule} from '@angular/material/menu';
      FlowRunDialog,
      FlowPropsDialog,
      FlowLogDialog,
+     IfTimeNodeComponent,
+    RateLimitNodeComponent,
     // SignInDialog,
     // FirebaseAuthCheckComponent,
      VariableSelectorComponent,
@@ -108,7 +119,7 @@ import {MatMenuModule} from '@angular/material/menu';
     SceneTriggerNodeComponent
 
   ],
-  providers:[],
+  providers:[FlowContextService],
   exports:[JsonInputComponent],
   entryComponents: [FlowSourceDialog,FlowLogDialog,FlowRunDialog,FlowPropsDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,HelpDialog,RecordEditorDialog] // SignInDialog
 })
