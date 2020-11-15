@@ -57,6 +57,7 @@ export class ActionNodeComponent implements OnInit {
     this.node.Address = service.intfAddress;
     this.node.Service = service.serviceName;
     this.node.ServiceInterface = service.intfMsgType;
+    this.node.Config.DefaultValue.ValueType = service.intfValueType;
   }
 
   serviceLookupDialog(nodeId:string) {

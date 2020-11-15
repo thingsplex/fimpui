@@ -101,14 +101,15 @@ export class ServiceSelectorWizardComponent implements OnInit {
 
   onInterfaceSelected(service) {
     let intfMeta = this.fimpMeta.getInterfaceMetaByName(this.selectedInterfaceName);
-    if (intfMeta) {
-      this.interfaceMetaName = intfMeta.label
-    }
     var intf = new ServiceInterface();
     intf.serviceName = this.activeService.name;
     intf.intfMsgType = this.selectedInterfaceName;
     intf.locationAlias = this.activeService.location_alias;
     intf.serviceAlias = this.activeService.alias;
+    if (intfMeta) {
+      this.interfaceMetaName = intfMeta.label;
+      intf.intfValueType = intfMeta.type;
+    }
     if (intf.intfMsgType.indexOf("cmd.")>=0) {
       intf.intfAddress = "pt:j1/mt:cmd"+this.activeService.address
     }else {

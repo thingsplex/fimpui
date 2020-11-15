@@ -94,12 +94,12 @@
                       </mat-form-field>
                   </span>
 
-                  <span *ngSwitchCase="'bool'">
+                  <span *ngSwitchCase="'bool'" >
                     <mat-radio-group class="example-radio-group" placeholder="value" [(ngModel)]="vmap.LValue.Value">
-                      <mat-radio-button class="example-radio-button" [value] = "true">
+                      <mat-radio-button class="example-radio-button"  [value] = "true">
                         true (On)
                       </mat-radio-button>
-                      <mat-radio-button class="example-radio-button" [value] = "false">
+                      <mat-radio-button class="example-radio-button"  [value] = "false">
                         false (Off)
                       </mat-radio-button>
                     </mat-radio-group>

@@ -14,10 +14,54 @@ import {FimpApiMetadataService} from "app/fimp/fimp-api-metadata.service"
 import {FlowPropsDialog} from "./flow-props-editor.component";
 import {Subscription} from "rxjs";
 import {HttpClient} from "@angular/common/http";
+import {tryCatch} from "rxjs/internal-compatibility";
+
+/*
+ <mat-icon *ngSwitchCase="'trigger'" aria-label="Edit node">input</mat-icon>
+                    <mat-icon *ngSwitchCase="'vinc_trigger'" aria-label="Edit node">input</mat-icon>
+                    <mat-icon *ngSwitchCase="'receive'" aria-label="Edit node">input</mat-icon>
+                    <mat-icon *ngSwitchCase="'time_trigger'" aria-label="Edit node">schedule</mat-icon>
+                    <mat-icon *ngSwitchCase="'wait'" aria-label="Edit node">update</mat-icon>
+                    <mat-icon *ngSwitchCase="'action'" aria-label="Edit node">send</mat-icon>
+                    <mat-icon *ngSwitchCase="'rest_action'" aria-label="Edit node">send</mat-icon>
+                    <mat-icon *ngSwitchCase="'if'" aria-label="Edit node">call_split</mat-icon>
+                    <mat-icon *ngSwitchCase="'iftime'" aria-label="Edit node">call_split</mat-icon>
+                    <mat-icon *ngSwitchCase="'rate_limit'" aria-label="Edit node">call_split</mat-icon>
+                    <mat-icon *ngSwitchCase="'loop'" aria-label="Edit node">loop</mat-icon>
+                    <mat-icon *ngSwitchCase="'set_variable'" aria-label="Edit node">edit</mat-icon>
+                    <mat-icon *ngSwitchCase="'transform'" aria-label="Edit node">transform</mat-icon>
+                    <mat-icon *ngSwitchCase="'exec'" aria-label="Exec node">flash_on</mat-icon>
+                    <mat-icon *ngSwitchCase="'log_action'" aria-label="Log node">edit</mat-icon>
+                    <mat-icon *ngSwitchDefault aria-label="Edit node">build</mat-icon>
+ */
+
+const nodeTypeAlias = {
+  "trigger":"Trigger",
+  "vinc_trigger":"Home event",
+  "receive":"Wait event",
+  "time_trigger":"Time trigger",
+  "wait":"Delay",
+  "action":"Action",
+  "rest_action":"HTTP msg",
+  "if":"If condition",
+  "iftime":"Time filter",
+  "rate_limit":"Rate limit",
+  "loop":"Loop",
+  "set_variable":"Set variable",
+  "transform":"Transform",
+  "exec":"Run script",
+  "log_action":"Log action",
+  "notification_action":"Notification",
+  "timeline_action":"Timeline",
+  "vinc_action":"Home mode"
+
+}
 
 export class MetaNode {
   Id               :string;
 	Type             :string;
+	TypeAlias        :string; // Human readable type
+  LastValue        :string; // Last value on UI
 	Label            :string;
 	SuccessTransition :string;
 	TimeoutTransition :string;
@@ -108,6 +152,8 @@ export class FlowEditorComponent implements OnInit {
         }else if(fimpMsg.mtype == "evt.flow.update_report") {
           this.snackBar.open('Flow is saved',"",{duration:1000});
         }
+      }else {
+        this.updateUiValue(msg.topic,fimpMsg);
       }
     });
   }
@@ -120,7 +166,24 @@ export class FlowEditorComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
   }
 
+  updateUiValue(topic:string,fimpMsg : FimpMessage) {
+    if (this.flow.Nodes) {
+      // console.log("New update from topic " + topic);
+      // console.dir(fimpMsg);
+      this.flow.Nodes.forEach(node => {
+        if (node.Address == topic && node.Service == fimpMsg.service && node.ServiceInterface == fimpMsg.mtype) {
+          if (fimpMsg.valueType == "string" || fimpMsg.valueType == "int" || fimpMsg.valueType == "float" || fimpMsg.valueType == "bool") {
+            node.LastValue = fimpMsg.val;
+            if (fimpMsg.props)
+              if(fimpMsg.props["unit"]) {
+                node.LastValue = node.LastValue+" "+fimpMsg.props["unit"];
+              }
+          }
 
+        }
+      });
+    }
+  }
 
   variableSelected(event:any,config:any){
     if (config.LeftVariableName.indexOf("__global__")!=-1) {
@@ -353,8 +416,8 @@ export class FlowEditorComponent implements OnInit {
   if (outSocketElement && inSocketElement){
     var outSockCord =  this.findOutputSocketPosition(outSocketElement);
     var inSockCord =  this.findInputSocketPosition(inSocketElement);
-    var yOffset = 14;
-    this.drawCurvedLine(sourceNodeId+"_"+targetNodeId+"_"+type,outSockCord.x,outSockCord.y-yOffset,inSockCord.x,inSockCord.y-yOffset,"#afe0aa",0.1);
+    var yOffset = 19;
+    this.drawCurvedLine(sourceNodeId+"_"+targetNodeId+"_"+type,outSockCord.x+5,outSockCord.y-yOffset,inSockCord.x+5,inSockCord.y-yOffset,"#afe0aa",0.0);
   }
 
  }
@@ -509,6 +572,7 @@ findInputSocketPosition(htmlElement):any {
         break;
 
     }
+    this.enhanceNode(node);
     this.flow.Nodes.push(node)
   }
   showSource() {
@@ -595,6 +659,7 @@ findInputSocketPosition(htmlElement):any {
   // for back compatability
   enhanceNodes() {
     this.flow.Nodes.forEach(node => {
+
       if(node.Ui == undefined) {
         node.Ui = new Ui()
         node.Ui.x = 70;
@@ -604,8 +669,29 @@ findInputSocketPosition(htmlElement):any {
       if (node.Ui.nodeType==undefined) {
         node.Ui["nodeType"] = "";
       }
-  });
+      this.enhanceNode(node);
+    });
   }
+
+  enhanceNode(node) {
+   try {
+     let nodeTAlias = nodeTypeAlias[node.Type]
+     if (nodeTAlias) {
+       node.TypeAlias = nodeTAlias;
+     }
+     if (node.Ui.nodeType) {
+         nodeTAlias = nodeTypeAlias[node.Ui.nodeType];
+         if (nodeTAlias)
+           node.TypeAlias = nodeTAlias;
+         else
+           node.TypeAlias = node.Ui.nodeType;
+     }
+   }catch (e) {
+     node.TypeAlias = node.Type;
+   }
+
+  }
+
   redrawAllLines() {
     var svg = document.getElementById("flow-connections");
     while (svg.firstChild) {

@@ -86,6 +86,7 @@ func main() {
 	log.Info("---------------------------------------------")
 
 	log.Info("<main> Started")
+	log.Info("<main> Broker address:",configs.MqttServerURI)
 	//-------------------------------------
 
 	sysInfo := SystemInfo{}
@@ -109,7 +110,9 @@ func main() {
 	lifecycle.SetConnectionState(edgeapp.ConnStateConnected)
 
 	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs,auth)
-	controlApi.Start()
+	if !configs.IsDevMode {
+		controlApi.Start()
+	}
 
 	// TODO : Move to sessions
 	wsUpgrader := mqtt.NewWsUpgrader(configs.MqttServerURI, auth,configs.TlsCertDir)

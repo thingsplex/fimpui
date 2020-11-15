@@ -68,7 +68,7 @@
   margin-bottom: 20px;
   background-color: lightgoldenrodyellow;
   padding: 10px;
-  width: 150px;
+  width: 190px;
   position: absolute;
   border-radius:15px;
 }
@@ -125,5 +125,5 @@ md-chip {
 }
 
 .node-editor-dialog {
-  max-width: 800px;
+  max-width: 850px;
 }

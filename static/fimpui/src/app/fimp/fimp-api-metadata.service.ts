@@ -1,4 +1,4 @@
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {BACKEND_ROOT} from "../globals";
 import {Injectable} from "@angular/core";
 
@@ -53,8 +53,9 @@ export class FimpApiMetadataService {
   }
 
   loadFimpApiMetadata() {
+    const headers = new HttpHeaders({'Cache-Control':  'no-cache, no-store, must-revalidate, post-check=0, pre-check=0','Pragma': 'no-cache','Expires': '0'});
     this.http
-      .get(BACKEND_ROOT+'/fimp/misc/fimp-api.json',{} )
+      .get(BACKEND_ROOT+'/fimp/misc/fimp-api.json',{headers:headers} )
       .subscribe ((result) => {
         console.log("List of autocomplete interfaces 1:")
         console.dir(result);
