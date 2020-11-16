@@ -1,15 +1,15 @@
-version="1.0.5"
+version="1.0.7"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
 remote_host = "fh@cube.local"
-reprepo_host = ""
+reprepo_host = "reprepro@archive.futurehome.no"
 
 build-js:
 	cd static/fimpui;ng build --prod --deploy-url=/fimp/static/
-	cp -R static/fimpui/dist debian/opt/fimpui/static/fimpui/
-	cp -R static/help debian/opt/fimpui/static/
-	cp -R static/misc debian/opt/fimpui/static/
+	cp -R static/fimpui/dist package/debian/opt/fimpui/static/fimpui/
+	cp -R static/help package/debian/opt/fimpui/static/
+	cp -R static/misc package/debian/opt/fimpui/static/
 
 build-go-arm:
 	GOOS=linux GOARCH=arm GOARM=6 go build -ldflags="-s -w" -o fimpui

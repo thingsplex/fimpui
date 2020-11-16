@@ -523,10 +523,6 @@ findInputSocketPosition(htmlElement):any {
         node.Config["SaveToVariable"] = false;
         break;
       case "receive":
-        node.Config = {};
-        node.Config["Timeout"] = 120;
-        node.Config["ValueFilter"] = {"Value":"","ValueType":""};
-        node.Config["IsValueFilterEnabled"] = false;
         break;
       case "if":
         node.Config = {};
@@ -870,12 +866,13 @@ export class NodeEditorDialog {
   }
 
   showHelp(node:MetaNode){
-    let dialogRef = this.dialog.open(HelpDialog,{
-      // width: '95%',
-      height: '95%',
-      width: '95%',
-      data:node
-    });
+    // let dialogRef = this.dialog.open(HelpDialog,{
+    //   // width: '95%',
+    //   height: '95%',
+    //   width: '95%',
+    //   data:node
+    // });
+      window.open("https://thingsplex.github.io/docs/thingsplex-ui/flow/", "_blank");
   }
 
 

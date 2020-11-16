@@ -15,7 +15,7 @@ import { TransformNodeComponent  } from './flow-nodes/transform-node/node.compon
 import { ExecNodeComponent  } from './flow-nodes/exec-node/node.component';
 import { LogNodeComponent  } from './flow-nodes/log-node/node.component';
 import { ActionNodeComponent,VincActionNodeComponent,NotificationActionNodeComponent,TimelineActionNodeComponent } from './flow-nodes/action-node/node.component';
-import { ReceiveNodeComponent } from './flow-nodes/flow-nodes.component';
+import { ReceiveNodeComponent } from './flow-nodes/receive-node/node.component';
 import { FlowRoutingModule } from "app/tpui-modules/flow/flow-routing.module";
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { RegistryModule} from 'app/tpui-modules/registry/registry.module'

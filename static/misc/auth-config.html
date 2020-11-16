@@ -8,7 +8,7 @@
 </head>
 
 <body>
-<div class="main" style="min-height: 450px">
+<div class="main" style="min-height: 470px">
   <p class="sign" align="center">User access configuration</p>
   <form name="loginForm" class="form1" method="post" action="/fimp/auth-config">
     <input class="un " name="username" type="text" align="center" placeholder="Username">
@@ -19,11 +19,15 @@
       <option value="code">One time code</option>
       <option value="none">Disabled</option>
     </select>
-    <a class="submit" align="center" href="javascript: submitform()">Sign in</a>
+    <a class="submit" align="center" href="javascript: submitform()">Save</a>
+    <p style="margin-top: 25px">
+    <a class="submit" style="background: linear-gradient(to right, #a6a0a7, #c3c2c2);" align="right" href="https://thingsplex.github.io/docs/thingsplex-ui/installation.html#sign-up" target="_blank">Help</a>
+    </p>
     <script type="text/javascript">
       function submitform()
       {
         document.loginForm.submit();
+      }
       }
     </script>
   </form>
