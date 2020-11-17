@@ -2,7 +2,7 @@
      <div #nodebody>
        <mat-expansion-panel [expanded]="'true'">
          <mat-expansion-panel-header>
-           <mat-panel-title> Trigger config </mat-panel-title>
+           <mat-panel-title> Wait for event config </mat-panel-title>
          </mat-expansion-panel-header>
          <p>
            <service-selector-wizard [inputServiceAddress]="node.Address" [inputInterfaceName]="node.ServiceInterface" (onSelect)="onServiceConfigured($event)"></service-selector-wizard>
@@ -148,7 +148,4 @@
           </mat-form-field>
           </p>
    </div>
-         <p>
-           <button mat-raised-button (click)="runFlow(node)" >Run</button>
-         </p>
 </div>

@@ -35,7 +35,7 @@
         <button mat-menu-item (click)="addNode('action','')">Generic</button>
         <button mat-menu-item (click)="addNode('action','notification_action')">Push notification</button>
         <button mat-menu-item (click)="addNode('action','timeline_action')">Publish to timeline</button>
-        <button mat-menu-item (click)="addNode('rest_action','')">REST</button>
+        <button mat-menu-item (click)="addNode('rest_action','')">HTTP request</button>
         <button mat-menu-item (click)="addNode('action','vinc_action')">Modes & shortcuts</button>
       </mat-menu>
 
@@ -71,6 +71,7 @@
               <div id = "in_socket_nodeid_{{node.Id}}" *ngIf="node.Type!='trigger' && node.Type!='time_trigger' " class="socket socket-input" (drop)="lineDrop($event)" (dragstart)="lineDragStart($event)" (dragover)="allowLineDrop($event)"></div>
               <mat-card-header >
                 <mat-card-title>
+
                 <button mat-icon-button [ngSwitch]="node.Type"  (click)="showNodeEditorDialog(flow,node)" color="primary" >
                     <mat-icon *ngSwitchCase="'trigger'" aria-label="Edit node">input</mat-icon>
                     <mat-icon *ngSwitchCase="'vinc_trigger'" aria-label="Edit node">input</mat-icon>
@@ -89,12 +90,14 @@
                     <mat-icon *ngSwitchCase="'log_action'" aria-label="Log node">edit</mat-icon>
                     <mat-icon *ngSwitchDefault aria-label="Edit node">build</mat-icon>
                   </button>
-                  {{ node.Type }}
+                  {{ node.TypeAlias }}
                 </mat-card-title>
                 <mat-card-subtitle> {{ node.Label }} </mat-card-subtitle>
               </mat-card-header>
               <mat-card-content>
-
+                <ng-container *ngIf="node.LastValue">
+                  Last value : {{node.LastValue}}
+                </ng-container>
 
               </mat-card-content>
 

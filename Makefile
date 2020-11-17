@@ -1,15 +1,15 @@
-version="1.0.4"
+version="1.0.8"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
 remote_host = "fh@cube.local"
-reprepo_host = ""
+reprepo_host = "reprepro@archive.futurehome.no"
 
 build-js:
 	cd static/fimpui;ng build --prod --deploy-url=/fimp/static/
-	cp -R static/fimpui/dist debian/opt/fimpui/static/fimpui/
-	cp -R static/help debian/opt/fimpui/static/
-	cp -R static/misc debian/opt/fimpui/static/
+	cp -R static/fimpui/dist package/debian/opt/fimpui/static/fimpui/
+	cp -R static/help package/debian/opt/fimpui/static/
+	cp -R static/misc package/debian/opt/fimpui/static/
 
 build-go-arm:
 	GOOS=linux GOARCH=arm GOARM=6 go build -ldflags="-s -w" -o fimpui
@@ -20,16 +20,19 @@ build-go:
 build-go-amd:
 	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o fimpui
 
+build-go-x86:
+	GOOS=linux GOARCH=386 go build -ldflags="-s -w" -o fimpui
+
 build-tsdb-loader-osx:
 	cd  process/tsdb/cli/;go build -o fimp-inxlux-loader
 
 clean-deb:
-	find debian -name ".DS_Store" -delete
+	find package/debian -name ".DS_Store" -delete
 
 clean:
-	-rm -R debian/opt/fimpui/static/fhcore/*
-	-rm -R debian/opt/fimpui/static/fimpui/dist/*
-	-rm debian/opt/fimpui/fimpui
+	-rm -R package/debian/opt/fimpui/static/fhcore/*
+	-rm -R package/debian/opt/fimpui/static/fimpui/dist/*
+	-rm package/debian/opt/fimpui/fimpui
 	-rm fimpui
 
 configure-arm:
@@ -42,34 +45,39 @@ configure-dev-js:
 	python ./scripts/config_env.py dev $(version) armhf
 
 package-tar:
-	tar cvzf fimpui.tar.gz fimpui VERSION static/fimpui/dist static/fhcore
+	cp fimpui build/tar
+	cp VERSION build/tar
+	cp -R static/fimpui/dist package/tar/static/fimpui/
+	cp -R static/help package/tar/static/
+	cp -R static/misc package/tar/static/
+	tar cvzf package/build/fimpui.tar.gz package/tar
 
 package-deb-doc:clean-deb
 	@echo "Packaging application as debian package"
-	chmod a+x debian/DEBIAN/*
-	cp fimpui debian/opt/fimpui
-	cp VERSION debian/opt/fimpui
-	cp -R static/fimpui/dist debian/opt/fimpui/static/fimpui/
-	cp -R static/help debian/opt/fimpui/static/
-	cp -R static/misc debian/opt/fimpui/static/
-	docker run --rm -v ${working_dir}:/build -w /build --name debuild debian dpkg-deb --build debian
+	chmod a+x package/debian/DEBIAN/*
+	cp fimpui package/debian/opt/fimpui
+	cp VERSION package/debian/opt/fimpui
+	cp -R static/fimpui/dist package/debian/opt/fimpui/static/fimpui/
+	cp -R static/help package/debian/opt/fimpui/static/
+	cp -R static/misc package/debian/opt/fimpui/static/
+	docker run --rm -v ${working_dir}:/build -w /build --name debuild debian dpkg-deb --build package/debian
 	@echo "Done"
 
 tar-arm: build-js build-go-arm package-deb-doc
 	@echo "The application was packaged into tar archive "
 
 deb-arm : clean configure-arm build-js build-go-arm package-deb-doc
-	mv debian.deb fimpui_$(version)_armhf.deb
+	mv package/debian.deb package/build/fimpui_$(version)_armhf.deb
 
 deb-amd : configure-amd64 build-js build-go-amd package-deb-doc
-	mv debian.deb fimpui_$(version)_amd64.deb
+	mv package/debian.deb package/build/fimpui_$(version)_amd64.deb
 
 set-dev : configure-dev-js build-go
 
 build-mac : build-js build-go
 
 upload :
-	scp fimpui_$(version)_armhf.deb $(remote_host):~/
+	scp package/build/fimpui_$(version)_armhf.deb $(remote_host):~/
 
 upload-install : upload
 	ssh -t $(remote_host) "sudo dpkg -i fimpui_$(version)_armhf.deb"
@@ -90,7 +98,7 @@ start-dev-webserver:
 	cd static/fimpui;ng serve
 
 publish-reprepo:
-	scp package/build/flex-energy_$(version)_armhf.deb $(reprepo_host):~/apps
+	scp package/build/fimpui_$(version)_armhf.deb $(reprepo_host):~/apps
 
 run :
 	go run main.go -c var/

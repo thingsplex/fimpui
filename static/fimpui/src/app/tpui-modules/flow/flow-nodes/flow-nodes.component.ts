@@ -13,9 +13,7 @@ export class FlowNodesComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }
-
 
 @Component({
   selector: 'set-variable-node',
@@ -59,59 +57,6 @@ export class SetVariableNodeComponent implements OnInit {
   }
 }
 
-
-
-@Component({
-  selector: 'receive-node',
-  templateUrl: './receive-node.html',
-  styleUrls: ['./flow-nodes.component.css']
-})
-export class ReceiveNodeComponent implements OnInit {
-  @Input() node :MetaNode;
-  @Input() nodes:MetaNode[];
-  constructor(public dialog: MatDialog) { }
-
-  ngOnInit() {
-  }
-  serviceLookupDialog(nodeId:string) {
-    let dialogRef = this.dialog.open(ServiceLookupDialog,{
-            width: '500px',
-            data:"out"
-          });
-    dialogRef.afterClosed().subscribe(result => {
-      console.dir(result)
-      if (result)
-        this.nodes.forEach(element => {
-            if (element.Id==nodeId) {
-              element.Service = result.serviceName
-              if(element.Label==""||element.Label==undefined){
-                element.Label =  result.serviceAlias + " at "+result.locationAlias
-              }
-              element.ServiceInterface = result.intfMsgType
-              element.Address = result.intfAddress
-              element.Config.ValueFilter.ValueType =  result.intfValueType
-            }
-        });
-    });
-  }
-}
-
-
-/*type TimeTriggerConfig struct {
-	DefaultMsg model.Variable
-	Expressions []TimeExpression
-	GenerateAstroTimeEvents bool
-	Latitude float64
-	Longitude float64
-}
-
-type TimeExpression struct {
-	Name string
-	Expression string   //https://godoc.org/github.com/robfig/cron#Job
-	Comment string
-}
- */
-
 @Component({
   selector: 'time-trigger-node',
   templateUrl: './time-trigger-node.html',
@@ -124,8 +69,6 @@ export class TimeTriggerNodeComponent implements OnInit {
   ngOnInit() {
   }
 }
-
-
 
 @Component({
   selector: 'loop-node',

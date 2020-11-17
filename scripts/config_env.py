@@ -1,7 +1,7 @@
 import sys
 
 def set_deb_control(version , arch):
-    file_name  = "./debian/DEBIAN/control"
+    file_name  = "./package/debian/DEBIAN/control"
     template = "Package: fimpui\n"
     template+= "Version: "+version+"\n"
     template+= "Replaces: fimpui\n"

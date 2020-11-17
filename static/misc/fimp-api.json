@@ -5,9 +5,9 @@
     "description":"Meaning of basic service can vary from device to device . It's generic and most simple way to interact with a device",
     "interfaces": [{"name":"evt.lvl.report"},{"name":"cmd.lvl.set"},{"name":"cmd.lvl.get_report"}]
   },{"name":"basic","label":"Generic level","icon":""},
-    {"name":"dev_sys","label":"Device system services","icon":""},
-    {"name":"out_bin_switch","label":"On/off switch/relay","icon":""},
-    {"name":"out_lvl_switch","label":"Level switch/dimmer","icon":""},
+    {"name":"dev_sys","label":"Device system ","icon":""},
+    {"name":"out_bin_switch","label":"Switch/relay","icon":""},
+    {"name":"out_lvl_switch","label":"Switch and level controller","icon":""},
     {"name":"meter_elec","label":"Electricity meter","icon":""},
     {"name":"meter_gas","label":"Gas meter","icon":""},
     {"name":"meter_water","label":"Water meter","icon":""},
@@ -24,7 +24,9 @@
     {"name":"color_ctrl","label":"Color control","icon":""},
     {"name":"scene_ctrl","label":"Scene controller","icon":""},
     {"name":"fan_ctrl","label":"Fan speed and modes","icon":""},
-    {"name":"siren_ctrl","label":"Siren control","icon":""}
+    {"name":"siren_ctrl","label":"Siren control","icon":""},
+    {"name":"media_player","label":"Media player","icon":""}
+
   ],
   "interfaces": [
    {
@@ -68,7 +70,7 @@
     },{
       "name":"evt.meter_ext.report",
       "label":"Extended meter report",
-      "type":"float_mat"
+      "type":"float_map"
     },{
       "name":"evt.meter_ext.get_report",
       "label":"Request extended report",
@@ -109,6 +111,46 @@
       "name":"cmd.alarm.clear",
       "label":"Clear alarm state",
       "type":"string"
+    },{
+      "name":"cmd.scene.set",
+      "label":"Activate scene",
+      "type":"string"
+    },{
+      "name":"evt.scene.report",
+      "label":"Scene activation report",
+      "type":"string"
+    },{
+      "name":"cmd.playback.set",
+      "label":"Send playback command",
+      "type":"string"
+    },{
+      "name":"cmd.playback.get_report",
+      "label":"Request playback state",
+      "type":"null"
+    },{
+      "name":"evt.playback.report",
+      "label":"Playback state report",
+      "type":"string"
+    },{
+      "name":"cmd.playbackmode.set",
+      "label":"Set playback mode",
+      "type":"bool_map"
+    },{
+      "name":"evt.playbackmode.report",
+      "label":"Playback mode report",
+      "type":"bool_map"
+    },{
+      "name":"cmd.volume.set",
+      "label":"Set volume",
+      "type":"int"
+    },{
+      "name":"cmd.volume.get_report",
+      "label":"Request volume level",
+      "type":"null"
+    },{
+      "name":"evt.volume.report",
+      "label":"Volume report",
+      "type":"int"
     }
   ]
 }
