@@ -14,6 +14,18 @@ import (
 
 const ServiceName = "tplexui"
 
+type UserConfigs struct {
+	Username              string `json:"username"`
+	MqttServerURI         string `json:"mqtt_server_uri"`
+	MqttUsername          string `json:"mqtt_server_username"`
+	MqttPassword          string `json:"mqtt_server_password"`
+	MqttTopicGlobalPrefix string `json:"mqtt_topic_global_prefix"`
+	MqttClientIdPrefix    string `json:"mqtt_client_id_prefix"`
+	TlsCertDir            string `json:"tls_cert_dir"`
+	privateKeyFileName	  string `json:"private_key_file"`
+	certFileName		  string `json:"cert_file"`
+}
+
 type Configs struct {
 	path                  string
 	MqttServerURI         string `json:"mqtt_server_uri"`

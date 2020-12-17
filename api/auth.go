@@ -104,6 +104,29 @@ func (cf *Auth) IsRequestAuthenticated(c echo.Context, setResponseHeader bool) b
 	}
 }
 
+func (cf *Auth) GetSessionID(c echo.Context) string {
+	sess, err := session.Get("tplex", c)
+	if err != nil {
+		log.Info("<auth> Session error:", err.Error())
+		return ""
+	}
+	return sess.ID
+}
+
+func (cf *Auth) GetUsername(c echo.Context) string {
+	sess, err := session.Get("tplex", c)
+	if err != nil {
+		log.Info("<auth> Session error:", err.Error())
+		return ""
+	}
+	user, ok := sess.Values["username"]
+	var userS string
+	if ok {
+		userS,_ = user.(string)
+	}
+	return userS
+}
+
 func (cf *Auth) AddUser(username, password string) {
 	cf.dbLock.Lock()
 	defer cf.dbLock.Unlock()

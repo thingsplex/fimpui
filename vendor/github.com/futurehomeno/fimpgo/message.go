@@ -166,6 +166,12 @@ func (msg *FimpMessage) GetObjectValue(objectBindVar interface{}) error {
 
 func (msg *FimpMessage) SerializeToJson() ([]byte, error) {
 	jsonBA, err := json.Marshal(msg)
+	if msg.ValueType == VTypeObject {
+		if msg.Value == nil && msg.ValueObj != nil  {
+			// This is for object pass though.
+			jsonBA , err = jsonparser.Set(jsonBA,msg.ValueObj,"val")
+		}
+	}
 	return jsonBA, err
 
 }
@@ -262,6 +268,7 @@ func NewMessageFromBytes(msg []byte) (*FimpMessage, error) {
 	fimpmsg.CreationTime, _ = jsonparser.GetString(msg, "ctime")
 	fimpmsg.ResponseToTopic, _ = jsonparser.GetString(msg, "resp_to")
 	fimpmsg.Source, _ = jsonparser.GetString(msg, "src")
+	fimpmsg.Topic, _ = jsonparser.GetString(msg, "topic")
 
 	switch fimpmsg.ValueType {
 	case VTypeString:

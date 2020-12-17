@@ -116,6 +116,20 @@ func main() {
 
 	// TODO : Move to sessions
 	wsUpgrader := mqtt.NewWsUpgrader(configs.MqttServerURI, auth,configs.TlsCertDir)
+
+	wsBridge := mqtt.NewWsBridge(auth)
+
+	userConf := model.UserConfigs{
+		Username:              "unknown",
+		MqttServerURI:         configs.MqttServerURI,
+		MqttUsername:          configs.MqttUsername,
+		MqttPassword:          configs.MqttPassword,
+		MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
+		MqttClientIdPrefix:    configs.MqttClientIdPrefix,
+		TlsCertDir:            configs.TlsCertDir,
+	}
+	wsBridge.UpdateUserConfig("unknown",userConf)
+
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -221,6 +235,18 @@ func main() {
 			log.Error("Failed to save config file. Err:",err.Error())
 		}
 		wsUpgrader.UpdateBrokerConfig(configs.MqttServerURI)
+
+		userConf := model.UserConfigs{
+			Username:              "unknown",
+			MqttServerURI:         configs.MqttServerURI,
+			MqttUsername:          configs.MqttUsername,
+			MqttPassword:          configs.MqttPassword,
+			MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
+			MqttClientIdPrefix:    configs.MqttClientIdPrefix,
+			TlsCertDir:            configs.TlsCertDir,
+		}
+		wsBridge.UpdateUserConfig("unknown",userConf)
+
 		return c.JSON(http.StatusOK, configs)
 	})
 
@@ -404,6 +430,7 @@ func main() {
 	}))
 
 	e.GET("/mqtt", wsUpgrader.Upgrade)
+	e.GET("/ws-bridge", wsBridge.Upgrade)
 	e.File("/fimp", index)
 	e.File("/", index)
 	e.File("/fimp/auth-config", "static/misc/auth-config.html")

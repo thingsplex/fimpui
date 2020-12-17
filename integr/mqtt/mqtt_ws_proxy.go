@@ -57,11 +57,11 @@ func (wu *WsUpgrader) UpdateBrokerConfig(mqttServerURI string) {
 	}
 	wu.IsSSL = isSSL
 }
-
+// Upgrade - the method is invoked by Echo on web request. This is the place where we convert HTTP request into WS connection
 func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 	defer func() {
 		if r := recover(); r != nil {
-			log.Error("!!!!!!!!!!! Mqtt WS proxy (Upgrade) crashed with panic!!!!!!!!!!!!!!!")
+			log.Error("!!!!!!!!!!! WS-MQTT proxy (Upgrade) crashed with panic!!!!!!!!!!!!!!!")
 		}
 	}()
 	if !wu.auth.IsRequestAuthenticated(c, true) {
@@ -74,6 +74,8 @@ func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 		log.Error("<MqWsProxy> Can't upgrade . Error:", err)
 		return err
 	}
+
+
 
 	log.Info("<MqWsProxy> Upgraded ")
 	session := MqttWsProxySession{wsConn: ws, isSSL: wu.IsSSL,certDir: wu.certDir}
