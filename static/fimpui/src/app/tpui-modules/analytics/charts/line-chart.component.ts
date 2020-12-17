@@ -230,8 +230,7 @@ export class LineChartComponent implements OnInit  {
     this.canvasElement.nativeElement.style.height = this._height;
 
     this.initChart();
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "ecollector" && fimpMsg.corid ==this.lastRequestId ){
         if (fimpMsg.mtype == "evt.tsdb.query_report" || fimpMsg.mtype == "evt.tsdb.data_points_report") {
           if (fimpMsg.val) {
@@ -278,7 +277,7 @@ export class LineChartComponent implements OnInit  {
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 
   queryData() {
@@ -310,7 +309,7 @@ export class LineChartComponent implements OnInit  {
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 
 

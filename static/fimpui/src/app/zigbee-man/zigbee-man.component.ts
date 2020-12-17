@@ -22,7 +22,7 @@ export class ZigbeeManComponent implements OnInit {
 
   reloadZigbeeDevices(){
     let msg  = new FimpMessage("zigbee","cmd.network.get_all_nodes","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
   }
 
   // addDevice(){
@@ -49,21 +49,19 @@ export class ZigbeeManComponent implements OnInit {
     console.log("Remove device")
     let val = {"address":address.toString()}
     let msg  = new FimpMessage("zigbee","cmd.thing.delete","str_map",val,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
 
   }
 
   generateExclusionReport(address:string){
     let msg  = new FimpMessage("zigbee","evt.thing.exclusion_report","object",{"address":String(address)},null,null)
-    this.fimp.publish("pt:j1/mt:evt/rt:ad/rn:zigbee/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:evt/rt:ad/rn:zigbee/ad:1",msg);
 
   }
 
   ngOnInit() {
 
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      console.log(msg.payload.toString());
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "zigbee" )
         {
         if(fimpMsg.mtype == "evt.network.all_nodes_report" )
@@ -104,7 +102,7 @@ export class ZigbeeManComponent implements OnInit {
     channel = Number(channel)
     var props = new Map<string,string>();
     let msg  = new FimpMessage("zigbee","cmd.custom.channel","int",channel,props,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
 
     let snackBarRef = this.snackBar.open('Command was sent',"",{
       duration: 2000
@@ -114,14 +112,14 @@ export class ZigbeeManComponent implements OnInit {
   runZigbeeNetCommand(cmd:string) {
     var props = new Map<string,string>();
     let msg  = new FimpMessage("zigbee","cmd.custom."+cmd,"null",null,props,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
     this.snackBar.open('Command was sent', "", {duration: 2000});
   }
 
   runZigbeeNetCommandParam(cmd: string, param: string) {
     var props = new Map<string, string>();
     let msg = new FimpMessage("zigbee", "cmd.custom." + cmd, "int", parseInt(param), props, null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
     this.snackBar.open('Command was sent', "", {duration: 2000});
   }
 
@@ -145,9 +143,8 @@ export class AddZigbeeDeviceDialog implements OnInit, OnDestroy  {
   }
   ngOnInit(){
     this.messages = [];
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
 
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "zigbee" )
       {
         if(fimpMsg.mtype == "evt.thing.inclusion_report" )
@@ -176,11 +173,11 @@ export class AddZigbeeDeviceDialog implements OnInit, OnDestroy  {
     var props = new Map<string,string>();
     props["template_name"] = this.customTemplateName;
     let msg  = new FimpMessage("zigbee","cmd.thing.inclusion","bool",true,props,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
   }
   stopInclusion(){
     let msg  = new FimpMessage("zigbee","cmd.thing.inclusion","bool",false,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
     this.dialogRef.close();
   }
 

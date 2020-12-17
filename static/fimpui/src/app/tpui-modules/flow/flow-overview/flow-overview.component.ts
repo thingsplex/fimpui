@@ -54,8 +54,7 @@ export class FlowOverviewComponent implements OnInit {
   }
 
   configureFimpListener() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "tpflow" ){
         console.log("Confirmation report = ",fimpMsg.mtype)
         if (fimpMsg.mtype == "evt.flow.list_report") {
@@ -98,14 +97,14 @@ export class FlowOverviewComponent implements OnInit {
     let msg  = new FimpMessage("tpflow","cmd.flow.get_list","null",null,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   deleteFlow(id:string) {
     let msg  = new FimpMessage("tpflow","cmd.flow.delete","string",id,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   sendFlowControlCommand(flowId:string,command:string) {
@@ -113,7 +112,7 @@ export class FlowOverviewComponent implements OnInit {
     let msg  = new FimpMessage("tpflow","cmd.flow.ctrl","str_map",val,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   openFlowImportWindow() {
@@ -136,7 +135,7 @@ export class FlowOverviewComponent implements OnInit {
     let msg  = new FimpMessage("tpflow","cmd.flow.import","object",flow,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   showLog() {

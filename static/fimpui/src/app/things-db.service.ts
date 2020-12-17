@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
 import { FimpService} from 'app/fimp/fimp.service'
-import { FimpMessage,NewFimpMessageFromString } from 'app/fimp/Message'; 
+import { FimpMessage,NewFimpMessageFromString } from 'app/fimp/Message';
 import { Thing} from './things-db/thing-model';
 
 @Injectable()
 export class ThingsDbService {
   private things:Thing[]=[];
   constructor(private fimp:FimpService) {
-    this.fimp.getGlobalObservable().subscribe((msg) => {
+    this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       console.log("ThingsDBservice new message ")
-      let fimpMsg  = NewFimpMessageFromString(msg.payload.toString());
-      fimpMsg.topic = fimp.detachGlobalPrefix(msg.topic);
+      fimpMsg.topic = fimp.detachGlobalPrefix(fimpMsg.topic);
       if (fimpMsg.service == "zwave-ad" && fimpMsg.mtype == "evt.thing.inclusion_report"){
         this.onFimpMessage(fimpMsg);
-      } 
-      
+      }
+
     });
   }
 

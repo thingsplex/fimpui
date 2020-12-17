@@ -26,7 +26,7 @@ import {FimpMessage} from "app/fimp/Message";
     save(){
       let val = {"id":this.deviceId,"alias":this.alias,"location_id":this.locationId}
       let msg  = new FimpMessage("tpflow","cmd.registry.update_device","object",val,null,null)
-      this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+      this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
       this.dialogRef.close("ok");
     }
 

@@ -62,13 +62,13 @@ export class SettingsComponent implements OnInit {
     val["ver"] = "1.0.0";
 
     let msg  = new FimpMessage("fhbutler","cmd.app.ctrl","str_map",val,props,null)
-    this.fimpService.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
+    this.fimpService.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
   }
 
   checkForUpdates() {
     let props:Map<string,string> = new Map();
     let msg  = new FimpMessage("fhbutler","cmd.app.check_updates","null",null,props,null)
-    this.fimpService.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
+    this.fimpService.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
   }
 
 
@@ -85,11 +85,10 @@ export class SettingsComponent implements OnInit {
     })
 
 
-    this.globalSub = this.fimpService.getGlobalObservable().subscribe((msg) => {
-      if (msg== null) {
+    this.globalSub = this.fimpService.getGlobalObservable().subscribe((fimpMsg) => {
+      if (fimpMsg== null) {
         return;
       }
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "fhbutler" )
       {
         if(fimpMsg.mtype == "evt.app.ctrl_report") {

@@ -68,8 +68,7 @@ export class EnergyComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
 
     });
   }

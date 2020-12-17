@@ -40,8 +40,7 @@ export class AngrydogComponent implements OnInit {
     // this.loadData()
     this.mode = "faults"
     this.loadDataFromMq(this.mode);
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "angry_dog" ){
         if (fimpMsg.mtype == "evt.angry_dog.device_list_report") {
           console.log("Message from angry dog evt.angry_dog.device_list_report");
@@ -70,13 +69,13 @@ export class AngrydogComponent implements OnInit {
   loadDataFromMq(mode){
     let msgType = "cmd.angry_dog.get_all_devices";
     let msg  = new FimpMessage("angry_dog",msgType,"string","all",null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg);
   }
 
   resyncAngrydogDB() {
     let msgType = "cmd.angry_dog.resync";
     let msg  = new FimpMessage("angry_dog",msgType,"string","all",null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg);
 
   }
 
@@ -85,7 +84,7 @@ export class AngrydogComponent implements OnInit {
     this.rifleTestReport = {"Status":"running"};
     let msgType = "cmd.systest.get_mdu_rifle_report";
     let msg  = new FimpMessage("angry_dog",msgType,"null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg);
   }
 
   runRifleTest() {
@@ -97,7 +96,7 @@ export class AngrydogComponent implements OnInit {
       "resend_interval":this.resendInterval ,
       "no_activity_timeout":this.noOpTimeout,
       "mode":this.rifleTestMode},null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:angry_dog/ad:1",msg);
   }
 
 

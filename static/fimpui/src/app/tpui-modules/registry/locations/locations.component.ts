@@ -53,7 +53,7 @@ displayedColumns = ['id','type','sub_type','alias','address','action'];
 
   public sync(){
     let msg  = new FimpMessage("tpflow","cmd.registry.sync_rooms","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg);
     setTimeout( ()=> {
         this.registry.loadAllComponents()
     },1000)

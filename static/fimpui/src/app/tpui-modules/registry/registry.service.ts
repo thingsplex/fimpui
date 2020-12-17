@@ -36,8 +36,7 @@ export class ThingsRegistryService{
   }
 
   configureFimpListener() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "tpflow" ){
         if (fimpMsg.mtype == "evt.registry.locations_report") {
           if (fimpMsg.val) {
@@ -94,7 +93,7 @@ export class ThingsRegistryService{
     msg.src = "tplex-ui"
     this.lastRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
   loadLocations() {
     console.log("reg: Requesting locations")
@@ -102,7 +101,7 @@ export class ThingsRegistryService{
     msg.src = "tplex-ui"
     this.lastRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   loadThings() {
@@ -110,7 +109,7 @@ export class ThingsRegistryService{
     msg.src = "tplex-ui"
     this.thingsQueryRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   loadDevices() {
@@ -118,7 +117,7 @@ export class ThingsRegistryService{
     msg.src = "tplex-ui"
     this.devicesQueryRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   notifyRegistryState() {

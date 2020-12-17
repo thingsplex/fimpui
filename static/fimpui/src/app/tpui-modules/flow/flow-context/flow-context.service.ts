@@ -28,8 +28,7 @@ export class FlowContextService{
   }
 
   configureFimpListener() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "tpflow" ){
         if (fimpMsg.mtype == "evt.flow.ctx_records_report") {
           if (fimpMsg.val) {
@@ -91,7 +90,7 @@ export class FlowContextService{
     this.contextQueryRequestId = msg.uid;
     this.lastRequestFlowId = flowId;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
 

@@ -87,8 +87,7 @@ export class SensorsComponent implements OnInit {
   }
 
   loadListOfSensorTypes() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "ecollector" && fimpMsg.corid ==this.lastRequestId ){
         if (fimpMsg.mtype == "evt.tsdb.measurements_report") {
           if (fimpMsg.val) {
@@ -183,7 +182,7 @@ export class SensorsComponent implements OnInit {
     msg.src = "tplex-ui"
     this.lastRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 
 

@@ -81,8 +81,7 @@ export class CpuChartComponent implements OnInit  {
   ngAfterViewInit() {
    this.initChart();
    this.initDatasets();
-   this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-     let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+   this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
      if(fimpMsg.mtype == "evt.systemos.activity_report" )
      {
         let rep = fimpMsg.val;
@@ -113,7 +112,7 @@ export class CpuChartComponent implements OnInit  {
   requestButlerActivitySystemReport(){
     let msg  = new FimpMessage("fhbutler","cmd.systemos.get_activity_report","string","",null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
   }
 
   initChart() {

@@ -62,17 +62,11 @@ export class FimpService {
     }
 
     this._transportType = "ws"
-
-
-    this.mqtt.onConnect.subscribe((message: any) => {
-      console.log("FimpService onConnect");
-    });
     this.connect();
-
   }
 
   public init() {
-    var topic = this.prepareTopic("pt:j1/#");
+    let topic = this.prepareTopic("pt:j1/#");
     this.subscribeToAll(topic);
   }
 
@@ -88,6 +82,9 @@ export class FimpService {
       };
       this.mqttSeviceOptions["globalTopicPrefix"] = this.configs.configs.mqtt_topic_global_prefix;
       this.globalTopicPrefix = this.configs.configs.mqtt_topic_global_prefix;
+      this.mqtt.onConnect.subscribe((message: any) => {
+        console.log("FimpService onConnect");
+      });
       this.mqtt.connect(this.mqttSeviceOptions);
     }else if(this._transportType == "ws") {
       this.ws.connect();
@@ -145,7 +142,7 @@ export class FimpService {
     return this.observable
   }
 
-  public getGlobalObservable(): Observable<IMqttMessage> {
+  public getGlobalObservable(): Observable<FimpMessage> {
     console.log("Getting global observable");
     if (this.observable == null) {
       this.subscribeToAll("pt:j1/#");
@@ -153,13 +150,13 @@ export class FimpService {
     return this.observable;
   }
 
-  public getMqttSignalingOservable(): Observable<IMqttMessage> {
-    console.log("Getting global observable");
-    if (this.observable == null) {
-      this.subscribeToAll("pt:j1/#");
-    }
-    return this.observable;
-  }
+  // public getMqttSignalingOservable(): Observable<IMqttMessage> {
+  //   console.log("Getting global observable");
+  //   if (this.observable == null) {
+  //     this.subscribeToAll("pt:j1/#");
+  //   }
+  //   return this.observable;
+  // }
 
 
   public setFilter(topic: string, service: string, msgType: string) {
@@ -180,16 +177,16 @@ export class FimpService {
   }
 
   // public subscribe(topic: string):Observable<MqttMessage>{
-  public subscribe(topic: string): Observable<any> {
+  private subscribe(topic: string): Observable<FimpMessage> {
     if (this._transportType == "mqtt") {
-      var topic = this.prepareTopic(topic);
-      console.log("Subscribing to topic " + topic);
-      return this.mqtt.observe(topic);
+      // var topic = this.prepareTopic(topic);
+      // console.log("Subscribing to topic " + topic);
+      // return this.mqtt.observe(topic);
     }if (this._transportType == "ws") {
       return this.ws.subscribe();
     }else{
       console.log("subscribing to webrtc");
-      return this._webRtcService.inboundMsgChannel$.pipe(tap(d => console.log(d)));
+      // return this._webRtcService.inboundMsgChannel$.pipe(tap(d => console.log(d)));
     }
   }
 
@@ -212,20 +209,21 @@ export class FimpService {
     });
   }
 
-  public publish(topic: string, message: string) {
+  public publish(topic: string, message: FimpMessage) {
     if (this._transportType == "mqtt") {
-      this.publishMqtt(topic, message)
+      this.publishMqtt(topic, message.toString())
     } else if (this._transportType == "ws") {
-      this.ws.publish(topic,message)
+      message.topic = topic
+      this.ws.publish(topic,message.toString())
     } else {
-      this._webRtcService.publish(topic, message)
+      this._webRtcService.publish(topic, message.toString())
     }
 
   }
 
   public discoverResources() {
     let msg = new FimpMessage("system", "cmd.discovery.request", "null", null, null, null)
-    this.publish("pt:j1/mt:cmd/rt:discovery", msg.toString());
+    this.publish("pt:j1/mt:cmd/rt:discovery", msg);
   }
 
   private rotateMessages(msgLog: FimpMessage[]) {
@@ -234,14 +232,13 @@ export class FimpService {
     }
   }
 
-  private saveMessage(msg: IMqttMessage) {
+  private saveMessage(fimpMsg: FimpMessage) {
     if (!this.isMessageCaptureEnabled)
       return
     try {
       // console.log("Saving new message to log")
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
-      fimpMsg.topic = this.detachGlobalPrefix(msg.topic);
-      fimpMsg.raw = msg.payload.toString();
+      fimpMsg.topic = this.detachGlobalPrefix(fimpMsg.topic);
+      // fimpMsg.raw = fimpMsg.toString()
       fimpMsg.localTs = Date.now();
       fimpMsg.localId = this.messages.length + 1;
       this.messages.unshift(fimpMsg);
@@ -288,7 +285,7 @@ export class FimpService {
   public startCBSession() {
     let val = '{"token":"tp-token","client-id":"tplexui-1","username":"aleksandrs@futurehome.no", "device-id": "browser"}';
     let msg = new FimpMessage("clbridge", "cmd.session.start", "str_map", val, null, null)
-    this.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1", msg.toString());
+    this.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg);
   }
 
 }

@@ -83,7 +83,8 @@ export class TimelineComponent implements OnInit {
     this.payload = JSON.stringify(JSON.parse(payload),null,2);
   }
   sendMessage(topic:string,payload:string) {
-    this.fimp.publish(topic,payload);
+    let msg = NewFimpMessageFromString(payload)
+    this.fimp.publish(topic,msg);
   }
   startStream(state:boolean) {
     this.fimp.enableMessageCapture(state);
@@ -142,7 +143,7 @@ export class MsgDetailsDialog {
     public dialogRef: MatDialogRef<MsgDetailsDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
       this.fimpMsg = data.fimp;
-      this.fimpMsg.raw = JSON.stringify(JSON.parse(this.fimpMsg.raw),null,2)
+      this.fimpMsg.raw = JSON.stringify(JSON.parse(this.fimpMsg.toString()),null,2)
       this.parentComp = data.parent;
       // this.getServiceByAddress(this.fimpMsg.topic)
     }

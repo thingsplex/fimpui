@@ -137,8 +137,7 @@ export class FlowEditorComponent implements OnInit {
   }
 
   configureFimpListener() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "tpflow" && fimpMsg.corid ==this.lastRequestId ){
         if (fimpMsg.mtype == "evt.flow.definition_report") {
           if (fimpMsg.val) {
@@ -153,7 +152,7 @@ export class FlowEditorComponent implements OnInit {
           this.snackBar.open('Flow is saved',"",{duration:1000});
         }
       }else {
-        this.updateUiValue(msg.topic,fimpMsg);
+        this.updateUiValue(fimpMsg.topic,fimpMsg);
       }
     });
   }
@@ -163,7 +162,7 @@ export class FlowEditorComponent implements OnInit {
     msg.src = "tplex-ui"
     this.lastRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   updateUiValue(topic:string,fimpMsg : FimpMessage) {
@@ -199,7 +198,7 @@ export class FlowEditorComponent implements OnInit {
      msg.src = "tplex-ui"
      this.lastRequestId = msg.uid;
      msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
   runFlow() {
     let node:MetaNode;
@@ -244,7 +243,7 @@ export class FlowEditorComponent implements OnInit {
     let msg  = new FimpMessage("tpflow","cmd.flow.ctrl","str_map",val,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
  getNewNodeId():string {
@@ -785,7 +784,7 @@ export class FlowLogDialog {
     let msg  = new FimpMessage("tpflow","cmd.flow.get_log","str_map",val,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   ngOnDestroy() {
@@ -795,8 +794,7 @@ export class FlowLogDialog {
   }
 
   configureFimpListener() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "tpflow" ){
         if (fimpMsg.mtype == "evt.flow.log_report") {
           if (fimpMsg.val) {
@@ -937,7 +935,7 @@ export class FlowRunDialog {
 
   run(){
     let msg  = new FimpMessage(this.data.Service,this.data.ServiceInterface,this.valueType,this.value,null,null)
-    this.fimp.publish(this.data.Address,msg.toString());
+    this.fimp.publish(this.data.Address,msg);
     let snackBarRef = this.snackBar.open('Message was sent',"",{duration:1000});
   }
 }

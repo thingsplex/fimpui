@@ -69,7 +69,8 @@ export class FimpMessage {
           "resp_to":this.resp_to,
           "src":this.src,
           "ver":this.version,
-          "uid":this.uid
+          "uid":this.uid,
+          "topic":this.topic
         };
         return JSON.stringify(msg);
     }
@@ -92,5 +93,6 @@ export function NewFimpMessageFromString(jsonString:string):FimpMessage{
         msg.ctime = jobj["ctime"];
         msg.src = jobj["src"];
         msg.corid = jobj["corid"];
+        msg.topic = jobj["topic"];
         return msg ;
 }

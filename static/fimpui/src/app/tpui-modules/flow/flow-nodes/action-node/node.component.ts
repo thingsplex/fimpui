@@ -141,8 +141,7 @@ export class VincActionNodeComponent implements OnInit {
   }
   ngOnInit() {
 
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "vinculum" ){
         if (fimpMsg.mtype == "evt.pd7.response") {
           if (fimpMsg.val) {
@@ -169,7 +168,7 @@ export class VincActionNodeComponent implements OnInit {
     var props = new Map<string,string>();
     let msg  = new FimpMessage("vinculum","cmd.pd7.request","object",val,props,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:thingsplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg);
 
   }
   onSelected(v) {

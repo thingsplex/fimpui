@@ -50,8 +50,7 @@ export class FlowContextComponent implements OnInit {
   }
 
   configureFimpListener(){
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "tpflow" ){
         if (!fimpMsg.val) {
           return
@@ -129,7 +128,7 @@ export class FlowContextDataSource extends DataSource<any> {
     let msg  = new FimpMessage("tpflow","cmd.flow.ctx_get_records","str_map",val,null,null)
     msg.src = "tplex-ui";
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   connect(): Observable<TableContextRec[]> {

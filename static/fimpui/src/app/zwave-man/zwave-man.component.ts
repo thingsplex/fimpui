@@ -53,9 +53,8 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     this.showProgress(false);
     this.getAdapterStates();
     this.loadLocalTemplates();
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       // console.log(msg.payload.toString());
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "zwave-ad" )
         {
         if(fimpMsg.mtype == "evt.network.all_nodes_report" )
@@ -470,7 +469,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     this.isReloadNodesEnabled = false;
     for(let node of this.nodes) {
       let msg  = new FimpMessage("zwave-ad","cmd.thing.get_inclusion_report_q","string",node.address ,null,null)
-      this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+      this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
     }
   }
   pingNode(fromNode:string,toNode:string,level:string){
@@ -478,13 +477,13 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     let props:Map<string,string> = new Map();
     props["tx_level"] = level;
     let msg  = new FimpMessage("dev_sys","cmd.ping.send","string",toNode,props,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:dev/rn:zw/ad:1/sv:dev_sys/ad:"+fromNode+"_0",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:dev/rn:zw/ad:1/sv:dev_sys/ad:"+fromNode+"_0",msg);
   }
 
   requestRSSI(){
     this.rssiReport = {"ch1":"?","ch2":"?"};
     let msg  = new FimpMessage("zwave-ad","cmd.zwnetstats.get_rssi","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
 
   pingNodeFromGw(toNode:string){
@@ -492,7 +491,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     let props:Map<string,string> = new Map();
     props["tx_level"] = "0";
     let msg  = new FimpMessage("zwave-ad","cmd.ping.send","string",toNode,props,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
 
   reloadNodes(){
@@ -500,7 +499,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     this.getAdapterStates();
     let msg  = new FimpMessage("zwave-ad","cmd.network.get_all_nodes","null",null,null,null)
     this.showProgress(true);
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
   resetNetwork() {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -510,23 +509,23 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
         let msg  = new FimpMessage("zwave-ad","cmd.network.reset","null",null,null,null)
-        this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+        this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
       }
     });
   }
   getAdapterStates(){
     let msg  = new FimpMessage("zwave-ad","cmd.adapter.get_states","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
   restartAdapter(){
     let msg  = new FimpMessage("zwave-ad","cmd.proc.restart","string","zwave-ad",null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
     this.router.navigateByUrl("/timeline");
   }
   updateNetwork(){
     let msg  = new FimpMessage("zwave-ad","cmd.network.update","string","topology",null,null)
     this.showProgress(true);
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
 
 
@@ -534,39 +533,39 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   cleanUpNetwork(){
     let msg  = new FimpMessage("zwave-ad","cmd.network.cleanup","string","full",null,null)
     this.showProgress(true);
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
 
   pingNetwork(){
     let msg  = new FimpMessage("zwave-ad","cmd.zwnetstats.net_ping","string","",null,null)
     this.showProgress(true);
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
 
   requestImaStats(){
     this.networkStats = []
     let msg  = new FimpMessage("zwave-ad","cmd.zwnetstats.get_full_report","string","",null,null)
     this.showProgress(true);
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
 
   resetImaStats(){
     let msg  = new FimpMessage("zwave-ad","cmd.zwnetstats.reset","string","",null,null)
     this.showProgress(true);
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
   // Deprecated
   requestVincDevices() {
     let msg  = new FimpMessage("vinc_db","cmd.device.get_list","null","",null,null)
     this.showProgress(true);
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg);
   }
 
   // Deprecated
   requestVincRooms() {
     let msg  = new FimpMessage("vinc_db","cmd.room.get_list","null","",null,null)
     this.showProgress(true);
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg);
   }
 
   runCommand(node:any) {
@@ -604,21 +603,21 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   updateDevice(nodeId :number){
     let msg  = new FimpMessage("zwave-ad","cmd.network.node_update","int",Number(nodeId),null,null)
     this.showProgress(true);
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
 
   reloadDeviceTemplate(nodeId :number){
     let msg  = new FimpMessage("zwave-ad","cmd.thing.reload_template","int",Number(nodeId),null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
   setGatewayMode(mode:string){
     let msg  = new FimpMessage("zwave-ad","cmd.mode.set","string",mode,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
   deleteFailedDevice(nodeId :number){
      let val = {"address":String(nodeId),"stop":""}
     let msg  = new FimpMessage("zwave-ad","cmd.thing.delete","str_map",val,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
     let dialogRef = this.dialog.open(RemoveDeviceDialog, {
       height: '400px',
       width: '600px',
@@ -628,7 +627,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   replaceDevice(nodeId :number){
     let val = {"address":String(nodeId),"stop":""}
     let msg  = new FimpMessage("zwave-ad","cmd.thing.replace","str_map",val,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
     let dialogRef = this.dialog.open(RemoveDeviceDialog, {
       height: '400px',
       width: '600px',
@@ -650,7 +649,7 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
   removeDevice(){
     console.log("Remove device ")
     let msg  = new FimpMessage("zwave-ad","cmd.thing.exclusion","bool",true,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
     let dialogRef = this.dialog.open(RemoveDeviceDialog, {
       height: '400px',
       width: '600px',
@@ -723,9 +722,8 @@ export class AddDeviceDialog implements OnInit, OnDestroy  {
   }
   ngOnInit(){
     this.messages = [];
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
 
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "zwave-ad" )
         {
         if(fimpMsg.mtype == "evt.thing.inclusion_report" )
@@ -762,11 +760,11 @@ export class AddDeviceDialog implements OnInit, OnDestroy  {
       props["force_non_secure"] = "true";
     }
     let msg  = new FimpMessage("zwave-ad","cmd.thing.inclusion","bool",true,props,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
   stopInclusion(){
     let msg  = new FimpMessage("zwave-ad","cmd.thing."+this.data,"bool",false,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
     this.dialogRef.close();
   }
 
@@ -792,9 +790,8 @@ export class RemoveDeviceDialog implements OnInit, OnDestroy  {
   }
   ngOnInit(){
     this.messages = [];
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
 
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "zwave-ad" )
         {
         if(fimpMsg.mtype == "evt.thing.inclusion_report" )
@@ -819,7 +816,7 @@ export class RemoveDeviceDialog implements OnInit, OnDestroy  {
 
   stopExclusion(){
     let msg  = new FimpMessage("zwave-ad","cmd.thing."+this.data,"bool",false,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
     this.dialogRef.close();
   }
 
@@ -851,9 +848,8 @@ export class PingDeviceDialog implements OnInit, OnDestroy  {
     this.ima = {};
     this.results = [];
     this.pingNodeFromGw(this.data.nodeId);
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
 
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "zwave-ad" )
       {
         if(fimpMsg.mtype == "evt.ping.report" )

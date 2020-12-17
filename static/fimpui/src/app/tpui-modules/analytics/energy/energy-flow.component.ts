@@ -70,8 +70,7 @@ export class EnergyFlowComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "meter_elec" || fimpMsg.service == "sensor_power" ){
         let importPower:number = 0;
         let exportPower:number = 0;
@@ -95,7 +94,7 @@ export class EnergyFlowComponent implements OnInit {
           exportPower = Math.abs(importPower);
           importPower = 0;
         }
-        let t = this.registry.getServiceByAddress(msg.topic)
+        let t = this.registry.getServiceByAddress(fimpMsg.topic)
         if(t.length > 0) {
           let dev = this.registry.getDeviceById(t[0].container_id)
           if(dev) {

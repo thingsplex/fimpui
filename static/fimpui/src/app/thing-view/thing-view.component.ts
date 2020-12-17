@@ -66,9 +66,7 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
 
   subscribeForFimpMsg(techAdapterName:string,address:string) {
     let serviceName = this.getServiceName(techAdapterName);
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       // adapter topic
       if (fimpMsg.service == serviceName )
         {
@@ -85,7 +83,7 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
         if(this.thing.services) {
           for (let svc of this.thing.services){
             // console.log("Comparing "+msg.topic+" with "+ "pt:j1/mt:evt"+svc.address);
-            var topic = this.fimp.detachGlobalPrefix(msg.topic);
+            var topic = this.fimp.detachGlobalPrefix(fimpMsg.topic);
             if (topic == "pt:j1/mt:evt"+svc.address) {
               // console.log("Matching service "+fimpMsg.service);
               if(svc.interfaces){
@@ -113,7 +111,7 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
   getReport(techAdapterName:string, nodeId:string){
     let serviceName = this.getServiceName(techAdapterName);
     let msg  = new FimpMessage(serviceName,"cmd.thing.get_inclusion_report","string",nodeId,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+techAdapterName+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+techAdapterName+"/ad:1",msg);
   }
 
   saveThingToRegistry(alias:string){
