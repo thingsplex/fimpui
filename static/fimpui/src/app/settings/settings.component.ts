@@ -21,7 +21,7 @@ export class SettingsComponent implements OnInit {
   appCtrlResponse : any;
   wrtcLocalDescription : string;
   onWrtcLocalDescriptionReady:any;
-  fimpTransportType:string = "mqtt"; // Connectivity channel , either mqtt or webrtc
+  fimpTransportType:string = "ws"; // Connectivity channel , either mqtt or webrtc
   pc : any;
   constructor(fimpService:FimpService,public configs:ConfigsService, private webrtcService: WebRtcService,private http : HttpClient) {
     // this.pc = GetWebRtcInstance();
@@ -34,8 +34,9 @@ export class SettingsComponent implements OnInit {
       }
       this.webrtcService.setLocalDescriptionHandler(this.onWrtcLocalDescriptionReady);
     }
-    let statusMap = {0:"disconnected",1:"connecting",2:"conneted"};
-    this.connStatus = statusMap[this.fimpService.mqtt.state.getValue().toString()];
+    // let statusMap = {0:"disconnected",1:"connecting",2:"conneted"};
+    // this.connStatus = statusMap[this.fimpService.mqtt.state.getValue().toString()];
+    this.connStatus = this.fimpService.getConnState();
   }
 
   saveBrokerConfigs() {
@@ -73,16 +74,16 @@ export class SettingsComponent implements OnInit {
 
 
   ngOnInit() {
-    this.fimpService.subscribeMqtt("pt:j1/mt:evt/rt:ad/rn:fimp2p/ad:1").subscribe((msg)=>{
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
-      if (fimpMsg.service == "fimp2p" ) {
-        if(fimpMsg.mtype == "evt.system.connect_params_report") {
-          console.log("Webrtc desciptor response")
-          this.webrtcService.startWrtcSession(fimpMsg.val.address);
-        }
-
-      }
-    })
+    // this.fimpService.subscribeMqtt("pt:j1/mt:evt/rt:ad/rn:fimp2p/ad:1").subscribe((msg)=>{
+    //   let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    //   if (fimpMsg.service == "fimp2p" ) {
+    //     if(fimpMsg.mtype == "evt.system.connect_params_report") {
+    //       console.log("Webrtc desciptor response")
+    //       this.webrtcService.startWrtcSession(fimpMsg.val.address);
+    //     }
+    //
+    //   }
+    // })
 
 
     this.globalSub = this.fimpService.getGlobalObservable().subscribe((fimpMsg) => {

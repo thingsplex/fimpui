@@ -124,7 +124,7 @@ export class FlowEditorComponent implements OnInit {
     if (this.fimp.isConnected())
       this.loadFlow(this.id);
     else
-      this.connSub = this.fimp.mqtt.onConnect.subscribe((message: any) => {
+      this.connSub = this.fimp.getConnStateObservable().subscribe((message: any) => {
         this.loadFlow(this.id);
       });
   }

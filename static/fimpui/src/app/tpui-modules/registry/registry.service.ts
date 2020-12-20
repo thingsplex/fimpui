@@ -23,9 +23,10 @@ export class ThingsRegistryService{
   private devicesQueryRequestId:string;
   constructor(private fimp: FimpService, private fimpMeta: FimpApiMetadataService) {
     console.log("registry service constructor")
-    this.fimp.mqtt.state.subscribe((state: any) => {
+    this.fimp.getConnStateObservable().subscribe((state: any) => {
         console.log(" reg: FimpService onConnect . State = ",state);
         if (this.fimp.isConnected()) {
+          console.log("---------Loading registry ----------------------")
           this.configureFimpListener()
           this.loadAllComponents();
         }
@@ -57,6 +58,7 @@ export class ThingsRegistryService{
               this.devices = fimpMsg.val;
               this.registryStateSource.next("devicesLoaded");
               this.notifyRegistryState();
+              console.log("Things loaded !!!!!")
             }
           }
         } else if (fimpMsg.mtype == "evt.registry.services_report") {
@@ -68,6 +70,7 @@ export class ThingsRegistryService{
             // console.dir(this.services);
             this.registryStateSource.next("servicesLoaded");
             this.notifyRegistryState();
+            console.log("Services loaded !!!!!")
           }
         }
       }
@@ -82,7 +85,7 @@ export class ThingsRegistryService{
   }
 
   loadServices() {
-
+    console.log("reg: Requesting services")
     let val = {
         "filter_without_alias": "",
         "location_id": "",
@@ -97,7 +100,7 @@ export class ThingsRegistryService{
   }
   loadLocations() {
     console.log("reg: Requesting locations")
-    let msg  = new FimpMessage("tpflow","cmd.registry.get_locations","str_map",null,null,null)
+    let msg  = new FimpMessage("tpflow","cmd.registry.get_locations","str_map",{},null,null)
     msg.src = "tplex-ui"
     this.lastRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
@@ -105,7 +108,8 @@ export class ThingsRegistryService{
   }
 
   loadThings() {
-    let msg  = new FimpMessage("tpflow","cmd.registry.get_things","str_map",null,null,null)
+    console.log("reg: Requesting things")
+    let msg  = new FimpMessage("tpflow","cmd.registry.get_things","str_map",{},null,null)
     msg.src = "tplex-ui"
     this.thingsQueryRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
@@ -113,7 +117,8 @@ export class ThingsRegistryService{
   }
 
   loadDevices() {
-    let msg  = new FimpMessage("tpflow","cmd.registry.get_devices","str_map",null,null,null)
+    console.log("reg: Requesting devices")
+    let msg  = new FimpMessage("tpflow","cmd.registry.get_devices","str_map",{},null,null)
     msg.src = "tplex-ui"
     this.devicesQueryRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"

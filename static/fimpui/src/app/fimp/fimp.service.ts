@@ -52,10 +52,10 @@ export class FimpService {
   constructor(public mqtt: MqttService, private configs: ConfigsService, private _webRtcService: WebRtcService) {
     this.fimpFilter = new FimpFilter();
     this.isFilteringEnabled = false;
-    this.mqtt.state.subscribe(state => {
-      console.log("mqtt connection state :" + state)
-      this.mqttConnState = state;
-    })
+    // this.mqtt.state.subscribe(state => {
+    //   console.log("mqtt connection state :" + state)
+    //   this.mqttConnState = state;
+    // })
     this._transportType = localStorage.getItem("fimpTransportType");
     if (!this._transportType) {
       this._transportType = "ws"
@@ -92,10 +92,15 @@ export class FimpService {
   }
 
   public isConnected(): boolean {
-    if (this.mqttConnState == 2) {
-      return true
-    }
-    return false
+    // if (this.mqttConnState == 2) {
+    //   return true
+    // }
+    // return false
+    return this.ws.isConnected();
+  }
+
+  public getConnState():string {
+    return this.ws.getConnState();
   }
 
   private prepareTopic(topic: string): string {
@@ -150,6 +155,10 @@ export class FimpService {
     return this.observable;
   }
 
+  public getConnStateObservable():Observable<string> {
+    return this.ws.getConnStateObservable();
+  }
+
   // public getMqttSignalingOservable(): Observable<IMqttMessage> {
   //   console.log("Getting global observable");
   //   if (this.observable == null) {
@@ -183,7 +192,7 @@ export class FimpService {
       // console.log("Subscribing to topic " + topic);
       // return this.mqtt.observe(topic);
     }if (this._transportType == "ws") {
-      return this.ws.subscribe();
+      return this.ws.getMsgObservable();
     }else{
       console.log("subscribing to webrtc");
       // return this._webRtcService.inboundMsgChannel$.pipe(tap(d => console.log(d)));

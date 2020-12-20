@@ -186,10 +186,10 @@ func (mp *BridgeWsProxySession) StartWsToMqttRouter(wsConn *websocket.Conn) {
 			if err != nil {
 				log.Error("<MqWsBridge> Read error :", err)
 				break
-			} else if msgType == websocket.BinaryMessage || msgType == websocket.TextMessage {
+			} else if msgType == websocket.TextMessage {
 				fimpMsg, err := fimpgo.NewMessageFromBytes(msg)
 				if err != nil {
-					log.Debug("<MqWsBridge> Can't parse fimp message from WS. Message dropped")
+					log.Debug("<MqWsBridge> Can't parse fimp message from WS. Message dropped.Err:",err.Error())
 					continue
 				}
 				log.Debug(fimpMsg)
@@ -203,8 +203,8 @@ func (mp *BridgeWsProxySession) StartWsToMqttRouter(wsConn *websocket.Conn) {
 					log.Info("<MqWsBridge> Msg publish error . Err:", err.Error())
 				}
 
-			}else if msgType == websocket.TextMessage {
-				log.Debug("<MqWsBridge> New text message")
+			}else if msgType == websocket.BinaryMessage {
+				log.Debug("<MqWsBridge> New binary message")
 			} else {
 				log.Debug(" <MqWsBridge> Message with type = ", msgType)
 			}

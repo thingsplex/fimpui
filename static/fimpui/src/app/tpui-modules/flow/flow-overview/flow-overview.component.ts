@@ -48,7 +48,7 @@ export class FlowOverviewComponent implements OnInit {
     if (this.fimp.isConnected())
       this.loadListOfFlows();
     else
-      this.connSub = this.fimp.mqtt.onConnect.subscribe((message: any) => {
+      this.connSub = this.fimp.getConnStateObservable().subscribe((message: any) => {
         this.loadListOfFlows();
       });
   }
