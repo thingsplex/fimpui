@@ -12,11 +12,17 @@
     </mat-card-header>
     <mat-card-content>
       <table>
-      <thead><tr><th style="width: 70px">Address</th>
-        <th style="width: 120px">Location</th><th style="width: 120px">Name</th><th style="width: 250px">Alias</th><th></th></tr> </thead>
+      <thead>
+        <tr>
+          <th style="width: 70px">Address</th>
+          <th style="width: 120px">Location</th>
+          <th style="width: 150px">Name</th>
+          <th style="width: 100px"></th>
+        </tr>
+      </thead>
       <tbody>
       <tr *ngFor="let node of nodes">
-        <td> {{node.address}}</td><td> {{node.location}} </td><td> {{node.name}} </td> <td> {{node.alias}} </td>
+        <td> {{node.address}}</td><td> {{node.location}} </td><td> {{node.name}} </td><td></td>
         <td>
           <mat-icon *ngIf="node.power_source=='ac'" >power</mat-icon>
           <mat-icon *ngIf="node.power_source=='dc'" >battery_std</mat-icon>
