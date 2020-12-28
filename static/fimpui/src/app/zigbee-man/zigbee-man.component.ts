@@ -53,6 +53,22 @@ export class ZigbeeManComponent implements OnInit {
 
   }
 
+  pingDevice(address:string){
+    console.log("Ping device")
+    let val = {"address":address.toString()}
+    let msg  = new FimpMessage("zigbee","cmd.custom.ping_device","int", parseInt(address), null,null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
+
+  }
+
+  discoverDevice(address:string){
+    console.log("Discover device")
+    let val = {"address":address.toString()}
+    let msg  = new FimpMessage("zigbee","cmd.custom.discovery","int", parseInt(address), null,null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
+
+  }
+
   generateExclusionReport(address:string){
     let msg  = new FimpMessage("zigbee","evt.thing.exclusion_report","object",{"address":String(address)},null,null)
     this.fimp.publish("pt:j1/mt:evt/rt:ad/rn:zigbee/ad:1",msg);

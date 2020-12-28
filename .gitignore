@@ -4,4 +4,8 @@ package/debian/opt/fimpui/static/fimpui/dist
 package/debian/opt/fimpui/static
 .idea
 static/fimpui/node_modules
+static/fimpui/dist
 package/tar
+
+# Debian packaging
+package/debian/DEBIAN/control

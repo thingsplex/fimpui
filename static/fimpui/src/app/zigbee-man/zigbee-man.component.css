@@ -3,7 +3,7 @@
 
 }
 .example-card {
-  width: 850px;
+  width: 1000px;
 }
 
 .example-header-image {
@@ -13,6 +13,11 @@
 .open-chip {
   color: green
 }
+
+.remove {
+  color: red
+}
+
 md-chip {
   cursor: pointer;
 }

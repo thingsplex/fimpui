@@ -8,26 +8,36 @@
 <div class="zigbee-man">
   <mat-card class="example-card">
     <mat-card-header>
-      <!--<div mat-card-avatar class="example-header-image"></div>-->
       <mat-card-title><h3>Zigbee network manager</h3></mat-card-title>
-      <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle>-->
     </mat-card-header>
     <mat-card-content>
-          <table>
-          <thead><tr><th style="width: 70px">Address</th>
-            <th style="width: 120px">Location</th><th style="width: 120px">Name</th><th style="width: 250px">Alias</th><th></th></tr> </thead>
-          <tbody>
-         <tr *ngFor="let node of nodes">
-           <td> {{node.address}}</td><td> {{node.location}} </td><td> {{node.name}} </td> <td> {{node.alias}} </td>
-           <td>
-            <mat-chip-list>
-             <mat-chip class="open-chip" [routerLink]="['/thing-view','zigbee',node.address]">Services</mat-chip>
-             <mat-chip color="warn" (click)="removeDevice(node.address)">Remove</mat-chip>
-            </mat-chip-list>
-           </td>
-          </tr>
-          </tbody>
-         </table>
+      <table>
+      <thead><tr><th style="width: 70px">Address</th>
+        <th style="width: 120px">Location</th><th style="width: 120px">Name</th><th style="width: 250px">Alias</th><th></th></tr> </thead>
+      <tbody>
+      <tr *ngFor="let node of nodes">
+        <td> {{node.address}}</td><td> {{node.location}} </td><td> {{node.name}} </td> <td> {{node.alias}} </td>
+        <td>
+          <mat-icon *ngIf="node.power_source=='ac'" >power</mat-icon>
+          <mat-icon *ngIf="node.power_source=='dc'" >battery_std</mat-icon>
+          <mat-icon *ngIf="node.power_source=='battery'" >battery_std</mat-icon>
+          <mat-icon *ngIf="node.power_source=='flir'" >battery_std</mat-icon>
+        </td>
+        <td>
+             <mat-icon *ngIf="node.status=='UP'" style="color: #27ae60">thumb_up</mat-icon>
+             <mat-icon *ngIf="node.status=='DOWN'" style="color: red">thumb_down</mat-icon>
+        </td>
+        <td>
+          <mat-chip-list>
+           <mat-chip class="open-chip" [routerLink]="['/thing-view','zigbee',node.address]">Services</mat-chip>
+           <mat-chip class="open-chip"  (click)="pingDevice(node.address)">Ping</mat-chip>
+           <mat-chip class="open-chip"  (click)="discoverDevice(node.address)">Discover</mat-chip>
+           <mat-chip class="remove" (click)="removeDevice(node.address)">Remove</mat-chip>
+          </mat-chip-list>
+        </td>
+      </tr>
+      </tbody>
+      </table>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button (click)="addDevice()" color="primary" > Add device</button>
@@ -77,17 +87,16 @@
               <mat-option value="get_stack_trace">Get stack strace</mat-option>
               <mat-option value="get_goroutine_num">Get num of running goroutines</mat-option>
               <mat-option value="get_active_status">Get active status</mat-option>
+              <mat-option value="reload_templates">Reload templates</mat-option>
             </mat-select>
           </mat-form-field>
           <button mat-raised-button color="accent" (click)="runZigbeeNetCommand(zcommand.value)">Run</button>
         </div>
 
-        <div>
+        <div>F
           <mat-form-field>
             <mat-label>Run with param </mat-label>
             <mat-select #zcommand_with_val value="16px" >
-              <mat-option value="discovery"> Discover device </mat-option>
-              <mat-option value="ping_device"> Ping device </mat-option>
               <mat-option value="delete_by_address"> Delete device by nwk address </mat-option>
             </mat-select>
           </mat-form-field>
