@@ -1,28 +1,40 @@
+# FIMPUI
 
+### Build Static Files
+```shell
+make build-js
+```
 
-**Build Angular 2** : 
-cd static/thingsplex
-ng build 
- or 
-ng build --prod --deploy '/fimp/static/'
+### Run Angular dev app
+```shell
+ng serve
+```
+Then open http://localhost:4200
 
-cd ../../
-**Run Angular dev app** :
+### Run Go Server
+Set server config in `var/data/config.json` and then:
 
-ng serve 
-open http://localhost:4200
+```shell
+make run
+```
 
-**Rsync static files for deverlopment:**
- 
+### Create Debian Package
+```shell
+make deb-arm
+```
+
+### Rsync static files for deverlopment
+```shell
 GOOS=linux GOARCH=arm GOARM=6 go build -o thingsplex_arm
-
-rsync -a static/thingsplex/dist fh@aleks.local:~/thingsplex/static/thingsplex/
-
+rsync -a static/fimpui/dist fh@aleks.local:~/thingsplex/static/fimpui/
 scp thingsplex_arm fh@aleks.local:~/thingsplex/
+```
 
+### Other
 **Package** :
 tar cvzf thingsplex.tar.gz thingsplex_arm static/thingsplex/dist
 scp thingsplex.tar.gz fh@aleks.local:~/thingsplex/
+
 **Unpackage** : 
 tar -xvf thingsplex.tar.gz
 Update static/thingsplex/dist/index.html
