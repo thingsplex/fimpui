@@ -3,7 +3,7 @@
 
 }
 .example-card {
-  width: 850px;
+  width: 1250px;
 }
 
 .example-header-image {
@@ -20,4 +20,27 @@
 
 md-chip {
   cursor: pointer;
+}
+
+input {
+  font-size: 20px;
+  margin-left: 5px;
+  margin-right: 10px
+}
+
+input.ng-invalid {
+  border-color: red;
+}
+
+/* Submit buttons */
+[type="submit"] {
+  right: 5px;
+  margin-bottom: 5px;
+  min-width: 140px;
+}
+
+#custom_interface {
+  border: thin solid gray;
+  padding: 20px;
+  border-radius: 20px;
 }

@@ -17,7 +17,7 @@
           <th style="width: 70px">Address</th>
           <th style="width: 120px">Location</th>
           <th style="width: 150px">Name</th>
-          <th style="width: 100px"></th>
+          <th style="width: 200px"></th>
         </tr>
       </thead>
       <tbody>
@@ -82,7 +82,7 @@
           <mat-form-field>
             <mat-label>Run command </mat-label>
             <mat-select #zcommand value="16px" >
-              <mat-option value="ping"> Execute Gecko ping </mat-option>
+              <mat-option value="ping"> Ping module </mat-option>
               <mat-option value="reset"> Restart module </mat-option>
               <mat-option value="version"> Get firmware version </mat-option>
               <mat-option value="time"> Set zigbee time</mat-option>
@@ -99,7 +99,7 @@
           <button mat-raised-button color="accent" (click)="runZigbeeNetCommand(zcommand.value)">Run</button>
         </div>
 
-        <div>F
+        <div>
           <mat-form-field>
             <mat-label>Run with param </mat-label>
             <mat-select #zcommand_with_val value="16px" >
@@ -110,7 +110,73 @@
           <button mat-raised-button color="accent" (click)="runZigbeeNetCommandParam(zcommand_with_val.value,param.value)">Run</button>
         </div>
 
-        <button mat-raised-button color="accent" (click)="runZigbeeNetCommand('upload')">Update firmware</button>
+
+        <div id="custom_interface">
+
+          <form #fReadAttr="ngForm" (ngSubmit)="readAttribute(fReadAttr.value)">
+            <button mat-raised-button type="submit" [disabled]="fReadAttr.invalid" color="accent">Read Attribute</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fWriteAttr="ngForm" (ngSubmit)="writeAttribute(fWriteAttr.value)">
+            <button mat-raised-button type="submit" [disabled]="fWriteAttr.invalid" color="accent">Write Attribute</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Type <input name="type" mat-input-element size="4" ngModel>
+            Value <input name="value" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fReadRep="ngForm" (ngSubmit)="readRepConfig(fReadRep.value)">
+            <button mat-raised-button type="submit" [disabled]="fReadRep.invalid" color="accent">Read Reporting</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fWriteRep="ngForm" (ngSubmit)="writeRepConfig(fWriteRep.value)">
+            <button mat-raised-button type="submit" [disabled]="fWriteRep.invalid" color="accent">Write Reporting</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fBind="ngForm" (ngSubmit)="bind(fBind.value)">
+            <button mat-raised-button type="submit" [disabled]="fBind.invalid" color="accent">Bind</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fUnbind="ngForm" (ngSubmit)="unbind(fUnbind.value)">
+            <button mat-raised-button type="submit" [disabled]="fUnbind.invalid" color="accent">Unbind</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fBindList="ngForm" (ngSubmit)="getBindList(fBindList.value)">
+            <button mat-raised-button type="submit" [disabled]="fBindList.invalid" color="accent">Get Bind List</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fBindDevices="ngForm" (ngSubmit)="bindDevices(fBindDevices.value)">
+            <button mat-raised-button type="submit" [disabled]="fBindDevices.invalid" color="accent">Bind Devices</button>
+            Source UDID <input name="src_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Source Endpoint <input name="src_ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Destination UDID <input name="dst_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Destination Endpoint <input name="dst_ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+        </div>
+
+        <br/>
+        <button mat-raised-button color="accent" (click)="runZigbeeNetCommand('upload')" style="margin-bottom: 10px">Update firmware</button>
 
       </div>
    </mat-card-actions>
