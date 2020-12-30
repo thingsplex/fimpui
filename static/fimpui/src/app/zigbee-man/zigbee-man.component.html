@@ -150,12 +150,14 @@
           <form #fBind="ngForm" (ngSubmit)="bind(fBind.value)">
             <button mat-raised-button type="submit" [disabled]="fBind.invalid" color="accent">Bind</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
             Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
           <form #fUnbind="ngForm" (ngSubmit)="unbind(fUnbind.value)">
             <button mat-raised-button type="submit" [disabled]="fUnbind.invalid" color="accent">Unbind</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
             Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
@@ -166,6 +168,15 @@
 
           <form #fBindDevices="ngForm" (ngSubmit)="bindDevices(fBindDevices.value)">
             <button mat-raised-button type="submit" [disabled]="fBindDevices.invalid" color="accent">Bind Devices</button>
+            Source UDID <input name="src_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Source Endpoint <input name="src_ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Destination UDID <input name="dst_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Destination Endpoint <input name="dst_ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fUnbindDevices="ngForm" (ngSubmit)="unbindDevices(fUnbindDevices.value)">
+            <button mat-raised-button type="submit" [disabled]="fUnbindDevices.invalid" color="accent">Unbind Devices</button>
             Source UDID <input name="src_udid" pattern="\d+" mat-input-element size="4" ngModel>
             Source Endpoint <input name="src_ep" pattern="\d+" mat-input-element size="4" ngModel>
             Destination UDID <input name="dst_udid" pattern="\d+" mat-input-element size="4" ngModel>
