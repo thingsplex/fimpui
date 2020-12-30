@@ -127,7 +127,10 @@
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
             Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
             Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
-            Type <input name="type" mat-input-element size="4" ngModel>
+            Type<div class="tooltip">?
+              <span class="tooltiptext">data8 data16 data32 data64 bool uint8 uint16 uint32 uint64 int8 int16 int32 int64 enum8 enum16</span>
+            </div>
+             <input name="type" mat-input-element size="4" ngModel>
             Value <input name="value" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
