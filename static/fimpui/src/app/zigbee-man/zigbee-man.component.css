@@ -22,7 +22,7 @@ md-chip {
   cursor: pointer;
 }
 
-input {
+input, #type_select {
   font-size: 20px;
   margin-left: 5px;
   margin-right: 10px
@@ -67,4 +67,10 @@ input.ng-invalid {
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+#type_select {
+  width: 100px;
+  padding: 3px 5px;
+  border: thin solid lightgrey;
 }
