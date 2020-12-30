@@ -95,7 +95,6 @@
         </div>
         <div *ngSwitchCase="'evt.lock.report'">
           <p>Is secured      = <mat-icon *ngIf="intf.lastValue.val.is_secured" >lock</mat-icon> <mat-icon *ngIf="!intf.lastValue.val.is_secured" >lock_open</mat-icon>  </p>
-          <p>Door is closed  = <mat-icon *ngIf="intf.lastValue.val.door_is_closed" >done</mat-icon> <mat-icon *ngIf="!intf.lastValue.val.door_is_closed" >close</mat-icon>   </p>
           <p>Bolt is locked  = <mat-icon *ngIf="intf.lastValue.val.bolt_is_locked" >done</mat-icon> <mat-icon *ngIf="!intf.lastValue.val.bolt_is_locked" >close</mat-icon>   </p>
           <p>Latch is closed = <mat-icon *ngIf="intf.lastValue.val.latch_is_closed" >done</mat-icon> <mat-icon *ngIf="!intf.lastValue.val.latch_is_closed" >close</mat-icon>   </p>
         </div>
