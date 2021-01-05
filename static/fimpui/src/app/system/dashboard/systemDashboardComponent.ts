@@ -81,7 +81,6 @@ export class SystemDashboardComponent implements OnInit {
   }
 
 
-
   requestCBDiagnosticReport(){
     console.log("Remove device")
     let msg  = new FimpMessage("clbridge","cmd.clbridge.get_diagnostics","string","full",null,null)

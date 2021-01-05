@@ -2,7 +2,7 @@ module github.com/alivinco/thingsplex
 
 require (
 	github.com/buger/jsonparser v1.0.0
-	github.com/futurehomeno/fimpgo v1.6.2-0.20201216195508-a5b102e905ce
+	github.com/futurehomeno/fimpgo v1.6.2-0.20210104174133-e8b2ee10f6ac
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.0
 	github.com/gorilla/websocket v1.4.0

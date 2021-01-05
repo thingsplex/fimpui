@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/alivinco/thingsplex/api"
-	"github.com/alivinco/thingsplex/integr/mqtt"
+	"github.com/alivinco/thingsplex/cloud"
 	"github.com/alivinco/thingsplex/integr/zwave"
 	"github.com/alivinco/thingsplex/model"
 	"github.com/alivinco/thingsplex/utils"
@@ -104,6 +104,7 @@ func main() {
 	auth := api.NewAuth(configs.GetDataDir(), authType)
 	auth.LoadUserDB()
 
+	authType = auth.AuthType
 	lifecycle := edgeapp.NewAppLifecycle()
 	lifecycle.SetConfigState(edgeapp.ConfigStateConfigured)
 	lifecycle.SetAppState(edgeapp.AppStateRunning,nil)
@@ -114,21 +115,21 @@ func main() {
 		controlApi.Start()
 	}
 
-	// TODO : Move to sessions
-	wsUpgrader := mqtt.NewWsUpgrader(configs.MqttServerURI, auth,configs.TlsCertDir)
+	wsBridge := cloud.NewWsNorthBridge(auth)
 
-	wsBridge := mqtt.NewWsBridge(auth)
-
-	userConf := model.UserConfigs{
-		Username:              "unknown",
-		MqttServerURI:         configs.MqttServerURI,
-		MqttUsername:          configs.MqttUsername,
-		MqttPassword:          configs.MqttPassword,
-		MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
-		MqttClientIdPrefix:    configs.MqttClientIdPrefix,
-		TlsCertDir:            configs.TlsCertDir,
+	if authType == api.AuthTypeNone {
+		userConf := model.UserConfigs{
+			Username:              "unknown",
+			MqttServerURI:         configs.MqttServerURI,
+			MqttUsername:          configs.MqttUsername,
+			MqttPassword:          configs.MqttPassword,
+			MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
+			MqttClientIdPrefix:    configs.MqttClientIdPrefix,
+			TlsCertDir:            configs.TlsCertDir,
+			EnableCbSupport:       configs.EnableCbSupport,
+		}
+		wsBridge.UpdateUserConfig("unknown",userConf)
 	}
-	wsBridge.UpdateUserConfig("unknown",userConf)
 
 	e := echo.New()
 	e.Use(middleware.Logger())
@@ -221,31 +222,51 @@ func main() {
 			return nil
 		}
 
+		username := auth.GetUsername(c)
 		req:= model.Configs{}
 		if err := c.Bind(&req); err != nil {
 			log.Error("Invalid configuration request format .Err:",err.Error())
 			return fmt.Errorf("invalid request format")
 		}
-		configs.MqttServerURI = req.MqttServerURI
-		configs.MqttUsername = req.MqttUsername
-		configs.MqttPassword = req.MqttPassword
-		configs.MqttTopicGlobalPrefix = req.MqttTopicGlobalPrefix
-		err = configs.SaveToFile()
-		if err != nil {
-			log.Error("Failed to save config file. Err:",err.Error())
-		}
-		wsUpgrader.UpdateBrokerConfig(configs.MqttServerURI)
 
-		userConf := model.UserConfigs{
-			Username:              "unknown",
-			MqttServerURI:         configs.MqttServerURI,
-			MqttUsername:          configs.MqttUsername,
-			MqttPassword:          configs.MqttPassword,
-			MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
-			MqttClientIdPrefix:    configs.MqttClientIdPrefix,
-			TlsCertDir:            configs.TlsCertDir,
+		var userConf model.UserConfigs
+
+		if authType == api.AuthTypeNone {
+			if username == "" {
+				username = "unknown"
+			}
+			configs.MqttServerURI = req.MqttServerURI
+			configs.MqttUsername = req.MqttUsername
+			configs.MqttPassword = req.MqttPassword
+			configs.MqttTopicGlobalPrefix = req.MqttTopicGlobalPrefix
+			err = configs.SaveToFile()
+			if err != nil {
+				log.Error("Failed to save config file. Err:",err.Error())
+			}
+			userConf = model.UserConfigs{
+				Username:              username,
+				MqttServerURI:         configs.MqttServerURI,
+				MqttUsername:          configs.MqttUsername,
+				MqttPassword:          configs.MqttPassword,
+				MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
+				MqttClientIdPrefix:    configs.MqttClientIdPrefix,
+				TlsCertDir:            configs.TlsCertDir,
+				EnableCbSupport:	   configs.EnableCbSupport,
+			}
+		}else {
+			userConf = model.UserConfigs{
+				Username:              username,
+				MqttServerURI:         req.MqttServerURI,
+				MqttUsername:          req.MqttUsername,
+				MqttPassword:          req.MqttPassword,
+				MqttTopicGlobalPrefix: req.MqttTopicGlobalPrefix,
+				MqttClientIdPrefix:    configs.MqttClientIdPrefix,
+				TlsCertDir:            configs.TlsCertDir,
+			}
 		}
-		wsBridge.UpdateUserConfig("unknown",userConf)
+		//wsUpgrader.UpdateBrokerConfig(configs.MqttServerURI)
+
+		wsBridge.UpdateUserConfig(username,userConf)
 
 		return c.JSON(http.StatusOK, configs)
 	})
@@ -429,7 +450,7 @@ func main() {
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
 
-	e.GET("/mqtt", wsUpgrader.Upgrade)
+	//e.GET("/mqtt", wsUpgrader.Upgrade)
 	e.GET("/ws-bridge", wsBridge.Upgrade)
 	e.File("/fimp", index)
 	e.File("/", index)

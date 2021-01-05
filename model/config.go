@@ -24,6 +24,7 @@ type UserConfigs struct {
 	TlsCertDir            string `json:"tls_cert_dir"`
 	privateKeyFileName	  string `json:"private_key_file"`
 	certFileName		  string `json:"cert_file"`
+	EnableCbSupport       bool   `json:"enable_cb_support"`  // if set to true , session enables CloudBridge support. This is needed for connecting to FH hubs over cloud broker.
 }
 
 type Configs struct {
@@ -42,6 +43,7 @@ type Configs struct {
 	ConfiguredBy          string `json:"configured_by"`
 	CookieKey             string `json:"cookie_key"`
 	TlsCertDir            string `json:"tls_cert_dir"`
+	EnableCbSupport       bool   `json:"enable_cb_support"`
 }
 
 func NewConfigs(workDir string) *Configs {

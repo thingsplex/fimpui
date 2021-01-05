@@ -21,6 +21,8 @@ github.com/eclipse/paho.mqtt.golang v1.2.0 h1:1F8mhG9+aO5/xpdtFkW4SxOJB67ukuDC3t
 github.com/eclipse/paho.mqtt.golang v1.2.0/go.mod h1:H9keYFcgq3Qr5OUJm/JZI/i6U7joQ8SYLhZwfeOo6Ts=
 github.com/futurehomeno/fimpgo v1.6.2-0.20201216195508-a5b102e905ce h1:tK8MI5uF78j/b7Y1AzJV3jg1uY6B20iZoJlFPm5E9pw=
 github.com/futurehomeno/fimpgo v1.6.2-0.20201216195508-a5b102e905ce/go.mod h1:Nwtf0Pu7I8kMH6PUKNJ4KgSl104Sbjn6kJ1m44+q5TA=
+github.com/futurehomeno/fimpgo v1.6.2-0.20210104174133-e8b2ee10f6ac h1:eXd7tISL4ZsDlhTXdvvcEqJ/gsDrWZ8jWCRPPeoXd+w=
+github.com/futurehomeno/fimpgo v1.6.2-0.20210104174133-e8b2ee10f6ac/go.mod h1:Nwtf0Pu7I8kMH6PUKNJ4KgSl104Sbjn6kJ1m44+q5TA=
 github.com/go-kit/kit v0.8.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
 github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9GBnD5lWE=
 github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V4qmtdjCk=

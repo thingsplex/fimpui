@@ -5,11 +5,13 @@ github.com/dgrijalva/jwt-go
 # github.com/eclipse/paho.mqtt.golang v1.2.0
 github.com/eclipse/paho.mqtt.golang
 github.com/eclipse/paho.mqtt.golang/packets
-# github.com/futurehomeno/fimpgo v1.6.2-0.20201216195508-a5b102e905ce
+# github.com/futurehomeno/fimpgo v1.6.2-0.20210104174133-e8b2ee10f6ac
 github.com/futurehomeno/fimpgo
 github.com/futurehomeno/fimpgo/discovery
 github.com/futurehomeno/fimpgo/edgeapp
 github.com/futurehomeno/fimpgo/fimptype
+github.com/futurehomeno/fimpgo/security
+github.com/futurehomeno/fimpgo/transport
 github.com/futurehomeno/fimpgo/utils
 # github.com/gorilla/context v1.1.1
 github.com/gorilla/context
