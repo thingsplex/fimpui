@@ -4,4 +4,18 @@ package/debian/opt/fimpui/static/fimpui/dist
 package/debian/opt/fimpui/static
 .idea
 static/fimpui/node_modules
+static/fimpui/dist
 package/tar
+
+# Debian packaging
+package/debian/DEBIAN/control
+
+# Auto-generated
+VERSION
+package/debian/opt/fimpui/VERSION
+package/debian/opt/fimpui/fimpui
+fimpui
+!fimpui/
+var/data/users.json
+var/data/config_local.json
+var/defaults/config.json

@@ -3,7 +3,7 @@
 
 }
 .example-card {
-  width: 850px;
+  width: 1230px;
 }
 
 .example-header-image {
@@ -13,6 +13,64 @@
 .open-chip {
   color: green
 }
+
+.remove {
+  color: red
+}
+
 md-chip {
   cursor: pointer;
+}
+
+input, #type_select {
+  font-size: 20px;
+  margin-left: 5px;
+  margin-right: 10px
+}
+
+input.ng-invalid {
+  border-color: red;
+}
+
+/* Submit buttons */
+[type="submit"] {
+  right: 5px;
+  margin-bottom: 5px;
+  min-width: 140px;
+}
+
+#custom_interface {
+  border: thin solid gray;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 65px;
+  background-color: #f8d673;
+  color: #000000;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+#type_select {
+  width: 100px;
+  padding: 3px 5px;
+  border: thin solid lightgrey;
 }

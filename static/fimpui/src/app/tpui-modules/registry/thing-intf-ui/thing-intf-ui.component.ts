@@ -102,7 +102,7 @@ export class ThingIntfUiComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd"+this.addr,msg);
   }
   cmdGroupReportGet(group:string){
-    let msg  = new FimpMessage(this.service,this.intf.msgType,this.intf.valueType,group,null,null)
+    let msg  = new FimpMessage(this.service,this.intf.msgType, "string",group,null,null)
     this.fimp.publish("pt:j1/mt:cmd"+this.addr,msg);
   }
   cmdModeLvlReportGet(mode:string){
