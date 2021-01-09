@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/alivinco/thingsplex/user"
 	"github.com/alivinco/thingsplex/utils"
 	"github.com/futurehomeno/fimpgo/edgeapp"
 	"github.com/labstack/gommon/log"
@@ -14,18 +15,10 @@ import (
 
 const ServiceName = "tplexui"
 
-type UserConfigs struct {
-	Username              string `json:"username"`
-	MqttServerURI         string `json:"mqtt_server_uri"`
-	MqttUsername          string `json:"mqtt_server_username"`
-	MqttPassword          string `json:"mqtt_server_password"`
-	MqttTopicGlobalPrefix string `json:"mqtt_topic_global_prefix"`
-	MqttClientIdPrefix    string `json:"mqtt_client_id_prefix"`
-	TlsCertDir            string `json:"tls_cert_dir"`
-	privateKeyFileName	  string `json:"private_key_file"`
-	certFileName		  string `json:"cert_file"`
-	EnableCbSupport       bool   `json:"enable_cb_support"`  // if set to true , session enables CloudBridge support. This is needed for connecting to FH hubs over cloud broker.
-}
+const DeploymentModeLocal = "local"
+const DeploymentModeCloud = "cloud"
+const DeploymentModeCloudAwsIot = "cloud_aws_iot"
+
 
 type Configs struct {
 	path                  string
@@ -44,6 +37,8 @@ type Configs struct {
 	CookieKey             string `json:"cookie_key"`
 	TlsCertDir            string `json:"tls_cert_dir"`
 	EnableCbSupport       bool   `json:"enable_cb_support"`
+	GlobalAuthType        string `json:"auth_type"`
+	DeploymentMode        string `json:"deployment_mode"`
 }
 
 func NewConfigs(workDir string) *Configs {
@@ -70,6 +65,13 @@ func (cf * Configs) LoadFromFile() error {
 	if err != nil {
 		return err
 	}
+	if cf.GlobalAuthType == "" {
+		cf.GlobalAuthType = user.AuthTypePassword
+	}
+	if cf.DeploymentMode == "" {
+		cf.DeploymentMode = DeploymentModeLocal
+	}
+
 	return nil
 }
 

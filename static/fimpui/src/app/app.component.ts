@@ -10,6 +10,9 @@ import {HttpClient} from "@angular/common/http";
 export class AppComponent {
   showHeading = true;
   public version :String;
+  public username : string;
+  public onlineUsers : number;
+  public remoteSiteId : string;
   constructor (private http: HttpClient){
     this.loadSystemInfo();
   }
@@ -35,6 +38,9 @@ export class AppComponent {
         // MQTT_PORT = data["WsMqttPort"];
         setGlobals(data["WsMqttPort"])
         this.version = data["Version"];
+        this.username = data["Username"];
+        this.remoteSiteId = data["GlobalPrefix"];
+        this.onlineUsers = data["OnlineUsers"];
       });
   }
 

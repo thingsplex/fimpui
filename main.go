@@ -8,6 +8,7 @@ import (
 	"github.com/alivinco/thingsplex/cloud"
 	"github.com/alivinco/thingsplex/integr/zwave"
 	"github.com/alivinco/thingsplex/model"
+	"github.com/alivinco/thingsplex/user"
 	"github.com/alivinco/thingsplex/utils"
 	"github.com/futurehomeno/fimpgo/edgeapp"
 	"github.com/gorilla/securecookie"
@@ -25,6 +26,9 @@ import (
 type SystemInfo struct {
 	Version    string
 	WsMqttPort int
+	Username   string
+	GlobalPrefix string
+	OnlineUsers  int
 }
 
 type LoginRequest struct {
@@ -97,29 +101,32 @@ func main() {
 	}
 	//--------------------------------------
 
-	authType := "password"
+	authType := configs.GlobalAuthType
 	if configs.IsDevMode {
-		authType = api.AuthTypeNone
+		authType = user.AuthTypeNone
 	}
-	auth := api.NewAuth(configs.GetDataDir(), authType)
-	auth.LoadUserDB()
+	log.Info("<main> Global AuthType is - ",authType)
+	userProfiles := user.NewProfilesDB(configs.GetDataDir(),authType)
+	userProfiles.LoadUserDB()
 
-	authType = auth.AuthType
+	userProfiles.LoadLocalDefaults() // This is for backward compatability/migration
+
+	auth := user.NewAuth(authType,userProfiles)
+
 	lifecycle := edgeapp.NewAppLifecycle()
 	lifecycle.SetConfigState(edgeapp.ConfigStateConfigured)
 	lifecycle.SetAppState(edgeapp.AppStateRunning,nil)
 	lifecycle.SetConnectionState(edgeapp.ConnStateConnected)
 
-	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs,auth)
+	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs,auth,userProfiles)
 	if !configs.IsDevMode {
 		controlApi.Start()
 	}
 
-	wsBridge := cloud.NewWsNorthBridge(auth)
+	wsBridge := cloud.NewWsNorthBridge(auth,userProfiles)
 
-	if authType == api.AuthTypeNone {
-		userConf := model.UserConfigs{
-			Username:              "unknown",
+	if authType == user.AuthTypeNone {
+		userConf := user.Configs{
 			MqttServerURI:         configs.MqttServerURI,
 			MqttUsername:          configs.MqttUsername,
 			MqttPassword:          configs.MqttPassword,
@@ -128,7 +135,7 @@ func main() {
 			TlsCertDir:            configs.TlsCertDir,
 			EnableCbSupport:       configs.EnableCbSupport,
 		}
-		wsBridge.UpdateUserConfig("unknown",userConf)
+		userProfiles.AddUser("unknown","",authType,userConf)
 	}
 
 	e := echo.New()
@@ -151,7 +158,7 @@ func main() {
 
 	e.GET("/fimp/login",  func(c echo.Context) error {
 		c.Response().Header().Set("Cache-Control","no-store")
-		if auth.IsUserDdEmpty() {
+		if userProfiles.IsUserDdEmpty() {
 			c.Redirect(http.StatusMovedPermanently, "/fimp/auth-config")
 		}else {
 			c.File("static/misc/login.html")
@@ -174,10 +181,10 @@ func main() {
 	})
 
 	e.GET("/fimp/logout", func(c echo.Context) error {
-		log.Info("User logged out")
+		log.Info("UserProfile logged out")
 		auth.LogoutUsers(c)
 		c.Response().Header().Set("Cache-Control","no-store")
-		return c.HTML(http.StatusOK, "User has been logged out from the system")
+		return c.HTML(http.StatusOK, "UserProfile has been logged out from the system")
 	})
 
 	e.POST("/fimp/auth-config", func(c echo.Context) error {
@@ -189,10 +196,19 @@ func main() {
 			return c.HTML(http.StatusOK, "Passwords don't match. Try again.")
 		}
 		log.Info("Auth config request from user ", req.Username)
-		if auth.IsRequestAuthenticated(c,false) || auth.IsUserDdEmpty() {
+		if auth.IsRequestAuthenticated(c,false) || userProfiles.IsUserDdEmpty() {
 			auth.SetAuthType(req.AuthType)
-			auth.AddUser(req.Username, req.Password)
-			err := auth.SaveUserDB()
+			userConf := user.Configs{
+				MqttServerURI:         configs.MqttServerURI,
+				MqttUsername:          configs.MqttUsername,
+				MqttPassword:          configs.MqttPassword,
+				MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
+				MqttClientIdPrefix:    configs.MqttClientIdPrefix,
+				TlsCertDir:            configs.TlsCertDir,
+				EnableCbSupport:       configs.EnableCbSupport,
+			}
+			userProfiles.AddUser(req.Username, req.Password,req.AuthType,userConf)
+			err := userProfiles.SaveUserDB()
 			if err != nil {
 				log.Error("<main> Can't save new user to disk. Err:",err.Error())
 			}
@@ -208,13 +224,35 @@ func main() {
 		if !auth.IsRequestAuthenticated(c,true) {
 			return nil
 		}
-		return c.JSON(http.StatusOK, sysInfo)
+
+		sinfo := sysInfo
+		if authType == user.AuthTypeNone {
+			sinfo.Username = "unknown"
+		}else {
+			sinfo.Username = auth.GetUsername(c)
+		}
+		userProf := userProfiles.GetUserProfileByName(sinfo.Username)
+		if userProf != nil {
+			sinfo.GlobalPrefix = userProf.Configs.MqttTopicGlobalPrefix
+			sinfo.OnlineUsers = wsBridge.GetSessionCount()
+		}
+
+		return c.JSON(http.StatusOK, sinfo)
 	})
 	e.GET("/fimp/api/configs", func(c echo.Context) error {
 		if !auth.IsRequestAuthenticated(c,true) {
 			return nil
 		}
-		return c.JSON(http.StatusOK, configs)
+		username := auth.GetUsername(c)
+		if authType == user.AuthTypeNone {
+			username = "unknown"
+		}
+		cnf := userProfiles.GetUserProfileByName(username)
+		if cnf == nil {
+			return nil
+		}
+
+		return c.JSON(http.StatusOK, cnf.Configs)
 	})
 
 	e.POST("/fimp/api/configs", func(c echo.Context) error {
@@ -229,9 +267,9 @@ func main() {
 			return fmt.Errorf("invalid request format")
 		}
 
-		var userConf model.UserConfigs
+		var userConf user.Configs
 
-		if authType == api.AuthTypeNone {
+		if authType == user.AuthTypeNone {
 			if username == "" {
 				username = "unknown"
 			}
@@ -243,8 +281,7 @@ func main() {
 			if err != nil {
 				log.Error("Failed to save config file. Err:",err.Error())
 			}
-			userConf = model.UserConfigs{
-				Username:              username,
+			userConf = user.Configs{
 				MqttServerURI:         configs.MqttServerURI,
 				MqttUsername:          configs.MqttUsername,
 				MqttPassword:          configs.MqttPassword,
@@ -254,19 +291,25 @@ func main() {
 				EnableCbSupport:	   configs.EnableCbSupport,
 			}
 		}else {
-			userConf = model.UserConfigs{
-				Username:              username,
+			userConf = user.Configs{
 				MqttServerURI:         req.MqttServerURI,
 				MqttUsername:          req.MqttUsername,
 				MqttPassword:          req.MqttPassword,
 				MqttTopicGlobalPrefix: req.MqttTopicGlobalPrefix,
 				MqttClientIdPrefix:    configs.MqttClientIdPrefix,
 				TlsCertDir:            configs.TlsCertDir,
+				EnableCbSupport:	   configs.EnableCbSupport,
 			}
 		}
-		//wsUpgrader.UpdateBrokerConfig(configs.MqttServerURI)
 
-		wsBridge.UpdateUserConfig(username,userConf)
+		uprof := userProfiles.GetUserProfileByName(username)
+		if uprof == nil {
+			return fmt.Errorf("no configuration for user %s",username)
+		}
+		uprof.Configs = userConf
+		userProfiles.SaveUserDB()
+		log.Info("<main> Configurations saved for user",username)
+		wsBridge.ReloadUserConfig(username)
 
 		return c.JSON(http.StatusOK, configs)
 	})

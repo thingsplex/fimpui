@@ -37,16 +37,23 @@ export class WsFimpService {
     }
 
     public connect(){
+      var loc = window.location, new_uri;
+      if (loc.protocol === "https:") {
+        new_uri = "wss:";
+      } else {
+        new_uri = "ws:";
+      }
+
+      new_uri += "//" + loc.hostname+ ":8081/ws-bridge";
       this.connState = "connecting"
-      this.websocket = new WebSocket("ws://localhost:8081/ws-bridge"); //dummy echo websocket service
+      this.websocket = new WebSocket(new_uri); //dummy echo websocket service
       this.websocket.onopen =  (evt) => {
         console.log("Connected to WS-Bridge")
         this.connState = "connected"
         this.connStateObservable.next("connected")
       };
       this.websocket.onmessage = (evt) => {
-        console.log("New WS msg from server:")
-        console.dir(evt)
+        // console.log("New WS msg from server:")
         let fimpMsg = NewFimpMessageFromString(evt.data)
         this.msgObservable.next(fimpMsg);
       };
@@ -54,12 +61,12 @@ export class WsFimpService {
         console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
         this.connState = "reconnecting"
         this.connStateObservable.next("reconnecting")
-        setTimeout(function() {
+        setTimeout(() => {
           this.connect();
         }, 1000);
       };
 
-      this.websocket.onerror = function(err) {
+      this.websocket.onerror = (err) => {
         console.error('Socket encountered error: ', err.message, 'Closing socket');
         this.connState = "disconnected"
         this.connStateObservable.next("disconnected")

@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"github.com/alivinco/thingsplex/api"
+	"github.com/alivinco/thingsplex/user"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"io/ioutil"
@@ -36,11 +36,11 @@ var (
 type WsUpgrader struct {
 	BrokerAddress string
 	IsSSL         bool
-	auth          *api.Auth
+	auth          *user.Auth
 	certDir       string
 }
 
-func NewWsUpgrader(mqttServerURI string, auth *api.Auth,certDir string ) *WsUpgrader {
+func NewWsUpgrader(mqttServerURI string, auth *user.Auth,certDir string ) *WsUpgrader {
 	upg := &WsUpgrader{auth: auth,certDir: certDir}
 	upg.UpdateBrokerConfig(mqttServerURI)
 	return upg

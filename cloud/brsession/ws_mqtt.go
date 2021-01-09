@@ -2,7 +2,7 @@ package brsession
 
 import (
 	"fmt"
-	"github.com/alivinco/thingsplex/model"
+	"github.com/alivinco/thingsplex/user"
 	"github.com/futurehomeno/fimpgo"
 	"github.com/futurehomeno/fimpgo/transport"
 	"github.com/gorilla/websocket"
@@ -18,7 +18,7 @@ import (
 // as connection multiplexer , one MQTT <-> many WS connections
 type WsToMqttSession struct {
 	id                   string
-	userConfig           model.UserConfigs
+	userConfig           user.Configs
 	wsConn               map[int]*websocket.Conn
 	mqtt                 *fimpgo.MqttTransport
 	startedAt            time.Time
@@ -34,7 +34,7 @@ type WsToMqttSession struct {
 	isConnected          bool
 }
 
-func NewWsToMqttSession(id string, userConfig model.UserConfigs) *WsToMqttSession {
+func NewWsToMqttSession(id string, userConfig user.Configs) *WsToMqttSession {
 	userConfig.MqttClientIdPrefix = fmt.Sprintf("%s_%s", userConfig.MqttClientIdPrefix, id)
 	ses := &WsToMqttSession{id: id, userConfig: userConfig}
 	ses.wsConnLock = &sync.RWMutex{}
@@ -108,7 +108,7 @@ func (mp *WsToMqttSession) Close() {
 // IsStale return true if session is stale and can be deleted .
 func (mp *WsToMqttSession) IsStale() bool{
 	disconnectedDuration :=  time.Now().Sub(mp.lastWsDisconnectAt)
-	log.Debugf("<brSes> Last session disconnected %f sec ago ",disconnectedDuration.Seconds())
+	//log.Debugf("<brSes> Last session disconnected %f sec ago ",disconnectedDuration.Seconds())
 	if mp.IsAnyWsConnectionActive() {
 		return false
 	}else if disconnectedDuration.Seconds() > 30  {
@@ -143,11 +143,12 @@ func (mp *WsToMqttSession) StartWsToSouthboundRouter(wsConn *websocket.Conn) {
 			break
 		} else if msgType == websocket.TextMessage {
 			fimpMsg, err := fimpgo.NewMessageFromBytes(msg)
+			fimpMsg.Version = "1"
 			if err != nil {
 				log.Debug("<brSes> Can't parse fimp message from WS. Message dropped.Err:", err.Error())
 				continue
 			}
-			log.Debug(fimpMsg)
+			//log.Debug(fimpMsg)
 			if fimpMsg.Topic == "" {
 				log.Debug("<brSes> Empty topic in WS message. Message dropped")
 				continue
@@ -202,7 +203,7 @@ func (mp *WsToMqttSession) onMqttMessage(topic string, addr *fimpgo.Address, iot
 	var packet []byte
 	var err error
     if addr.PayloadType == fimpgo.CompressedJsonPayload {
-    	log.Debug("<brSes> Compressed payload msg")
+    	//log.Debug("<brSes> Compressed payload msg")
     	if mp.compressor == nil {
     		mp.compressor = transport.NewMsgCompressor("","")
 		}
@@ -211,6 +212,7 @@ func (mp *WsToMqttSession) onMqttMessage(topic string, addr *fimpgo.Address, iot
 			log.Error("<brSes> Can't decompress payload.Err:", err.Error())
 			return
 		}
+		topic = iotMsg.Topic
 	}
 
 	if mp.mqttSubPrefix != "" {

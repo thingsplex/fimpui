@@ -124,8 +124,6 @@ export class FimpService {
         var ptPos = topic.indexOf("pt:")
         var resultTopic = topic.substring(ptPos);
         var prefix = topic.substr(0, ptPos);
-        console.log("Result topic = " + resultTopic);
-        console.log("Result prefix = " + prefix);
         return resultTopic;
       } else {
         return topic;

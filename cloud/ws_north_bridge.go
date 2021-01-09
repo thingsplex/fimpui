@@ -2,9 +2,8 @@ package cloud
 
 import (
 	"fmt"
-	"github.com/alivinco/thingsplex/api"
 	"github.com/alivinco/thingsplex/cloud/brsession"
-	"github.com/alivinco/thingsplex/model"
+	"github.com/alivinco/thingsplex/user"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
@@ -32,31 +31,35 @@ var (
 
 //WsNorthBridge accepts WS connections from UI Browser clients.
 type WsNorthBridge struct {
-	auth           *api.Auth
+	auth           *user.Auth
 	sessions       map[string]*brsession.WsToMqttSession
-	configs        map[string]model.UserConfigs
+	userProfiles   *user.ProfilesDB
 	sesLock        *sync.RWMutex
 	// each session can have different connection settings
 }
 
-func NewWsNorthBridge(auth *api.Auth) *WsNorthBridge {
-	upg := &WsNorthBridge{auth: auth}
+func NewWsNorthBridge(auth *user.Auth,profiles *user.ProfilesDB) *WsNorthBridge {
+	upg := &WsNorthBridge{auth: auth,userProfiles: profiles}
 	upg.sesLock = &sync.RWMutex{}
-	upg.configs = make(map[string]model.UserConfigs)
 	upg.sessions = make(map[string]*brsession.WsToMqttSession)
 	upg.StartSessionMonitor()
 	return upg
 }
 
-func (wu *WsNorthBridge) UpdateUserConfig(username string, conf model.UserConfigs) {
-	wu.configs[username] = conf
-
+func (wu *WsNorthBridge) ReloadUserConfig(username string) {
+	wu.sesLock.Lock()
 	ses,ok := wu.sessions[username]
 	if ok {
 		ses.Close()
 		delete(wu.sessions,username)
 	}
+	wu.sesLock.Unlock()
 }
+
+func (wu *WsNorthBridge) GetSessionCount()int {
+	return len(wu.sessions)
+}
+
 
 // Upgrade - the method is invoked by higher HTTP framework . It blocks and reads messages.
 // IMPORTANT NOTE : the same user can open multiple browser sessions
@@ -77,29 +80,32 @@ func (wu *WsNorthBridge) Upgrade(c echo.Context) error {
 		log.Error("<MqWsProxy> Can't upgrade . Error:", err)
 		return err
 	}
-	log.Info("<MqWsBridge> Upgraded ")
 
 	var username string
-	if wu.auth.AuthType == api.AuthTypeNone {
+	if wu.auth.AuthType == user.AuthTypeNone {
 		username = "unknown"
 	}else {
-		username := wu.auth.GetUsername(c)
+		username = wu.auth.GetUsername(c)
 		if username == "" {
 			return fmt.Errorf("http session doesn't exist. Can't upgrate WS connection")
 		}
 	}
+	log.Debugf("<MqWsBridge> Starting WS session for user %s ",username)
 	wu.sesLock.RLock()
 	session, ok := wu.sessions[username]
 	wu.sesLock.RUnlock()
 	if ok {
+		log.Debug("<MqWsBridge> Reusing existing session")
 		session.StartWsToSouthboundRouter(ws)
 	} else {
-		conf,ok := wu.configs[username]
-		if !ok {
+		log.Debug("<MqWsBridge> Starting new session  ")
+
+		conf := wu.userProfiles.GetUserProfileByName(username)
+		if conf == nil {
 			return fmt.Errorf("can't find config for user %s",username)
 		}
 		wu.sesLock.Lock()
-		newSession := brsession.NewWsToMqttSession(username,conf)
+		newSession := brsession.NewWsToMqttSession(username,conf.Configs)
 		wu.sessions[username] = newSession
 		wu.sesLock.Unlock()
 		newSession.StartWsToSouthboundRouter(ws)
