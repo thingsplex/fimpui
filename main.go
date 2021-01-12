@@ -101,15 +101,28 @@ func main() {
 	}
 	//--------------------------------------
 
-	authType := configs.GlobalAuthType
-	if configs.IsDevMode {
-		authType = user.AuthTypeNone
-	}
-	log.Info("<main> Global AuthType is - ",authType)
-	userProfiles := user.NewProfilesDB(configs.GetDataDir(),authType)
+	userProfiles := user.NewProfilesDB(configs.GetDataDir())
 	userProfiles.LoadUserDB()
-
 	userProfiles.LoadLocalDefaults() // This is for backward compatability/migration
+
+	authType := configs.GlobalAuthType
+
+	log.Info("<main> Global GlobalAuthType is = ",authType)
+	if authType == user.AuthTypeUnknown {
+		isNewUser := userProfiles.UpsertUserProfile("unknown","",authType)
+		if isNewUser {
+			userConf := user.Configs{
+				MqttServerURI:         configs.MqttServerURI,
+				MqttUsername:          configs.MqttUsername,
+				MqttPassword:          configs.MqttPassword,
+				MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
+				MqttClientIdPrefix:    configs.MqttClientIdPrefix,
+				TlsCertDir:            configs.TlsCertDir,
+				EnableCbSupport:       configs.EnableCbSupport,
+			}
+			userProfiles.UpdateUserConfig("unknown",userConf)
+		}
+	}
 
 	auth := user.NewAuth(authType,userProfiles)
 
@@ -124,19 +137,6 @@ func main() {
 	}
 
 	wsBridge := cloud.NewWsNorthBridge(auth,userProfiles)
-
-	if authType == user.AuthTypeNone {
-		userConf := user.Configs{
-			MqttServerURI:         configs.MqttServerURI,
-			MqttUsername:          configs.MqttUsername,
-			MqttPassword:          configs.MqttPassword,
-			MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
-			MqttClientIdPrefix:    configs.MqttClientIdPrefix,
-			TlsCertDir:            configs.TlsCertDir,
-			EnableCbSupport:       configs.EnableCbSupport,
-		}
-		userProfiles.AddUser("unknown","",authType,userConf)
-	}
 
 	e := echo.New()
 	e.Use(middleware.Logger())
@@ -158,7 +158,7 @@ func main() {
 
 	e.GET("/fimp/login",  func(c echo.Context) error {
 		c.Response().Header().Set("Cache-Control","no-store")
-		if userProfiles.IsUserDdEmpty() {
+		if auth.GlobalAuthType == user.AuthTypeUnknown {
 			c.Redirect(http.StatusMovedPermanently, "/fimp/auth-config")
 		}else {
 			c.File("static/misc/login.html")
@@ -187,31 +187,49 @@ func main() {
 		return c.HTML(http.StatusOK, "UserProfile has been logged out from the system")
 	})
 
+ 	// signup request
 	e.POST("/fimp/auth-config", func(c echo.Context) error {
 		req := LoginRequest{}
 		if err := c.Bind(&req); err != nil {
 			return fmt.Errorf("invalid request format")
 		}
-		if req.Password != req.RePassword {
-			return c.HTML(http.StatusOK, "Passwords don't match. Try again.")
-		}
+
 		log.Info("Auth config request from user ", req.Username)
-		if auth.IsRequestAuthenticated(c,false) || userProfiles.IsUserDdEmpty() {
-			auth.SetAuthType(req.AuthType)
-			userConf := user.Configs{
-				MqttServerURI:         configs.MqttServerURI,
-				MqttUsername:          configs.MqttUsername,
-				MqttPassword:          configs.MqttPassword,
-				MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
-				MqttClientIdPrefix:    configs.MqttClientIdPrefix,
-				TlsCertDir:            configs.TlsCertDir,
-				EnableCbSupport:       configs.EnableCbSupport,
+		if auth.IsRequestAuthenticated(c,false) || auth.GlobalAuthType == user.AuthTypeUnknown {
+
+			if req.AuthType != configs.GlobalAuthType && req.AuthType != "" {
+				auth.SetGlobalAuthType(req.AuthType)
+				configs.GlobalAuthType = req.AuthType
+				configs.SaveToFile()
 			}
-			userProfiles.AddUser(req.Username, req.Password,req.AuthType,userConf)
+
+			if req.AuthType == user.AuthTypeNone{
+				c.Redirect(http.StatusMovedPermanently, "/fimp/analytics/dashboard")
+			}
+
+			if req.Password != req.RePassword {
+				return c.HTML(http.StatusOK, "Passwords don't match. Try again.")
+			}
+
+			isNewUser := userProfiles.UpsertUserProfile(req.Username, req.Password,req.AuthType)
+			if isNewUser {
+				userConf := user.Configs{
+					MqttServerURI:         configs.MqttServerURI,
+					MqttUsername:          configs.MqttUsername,
+					MqttPassword:          configs.MqttPassword,
+					MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
+					MqttClientIdPrefix:    configs.MqttClientIdPrefix,
+					TlsCertDir:            configs.TlsCertDir,
+					EnableCbSupport:       configs.EnableCbSupport,
+				}
+				userProfiles.UpdateUserConfig(req.Username,userConf)
+			}
+
 			err := userProfiles.SaveUserDB()
 			if err != nil {
 				log.Error("<main> Can't save new user to disk. Err:",err.Error())
 			}
+
 			auth.SaveUserToSession(c, req.Username)
 			c.Redirect(http.StatusMovedPermanently, "/fimp/analytics/dashboard")
 		} else {
@@ -226,7 +244,7 @@ func main() {
 		}
 
 		sinfo := sysInfo
-		if authType == user.AuthTypeNone {
+		if auth.GlobalAuthType == user.AuthTypeNone {
 			sinfo.Username = "unknown"
 		}else {
 			sinfo.Username = auth.GetUsername(c)
@@ -244,7 +262,7 @@ func main() {
 			return nil
 		}
 		username := auth.GetUsername(c)
-		if authType == user.AuthTypeNone {
+		if auth.GlobalAuthType == user.AuthTypeNone {
 			username = "unknown"
 		}
 		cnf := userProfiles.GetUserProfileByName(username)
@@ -269,37 +287,24 @@ func main() {
 
 		var userConf user.Configs
 
-		if authType == user.AuthTypeNone {
+		if auth.GlobalAuthType == user.AuthTypeNone {
 			if username == "" {
 				username = "unknown"
 			}
-			configs.MqttServerURI = req.MqttServerURI
-			configs.MqttUsername = req.MqttUsername
-			configs.MqttPassword = req.MqttPassword
-			configs.MqttTopicGlobalPrefix = req.MqttTopicGlobalPrefix
-			err = configs.SaveToFile()
-			if err != nil {
-				log.Error("Failed to save config file. Err:",err.Error())
-			}
-			userConf = user.Configs{
-				MqttServerURI:         configs.MqttServerURI,
-				MqttUsername:          configs.MqttUsername,
-				MqttPassword:          configs.MqttPassword,
-				MqttTopicGlobalPrefix: configs.MqttTopicGlobalPrefix,
-				MqttClientIdPrefix:    configs.MqttClientIdPrefix,
-				TlsCertDir:            configs.TlsCertDir,
-				EnableCbSupport:	   configs.EnableCbSupport,
-			}
-		}else {
-			userConf = user.Configs{
-				MqttServerURI:         req.MqttServerURI,
-				MqttUsername:          req.MqttUsername,
-				MqttPassword:          req.MqttPassword,
-				MqttTopicGlobalPrefix: req.MqttTopicGlobalPrefix,
-				MqttClientIdPrefix:    configs.MqttClientIdPrefix,
-				TlsCertDir:            configs.TlsCertDir,
-				EnableCbSupport:	   configs.EnableCbSupport,
-			}
+		}
+		if configs.GlobalAuthType != req.GlobalAuthType {
+			configs.GlobalAuthType = req.GlobalAuthType
+			configs.SaveToFile()
+		}
+
+		userConf = user.Configs{
+			MqttServerURI:         req.MqttServerURI,
+			MqttUsername:          req.MqttUsername,
+			MqttPassword:          req.MqttPassword,
+			MqttTopicGlobalPrefix: req.MqttTopicGlobalPrefix,
+			MqttClientIdPrefix:    req.MqttClientIdPrefix,
+			TlsCertDir:            req.TlsCertDir,
+			EnableCbSupport:	   req.EnableCbSupport,
 		}
 
 		uprof := userProfiles.GetUserProfileByName(username)

@@ -37,7 +37,7 @@ type Configs struct {
 	CookieKey             string `json:"cookie_key"`
 	TlsCertDir            string `json:"tls_cert_dir"`
 	EnableCbSupport       bool   `json:"enable_cb_support"`
-	GlobalAuthType        string `json:"auth_type"`
+	GlobalAuthType        string `json:"global_auth_type"`
 	DeploymentMode        string `json:"deployment_mode"`
 }
 
@@ -66,7 +66,7 @@ func (cf * Configs) LoadFromFile() error {
 		return err
 	}
 	if cf.GlobalAuthType == "" {
-		cf.GlobalAuthType = user.AuthTypePassword
+		cf.GlobalAuthType = user.AuthTypeUnknown
 	}
 	if cf.DeploymentMode == "" {
 		cf.DeploymentMode = DeploymentModeLocal

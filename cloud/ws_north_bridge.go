@@ -82,7 +82,7 @@ func (wu *WsNorthBridge) Upgrade(c echo.Context) error {
 	}
 
 	var username string
-	if wu.auth.AuthType == user.AuthTypeNone {
+	if wu.auth.GlobalAuthType == user.AuthTypeNone {
 		username = "unknown"
 	}else {
 		username = wu.auth.GetUsername(c)
@@ -96,7 +96,7 @@ func (wu *WsNorthBridge) Upgrade(c echo.Context) error {
 	wu.sesLock.RUnlock()
 	if ok {
 		log.Debug("<MqWsBridge> Reusing existing session")
-		session.StartWsToSouthboundRouter(ws)
+		return session.StartWsToSouthboundRouter(ws)
 	} else {
 		log.Debug("<MqWsBridge> Starting new session  ")
 
@@ -108,6 +108,11 @@ func (wu *WsNorthBridge) Upgrade(c echo.Context) error {
 		newSession := brsession.NewWsToMqttSession(username,conf.Configs)
 		wu.sessions[username] = newSession
 		wu.sesLock.Unlock()
+		err := newSession.ConnectToMqttBroker()
+		if err != nil {
+			log.Errorf("<MqWsBridge> Can't connect to mqtt broker")
+			return err
+		}
 		newSession.StartWsToSouthboundRouter(ws)
 		log.Debugf("New session added . Active sessions = %d", len(wu.sessions))
 	}

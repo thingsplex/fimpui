@@ -5,6 +5,19 @@ import {Subject, Subscription} from "rxjs";
 import {FimpMessage, NewFimpMessageFromString} from "../../fimp/Message";
 import {FimpApiMetadataService} from "../../fimp/fimp-api-metadata.service";
 
+export interface Thing {
+
+}
+
+export interface Device {
+  id  : number ;
+  thing_id : number;
+  location_id : number;
+  alias : string;
+  type : string;
+  location_alias : string;
+}
+
 @Injectable()
 export class ThingsRegistryService{
 
@@ -160,7 +173,7 @@ export class ThingsRegistryService{
       return []
   }
 
-  getDevicesForThing(thingId:number) {
+  getDevicesForThing(thingId:number):Device[] {
     if(this.devices)
       return this.devices.filter(device => device.thing_id == thingId)
     else

@@ -1,29 +1,38 @@
 import { Injectable } from '@angular/core';
-import { BACKEND_ROOT } from "app/globals";
+import {BACKEND_ROOT, setGlobals} from "app/globals";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 import {HttpClient} from "@angular/common/http";
+
+export interface SystemInfo {
+  Version : string;
+  Username : string;
+  RemoteSiteId : string;
+  OnlineUsers : number;
+}
+
+export class SystemInfoImpl implements SystemInfo{
+  Version : string;
+  Username : string;
+  RemoteSiteId : string;
+  OnlineUsers : number;
+}
+
 
 @Injectable()
 export class ConfigsService {
 
     private _startupData: any;
     public configs : any;
-    constructor(private http: HttpClient) { }
+    public systemInfo : SystemInfo = new SystemInfoImpl();
+    constructor(private http: HttpClient) {
+      this.loadSystemInfo();
+    }
 
     // This is the method you want to call at bootstrap
     // Important: It should return a Promise
     load(): Promise<any> {
-
         this._startupData = null;
-
-        // return this.http
-        //     .get('REST_API_URL')
-        //     .map((res: Response) => res.json())
-        //     .toPromise()
-        //     .then((data: any) => this._startupData = data)
-        //     .catch((err: any) => Promise.resolve());
-
         return this.http
             .get(BACKEND_ROOT+'/fimp/api/configs',{})
             .toPromise()
@@ -51,4 +60,13 @@ export class ConfigsService {
     get startupData(): any {
         return this._startupData;
     }
+
+  public loadSystemInfo() {
+    this.http.get(BACKEND_ROOT+"/fimp/system-info")
+      .subscribe((data: SystemInfo) => {
+        this.systemInfo = data
+        console.log("System info:");
+        console.dir(this.systemInfo);
+      });
+  }
 }

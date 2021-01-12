@@ -154,6 +154,8 @@ export class LineChartComponent implements OnInit  {
               console.log("No device for id = ",val.tags.dev_id)
             }
             break;
+          case "dev_type":
+            label = val.tags.dev_type;
         }
       }
 

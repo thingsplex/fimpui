@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-//WsSouthBridge is a process that accepts Websocket connections from Hubs or other Edge devices .
+//WsSouthBridge is used only in Cloud version. It's a process that accepts Websocket connections from Hubs or other Edge devices .
 // each new connection is stored
 type WsSouthBridge struct {
 	auth           *user.Auth
@@ -55,7 +55,7 @@ func (wu *WsSouthBridge) Upgrade(c echo.Context) error {
 	//log.Info("<MqWsBridge> Upgraded ")
 	//
 	//var username string
-	//if wu.auth.AuthType == user.AuthTypeNone {
+	//if wu.auth.GlobalAuthType == user.AuthTypeNone {
 	//	username = "unknown"
 	//}else {
 	//	username := wu.auth.GetUsername(c)

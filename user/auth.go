@@ -13,18 +13,19 @@ import (
 
 const (
 	AuthTypePassword = "password"
+	AuthTypeUnknown  = "unknown"
 	AuthTypeNone     = "none"
 	AuthTypeCode     = "code"
 )
 
 
 type Auth struct {
-	AuthType        string // "none , password , code
-	userProfiles    *ProfilesDB
+	GlobalAuthType string // global auth type "none , password , code
+	userProfiles   *ProfilesDB
 }
 
 func NewAuth(authType string,userProfiles *ProfilesDB) *Auth {
-	return &Auth{AuthType: authType,userProfiles: userProfiles}
+	return &Auth{GlobalAuthType: authType,userProfiles: userProfiles}
 }
 
 func (cf *Auth) SaveUserToSession(c echo.Context, username string) {
@@ -44,9 +45,10 @@ func (cf *Auth) LogoutUsers(c echo.Context) {
 }
 
 func (cf *Auth) IsRequestAuthenticated(c echo.Context, setResponseHeader bool) bool {
-	if cf.AuthType == AuthTypeNone {
+	if cf.GlobalAuthType == AuthTypeNone {
 		return true
 	}
+
 	sess, err := session.Get("tplex", c)
 
 	if err != nil {
@@ -91,15 +93,15 @@ func (cf *Auth) GetUsername(c echo.Context) string {
 	return userS
 }
 
-func (cf *Auth) SetAuthType(atype string) {
+func (cf *Auth) SetGlobalAuthType(atype string) {
 	if atype == AuthTypeNone || atype == AuthTypeCode || atype == AuthTypePassword {
-		cf.AuthType = atype
+		cf.GlobalAuthType = atype
 	}
 }
 
 //Authenticate authenticates user by login and password and returns success true/false
 func (cf *Auth) Authenticate(username, password string) bool {
-	switch cf.AuthType {
+	switch cf.GlobalAuthType {
 		case AuthTypePassword:
 			user := cf.userProfiles.GetUserProfileByName(username)
 			if user != nil {

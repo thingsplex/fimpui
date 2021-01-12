@@ -47,7 +47,7 @@
     <ng-container cdkColumnDef="action">
       <mat-header-cell *cdkHeaderCellDef> Action </mat-header-cell>
       <mat-cell *cdkCellDef="let row"><mat-chip-list>
-        <mat-chip (click)="showThingEditorDialog(row)" > Edit </mat-chip>
+        <mat-chip (click)="showDeviceEditorDialog(row)" > Edit </mat-chip>
         <mat-chip [routerLink]="['/registry/services','thingId',row.id]"> Services </mat-chip>
         <mat-chip (click)="deleteThing(row.id)"> Delete </mat-chip>
       </mat-chip-list> </mat-cell>

@@ -1,8 +1,8 @@
-version="1.1.1"
+version="1.1.2"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
-remote_host = "fh@cube.local"
+remote_host = "fh@futurehome-smarthub.local"
 reprepo_host = "reprepro@archive.futurehome.no"
 
 build-js:

@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
@@ -30,14 +31,13 @@ type Configs struct {
 
 type ProfilesDB struct {
 	userDbPath      string
-	AuthType        string        // "none , password , code
 	Users           []UserProfile `json:"users"`
 	dbLock          sync.Mutex
 	lastOneTimeCode string
 }
 
-func NewProfilesDB(dataDir,authType string) *ProfilesDB {
-	prof := &ProfilesDB{userDbPath: path.Join(dataDir, "users.json"), AuthType: authType}
+func NewProfilesDB(dataDir string) *ProfilesDB {
+	prof := &ProfilesDB{userDbPath: path.Join(dataDir, "users.json")}
 	prof.dbLock = sync.Mutex{}
 	return prof
 }
@@ -67,20 +67,40 @@ func (cf *ProfilesDB) SaveUserDB() error {
 	return err
 }
 
-func (cf *ProfilesDB) AddUser(username, password , authType string,configs Configs) {
+// UpsertUserProfile upsert user profile and returns true if new user was added or false for update operation.
+func (cf *ProfilesDB) UpsertUserProfile(username, password , authType string) bool {
+	cf.dbLock.Lock()
+	defer cf.dbLock.Unlock()
 	usr := cf.GetUserProfileByName(username)
 	if usr != nil {
-		return // user alredy exists
+		if password != "" {
+			usr.Password = cf.hashPassword(password)
+		}
+
+		if authType != "" {
+			usr.AuthType = authType
+		}
+		return false // existing user updated
+	}else {
+		hashedPass := cf.hashPassword(password)
+		cf.Users = append(cf.Users, UserProfile{Username: username, Password: hashedPass,AuthType: authType})
+		return true // new user added
 	}
-	cf.dbLock.Lock()
-	defer cf.dbLock.Unlock()
-	hashedPass := cf.hashPassword(password)
-	cf.Users = append(cf.Users, UserProfile{Username: username, Password: hashedPass,AuthType: authType,Configs: configs})
 }
 
-func (cf *ProfilesDB) GetUserProfileByName(username string) *UserProfile {
+func (cf *ProfilesDB) UpdateUserConfig(username string,config Configs) error {
 	cf.dbLock.Lock()
 	defer cf.dbLock.Unlock()
+	usr := cf.GetUserProfileByName(username)
+	if usr == nil {
+		return fmt.Errorf("user not found")
+	}
+	usr.Configs = config
+	return nil
+}
+
+
+func (cf *ProfilesDB) GetUserProfileByName(username string) *UserProfile {
 	for i, _ := range cf.Users {
 		if cf.Users[i].Username == username {
 			return &cf.Users[i]

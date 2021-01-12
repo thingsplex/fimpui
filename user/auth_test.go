@@ -3,8 +3,8 @@ package user
 import "testing"
 
 func TestAuth_Authenticate(t *testing.T) {
-	prof := NewProfilesDB("./","password")
-	prof.AddUser("shurik","prikluchenija")
+	prof := NewProfilesDB("./")
+	prof.UpsertUserProfile("shurik","prikluchenija","password")
 
 	auth := NewAuth("password",prof)
 

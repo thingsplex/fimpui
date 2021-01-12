@@ -4,8 +4,11 @@
         <p><mat-form-field>
             <input style="width:350px" matInput placeholder="Alias" [(ngModel)]="alias" >
         </mat-form-field></p>
+        <p><mat-form-field>
+          <input style="width:350px" matInput placeholder="Type" [(ngModel)]="type" >
+        </mat-form-field></p>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-raised-button (click)="save()" >Save</button>
+    <button mat-raised-button (click)="saveToVinculum()" >Save</button>
     <button mat-raised-button mat-dialog-close>Close</button>
 </mat-dialog-actions>

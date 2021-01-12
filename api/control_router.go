@@ -95,9 +95,9 @@ func (fc *AppControlApiRouter) routeFimpMessage(newMsg *fimpgo.Message) {
 				}
 				uiConfig.Val.Default = fmt.Sprintf("http://%s:8081",ip)
 			}
-			configState := FimpConfigInterface{AuthType: fc.auth.AuthType}
+			configState := FimpConfigInterface{AuthType: fc.auth.GlobalAuthType}
 
-			if fc.auth.AuthType == user.AuthTypeCode {
+			if fc.auth.GlobalAuthType == user.AuthTypeCode {
 
 				if uiConfig := manifest.GetAppConfig("one_time_code");uiConfig != nil {
 					uiConfig.Hidden = true // This is temp flag
@@ -160,21 +160,28 @@ func (fc *AppControlApiRouter) routeFimpMessage(newMsg *fimpgo.Message) {
 			state := "ok"
 			if  conf.AuthType == user.AuthTypePassword {
 				if conf.Username != "" && conf.Password != "" {
-					userConf := user.Configs{
-						MqttServerURI:         fc.configs.MqttServerURI,
-						MqttUsername:          fc.configs.MqttUsername,
-						MqttPassword:          fc.configs.MqttPassword,
-						MqttTopicGlobalPrefix: fc.configs.MqttTopicGlobalPrefix,
-						MqttClientIdPrefix:    fc.configs.MqttClientIdPrefix,
-						TlsCertDir:            fc.configs.TlsCertDir,
-						EnableCbSupport:       fc.configs.EnableCbSupport,
+					isNewUser := fc.userProfiles.UpsertUserProfile(conf.Username,conf.Password,conf.AuthType)
+					if isNewUser {
+						userConf := user.Configs{
+							MqttServerURI:         fc.configs.MqttServerURI,
+							MqttUsername:          fc.configs.MqttUsername,
+							MqttPassword:          fc.configs.MqttPassword,
+							MqttTopicGlobalPrefix: fc.configs.MqttTopicGlobalPrefix,
+							MqttClientIdPrefix:    fc.configs.MqttClientIdPrefix,
+							TlsCertDir:            fc.configs.TlsCertDir,
+							EnableCbSupport:       fc.configs.EnableCbSupport,
+						}
+						fc.userProfiles.UpdateUserConfig(conf.Username,userConf)
 					}
-					fc.userProfiles.AddUser(conf.Username,conf.Password,conf.AuthType,userConf)
 				}
-				fc.auth.SetAuthType(conf.AuthType)
+				fc.auth.SetGlobalAuthType(conf.AuthType)
+				if fc.configs.GlobalAuthType != conf.AuthType {
+					fc.configs.GlobalAuthType = conf.AuthType
+					fc.configs.SaveToFile()
+				}
 				err = fc.userProfiles.SaveUserDB()
 			}else if conf.AuthType == user.AuthTypeCode || conf.AuthType == user.AuthTypeNone {
-				fc.auth.SetAuthType(conf.AuthType)
+				fc.auth.SetGlobalAuthType(conf.AuthType)
 				err = fc.userProfiles.SaveUserDB()
 			}else {
 				state = "error"

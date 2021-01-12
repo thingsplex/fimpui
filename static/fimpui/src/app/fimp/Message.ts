@@ -94,5 +94,6 @@ export function NewFimpMessageFromString(jsonString:string):FimpMessage{
         msg.src = jobj["src"];
         msg.corid = jobj["corid"];
         msg.topic = jobj["topic"];
+        msg.resp_to = jobj["resp_to"];
         return msg ;
 }

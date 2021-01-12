@@ -289,11 +289,6 @@ export class FimpService {
     return this.filteredMessages;
   }
 
-  public startCBSession() {
-    let val = '{"token":"tp-token","client-id":"tplexui-1","username":"aleksandrs@futurehome.no", "device-id": "browser"}';
-    let msg = new FimpMessage("clbridge", "cmd.session.start", "str_map", val, null, null)
-    this.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg);
-  }
 
 }
 

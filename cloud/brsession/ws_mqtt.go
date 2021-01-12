@@ -31,7 +31,7 @@ type WsToMqttSession struct {
 	compressor           *transport.MsgCompressor
 	cbKeepAliveTicker    *time.Ticker
 	sessionClosedSignal  chan bool
-	isConnected          bool
+	isConnected          bool // true if session is connected to mqtt broker
 }
 
 func NewWsToMqttSession(id string, userConfig user.Configs) *WsToMqttSession {
@@ -49,12 +49,14 @@ func NewWsToMqttSession(id string, userConfig user.Configs) *WsToMqttSession {
 		ses.mqttPubPrefix = userConfig.MqttTopicGlobalPrefix
 		ses.mqttSubPrefix = userConfig.MqttTopicGlobalPrefix
 	}
-	ses.connect()
 	return ses
 }
-
-func (mp *WsToMqttSession) connect() error {
+// connect createas new mqtt connection
+func (mp *WsToMqttSession) ConnectToMqttBroker() error {
 	var err error
+	if mp.userConfig.MqttServerURI == "" {
+		return fmt.Errorf("mqtt server address is empty")
+	}
 	// Start mqtt connection
 	log.Debug("<brSes> mqtt session name ", mp.userConfig.MqttClientIdPrefix)
 	mp.mqtt = fimpgo.NewMqttTransport(mp.userConfig.MqttServerURI, mp.userConfig.MqttClientIdPrefix, mp.userConfig.MqttUsername, mp.userConfig.MqttPassword, true, 1, 1)
@@ -62,7 +64,7 @@ func (mp *WsToMqttSession) connect() error {
 	if mp.userConfig.TlsCertDir != "" {
 		mp.mqtt.ConfigureTls("awsiot.private.key", "awsiot.crt", mp.userConfig.TlsCertDir, true)
 	}
-
+	mp.mqtt.SetStartAutoRetryCount(3)
 	err = mp.mqtt.Start()
 	if err != nil {
 		log.Error("<brSes> Can't connect to broker . Error :", err)
@@ -118,7 +120,10 @@ func (mp *WsToMqttSession) IsStale() bool{
 }
 
 // StartWsToMqttRouter - consumes WS Fimp messages and publishes them MQTT broker.  Browser -> WS Bridge -> MQTT broker
-func (mp *WsToMqttSession) StartWsToSouthboundRouter(wsConn *websocket.Conn) {
+func (mp *WsToMqttSession) StartWsToSouthboundRouter(wsConn *websocket.Conn) error{
+	if !mp.isConnected {
+		return fmt.Errorf("<brSes> mqtt broker is not connected")
+	}
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 	wsConnID := r1.Int()
@@ -164,7 +169,7 @@ func (mp *WsToMqttSession) StartWsToSouthboundRouter(wsConn *websocket.Conn) {
 			}
 			if !mp.IsMqttConnected() {
 				log.Error("<brSes> Can't configure mqtt connection. Id =",mp.id)
-				return
+				return fmt.Errorf("mqtt connection is not configured")
 			}
 
 			err = mp.mqtt.PublishToTopic(pubTopic, fimpMsg)
@@ -178,6 +183,7 @@ func (mp *WsToMqttSession) StartWsToSouthboundRouter(wsConn *websocket.Conn) {
 			log.Debug(" <brSes> Message with type = ", msgType)
 		}
 	}
+	return nil
 }
 
 func (mp *WsToMqttSession) IsAnyWsConnectionActive() bool {

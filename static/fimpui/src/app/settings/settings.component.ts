@@ -26,6 +26,7 @@ export class SettingsComponent implements OnInit {
   constructor(fimpService:FimpService,public configs:ConfigsService, private webrtcService: WebRtcService,private http : HttpClient) {
     // this.pc = GetWebRtcInstance();
     this.fimpService = fimpService;
+    this.configs.loadSystemInfo();
     this.fimpTransportType = fimpService.transportType;
     if(this.fimpTransportType=="webrtc") {
       this.onWrtcLocalDescriptionReady = (desc) => {
@@ -39,7 +40,7 @@ export class SettingsComponent implements OnInit {
     this.connStatus = this.fimpService.getConnState();
   }
 
-  saveBrokerConfigs() {
+  saveUserConfigs() {
     console.log(this.configs.configs)
     this.http
       .post(BACKEND_ROOT+'/fimp/api/configs',this.configs.configs )
@@ -50,27 +51,37 @@ export class SettingsComponent implements OnInit {
 
   }
 
+  saveGlobalConfigs() {
+    console.log(this.configs.configs)
+    this.http
+      .post(BACKEND_ROOT+'/fimp/api/global-configs',this.configs.configs )
+      .subscribe ((result) => {
+        console.log("Template is saved");
+        location.reload();
+      });
+  }
+
   saveFimpTransportType() {
     this.fimpService.transportType = this.fimpTransportType;
     location.reload();
   }
 
-  appCtrl(name:string,operation:string) {
-    let props:Map<string,string> = new Map();
-    let val:Map<string,string> = new Map();
-    val["op"] = operation;
-    val["app"] = name;
-    val["ver"] = "1.0.0";
-
-    let msg  = new FimpMessage("fhbutler","cmd.app.ctrl","str_map",val,props,null)
-    this.fimpService.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
-  }
-
-  checkForUpdates() {
-    let props:Map<string,string> = new Map();
-    let msg  = new FimpMessage("fhbutler","cmd.app.check_updates","null",null,props,null)
-    this.fimpService.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
-  }
+  // appCtrl(name:string,operation:string) {
+  //   let props:Map<string,string> = new Map();
+  //   let val:Map<string,string> = new Map();
+  //   val["op"] = operation;
+  //   val["app"] = name;
+  //   val["ver"] = "1.0.0";
+  //
+  //   let msg  = new FimpMessage("fhbutler","cmd.app.ctrl","str_map",val,props,null)
+  //   this.fimpService.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
+  // }
+  //
+  // checkForUpdates() {
+  //   let props:Map<string,string> = new Map();
+  //   let msg  = new FimpMessage("fhbutler","cmd.app.check_updates","null",null,props,null)
+  //   this.fimpService.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
+  // }
 
 
   ngOnInit() {

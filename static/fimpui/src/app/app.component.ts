@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import {BACKEND_ROOT, MQTT_PORT, setGlobals} from "./globals";
 import {HttpClient} from "@angular/common/http";
+import {ConfigsService} from 'app/configs.service';
+
 @Component({
   moduleId: module.id,
   selector: 'fimp-ui',
@@ -13,7 +15,7 @@ export class AppComponent {
   public username : string;
   public onlineUsers : number;
   public remoteSiteId : string;
-  constructor (private http: HttpClient){
+  constructor (private http: HttpClient,public configs : ConfigsService){
     this.loadSystemInfo();
   }
   toggleHeading() {
@@ -33,15 +35,20 @@ export class AppComponent {
   }
 
   public loadSystemInfo() {
-    this.http.get(BACKEND_ROOT+"/fimp/system-info")
-      .subscribe((data: any) => {
-        // MQTT_PORT = data["WsMqttPort"];
-        setGlobals(data["WsMqttPort"])
-        this.version = data["Version"];
-        this.username = data["Username"];
-        this.remoteSiteId = data["GlobalPrefix"];
-        this.onlineUsers = data["OnlineUsers"];
-      });
+    console.log("App component version : "+this.configs.systemInfo.Version)
+    this.version = this.configs.systemInfo.Version;
+    this.username = this.configs.systemInfo.Username;
+    this.onlineUsers = this.configs.systemInfo.OnlineUsers;
+    this.remoteSiteId = this.configs.systemInfo.RemoteSiteId;
+    // this.http.get(BACKEND_ROOT+"/fimp/system-info")
+    //   .subscribe((data: any) => {
+    //     // MQTT_PORT = data["WsMqttPort"];
+    //     setGlobals(data["WsMqttPort"])
+    //     this.version = data["Version"];
+    //     this.username = data["Username"];
+    //     this.remoteSiteId = data["GlobalPrefix"];
+    //     this.onlineUsers = data["OnlineUsers"];
+    //   });
   }
 
 
