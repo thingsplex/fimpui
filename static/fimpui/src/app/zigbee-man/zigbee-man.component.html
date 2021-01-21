@@ -200,6 +200,22 @@
             Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
+          <form #fBindGroup="ngForm" (ngSubmit)="bindGroup(fBindGroup.value)">
+            <button mat-raised-button type="submit" [disabled]="fBindGroup.invalid" color="accent">Bind Group</button>
+            Source UDID <input name="src_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Source Endpoint <input name="src_ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Group ID <input name="dst_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fUnbindGroup="ngForm" (ngSubmit)="unbindGroup(fUnbindGroup.value)">
+            <button mat-raised-button type="submit" [disabled]="fUnbindGroup.invalid" color="accent">Unbind Group</button>
+            Source UDID <input name="src_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Source Endpoint <input name="src_ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Group ID <input name="dst_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
         </div>
 
         <br/>

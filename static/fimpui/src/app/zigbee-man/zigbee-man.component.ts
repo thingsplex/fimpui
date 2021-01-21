@@ -148,6 +148,24 @@ export class ZigbeeManComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
+  bindGroup(form: Object) {
+    console.log("Bind group message")
+    for (const key in form) {
+      form[key] = parseInt(form[key])
+    }
+    let msg = new FimpMessage("zigbee", "cmd.custom.bind_group", "object", form, null, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
+  }
+
+  unbindGroup(form: Object) {
+    console.log("Unbind group message")
+    for (const key in form) {
+      form[key] = parseInt(form[key])
+    }
+    let msg = new FimpMessage("zigbee", "cmd.custom.unbind_group", "object", form, null, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
+  }
+
   generateExclusionReport(address:string){
     let msg  = new FimpMessage("zigbee","evt.thing.exclusion_report","object",{"address":String(address)},null,null)
     this.fimp.publish("pt:j1/mt:evt/rt:ad/rn:zigbee/ad:1",msg);
