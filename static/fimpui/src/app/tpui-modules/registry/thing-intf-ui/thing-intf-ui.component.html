@@ -522,6 +522,7 @@
       </div>
 
       <!-- Doorman -->
+
       <div *ngSwitchCase="'cmd.doorman.integration'">
         <form class="intf-form">
           <table class="table-full-width" cellspacing="0">
@@ -628,6 +629,92 @@
           </table>
         </form>
       </div>
+
+    <!-- Usercode -->
+
+    <div *ngSwitchCase="'cmd.usercode.set'">
+      <form class="intf-form" #fUsercodeSet="ngForm" (ngSubmit)="cmdSendMap(fUsercodeSet.value)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Slot" name="slot" ngModel></mat-form-field>
+            </td>
+            <td>
+              <mat-form-field><input matInput placeholder="Code" name="code" ngModel></mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <mat-select placeholder="Type" name="id_type" ngModel>
+                  <mat-option *ngFor="let type of ['pin','rfid']" [value]="type">{{type}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <mat-select placeholder="User Status" name="user_status" ngModel>
+                  <mat-option *ngFor="let status of ['enabled','disabled']" [value]="status">{{type}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field><input matInput placeholder="Alias" name="alias" ngModel></mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Set</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.usercode.get'">
+      <form class="intf-form">
+        <button mat-raised-button (click)="cmdGetReportNull()">Get</button>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.usercode.get_config_report'">
+      <form class="intf-form" #fUsercodeGet="ngForm" (ngSubmit)="cmdSendMap(fUsercodeGet.slot.value)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Slot" name="slot" ngModel></mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Get</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.usercode.clear'">
+      <form class="intf-form" #fUsercodeClear="ngForm" (ngSubmit)="cmdSendMap(fUsercodeClear.value)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Slot" name="slot" ngModel></mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <mat-select placeholder="Type" name="id_type" ngModel>
+                  <mat-option *ngFor="let type of ['pin','rfid']" [value]="type">{{type}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Clear</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.usercode.clear_all'">
+      <form class="intf-form">
+        <button mat-raised-button (click)="cmdGetReportNull()">Clear All</button>
+      </form>
+    </div>
 
   </div>
 </div>

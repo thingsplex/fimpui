@@ -132,9 +132,15 @@ export class ThingIntfUiComponent implements OnInit {
     let msg  = new FimpMessage(this.service,this.intf.msgType,this.intf.valueType,unit,null,null)
     this.fimp.publish("pt:j1/mt:cmd"+this.addr,msg);
   }
-  cmdSendMap(val:any) {
-    let msg  = new FimpMessage(this.service,this.intf.msgType,this.intf.valueType,val,null,null)
-    this.fimp.publish("pt:j1/mt:cmd"+this.addr,msg);
+
+  cmdSendMap(val: any) {
+    let msg = new FimpMessage(this.service, this.intf.msgType, this.intf.valueType, val, null, null)
+    this.fimp.publish("pt:j1/mt:cmd" + this.addr, msg);
+  }
+
+  cmdSendString(val: string) {
+    let msg = new FimpMessage(this.service, this.intf.msgType, this.intf.valueType, val, null, null)
+    this.fimp.publish("pt:j1/mt:cmd" + this.addr, msg);
   }
 
 }
