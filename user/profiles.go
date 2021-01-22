@@ -14,7 +14,7 @@ type UserProfile struct {
 	Username string  `json:"username"`
 	Password string  `json:"password"`
 	AuthType string  `json:"auth_type"`
-	Configs  Configs `json:"configs"`
+	Configs  Configs `json:"configs"` // TODO : Extend it with array so user could have several config but only one active
 }
 
 type Configs struct {

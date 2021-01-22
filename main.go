@@ -138,6 +138,10 @@ func main() {
 
 	wsBridge := cloud.NewWsNorthBridge(auth,userProfiles)
 
+	//wsSouthBridge := cloud.NewWsSouthBridge(configs)
+	//wsSouthBridge.ConnectToMqttBroker()
+	//wsSouthBridge.ConnectToCloudWsBridge()
+
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

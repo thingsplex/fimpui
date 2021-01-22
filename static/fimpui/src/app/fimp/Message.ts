@@ -92,6 +92,8 @@ export function NewFimpMessageFromString(jsonString:string):FimpMessage{
         let msg = new FimpMessage(jobj["serv"],jobj["type"],jobj["val_t"],jobj["val"],jobj["props"],jobj["tags"])
         msg.ctime = jobj["ctime"];
         msg.src = jobj["src"];
+        if (msg.src == "" || msg.src == undefined)
+          msg.src = "-"
         msg.corid = jobj["corid"];
         msg.topic = jobj["topic"];
         msg.resp_to = jobj["resp_to"];
