@@ -7,16 +7,48 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ThingsRegistryService} from "../tpui-modules/registry/registry.service";
 
-// import {AddDeviceDialog} from "../zwave-man/zwave-man.component";
+interface Cluster {
+  name: string,
+  id: number,
+}
 
 @Component({
   selector: 'app-zigbee-man',
   templateUrl: './zigbee-man.component.html',
   styleUrls: ['./zigbee-man.component.css']
 })
+
 export class ZigbeeManComponent implements OnInit {
   nodes : any[];
   globalSub : Subscription;
+
+  groupBindClusters: Cluster[] = [
+    {name: "Scene", id: 5},
+    {name: "OnOff", id: 6},
+    {name: "LevelControl", id: 8},
+    {name: "ColorControl", id: 768},
+  ]
+
+  allClusters: Cluster[] = [
+    {name: "Identify", id: 3},
+    {name: "Groups", id: 4},
+    {name: "Scene", id: 5},
+    {name: "OnOff", id: 6},
+    {name: "LevelControl", id: 8},
+    {name: "BinaryInput", id: 0xF},
+    {name: "MultistateInput", id: 0x12},
+    {name: "OTAUpgrade", id: 0x19},
+    {name: "PollControl", id: 0x20},
+    {name: "DoorLock", id: 0x101},
+    {name: "Thermostat", id: 0x201},
+    {name: "ColorControl", id: 0x300},
+    {name: "Temperature", id: 0x402},
+    {name: "Occupancy", id: 0x406},
+    {name: "IASZone", id: 0x500},
+    {name: "Metering", id: 0x702},
+    {name: "ElecMeasurement", id: 0xB04},
+  ]
+
   constructor(public dialog: MatDialog,private fimp:FimpService,private snackBar: MatSnackBar,public registry:ThingsRegistryService) {
   }
 
@@ -24,13 +56,6 @@ export class ZigbeeManComponent implements OnInit {
     let msg  = new FimpMessage("zigbee","cmd.network.get_all_nodes","null",null,null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
   }
-
-  // addDevice(){
-  //   console.log("Add device")
-  //   let msg  = new FimpMessage("zigbee","cmd.thing.inclusion","bool",true,null,null)
-  //   this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg.toString());
-  //
-  // }
 
   addDevice(){
     console.log("Add device")

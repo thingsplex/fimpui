@@ -3,7 +3,7 @@
 
 }
 .example-card {
-  width: 1230px;
+  width: 1270px;
 }
 
 .example-header-image {
@@ -67,6 +67,12 @@ input.ng-invalid {
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+.select-cluster {
+  width: 120px;
+  padding: 3px 5px;
+  border: thin solid lightgrey;
 }
 
 #type_select {
