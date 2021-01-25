@@ -6,7 +6,7 @@
 
   <div class="node-card-group" style="left: 270px;min-height:500px;  border: 5px solid #eee;border-radius: 25px;width: 530px">
     <div class="node-card" style="left: 5px">
-            <p style="margin-left: 30px;font-size: large;">Import (W)</p>
+            <p style="margin-left: 30px;font-size: large;">From grid (W)</p>
             <mwl-gauge class="pimport"
                     [max]="pMaxValue"
                     [min]="0"
@@ -28,7 +28,7 @@
     </div>
 
     <div class="node-card" style="left: 5px;top: 250px;">
-      <p style="margin-left: 30px;font-size: large;">Export (W)</p>
+      <p style="margin-left: 30px;font-size: large;">To grid (W)</p>
       <mwl-gauge class="pexport"
                  [max]="pMaxValue"
                  [min]="0"
@@ -100,7 +100,7 @@
     </svg>
 <!--To energy storage -->
 
-    <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute;width:40px;height:105px; left:140px;top:505px;z-index: 3;fill:#a4e060;visibility:{{batteryImportVisibility}}">
+    <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute;width:40px;height:105px; left:140px;top:505px;z-index: 3;fill:#a4e060;visibility:{{batteryDischargingVisibility}}">
       <defs>
         <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
           <polygon points="0 2, 5 3.5, 0 5" />
@@ -109,7 +109,7 @@
       <line x1="30" y1="80" x2="30" y2="40" marker-end="url(#arrowhead3)" class="active-energy-flow export-active-flow"/>
     </svg>
 <!-- From energy storage-->
-    <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute;width:40px;height:105px; left:210px;top:500px;z-index: 3;fill:#ffe341;visibility:{{batteryExportingVisibility}}">
+    <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute;width:40px;height:105px; left:210px;top:500px;z-index: 3;fill:#ffe341;visibility:{{batteryChargingVisibility}}">
       <defs>
         <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
           <polygon points="0 2, 5 3.5, 0 5" />
@@ -122,26 +122,16 @@
   <div class="node-card-group" style="left: 200px;top: 670px;border: 5px solid #eee;border-radius: 25px;width: 830px">
 
     <div  >
-      <p style="margin-left: 10px;font-size: small;width: 80px"> Charging (W)</p>
-      <mwl-gauge class="pexport" style="width: 80px"
+      <p style="margin-left: 10px;font-size: small;width: 80px"> {{batteryOpState}} (W)</p>
+      <mwl-gauge class="pexport" style="width: 90px"
                  [max]="pMaxValue"
                  [min]="0"
-                 [value]="batteryImportPower"
+                 [value]="batteryOpPower"
                  [animated]="false"
                  [animationDuration]="1">
       </mwl-gauge>
     </div>
-    <div style="z-index: 2" >
-      <p style="margin-left: 10px;font-size: small;width: 80px">Exporting (W)</p>
-      <mwl-gauge class="pexport" style="width: 80px"
-                 [max]="pMaxValue"
-                 [min]="0"
-                 [value]="batteryExportPower"
-                 [animated]="false"
-                 [animationDuration]="1">
-      </mwl-gauge>
-    </div>
-    <div class="break"></div>
+
     <div>
       <p style="margin-left: 10px;font-size: small;"> Level (%)</p>
       <mwl-gauge class="pexport" style="width: 80px"

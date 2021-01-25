@@ -35,6 +35,7 @@ export class EnergyFlowComponent implements OnInit {
   fromTime:string = "";
   @Input() pMaxValue:number;
   @Input() productionMeterId:number;
+  @Input() gridMeterDeviceType:string; // han or inverter
   globalSub : Subscription;
   thingAlias : string = "";
 
@@ -48,8 +49,8 @@ export class EnergyFlowComponent implements OnInit {
   productionLineVisibility: string = "hidden";
   detailedPowerOverviewVisibility : string = "hidden";
 
-  batteryImportVisibility : string = "hidden"
-  batteryExportingVisibility : string = "hidden"
+  batteryChargingVisibility : string = "hidden";
+  batteryDischargingVisibility : string = "hidden";
 
 
   // Grid import and export
@@ -61,8 +62,8 @@ export class EnergyFlowComponent implements OnInit {
   consumptionPower : number = 0;
 
   // Battery charge controller;
-  batteryImportPower : number = 0;
-  batteryExportPower : number = 0;
+  batteryOpPower : number = 0;
+  batteryOpState : string = "Charging"; // "Discharging"
 
   batteryLevel : number = 0;
   batteryHealth: number = 0;
@@ -90,6 +91,10 @@ export class EnergyFlowComponent implements OnInit {
     this.exportPower =  100;
     this.productionPower = 1000;
     this.consumptionPower = 900;
+    this.batteryOpPower = 100;
+    this.batteryLevel = 90;
+    this.batteryHealth = 95;
+    this.batteryTemp = 25;
     this.calculateConsumption();
     this.updateFlowLines();
     this.calculatePowerDistribution();
@@ -139,7 +144,7 @@ export class EnergyFlowComponent implements OnInit {
               this.calculateConsumption();
               this.updateFlowLines();
               this.calculatePowerDistribution();
-            }else if (dev.type == "meter.main_elec" || fimpMsg.service == "inverter_grid_conn") {
+            }else if (( dev.type == "meter.main_elec" && this.gridMeterDeviceType == "han") || fimpMsg.service == "inverter_grid_conn" && this.gridMeterDeviceType == "inverter") {
               this.thingAlias = dev.alias
               this.importPower = importPower;
               this.exportPower = exportPower;

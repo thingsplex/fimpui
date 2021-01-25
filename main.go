@@ -296,10 +296,11 @@ func main() {
 				username = "unknown"
 			}
 		}
-		if configs.GlobalAuthType != req.GlobalAuthType {
-			configs.GlobalAuthType = req.GlobalAuthType
-			configs.SaveToFile()
-		}
+
+		//if configs.GlobalAuthType != req.GlobalAuthType {
+		//	configs.GlobalAuthType = req.GlobalAuthType
+		//	configs.SaveToFile()
+		//}
 
 		userConf = user.Configs{
 			MqttServerURI:         req.MqttServerURI,

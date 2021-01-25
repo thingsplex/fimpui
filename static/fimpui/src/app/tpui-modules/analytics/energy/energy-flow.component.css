@@ -1,6 +1,6 @@
 .canvas-area {
   width:100%;
-  min-height:750px;
+  min-height:760px;
   border-color: gainsboro;
   overflow: auto;
 }

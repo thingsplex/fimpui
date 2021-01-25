@@ -20,7 +20,8 @@ export class EnergyComponent implements OnInit {
   public selectedChartTypes :any[] = ["pImport","eImport","battery"];
   public listOfChartTypes : any[] = ["pImport","pExport","eImport","eExport","battery"] ;
   timeFromNow :string = "1d";
-  groupByTime :string = "1h";
+  _groupByTime :string = "1h";
+  groupByTimeEnergy : string = "1h";
   groupByTag  :string = "location_id";
   private _refreshRate :number = 60;
   gSize : number = 350;
@@ -37,6 +38,7 @@ export class EnergyComponent implements OnInit {
   selectedProductionMeter:string;
   productionMeterId:number;
   pMaxValue:number;
+  gridMeterDeviceType:string = "han";
 
   set refreshRate(rate : number) {
     if (rate==-1)
@@ -46,8 +48,34 @@ export class EnergyComponent implements OnInit {
       clearInterval(this.intervalTimer);
     }
     this.intervalTimer = setInterval(r=>this.reload(),this._refreshRate*1000);
-
   }
+
+  set groupByTime( v : string) {
+    this._groupByTime = v;
+    if (this._groupByTime.includes("m"))
+      this.groupByTimeEnergy = "1h"
+    else
+      this.groupByTimeEnergy = this.groupByTime;
+    /*
+    <mat-option value="auto">auto</mat-option>
+          <mat-option value="5m">1 min</mat-option>
+          <mat-option value="5m">5 min</mat-option>
+          <mat-option value="10m">10 min</mat-option>
+          <mat-option value="30m">30 min</mat-option>
+          <mat-option value="1h">1 hours</mat-option>
+          <mat-option value="2h">2 hours</mat-option>
+          <mat-option value="5h">5 hours</mat-option>
+          <mat-option value="1d">1 day</mat-option>
+          <mat-option value="2d">2 day</mat-option>
+          <mat-option value="7d">1 week</mat-option>
+          <mat-option value="none">None</mat-option>
+     */
+  }
+
+  get groupByTime():string {
+    return this._groupByTime
+}
+
   get refreshRate():number {
     return this._refreshRate;
   }
@@ -60,6 +88,9 @@ export class EnergyComponent implements OnInit {
   }
   ngOnInit() {
     this.loadFromStorage();
+
+    if (this.gridMeterDeviceType=="")
+      this.gridMeterDeviceType = "han";
   }
 
   ngOnDestroy() {
@@ -102,14 +133,16 @@ export class EnergyComponent implements OnInit {
     let configs = {};
     configs["selectedChartTypes"] = this.selectedChartTypes;
     configs["groupByTag"] = this.groupByTag;
-    configs["groupByTime"] = this.groupByTime;
+    configs["groupByTime"] = this._groupByTime;
     configs["timeFromNow"] = this.timeFromNow;
     configs["gSize"] = this.gSize;
     configs["refreshRate"] = this.refreshRate;
     configs["fillGaps"] = this.fillGaps;
     configs["dataProcFunc"] = this.dataProcFunc;
     configs["productionMeterId"] = this.productionMeterId;
+    configs["productionMeterId"] = this.productionMeterId;
     configs["pMaxValue"] = this.pMaxValue;
+    configs["gridMeterDeviceType"] = this.gridMeterDeviceType;
     this.settings.updateDashboardConfigs("genericEnergy",configs);
     this.settings.save();
   }
@@ -120,7 +153,7 @@ export class EnergyComponent implements OnInit {
       if (configs["selectedChartTypes"])
         this.selectedChartTypes = configs["selectedChartTypes"];
       this.groupByTag = configs["groupByTag"];
-      this.groupByTime = configs["groupByTime"];
+      this._groupByTime = configs["groupByTime"];
       this.timeFromNow = configs["timeFromNow"];
       this.gSize = configs["gSize"];
       this.refreshRate = configs["refreshRate"];
@@ -146,6 +179,10 @@ export class EnergyComponent implements OnInit {
   updateProductionMeter() {
     this.productionMeterId = Number(this.selectedProductionMeter)
     console.log("Production meter id = "+this.productionMeterId);
+    this.save()
   }
 
+  updateGridMeterDeviceType() {
+    this.save()
+  }
 }

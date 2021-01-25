@@ -253,34 +253,34 @@ export class LineChartComponent implements OnInit  {
       this.globalSub.unsubscribe();
   }
 
-  queryDataOld() {
-    let fillMode = "null";
-    if (!this.dataProcFunc)
-      this.dataProcFunc = "mean";
-    if (this.fillGaps)
-      fillMode = "previous"; // null/linear/previous
-    console.log("Measurement = "+this.measurement);
-    let query = ""
-    if (!this.measurement && !this.query)
-      return
-      // query = "SELECT last(value) AS last_value FROM \"default_20w\".\"sensor_temp.evt.sensor.report\" WHERE time > now()-48h  GROUP BY  location_id FILL(null)"
-    if (this.filterByTopic!=undefined) {
-      query = "SELECT value FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' FILL("+fillMode+")"
-    }else {
-      query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" GROUP BY time("+this.groupByTime+"), "+this.groupByTag+" FILL("+fillMode+")"
-    }
-    if (this.groupByTime != "none" && this.filterByTopic!=undefined) {
-      query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' GROUP BY time("+this.groupByTime+") FILL("+fillMode+")"
-
-    }
-    if(this.query != undefined && this.query != "")
-      query = this.query
-    let msg  = new FimpMessage("ecollector","cmd.tsdb.query","str_map",{"query":query},null,null)
-    msg.src = "tplex-ui"
-    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
-  }
+  // queryDataOld() {
+  //   let fillMode = "null";
+  //   if (!this.dataProcFunc)
+  //     this.dataProcFunc = "mean";
+  //   if (this.fillGaps)
+  //     fillMode = "previous"; // null/linear/previous
+  //   console.log("Measurement = "+this.measurement);
+  //   let query = ""
+  //   if (!this.measurement && !this.query)
+  //     return
+  //     // query = "SELECT last(value) AS last_value FROM \"default_20w\".\"sensor_temp.evt.sensor.report\" WHERE time > now()-48h  GROUP BY  location_id FILL(null)"
+  //   if (this.filterByTopic!=undefined) {
+  //     query = "SELECT value FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' FILL("+fillMode+")"
+  //   }else {
+  //     query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" GROUP BY time("+this.groupByTime+"), "+this.groupByTag+" FILL("+fillMode+")"
+  //   }
+  //   if (this.groupByTime != "none" && this.filterByTopic!=undefined) {
+  //     query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' GROUP BY time("+this.groupByTime+") FILL("+fillMode+")"
+  //
+  //   }
+  //   if(this.query != undefined && this.query != "")
+  //     query = this.query
+  //   let msg  = new FimpMessage("ecollector","cmd.tsdb.query","str_map",{"query":query},null,null)
+  //   msg.src = "tplex-ui"
+  //   msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
+  //   this.lastRequestId = msg.uid;
+  //   this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
+  // }
 
   queryData() {
     let fillMode = "null";
