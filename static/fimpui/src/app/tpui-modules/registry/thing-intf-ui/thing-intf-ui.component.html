@@ -623,7 +623,7 @@
 
       <div *ngSwitchCase="'cmd.indicator.set_visual_element'">
         <form class="intf-form">
-          <table class="table-full-width" cellspacing="0"><tr>
+          <table class="table-full-width"><tr>
               <td><button mat-raised-button (click)="cmdGetReportNull()">Identify</button></td>
             </tr>
           </table>
@@ -652,7 +652,7 @@
             <td>
               <mat-form-field>
                 <mat-select placeholder="User Status" name="user_status" ngModel>
-                  <mat-option *ngFor="let status of ['enabled','disabled']" [value]="status">{{type}}</mat-option>
+                  <mat-option *ngFor="let status of ['enabled','disabled']" [value]="status">{{status}}</mat-option>
                 </mat-select>
               </mat-form-field>
             </td>
