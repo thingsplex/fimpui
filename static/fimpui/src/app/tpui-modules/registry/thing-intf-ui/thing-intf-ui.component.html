@@ -673,8 +673,8 @@
       </form>
     </div>
 
-    <div *ngSwitchCase="'cmd.usercode.get_config_report'">
-      <form class="intf-form" #fUsercodeGet="ngForm" (ngSubmit)="cmdSendMap(fUsercodeGet.slot.value)">
+    <div *ngSwitchCase="'cmd.usercode.get_user'">
+      <form class="intf-form" #fUsercodeGet="ngForm" (ngSubmit)="cmdSendString(fUsercodeGet.value.slot)">
         <table class="table-full-width">
           <tr>
             <td>
