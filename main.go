@@ -90,7 +90,7 @@ func main() {
 	log.Info("---------------------------------------------")
 
 	log.Info("<main> Started")
-	log.Info("<main> Broker address:",configs.MqttServerURI)
+	log.Info("<main> Global broker address:",configs.MqttServerURI)
 	//-------------------------------------
 
 	sysInfo := SystemInfo{}
@@ -134,6 +134,8 @@ func main() {
 	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs,auth,userProfiles)
 	if !configs.IsDevMode {
 		controlApi.Start()
+	}else {
+		log.Info("Starting in DEV mode")
 	}
 
 	wsBridge := cloud.NewWsNorthBridge(auth,userProfiles)

@@ -877,7 +877,7 @@ export class PingDeviceDialog implements OnInit, OnDestroy  {
     let props:Map<string,string> = new Map();
     props["tx_level"] = "0";
     let msg  = new FimpMessage("zwave-ad","cmd.ping.send","string",toNode,props,null)
-    this.data.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.data.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
 
   clearPingResults(){
