@@ -38,6 +38,7 @@ type LoginRequest struct {
 	AuthType   string `json:"auth_type" form:"auth_type" query:"auth_type"`
 }
 
+var Version string
 // SetupLog configures default logger
 // Supported levels : info , degug , warn , error
 func SetupLog(logfile string, level string) {
@@ -93,12 +94,16 @@ func main() {
 	log.Info("<main> Global broker address:",configs.MqttServerURI)
 	//-------------------------------------
 
-	sysInfo := SystemInfo{}
+	sysInfo := SystemInfo{Version: Version}
 	sysInfo.WsMqttPort = port
-	versionFile, err := ioutil.ReadFile("VERSION")
-	if err == nil {
-		sysInfo.Version = string(versionFile)
+
+	if Version == "" {
+		versionFile, err := ioutil.ReadFile("VERSION")
+		if err == nil {
+			sysInfo.Version = string(versionFile)
+		}
 	}
+
 	//--------------------------------------
 
 	userProfiles := user.NewProfilesDB(configs.GetDataDir())

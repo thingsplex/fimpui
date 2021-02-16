@@ -39,6 +39,7 @@ import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 
 import * as _moment from 'moment';
+import {BarChartComponent} from "./charts/bar-chart.component";
 // tslint:disable-next-line:no-duplicate-imports
 // import {default as _rollupMoment} from 'moment';
 
@@ -91,6 +92,6 @@ export const MY_FORMATS = {
   providers:[AnalyticsSettingsService,{provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
 
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}],
-  declarations: [DashboardComponent,BinarySensorChartComponent,LineChartComponent,ActivityComponent,SensorsComponent,ExploreComponent,EnergyComponent,EnergyFlowComponent,SimplePieChartComponent,TsdbConfigComponent]
+  declarations: [DashboardComponent,BinarySensorChartComponent,LineChartComponent,BarChartComponent,ActivityComponent,SensorsComponent,ExploreComponent,EnergyComponent,EnergyFlowComponent,SimplePieChartComponent,TsdbConfigComponent]
 })
 export class AnalyticsModule { }

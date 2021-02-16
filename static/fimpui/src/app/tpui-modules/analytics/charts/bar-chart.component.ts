@@ -15,10 +15,10 @@ declare var moment: any;
 declare var Chart: any;
 
 @Component({
-  selector: 'line-chart',
-  templateUrl: './line-chart.html'
+  selector: 'bar-chart',
+  templateUrl: './bar-chart.html'
 })
-export class LineChartComponent implements OnInit  {
+export class BarChartComponent implements OnInit  {
   private _groupByTime : string;
   private _timeFromNow : string;
   private _groupByTag  : string;
@@ -87,7 +87,7 @@ export class LineChartComponent implements OnInit  {
 
   chart : any;
   public chartLabels:string[] = [];
-  public chartType:string = 'line';
+  public chartType:string = 'bar';
   public chartLegend:boolean = true;
   public chartData:any[] = [];
 
@@ -98,7 +98,7 @@ export class LineChartComponent implements OnInit  {
   }
 
   transformData(queryResponse:any) {
-    console.dir(queryResponse);
+    // console.dir(queryResponse);
     this.chartLabels.splice(0,this.chartLabels.length)
     this.chartData.splice(0,this.chartData.length)
 
@@ -137,12 +137,6 @@ export class LineChartComponent implements OnInit  {
               label = "location "+locationId;
             addedObjects.push(locationId);
             break;
-          case "service_id":
-            let service = this.registry.getServiceById(Number(val.tags.service_id))
-            if (service) {
-              label = service.alias;
-            }
-            break;
           case "dev_id":
             objectType = "dev";
             let dev = this.registry.getDeviceById(Number(val.tags.dev_id))
@@ -162,46 +156,43 @@ export class LineChartComponent implements OnInit  {
       this.chartData.push({
         data:data,
         label:label,
-        borderColor:this.settings.getColor(label),
-        fill:false,
-        pointRadius:1.5,
-        lineTension:0.2
+        backgroundColor:this.settings.getColor(label),
+        barPercentage:1.0,
+        categoryPercentage:1.0,
         // backgroundColor: 'rgba(27,255,16,0.23)',
       });
     }
     //Adding missing objects
-    if(objectType=="location") {
-      for(let loc of this.registry.locations) {
-        let result = addedObjects.filter(location => location == loc.id)
-        if (result.length==0) {
-          this.chartData.push({
-            data:[],
-            label:loc.alias,
-            borderColor:this.settings.getColor(loc.alias),
-            fill:false,
-            pointRadius:1.5,
-            lineTension:0.2
-          });
-        }
-      }
-    }else if(objectType=="dev") {
-      serviceName = serviceName.split(".")[0];
-      for(let dev of this.registry.getDevicesFilteredByService(serviceName)) {
-        let result = addedObjects.filter(device => device == dev.id)
-        if (result.length==0) {
-          let label = dev.alias +" in "+ dev.location_alias;
-          this.chartData.push({
-            data:[],
-            label:label,
-            borderColor:this.settings.getColor(label),
-            fill:false,
-            pointRadius:1.5,
-            lineTension:0.2
-
-          });
-        }
-      }
-    }
+    // if(objectType=="location") {
+    //   for(let loc of this.registry.locations) {
+    //     let result = addedObjects.filter(location => location == loc.id)
+    //     if (result.length==0) {
+    //       this.chartData.push({
+    //         data:[],
+    //         label:loc.alias,
+    //         backgroundColor:this.settings.getColor(loc.alias),
+    //         barPercentage:1.0,
+    //         categoryPercentage:1.0
+    //       });
+    //     }
+    //   }
+    // }else if(objectType=="dev") {
+    //   serviceName = serviceName.split(".")[0];
+    //   for(let dev of this.registry.getDevicesFilteredByService(serviceName)) {
+    //     let result = addedObjects.filter(device => device == dev.id)
+    //     if (result.length==0) {
+    //       let label = dev.alias +" in "+ dev.location_alias;
+    //       this.chartData.push({
+    //         data:[],
+    //         label:label,
+    //         backgroundColor:this.settings.getColor(label),
+    //         barPercentage:1.0,
+    //         categoryPercentage:1.0
+    //
+    //       });
+    //     }
+    //   }
+    // }
   }
   ngOnInit()
    {
@@ -253,35 +244,6 @@ export class LineChartComponent implements OnInit  {
       this.globalSub.unsubscribe();
   }
 
-  // queryDataOld() {
-  //   let fillMode = "null";
-  //   if (!this.dataProcFunc)
-  //     this.dataProcFunc = "mean";
-  //   if (this.fillGaps)
-  //     fillMode = "previous"; // null/linear/previous
-  //   console.log("Measurement = "+this.measurement);
-  //   let query = ""
-  //   if (!this.measurement && !this.query)
-  //     return
-  //     // query = "SELECT last(value) AS last_value FROM \"default_20w\".\"sensor_temp.evt.sensor.report\" WHERE time > now()-48h  GROUP BY  location_id FILL(null)"
-  //   if (this.filterByTopic!=undefined) {
-  //     query = "SELECT value FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' FILL("+fillMode+")"
-  //   }else {
-  //     query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" GROUP BY time("+this.groupByTime+"), "+this.groupByTag+" FILL("+fillMode+")"
-  //   }
-  //   if (this.groupByTime != "none" && this.filterByTopic!=undefined) {
-  //     query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' GROUP BY time("+this.groupByTime+") FILL("+fillMode+")"
-  //
-  //   }
-  //   if(this.query != undefined && this.query != "")
-  //     query = this.query
-  //   let msg  = new FimpMessage("ecollector","cmd.tsdb.query","str_map",{"query":query},null,null)
-  //   msg.src = "tplex-ui"
-  //   msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-  //   this.lastRequestId = msg.uid;
-  //   this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
-  // }
-
   queryData() {
     let fillMode = "null";
     if (!this.dataProcFunc)
@@ -322,7 +284,7 @@ export class LineChartComponent implements OnInit  {
   initChart() {
     var ctx = this.canvasElement.nativeElement.getContext('2d');
     this.chart = new Chart(ctx, {
-      type: 'line',
+      type: 'bar',
       data: {
         // labels: this.chartLabels,
         datasets: this.chartData
@@ -332,9 +294,14 @@ export class LineChartComponent implements OnInit  {
         title:{text:this.title,display:true},
         scales: {
           xAxes: [{
+            stacked: false,
             type: 'time',
             bounds:'ticks',
             distribution: 'linear',
+            offset:false,
+            gridLines: {
+              offsetGridLines: false
+            },
             ticks: {
               source: 'data',
               autoSkip:true
@@ -349,6 +316,7 @@ export class LineChartComponent implements OnInit  {
 
           }],
           yAxes: [{
+            stacked: false,
             ticks: {
               beginAtZero: false,
               autoSkip:true

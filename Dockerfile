@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM alpine:edge
 
 RUN mkdir -p /opt/fimpui/static/fimpui \
     && touch /opt/fimpui/thingsplex.log

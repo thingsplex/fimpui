@@ -10,6 +10,7 @@ import {AnalyticsSettingsService} from "../charts/settings.service";
 import {FimpService} from "../../../fimp/fimp.service";
 import {Subscription} from "rxjs";
 import {NewFimpMessageFromString} from "../../../fimp/Message";
+import {BACKEND_ROOT} from "../../../globals";
 
 export interface EnergyRecord {
   deviceId : number;
@@ -33,6 +34,7 @@ export class EnergyFlowComponent implements OnInit {
   importFilter = {"tags":{"dir":"import"}}
   toTime :string = "";
   fromTime:string = "";
+  backendRootUrl : string = BACKEND_ROOT;
   @Input() pMaxValue:number;
   @Input() productionMeterId:number;
   @Input() gridMeterDeviceType:string; // han or inverter
