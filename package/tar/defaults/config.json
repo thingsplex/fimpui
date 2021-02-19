@@ -1,7 +1,6 @@
 {
   "zwave_product_templates":"/var/lib/futurehome/zwave-ad/products",
   "report_log_size_limit":20000000,
-  "vinculum_address":"localhost:1989",
   "mqtt_server_uri":"tcp://localhost:1883",
   "mqtt_client_id_prefix":"thingsplex",
   "mqtt_server_username":"",
@@ -9,5 +8,13 @@
   "mqtt_topic_global_prefix":"",
   "connector_storage_dir":"./connectors",
   "log_file":"./thingsplex.log",
-  "log_level":"debug"
+  "log_level":"debug",
+  "is_dev_mode": true,
+  "configured_at": "",
+  "configured_by": "",
+  "cookie_key": "",
+  "tls_cert_dir": "",
+  "enable_cb_support": false,
+  "global_auth_type": "",
+  "deployment_mode": "local"
 }
