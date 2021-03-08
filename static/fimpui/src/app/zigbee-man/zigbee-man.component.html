@@ -136,20 +136,7 @@
             Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
             Type
             <mat-select id="type_select" name="type" ngModel>
-                <mat-option value="data16">data16</mat-option>
-                <mat-option value="data32">data32</mat-option>
-                <mat-option value="data64">data64</mat-option>
-                <mat-option value="bool">bool</mat-option>
-                <mat-option value="uint8">uint8</mat-option>
-                <mat-option value="uint16">uint16</mat-option>
-                <mat-option value="uint32">uint32</mat-option>
-                <mat-option value="uint64">uint64</mat-option>
-                <mat-option value="int8">int8</mat-option>
-                <mat-option value="int16">int16</mat-option>
-                <mat-option value="int32">int32</mat-option>
-                <mat-option value="int64">int64</mat-option>
-                <mat-option value="enum8">enum8</mat-option>
-                <mat-option value="enum16">enum16</mat-option>
+              <mat-option *ngFor="let type of dataTypes" [value]="type">{{type}}</mat-option>
             </mat-select>
             Value <input name="value" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
@@ -168,6 +155,16 @@
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
             Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
             Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Type
+            <mat-select id="type_select" name="type" ngModel>
+              <mat-option *ngFor="let type of dataTypes" [value]="type">{{type}}</mat-option>
+            </mat-select>
+            <br>
+            <label style="margin-left: 145px; margin-top: 20px"> Rep Interval
+              <input name="min_rep_interval" pattern="\d+" mat-input-element size="4" ngModel>
+            </label>
+            Max Rep Interval <input name="max_rep_interval" pattern="\d+" mat-input-element size="4" ngModel>
+            Reportable Change <input name="reportable_change" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
           <form #fBind="ngForm" (ngSubmit)="bind(fBind.value)">

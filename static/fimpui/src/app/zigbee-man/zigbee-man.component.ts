@@ -49,6 +49,12 @@ export class ZigbeeManComponent implements OnInit {
     {name: "ElecMeasurement", id: 0xB04},
   ]
 
+  dataTypes: string[] = [
+    "data16", "data32", "data64", "bool",
+    "uint8", "uint16", "uint24", "uint32", "uint48", "uint64",
+    "int8", "int16", "int32", "int64",
+    "enum8", "enum16",
+  ]
   constructor(public dialog: MatDialog,private fimp:FimpService,private snackBar: MatSnackBar,public registry:ThingsRegistryService) {
   }
 
@@ -125,6 +131,9 @@ export class ZigbeeManComponent implements OnInit {
   writeRepConfig(form: Object) {
     console.log("Write reporting config")
     for (const key in form) {
+      if (key === 'type') {
+        continue
+      }
       form[key] = parseInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.write_reporting_config", "object", form, null, null)

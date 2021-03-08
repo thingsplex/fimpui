@@ -35,7 +35,6 @@ input.ng-invalid {
 /* Submit buttons */
 [type="submit"] {
   right: 5px;
-  margin-bottom: 5px;
   min-width: 140px;
 }
 
@@ -79,4 +78,8 @@ input.ng-invalid {
   width: 100px;
   padding: 3px 5px;
   border: thin solid lightgrey;
+}
+
+form{
+  margin-bottom: 10px;
 }
