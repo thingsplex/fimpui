@@ -297,17 +297,17 @@ export class ThingsRegistryService{
         if (svcMeta) {
           svc.alias = svcMeta.label;
         }
-        for (let intf of svc.interfaces) {
-          let intfMeta = this.fimpMeta.getInterfaceMetaByName(intf.msg_t);
-          if (intfMeta) {
-            intf["alias"] = intfMeta.label
-            if (intf.val_t == "") {
-              intf["val_t"] = intfMeta.type
+        if (svc.interfaces) {
+          for (let intf of svc.interfaces) {
+            let intfMeta = this.fimpMeta.getInterfaceMetaByName(intf.msg_t);
+            if (intfMeta) {
+              intf["alias"] = intfMeta.label
+              if (intf.val_t == "") {
+                intf["val_t"] = intfMeta.type
+              }
             }
           }
-
         }
-
       }
     }
   }
