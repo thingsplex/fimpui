@@ -430,9 +430,14 @@ export class ZwaveManComponent implements OnInit ,OnDestroy {
 
         for(let node of this.nodes) {
           // console.log("Getting thing for address : "+node.address)
+
           let thing = this.registry.getThingByAddress("zw",node.address)
           console.dir(thing);
           if (thing.length > 0) {
+            let devices = this.registry.getDevicesForThing(thing[0].id)
+            if (devices.length>0) {
+
+            }
             node.alias = thing[0].alias
             node["room"] = thing[0].location_alias
           }
@@ -872,7 +877,7 @@ export class PingDeviceDialog implements OnInit, OnDestroy  {
     let props:Map<string,string> = new Map();
     props["tx_level"] = "0";
     let msg  = new FimpMessage("zwave-ad","cmd.ping.send","string",toNode,props,null)
-    this.data.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg.toString());
+    this.data.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zw/ad:1",msg);
   }
 
   clearPingResults(){

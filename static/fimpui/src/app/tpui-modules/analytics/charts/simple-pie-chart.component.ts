@@ -8,8 +8,6 @@ import 'rxjs/add/observable/fromEvent';
 import {ThingsRegistryService} from "../../registry/registry.service";
 import {FimpService} from "../../../fimp/fimp.service";
 import {Subscription} from "rxjs";
-import {FimpMessage, NewFimpMessageFromString} from "../../../fimp/Message";
-import {randomBytes} from "crypto";
 import {AnalyticsSettingsService} from "./settings.service";
 
 declare var moment: any;

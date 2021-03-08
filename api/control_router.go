@@ -175,7 +175,7 @@ func (fc *AppControlApiRouter) routeFimpMessage(newMsg *fimpgo.Message) {
 					}
 				}
 				fc.auth.SetGlobalAuthType(conf.AuthType)
-				if fc.configs.GlobalAuthType != conf.AuthType {
+				if fc.configs.GlobalAuthType != conf.AuthType && conf.AuthType != "" {
 					fc.configs.GlobalAuthType = conf.AuthType
 					fc.configs.SaveToFile()
 				}

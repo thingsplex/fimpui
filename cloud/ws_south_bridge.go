@@ -1,84 +1,99 @@
 package cloud
 
 import (
-	"github.com/alivinco/thingsplex/cloud/brsession"
-	"github.com/alivinco/thingsplex/user"
-	"github.com/labstack/echo/v4"
-	"sync"
+	"fmt"
+	"github.com/alivinco/thingsplex/model"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/futurehomeno/fimpgo"
+	log "github.com/sirupsen/logrus"
 )
 
-//WsSouthBridge is used only in Cloud version. It's a process that accepts Websocket connections from Hubs or other Edge devices .
-// each new connection is stored
+// WsSouthBridge is used only in Cloud version. It's a process that connects to Cloud WS Bridge (instead of MQTT broker) and
+// forwards local MQTT messages to cloud and cloud messages to local MQTT broker .
+// WsSouthBridge (hub) <-> Centrifugo (cloud WS bridge) <-> CloudThingsplex (ws_north_bridge-ws_centrifugo)
+// The component works directly with local MQTT broker.
 type WsSouthBridge struct {
-	auth           *user.Auth
-	sessions       map[string]*brsession.WsToMqttSession
-	configs        *user.ProfilesDB
-	sesLock        *sync.RWMutex
-	// each session can have different connection settings
+	configs *model.Configs
+	mqtt                 *fimpgo.MqttTransport
 }
 
-func NewWsSouthBridge(auth *user.Auth,profiles *user.ProfilesDB) *WsNorthBridge {
-	upg := &WsNorthBridge{auth: auth}
-	upg.sesLock = &sync.RWMutex{}
-	upg.userProfiles = profiles
-	upg.sessions = make(map[string]*brsession.WsToMqttSession)
+func NewWsSouthBridge(configs *model.Configs) *WsSouthBridge {
+	upg := &WsSouthBridge{configs:configs}
 	return upg
 }
 
-func (wu *WsSouthBridge) ReloadUserConfig(username string) {
-	ses,ok := wu.sessions[username]
-	if ok {
-		ses.Close()
-		delete(wu.sessions,username)
+
+
+// connect createas new mqtt connection
+func (mp *WsSouthBridge) ConnectToLocalMqttBroker() error {
+	var err error
+	if mp.configs.MqttServerURI == "" {
+		return fmt.Errorf("mqtt server address is empty")
 	}
+	// Start mqtt connection
+	log.Debug("<brSes> mqtt session name ", mp.configs.MqttClientIdPrefix)
+	mp.mqtt = fimpgo.NewMqttTransport(mp.configs.MqttServerURI, mp.configs.MqttClientIdPrefix+"_southbr_", mp.configs.MqttUsername, mp.configs.MqttPassword, true, 1, 1)
+
+	if mp.configs.TlsCertDir != "" {
+		mp.mqtt.ConfigureTls("awsiot.private.key", "awsiot.crt", mp.configs.TlsCertDir, true)
+	}
+	mp.mqtt.SetStartAutoRetryCount(3)
+	err = mp.mqtt.Start()
+	if err != nil {
+		log.Error("<brSes> Can't connect to broker . Error :", err)
+		return err
+	}
+	mp.mqtt.SetMessageHandler(mp.onMqttMessage)
+	mp.mqtt.Subscribe("#")
+	return nil
 }
 
-// Upgrade - the method is invoked by higher HTTP framework . It blocks and reads messages.
-//
-func (wu *WsSouthBridge) Upgrade(c echo.Context) error {
-	//defer func() {
-	//	if r := recover(); r != nil {
-	//		log.Error("!!!!!!!!!!! Mqtt WS-MQTT bridge (Upgrade) crashed with panic!!!!!!!!!!!!!!!")
-	//		debug.PrintStack()
-	//	}
-	//}()
-	//if !wu.auth.IsRequestAuthenticated(c, true) {
-	//	return nil
-	//}
-	//
-	//ws, err := brUpgrader.Upgrade(c.Response(), c.Request(), nil)
-	//
+func (mp *WsSouthBridge) ConnectToCloudMqttBroker()  {
+	// Connection to remote broker will be secured by JWT token that must be sent in CONNECT password field.
+	// fimpui must obtain JWT token either from Auth0 or from other auth system using Playgrounds UI interface or
+	// using local Thingsplex interface. JWT token must contain topic permission (topic prefix)
+
+	// Connection to cloud is initiated from Thingsplex UI / Playground UI , it means that token .
+	// 1) User must exist in cloud
+	// 2) Register hub using "Device flow" from Thingsplex UI or Playgrounds UI
+	// 3) Hub-thingsplex get user token , it must exchange it for MQTT connection JWT token from Cloud API. Cloud API must save thinsplex-hub-id under user.
+	// 4) Save MQTT JWT token locally.
+	// 5) Use MQTT JWT token to establish connection to Cloud MQTT broker.
+	// 6) Use can open Cloud Thingsplex , choose hub/remote-thingsplex from the list and click connect. Cloud Thingsplex will be using MQTT JWT for establishing
+	//    connection to mqtt broker.
+	// 7) User can connect and disconnect ones hub from and to cloud broker. 
+}
+
+
+// onMqttMessage - routes messages from MQTT broker to browser over websocket. MQTT broker -> WS Bridge -> Browser
+func (mp *WsSouthBridge) onMqttMessage(topic string, addr *fimpgo.Address, iotMsg *fimpgo.FimpMessage, rawPayload []byte) {
+	log.Debug("Routing mqtt message to centrifugo")
+	iotMsg.Topic = topic
+	//binMsg , _ := iotMsg.SerializeToJson()
 	//if err != nil {
-	//	log.Error("<MqWsProxy> Can't upgrade . Error:", err)
-	//	return err
+	//	log.Error(" Publish error : ",err.Error())
 	//}
-	//log.Info("<MqWsBridge> Upgraded ")
-	//
-	//var username string
-	//if wu.auth.GlobalAuthType == user.AuthTypeNone {
-	//	username = "unknown"
-	//}else {
-	//	username := wu.auth.GetUsername(c)
-	//	if username == "" {
-	//		return fmt.Errorf("http session doesn't exist. Can't upgrate WS connection")
-	//	}
-	//}
-	//wu.sesLock.RLock()
-	//session, ok := wu.sessions[username]
-	//wu.sesLock.RUnlock()
-	//if ok {
-	//	session.StartWsToSouthboundRouter(ws)
-	//} else {
-	//	conf,ok := wu.configs[username]
-	//	if !ok {
-	//		return fmt.Errorf("can't find config for user %s",username)
-	//	}
-	//	wu.sesLock.Lock()
-	//	newSession := brsession.NewWsToMqttSession(username,conf)
-	//	wu.sessions[username] = newSession
-	//	defer wu.sesLock.Unlock()
-	//	newSession.StartWsToSouthboundRouter(ws)
-	//	log.Debugf("New session added . Active sessions = %d", len(wu.sessions))
-	//}
-	return nil
+	//log.Debug("Publish result : ",resp)
+
+
+	// Use special tunneling messages to deliver messages to remote broker
+
+}
+
+
+
+
+
+func connToken(user string, exp int64) string {
+	// NOTE that JWT must be generated on backend side of your application!
+	// Here we are generating it on client side only for example simplicity.
+	claims := jwt.MapClaims{"sub": user}
+	if exp > 0 {
+		claims["exp"] = exp
+	}
+	t, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte("3edb5261-2025-487d-9651-3d585b750d0d"))
+	if err != nil {
+		panic(err)
+	}
+	return t
 }

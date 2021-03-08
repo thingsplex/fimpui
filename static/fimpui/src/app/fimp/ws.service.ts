@@ -9,12 +9,28 @@ export class WsFimpService {
     private msgObservable: Subject<FimpMessage> = new Subject<FimpMessage>();
     private connStateObservable: Subject<string> = new Subject<string>();
 
+
     constructor(){
       console.log("Fimp service constructor")
     }
 
     public publish(topic: string, message: string) {
-      this.websocket.send(message);
+      if (this.isConnected()){
+        this.websocket.send(message);
+      }else {
+        setTimeout(args => {
+          console.log("Retrying publish operation 1")
+          if (this.isConnected()){
+            this.websocket.send(message);
+          }else {
+            setTimeout(args => {
+              console.log("Retrying publish operation 2")
+              this.websocket.send(message);
+            },3000)
+          }
+
+        },1000)
+      }
     }
 
     public getMsgObservable():Observable<FimpMessage>{
