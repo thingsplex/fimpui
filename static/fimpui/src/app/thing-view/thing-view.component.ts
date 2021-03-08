@@ -91,6 +91,7 @@ export class ThingViewComponent implements OnInit ,OnDestroy{
                   if ( fimpMsg.mtype == inf.msgType ) {
                     // console.log("Value updated");
                     inf.lastValue = fimpMsg
+                    return;
                   }
                 }
               }

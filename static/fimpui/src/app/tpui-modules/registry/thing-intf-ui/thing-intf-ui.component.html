@@ -716,5 +716,58 @@
       </form>
     </div>
 
+    <!-- Association -->
+
+    <div *ngSwitchCase="'cmd.association.add'">
+      <form class="intf-form" #fAssocAdd="ngForm" (ngSubmit)="cmdAssociationCommand(fAssocAdd.value.members)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Members" name="members" ngModel></mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Add</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+
+    <div *ngSwitchCase="'cmd.association.delete'">
+      <form class="intf-form" #fAssocDelete="ngForm" (ngSubmit)="cmdAssociationCommand(fAssocDelete.value.members)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Members" name="members" ngModel></mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Delete</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.association.delete_all'">
+      <form class="intf-form">
+        <button mat-raised-button (click)="cmdGetReportNull()">Delete All</button>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.association.get_report'">
+      <form class="intf-form">
+        <button mat-raised-button (click)="cmdGetReportNull()">Get Report</button>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'evt.association.report'">
+      <p> Members :
+        <span *ngFor="let member of intf.lastValue.val.members">
+          {{ member }},
+        </span>
+      </p>
+    </div>
+
   </div>
 </div>
