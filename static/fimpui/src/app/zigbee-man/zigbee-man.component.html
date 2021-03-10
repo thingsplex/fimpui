@@ -113,11 +113,18 @@
 
         <div id="custom_interface">
 
+          <p style="margin-top: 0"><i>Hint: Double click Cluster ID fields to get a list of cluster suggestions</i></p>
+
+          <!-- Datalist containing cluster selection options-->
+          <datalist id="clusters">
+            <option *ngFor="let cluster of allClusters" [value]="cluster.id">{{cluster.name}}</option>
+          </datalist>
+
           <form #fReadAttr="ngForm" (ngSubmit)="readAttribute(fReadAttr.value)">
             <button mat-raised-button type="submit" [disabled]="fReadAttr.invalid" color="accent">Read Attribute</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
-            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
             Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
@@ -125,24 +132,11 @@
             <button mat-raised-button type="submit" [disabled]="fWriteAttr.invalid" color="accent">Write Attribute</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
-            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
             Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
             Type
             <mat-select id="type_select" name="type" ngModel>
-                <mat-option value="data16">data16</mat-option>
-                <mat-option value="data32">data32</mat-option>
-                <mat-option value="data64">data64</mat-option>
-                <mat-option value="bool">bool</mat-option>
-                <mat-option value="uint8">uint8</mat-option>
-                <mat-option value="uint16">uint16</mat-option>
-                <mat-option value="uint32">uint32</mat-option>
-                <mat-option value="uint64">uint64</mat-option>
-                <mat-option value="int8">int8</mat-option>
-                <mat-option value="int16">int16</mat-option>
-                <mat-option value="int32">int32</mat-option>
-                <mat-option value="int64">int64</mat-option>
-                <mat-option value="enum8">enum8</mat-option>
-                <mat-option value="enum16">enum16</mat-option>
+              <mat-option *ngFor="let type of dataTypes" [value]="type">{{type}}</mat-option>
             </mat-select>
             Value <input name="value" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
@@ -151,7 +145,7 @@
             <button mat-raised-button type="submit" [disabled]="fReadRep.invalid" color="accent">Read Reporting</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
-            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
             Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
@@ -159,22 +153,32 @@
             <button mat-raised-button type="submit" [disabled]="fWriteRep.invalid" color="accent">Write Reporting</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
-            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
             Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Type
+            <mat-select id="type_select" name="type" ngModel>
+              <mat-option *ngFor="let type of dataTypes" [value]="type">{{type}}</mat-option>
+            </mat-select>
+            <br>
+            <label style="margin-left: 145px; margin-top: 20px"> Rep Interval
+              <input name="min_rep_interval" pattern="\d+" mat-input-element size="4" ngModel>
+            </label>
+            Max Rep Interval <input name="max_rep_interval" pattern="\d+" mat-input-element size="4" ngModel>
+            Reportable Change <input name="reportable_change" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
           <form #fBind="ngForm" (ngSubmit)="bind(fBind.value)">
             <button mat-raised-button type="submit" [disabled]="fBind.invalid" color="accent">Bind</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
-            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
           <form #fUnbind="ngForm" (ngSubmit)="unbind(fUnbind.value)">
             <button mat-raised-button type="submit" [disabled]="fUnbind.invalid" color="accent">Unbind</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
-            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
           <form #fBindList="ngForm" (ngSubmit)="getBindList(fBindList.value)">
@@ -188,7 +192,10 @@
             Source Endpoint <input name="src_ep" pattern="\d+" mat-input-element size="4" ngModel>
             Destination UDID <input name="dst_udid" pattern="\d+" mat-input-element size="4" ngModel>
             Destination Endpoint <input name="dst_ep" pattern="\d+" mat-input-element size="4" ngModel>
-            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID
+            <mat-select name="cluster_id" class="select-cluster" ngModel>
+              <mat-option *ngFor="let cluster of groupBindClusters" [value]="cluster.id">{{cluster.name}}</mat-option>
+            </mat-select>
           </form>
 
           <form #fUnbindDevices="ngForm" (ngSubmit)="unbindDevices(fUnbindDevices.value)">
@@ -197,7 +204,32 @@
             Source Endpoint <input name="src_ep" pattern="\d+" mat-input-element size="4" ngModel>
             Destination UDID <input name="dst_udid" pattern="\d+" mat-input-element size="4" ngModel>
             Destination Endpoint <input name="dst_ep" pattern="\d+" mat-input-element size="4" ngModel>
-            Cluster ID <input name="cluster_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID
+            <mat-select name="cluster_id" class="select-cluster" ngModel>
+              <mat-option *ngFor="let cluster of groupBindClusters" [value]="cluster.id">{{cluster.name}}</mat-option>
+            </mat-select>
+          </form>
+
+          <form #fBindGroup="ngForm" (ngSubmit)="bindGroup(fBindGroup.value)">
+            <button mat-raised-button type="submit" [disabled]="fBindGroup.invalid" color="accent">Bind Group</button>
+            Source UDID <input name="src_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Source Endpoint <input name="src_ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Group ID <input name="dst_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID
+            <mat-select name="cluster_id" class="select-cluster" ngModel>
+              <mat-option *ngFor="let cluster of groupBindClusters" [value]="cluster.id">{{cluster.name}}</mat-option>
+            </mat-select>
+          </form>
+
+          <form #fUnbindGroup="ngForm" (ngSubmit)="unbindGroup(fUnbindGroup.value)">
+            <button mat-raised-button type="submit" [disabled]="fUnbindGroup.invalid" color="accent">Unbind Group</button>
+            Source UDID <input name="src_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Source Endpoint <input name="src_ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Group ID <input name="dst_udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID
+            <mat-select name="cluster_id" class="select-cluster" ngModel>
+              <mat-option *ngFor="let cluster of groupBindClusters" [value]="cluster.id">{{cluster.name}}</mat-option>
+            </mat-select>
           </form>
 
         </div>

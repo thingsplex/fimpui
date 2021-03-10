@@ -1,7 +1,7 @@
-import { Component, OnInit ,Input ,Pipe, PipeTransform } from '@angular/core';
+import {Component, Input, OnInit, Pipe, PipeTransform} from '@angular/core';
 import {Interface, Service} from "../model";
-import { FimpService } from 'app/fimp/fimp.service';
-import { FimpMessage ,NewFimpMessageFromString } from 'app/fimp/Message';
+import {FimpService} from 'app/fimp/fimp.service';
+import {FimpMessage} from 'app/fimp/Message';
 import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
@@ -119,6 +119,12 @@ export class ThingIntfUiComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd"+this.addr,msg);
   }
 
+  cmdAssociationCommand(members: string) {
+    let val = {"members": [members]};
+    let msg = new FimpMessage(this.service, this.intf.msgType, this.intf.valueType, val, null, null)
+    this.fimp.publish("pt:j1/mt:cmd" + this.addr, msg);
+  }
+
   cmdGetReportNull(){
     let msg  = new FimpMessage(this.service,this.intf.msgType,this.intf.valueType,null,null,null)
     this.fimp.publish("pt:j1/mt:cmd"+this.addr,msg);
@@ -132,9 +138,15 @@ export class ThingIntfUiComponent implements OnInit {
     let msg  = new FimpMessage(this.service,this.intf.msgType,this.intf.valueType,unit,null,null)
     this.fimp.publish("pt:j1/mt:cmd"+this.addr,msg);
   }
-  cmdSendMap(val:any) {
-    let msg  = new FimpMessage(this.service,this.intf.msgType,this.intf.valueType,val,null,null)
-    this.fimp.publish("pt:j1/mt:cmd"+this.addr,msg);
+
+  cmdSendMap(val: any) {
+    let msg = new FimpMessage(this.service, this.intf.msgType, this.intf.valueType, val, null, null)
+    this.fimp.publish("pt:j1/mt:cmd" + this.addr, msg);
+  }
+
+  cmdSendString(val: string) {
+    let msg = new FimpMessage(this.service, this.intf.msgType, this.intf.valueType, val, null, null)
+    this.fimp.publish("pt:j1/mt:cmd" + this.addr, msg);
   }
 
 }

@@ -170,7 +170,7 @@
           </tr>
           <tr>
             <td>
-              Temp: <mat-slider #colorLvlTempValue thumbLabel min="0" max="65535" step="100" value="0"></mat-slider>
+              Temp: <mat-slider #colorLvlTempValue thumbLabel min="2700" max="6500" step="100" value="4500"></mat-slider>
             </td>
           </tr>
           <tr>
@@ -522,6 +522,7 @@
       </div>
 
       <!-- Doorman -->
+
       <div *ngSwitchCase="'cmd.doorman.integration'">
         <form class="intf-form">
           <table class="table-full-width" cellspacing="0">
@@ -622,12 +623,151 @@
 
       <div *ngSwitchCase="'cmd.indicator.set_visual_element'">
         <form class="intf-form">
-          <table class="table-full-width" cellspacing="0"><tr>
+          <table class="table-full-width"><tr>
               <td><button mat-raised-button (click)="cmdGetReportNull()">Identify</button></td>
             </tr>
           </table>
         </form>
       </div>
+
+    <!-- Usercode -->
+
+    <div *ngSwitchCase="'cmd.usercode.set'">
+      <form class="intf-form" #fUsercodeSet="ngForm" (ngSubmit)="cmdSendMap(fUsercodeSet.value)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Slot" name="slot" ngModel></mat-form-field>
+            </td>
+            <td>
+              <mat-form-field><input matInput placeholder="Code" name="code" ngModel></mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <mat-select placeholder="Type" name="id_type" ngModel>
+                  <mat-option *ngFor="let type of ['pin','rfid']" [value]="type">{{type}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <mat-select placeholder="User Status" name="user_status" ngModel>
+                  <mat-option *ngFor="let status of ['enabled','disabled']" [value]="status">{{status}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field><input matInput placeholder="Alias" name="alias" ngModel></mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Set</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.usercode.get'">
+      <form class="intf-form">
+        <button mat-raised-button (click)="cmdGetReportNull()">Get</button>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.usercode.get_user'">
+      <form class="intf-form" #fUsercodeGet="ngForm" (ngSubmit)="cmdSendString(fUsercodeGet.value.slot)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Slot" name="slot" ngModel></mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Get</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.usercode.clear'">
+      <form class="intf-form" #fUsercodeClear="ngForm" (ngSubmit)="cmdSendMap(fUsercodeClear.value)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Slot" name="slot" ngModel></mat-form-field>
+            </td>
+            <td>
+              <mat-form-field>
+                <mat-select placeholder="Type" name="id_type" ngModel>
+                  <mat-option *ngFor="let type of ['pin','rfid']" [value]="type">{{type}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Clear</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.usercode.clear_all'">
+      <form class="intf-form">
+        <button mat-raised-button (click)="cmdGetReportNull()">Clear All</button>
+      </form>
+    </div>
+
+    <!-- Association -->
+
+    <div *ngSwitchCase="'cmd.association.add'">
+      <form class="intf-form" #fAssocAdd="ngForm" (ngSubmit)="cmdAssociationCommand(fAssocAdd.value.members)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Members" name="members" ngModel></mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Add</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+
+    <div *ngSwitchCase="'cmd.association.delete'">
+      <form class="intf-form" #fAssocDelete="ngForm" (ngSubmit)="cmdAssociationCommand(fAssocDelete.value.members)">
+        <table class="table-full-width">
+          <tr>
+            <td>
+              <mat-form-field><input matInput placeholder="Members" name="members" ngModel></mat-form-field>
+            </td>
+            <td>
+              <button mat-raised-button type="submit">Delete</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.association.delete_all'">
+      <form class="intf-form">
+        <button mat-raised-button (click)="cmdGetReportNull()">Delete All</button>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'cmd.association.get_report'">
+      <form class="intf-form">
+        <button mat-raised-button (click)="cmdGetReportNull()">Get Report</button>
+      </form>
+    </div>
+
+    <div *ngSwitchCase="'evt.association.report'">
+      <p> Members :
+        <span *ngFor="let member of intf.lastValue.val.members">
+          {{ member }},
+        </span>
+      </p>
+    </div>
 
   </div>
 </div>
