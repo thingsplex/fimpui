@@ -18,7 +18,8 @@ import {NewFimpMessageFromString} from "../../../fimp/Message";
 })
 export class EnergyComponent implements OnInit {
   public selectedChartTypes :any[] = ["pImport","eImport","battery"];
-  public listOfChartTypes : any[] = ["pImport","pExport","eImport","eExport","battery"] ;
+  public selectedFilteredDevices :any[] = [];
+  public listOfChartTypes : any[] = ["pImport","pExport","eImport","eExport","battery","eImportRaw","eExportRaw"] ;
   timeFromNow :string = "1d";
   _groupByTime :string = "1h";
   groupByTimeEnergy : string = "1h";
@@ -82,6 +83,12 @@ export class EnergyComponent implements OnInit {
 
   get availableMeters():any {
     return this.registry.getDevicesFilteredByService("meter_elec")
+  }
+
+  get availablePowerMeterDevices():any {
+    let meters = this.registry.getDevicesFilteredByService("meter_elec");
+    let senPower = this.registry.getDevicesFilteredByService("sensor_power");
+    return meters.concat(senPower)
   }
 
   constructor(private registry:ThingsRegistryService,private fimp : FimpService,private settings:AnalyticsSettingsService) {
@@ -174,6 +181,13 @@ export class EnergyComponent implements OnInit {
   }
 
   updateListOfChartTypes() {
+
+  }
+
+  updateListOfFilteredDevices() {
+    console.log("Device selected ")
+    console.dir(this.selectedFilteredDevices)
+
 
   }
   updateProductionMeter() {

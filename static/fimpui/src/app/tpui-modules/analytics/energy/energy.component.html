@@ -19,13 +19,15 @@
       </mat-panel-description>
 
       <mat-form-field style="height: 35px;margin: 10px;width: 250px"  >
-        <mat-label> Chart types </mat-label>
-        <mat-select matNativeControl [(ngModel)]="selectedChartTypes" multiple  placeholder="Chart types" (selectionChange)="updateListOfChartTypes()"  >
+        <mat-label> Measurements </mat-label>
+        <mat-select matNativeControl [(ngModel)]="selectedChartTypes" multiple  placeholder="Measurements" (selectionChange)="updateListOfChartTypes()"  >
           <mat-option  value="pImport">Power import</mat-option>
           <mat-option  value="eImport">Energy import</mat-option>
           <mat-option  value="battery">Battery</mat-option>
           <mat-option  value="pExport">Power Export</mat-option>
           <mat-option  value="eExport">Energy export</mat-option>
+          <mat-option  value="eImportRaw">Raw energy import</mat-option>
+          <mat-option  value="eExportRaw">Raw energy export</mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -39,6 +41,14 @@
         </mat-select>
       </mat-form-field>
 
+      <mat-form-field style="height: 35px;margin: 10px;width: 250px"  >
+        <mat-label> Device filter </mat-label>
+        <mat-select matNativeControl [(ngModel)]="selectedFilteredDevices" multiple  placeholder="Device filter" (selectionChange)="updateListOfFilteredDevices()"  >
+          <mat-option  *ngFor="let e of availablePowerMeterDevices" [value]="e.id">{{e.alias}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <br/>
       <mat-form-field style="height: 35px;margin: 10px;width: 150px"  >
         <mat-label> Auto reload </mat-label>
         <mat-select matNativeControl [(value)]="refreshRate"  placeholder="reload every" >
@@ -147,8 +157,6 @@
       </mat-form-field>
       <br/>
 
-
-
       Production meter :
       <mat-form-field style="height: 35px;margin: 10px;width: 250px"  >
         <mat-label> Meter </mat-label>
@@ -197,8 +205,11 @@
   <line-chart *ngIf="e=='pExport'" [measurement]="'electricity_meter_power'" [isFilterEnabled]="false" [title]="'Power export (W)'" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTime" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataTransformFunc]="dataTransformFuncV"  [dataProcFunc]="dataProcFunc" [fromTime]="fromTime" [toTime]="toTime" [filters]="exportFilter" ></line-chart>
   <bar-chart *ngIf="e=='eExport'" [measurement]="'electricity_meter_energy_sampled'" [isFilterEnabled]="false" [title]="'Energy export (kWh) '" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTimeEnergy" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataTransformFunc]="'difference'" [dataProcFunc]="'max'" [fromTime]="fromTime" [toTime]="toTime" [filters]="exportFilter" ></bar-chart>
 
+  <line-chart *ngIf="e=='eImportRaw'"  [measurement]="'electricity_meter_energy'" [isFilterEnabled]="false" [title]="'Raw energy import (kWh)'" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTime" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataTransformFunc]="dataTransformFuncV"  [dataProcFunc]="dataProcFunc" [fromTime]="fromTime" [toTime]="toTime" [filters]="importFilter" ></line-chart>
+  <line-chart *ngIf="e=='eExportRaw'"  [measurement]="'electricity_meter_energy'" [isFilterEnabled]="false" [title]="'Raw energy export (kWh)'" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTime" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataTransformFunc]="dataTransformFuncV"  [dataProcFunc]="dataProcFunc" [fromTime]="fromTime" [toTime]="toTime" [filters]="exportFilter" ></line-chart>
 
-    <br>
+
+  <br>
 <line-chart *ngIf="e=='battery'"  [measurement]="'battery.evt.lvl.report'" [isFilterEnabled]="false" [title]="'Battery charge level'" [(timeFromNow)]="timeFromNow" [groupByTime]="groupByTime" [groupByTag]="groupByTag" [height]="gSize" [change]="reloadSignal" [fillGaps]="fillGaps" [dataProcFunc]="dataProcFunc" [fromTime]="fromTime" [toTime]="toTime" ></line-chart>
 </ng-container>
 </div>
