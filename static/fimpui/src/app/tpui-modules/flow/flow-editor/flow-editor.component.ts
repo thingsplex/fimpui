@@ -53,8 +53,9 @@ const nodeTypeAlias = {
   "log_action":"Log action",
   "notification_action":"Notification",
   "timeline_action":"Timeline",
-  "vinc_action":"Home mode"
-
+  "vinc_action":"Home mode",
+  "timetools": "Time tools",
+  "metrics": "Metrics"
 }
 
 export class MetaNode {

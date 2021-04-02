@@ -47,6 +47,8 @@ import {MatMenuModule} from '@angular/material/menu';
 import { FlowContextService } from './flow-context/flow-context.service';
 import {IfTimeNodeComponent} from "./flow-nodes/if-time-node/node.component";
 import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.component";
+import {TimetoolsNodeComponent} from "./flow-nodes/timetools-node/node.component";
+import {MetricsNodeComponent} from "./flow-nodes/metrics-node/node.component";
 
 @NgModule({
   imports: [
@@ -112,6 +114,8 @@ import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.componen
      TransformNodeComponent,
      ExecNodeComponent,
      LogNodeComponent,
+     TimetoolsNodeComponent,
+     MetricsNodeComponent,
      WaitNodeComponent,
      VincTriggerNodeComponent,
      VincActionNodeComponent,

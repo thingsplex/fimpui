@@ -20,10 +20,12 @@ export class ContextVariable {
 export class VariableSelectorComponent implements OnInit {
     @Input() variableName : string;
     @Input() isGlobal : boolean;
-    @Input() inMemory : boolean;
+    @Input() inMemory : boolean = false;
     @Input() label : string;
     @Input() flowId:string;
     @Input() mode :string; // read/write
+    @Input() valueType:string = "";
+    @Input() value : any;
     @Output() onSelect = new EventEmitter<ContextVariable>();
     variableType : string;
     vars:TableContextRec[];
@@ -45,11 +47,21 @@ export class VariableSelectorComponent implements OnInit {
   }
 
   showContextVariableDialog() {
-    var ctxRec = new TableContextRec();
+    console.log("Default value = "+this.value);
+    let ctxRec = new TableContextRec();
     if (this.isGlobal)
-      ctxRec.FlowId == "global";
+      ctxRec.FlowId = "global";
     else
       ctxRec.FlowId = this.flowId;
+
+    ctxRec.InMemory = this.inMemory;
+
+    if (this.valueType != "")
+      ctxRec.ValueType = this.valueType;
+
+    if (this.value != undefined)
+      ctxRec.Value = this.value
+
     let dialogRef = this.dialog.open(RecordEditorDialog,{
       width: '450px',
       data:ctxRec

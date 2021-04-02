@@ -33,6 +33,7 @@ import {FimpMessage} from "../../../fimp/Message";
 
       request.Variable.ValueType = this.ctxRec.ValueType;
       request.Description = this.ctxRec.Description;
+      request.InMemory = this.ctxRec.InMemory;
       let payload = {"flow_id":"global","rec":request}
       if (this.ctxRec.FlowId ) {
         payload["flow_id"] = this.ctxRec.FlowId;
@@ -66,6 +67,7 @@ import {FimpMessage} from "../../../fimp/Message";
       if (this.ctxRec.FlowId ) {
         val["flow_id"] = this.ctxRec.FlowId;
       }
+      console.log("deleteting variable from flow = "+this.ctxRec.FlowId)
       let msg  = new FimpMessage("tpflow","cmd.flow.ctx_delete","str_map",val,null,null)
       msg.src = "tplex-ui";
       msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";

@@ -7,10 +7,10 @@
   <div class="table-container mat-elevation-z8">
     <div class="example-header">
       <section *ngIf="isEmbedded">
-      <label >Show :</label>
+      <label ></label>
       <mat-radio-group [(ngModel)]="loadMode" (change)="onModeChange($event)">
-        <mat-radio-button class="example-margin" value="local">flow variables</mat-radio-button>
-        <mat-radio-button class="example-margin" value="global">global variables</mat-radio-button>
+        <mat-radio-button style="margin:7px" value="local">flow variables</mat-radio-button>
+        <mat-radio-button style="margin:7px" value="global">global variables</mat-radio-button>
       </mat-radio-group>
       </section>
     </div>
@@ -36,6 +36,10 @@
       <ng-container cdkColumnDef="valueType">
         <mat-header-cell *cdkHeaderCellDef> Value type </mat-header-cell>
         <mat-cell *cdkCellDef="let row"> {{row.ValueType}} </mat-cell>
+      </ng-container>
+      <ng-container cdkColumnDef="inMemory">
+        <mat-header-cell *cdkHeaderCellDef> In memory </mat-header-cell>
+        <mat-cell *cdkCellDef="let row"> {{row.InMemory}} </mat-cell>
       </ng-container>
       <ng-container cdkColumnDef="value">
         <mat-header-cell *cdkHeaderCellDef> Value </mat-header-cell>

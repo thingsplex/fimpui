@@ -51,6 +51,9 @@
       <mat-menu #data="matMenu">
         <button mat-menu-item (click)="addNode('set_variable','')">Set variable</button>
         <button mat-menu-item (click)="addNode('transform','')">Transform</button>
+        <button mat-menu-item (click)="addNode('timetools','')">Time tools</button>
+        <button mat-menu-item (click)="addNode('metrics','')">Metrics</button>
+        <button mat-menu-item (click)="addNode('meter','')">Meter</button>
       </mat-menu>
 
       <mat-menu #tools="matMenu">
@@ -58,13 +61,7 @@
         <button mat-menu-item (click)="addNode('log_action','')">Write to log</button>
       </mat-menu>
 
-      <mat-menu #reptiles="matMenu">
-        <button mat-menu-item>Banded Day Gecko</button>
-        <button mat-menu-item>Banded Gila Monster</button>
-        <button mat-menu-item>Black Tree Monitor</button>
-        <button mat-menu-item>Blue Spiny Lizard</button>
-        <button mat-menu-item disabled>Velociraptor</button>
-      </mat-menu>
+
       <div id="flowEditorCanvasId" class="drag-area" (drop)="nodeDrop($event)" (dragstart)="nodeDragStart($event)" (dragover)="allowNodeDrop($event)"  >
           <svg id="flow-connections" class = "connections" ></svg>
           <mat-card id = "nodeId_{{node.Id}}" *ngFor="let node of flow.Nodes;let index = index;" class="node-card" [style.left.px]="node.Ui.x" [style.top.px]="node.Ui.y" draggable="true" >
@@ -86,6 +83,9 @@
                     <mat-icon *ngSwitchCase="'loop'" aria-label="Edit node">loop</mat-icon>
                     <mat-icon *ngSwitchCase="'set_variable'" aria-label="Edit node">edit</mat-icon>
                     <mat-icon *ngSwitchCase="'transform'" aria-label="Edit node">transform</mat-icon>
+                    <mat-icon *ngSwitchCase="'timetools'" aria-label="Time tools">transform</mat-icon>
+                    <mat-icon *ngSwitchCase="'metrics'" aria-label="Metrics">transform</mat-icon>
+                    <mat-icon *ngSwitchCase="'meter'" aria-label="Meter">transform</mat-icon>
                     <mat-icon *ngSwitchCase="'exec'" aria-label="Exec node">flash_on</mat-icon>
                     <mat-icon *ngSwitchCase="'log_action'" aria-label="Log node">edit</mat-icon>
                     <mat-icon *ngSwitchDefault aria-label="Edit node">build</mat-icon>

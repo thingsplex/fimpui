@@ -6,6 +6,7 @@ export class ContextRecord{
   UpdatedAt : string;
   Variable : Variable;
   FlowId:string;
+  InMemory:boolean;
 }
 
 export class TableContextRec {

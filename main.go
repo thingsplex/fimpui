@@ -204,7 +204,7 @@ func main() {
 		if err := c.Bind(&req); err != nil {
 			return fmt.Errorf("invalid request format")
 		}
-
+		// TODO : If user disables password , it has to be also logged out.
 		log.Info("Auth config request from user ", req.Username)
 		if auth.IsRequestAuthenticated(c,false) || auth.GlobalAuthType == user.AuthTypeUnknown {
 

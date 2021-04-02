@@ -23,7 +23,7 @@ export class FlowContextComponent implements OnInit {
   @Input() isEmbedded : boolean;
   @Input() flowId : string;
   loadMode : string
-  displayedColumns = ['flowId','name','description','valueType','value','updatedAt','action'];
+  displayedColumns = ['name','description','valueType','inMemory','value','updatedAt','action'];
   dataSource: FlowContextDataSource | null;
   dialogRef : any;
   private globalSub : Subscription;
@@ -67,7 +67,12 @@ export class FlowContextComponent implements OnInit {
   }
 
   showRecordEditorDialog(ctxRec:TableContextRec) {
-    ctxRec.FlowId = "global";
+    if(this.loadMode=="local") {
+      ctxRec.FlowId = this.flowId;
+    }else {
+      ctxRec.FlowId = "global";
+    }
+
     this.dialogRef = this.dialog.open(RecordEditorDialog,{
       width: '450px',
       data:ctxRec
@@ -83,7 +88,11 @@ export class FlowContextComponent implements OnInit {
 
   showAddNewRecordEditorDialog() {
     var ctxRec = new TableContextRec();
-    ctxRec.FlowId = "global";
+    if(this.loadMode=="local") {
+      ctxRec.FlowId = this.flowId;
+    }else {
+      ctxRec.FlowId = "global";
+    }
     let dialogRef = this.dialog.open(RecordEditorDialog,{
       width: '450px',
       data:ctxRec
@@ -148,6 +157,7 @@ export class FlowContextDataSource extends DataSource<any> {
             loc.UpdatedAt = result[key].UpdatedAt;
             loc.Value = result[key].Variable.Value;
             loc.ValueType = result[key].Variable.ValueType;
+            loc.InMemory = result[key].InMemory;
             contexts.push(loc)
             console.log("Value = "+loc.Value)
      }
