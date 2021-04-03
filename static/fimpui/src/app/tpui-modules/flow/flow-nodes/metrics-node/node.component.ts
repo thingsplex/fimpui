@@ -26,17 +26,30 @@ export class MetricsNodeComponent implements OnInit {
   loadDefaultConfig() {
     if (this.node.Config == null) {
       this.node.Config = {
-        "VariableName": "",
-        "IsVariableGlobal": false,
-        "LogLevel": "info",
-        "Text":""
+        "Operation": "inc",
+        "Step": 1,
+        "InputVar": {"Name":"","InMemory":true,"IsGlobal":false,"Type":"float"},
+        "OutputVar": {"Name":"","InMemory":true,"IsGlobal":false,"Type":"float"},
+        "MaxValue":100,
+        "MinValue":0,
+        "ResetValue":0,
+        "LimitAction":"reset"
       }
     }
   }
 
   inputVariableSelected(cvar:ContextVariable) {
-    this.node.Config.VariableName = cvar.Name;
-    this.node.Config.IsVariableGlobal = cvar.isGlobal;
+    this.node.Config.InputVar.Name = cvar.Name;
+    this.node.Config.InputVar.IsGlobal = cvar.isGlobal;
+    this.node.Config.InputVar.InMemory = cvar.InMemory;
+    this.node.Config.InputVar.Type = cvar.Type;
+  }
+
+  outputVariableSelected(cvar:ContextVariable) {
+    this.node.Config.OutputVar.Name = cvar.Name;
+    this.node.Config.OutputVar.IsGlobal = cvar.isGlobal;
+    this.node.Config.OutputVar.InMemory = cvar.InMemory;
+    this.node.Config.OutputVar.Type = cvar.Type;
   }
 
 }

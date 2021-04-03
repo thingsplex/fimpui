@@ -1,17 +1,48 @@
 <div>
+  <variable-selector [label]="'Input variable'" [variableName]="node.Config.InputVar.Name" [isGlobal]="node.Config.InputVar.IsGlobal" [inMemory]="node.Config.InputVar.InMemory" [valueType]="'float'" [value]="0" [flowId]="flowId" (onSelect)="inputVariableSelected($event)" ></variable-selector>
+
   <mat-form-field class="value-selector" >
-    <mat-select #nodeTypeInput  placeholder="Value type" [(ngModel)]="node.Config.LogLevel">
-      <mat-option value="debug">debug</mat-option>
-      <mat-option value="info">info</mat-option>
-      <mat-option value="error">error</mat-option>
+    <mat-select #nodeTypeInput  placeholder="Operation" [(ngModel)]="node.Config.Operation">
+      <mat-option value="inc">Increment</mat-option>
+      <mat-option value="dec">Decrement</mat-option>
+      <mat-option value="add">Add value</mat-option>
+      <mat-option value="sub">Subtract value</mat-option>
     </mat-select>
   </mat-form-field>
+
   <div>
-    <mat-form-field  style="width: 400px">
-      <input matInput [(ngModel)]="node.Config.Text" placeholder="Text">
+    <mat-form-field  style="width: 200px">
+      <input matInput [(ngModel)]="node.Config.Step" placeholder="Step" type="number">
     </mat-form-field>
   </div>
- <variable-selector [label]="'Input variable'" [variableName]="node.Config.VariableName" [isGlobal]="node.Config.IsVariableGlobal" [flowId]="flowId" (onSelect)="inputVariableSelected($event)" ></variable-selector>
+  <div>
+    <mat-form-field  style="width: 200px">
+      <input matInput [(ngModel)]="node.Config.MinValue" placeholder="Min limit" type="number">
+    </mat-form-field>
+    <mat-form-field  style="width: 200px">
+      <input matInput [(ngModel)]="node.Config.MaxValue" placeholder="Max limit" type="number">
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field class="value-selector" >
+      <mat-select #nodeTypeInput  placeholder="Limit action" [(ngModel)]="node.Config.LimitAction">
+        <mat-option value="no_limits">Do nothing</mat-option>
+        <mat-option value="reset">Reset to default</mat-option>
+        <mat-option value="keep_limit">Keep limit</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field  style="width: 200px">
+      <input matInput [(ngModel)]="node.Config.ResetValue" placeholder="Reset to value" type="number">
+    </mat-form-field>
+  </div>
+
+
+
+  <variable-selector [label]="'Metric variable'" [variableName]="node.Config.OutputVar.Name" [isGlobal]="node.Config.OutputVar.IsGlobal" [inMemory]="node.Config.OutputVar.InMemory" [valueType]="'float'" [value]="0" [flowId]="flowId" (onSelect)="outputVariableSelected($event)" ></variable-selector>
 
 </div>
 

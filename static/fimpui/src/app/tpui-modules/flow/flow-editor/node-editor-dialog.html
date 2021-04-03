@@ -39,6 +39,9 @@
     <div *ngSwitchCase="'timetools'">
       <timetools-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </timetools-node>
     </div>
+    <div *ngSwitchCase="'metrics'">
+      <metrics-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </metrics-node>
+    </div>
     <div *ngSwitchCase="'rate_limit'">
       <rate-limit-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </rate-limit-node>
     </div>
