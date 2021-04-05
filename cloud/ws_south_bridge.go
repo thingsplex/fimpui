@@ -23,7 +23,6 @@ func NewWsSouthBridge(configs *model.Configs) *WsSouthBridge {
 }
 
 
-
 // connect createas new mqtt connection
 func (mp *WsSouthBridge) ConnectToLocalMqttBroker() error {
 	var err error

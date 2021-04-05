@@ -150,7 +150,18 @@ export class FlowEditorComponent implements OnInit {
             this.canvasInitHeight = canvas.clientHeight;
           }
         }else if(fimpMsg.mtype == "evt.flow.update_report") {
-          this.snackBar.open('Flow is saved',"",{duration:1000});
+          if (fimpMsg.val == "ok") {
+            this.snackBar.open('Flow is saved',"",{duration:1000});
+          }else {
+            this.snackBar.open('ERROR!!! Flow can not be initialized ',"",{duration:3000});
+            console.log(fimpMsg.val)
+            let dialogRef = this.dialog.open(HelpDialog,{
+              // height: '95%',
+              width: '400px',
+              data:fimpMsg.val
+            });
+          }
+
         }
       }else {
         this.updateUiValue(fimpMsg.topic,fimpMsg);
@@ -886,27 +897,7 @@ export class ContextDialog {
   localContext :string ;
   globalContext : string;
   constructor(public dialogRef: MatDialogRef<ContextDialog>,@Inject(MAT_DIALOG_DATA) public data: Flow,private http : HttpClient) {
-    //  this.http
-    //   .get(BACKEND_ROOT+'/fimp/api/flow/context/'+data.Id)
-    //   .map(function(res: Response){
-    //     let body = res.json();
-    //     return body;
-    //   }).subscribe ((result) => {
-    //      this.localContext = JSON.stringify(result, null, 2);
-    //   });
-    //
-    // this.http
-    //   .get(BACKEND_ROOT+'/fimp/api/flow/context/global')
-    //   .map(function(res: Response
-    //     let body = res.json();
-    //     return body;
-    //   }).subscribe ((result) => {
-    //      this.globalContext = JSON.stringify(result, null, 2);
-    //   });
 
-
-    // this.localContext = JSON.stringify(data, null, 2)
-    // this.globalContext = JSON.stringify(data, null, 2)
   }
 
 }
@@ -921,15 +912,7 @@ export class FlowRunDialog {
   actionData : MetaNode;
 
   constructor(public dialogRef: MatDialogRef<FlowRunDialog>,@Inject(MAT_DIALOG_DATA) public data: MetaNode,private fimp:FimpService,public snackBar: MatSnackBar) {
-    // data.Config. = {"Value":true,"ValueType":msgTypeToValueTypeMap[data.ServiceInterface]}
-    // this.valueType = msgTypeToValueTypeMap[data.ServiceInterface];
-    // this.actionData = new MetaNode();
-    // this.actionData.Address = data.Address;
-    // this.actionData.Id = data.Id;
-    // this.actionData.Service = data.Service;
-    // this.actionData.ServiceInterface = data.ServiceInterface;
-    // this.actionData.Type = data.Type;
-    // this.actionData.Config = {"Value":true,"ValueType":data.Config.ValueFilter.ValueType}
+
     this.valueType = data.Config.ValueFilter.ValueType
 
   }
@@ -949,16 +932,13 @@ export class FlowRunDialog {
 export class HelpDialog {
   actionData : MetaNode;
   public url: SafeResourceUrl;
-  constructor(public dialogRef: MatDialogRef<FlowRunDialog>,@Inject(MAT_DIALOG_DATA) public data: MetaNode,private sanitizer: DomSanitizer) {
-
+  public errorText : string;
+  constructor(public dialogRef: MatDialogRef<FlowRunDialog>,@Inject(MAT_DIALOG_DATA) public data: any,private sanitizer: DomSanitizer) {
+    this.errorText = data;
   }
   ngOnInit() {
-    let urlString = "/fimp/help/node-"+this.data.Type+".html";
-    if (this.data.Ui.nodeType) {
-      urlString = "/fimp/help/node-"+this.data.Type+"-"+this.data.Ui.nodeType+".html"
-    }
-    console.log("Loading help from "+urlString);
-    this.url = this.url = this.sanitizer.bypassSecurityTrustResourceUrl(urlString); (3)
+
+
   }
 
 }
