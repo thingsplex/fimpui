@@ -1,0 +1,34 @@
+<div>
+   <mat-form-field class="value-selector" >
+    <mat-select #nodeTypeInput  placeholder="HTTP method" [(ngModel)]="node.Config.Method">
+      <mat-option value="GET">Get</mat-option>
+      <mat-option value="POST">Post</mat-option>
+      <mat-option value="PUT">PUT</mat-option>
+      <mat-option value="PATCH">PATCH</mat-option>
+      <mat-option value="DELETE">DELETE</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="value-selector" >
+    <mat-select #nodeTypeInput  placeholder="Payload format" [(ngModel)]="node.Config.PayloadFormat">
+      <mat-option value="json">json</mat-option>
+      <mat-option value="form">form</mat-option>
+      <mat-option value="fimp">fimp</mat-option>
+      <mat-option value="none">none</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div style="margin-bottom: 5px" >
+    <mat-checkbox [(ngModel)]="node.Config.IsSync" > Enable synchronous interaction.The flow will respond to the caller </mat-checkbox>
+  </div>
+
+  <div style="margin-bottom: 5px" >
+    <mat-checkbox [(ngModel)]="node.Config.IsWs" > Enable websocket support. </mat-checkbox>
+  </div>
+
+  <div style="margin-bottom: 5px" >
+    <mat-checkbox [(ngModel)]="node.Config.MapFormParamsToVars" > Automatically map form parameters to variables </mat-checkbox>
+  </div>
+
+</div>
+

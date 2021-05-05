@@ -49,6 +49,8 @@ import {IfTimeNodeComponent} from "./flow-nodes/if-time-node/node.component";
 import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.component";
 import {TimetoolsNodeComponent} from "./flow-nodes/timetools-node/node.component";
 import {MetricsNodeComponent} from "./flow-nodes/metrics-node/node.component";
+import {HttpActionNodeComponent} from "./flow-nodes/http-action-node/node.component";
+import {HttpTriggerNodeComponent} from "./flow-nodes/http-trigger-node/node.component";
 
 @NgModule({
   imports: [
@@ -116,6 +118,8 @@ import {MetricsNodeComponent} from "./flow-nodes/metrics-node/node.component";
      LogNodeComponent,
      TimetoolsNodeComponent,
      MetricsNodeComponent,
+     HttpActionNodeComponent,
+     HttpTriggerNodeComponent,
      WaitNodeComponent,
      VincTriggerNodeComponent,
      VincActionNodeComponent,

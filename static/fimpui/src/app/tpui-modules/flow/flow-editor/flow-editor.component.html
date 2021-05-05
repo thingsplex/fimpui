@@ -29,6 +29,7 @@
         <button mat-menu-item (click)="addNode('vinc_trigger','')">Home event</button>
         <button mat-menu-item (click)="addNode('trigger','scene_trigger')">Scene</button>
         <button mat-menu-item (click)="addNode('time_trigger','')">Time</button>
+        <button mat-menu-item (click)="addNode('http_trigger','')">Http/WS</button>
       </mat-menu>
 
       <mat-menu #actions="matMenu">
@@ -36,6 +37,7 @@
         <button mat-menu-item (click)="addNode('action','notification_action')">Push notification</button>
         <button mat-menu-item (click)="addNode('action','timeline_action')">Publish to timeline</button>
         <button mat-menu-item (click)="addNode('rest_action','')">HTTP request</button>
+        <button mat-menu-item (click)="addNode('action_http_reply','')">HTTP/WS reply</button>
         <button mat-menu-item (click)="addNode('action','vinc_action')">Modes & shortcuts</button>
       </mat-menu>
 
@@ -71,11 +73,13 @@
 
                 <button mat-icon-button [ngSwitch]="node.Type"  (click)="showNodeEditorDialog(flow,node)" color="primary" >
                     <mat-icon *ngSwitchCase="'trigger'" aria-label="Edit node">input</mat-icon>
+                    <mat-icon *ngSwitchCase="'http_trigger'" aria-label="Edit node">input</mat-icon>
                     <mat-icon *ngSwitchCase="'vinc_trigger'" aria-label="Edit node">input</mat-icon>
                     <mat-icon *ngSwitchCase="'receive'" aria-label="Edit node">input</mat-icon>
                     <mat-icon *ngSwitchCase="'time_trigger'" aria-label="Edit node">schedule</mat-icon>
                     <mat-icon *ngSwitchCase="'wait'" aria-label="Edit node">update</mat-icon>
                     <mat-icon *ngSwitchCase="'action'" aria-label="Edit node">send</mat-icon>
+                    <mat-icon *ngSwitchCase="'action_http_reply'" aria-label="Edit node">send</mat-icon>
                     <mat-icon *ngSwitchCase="'rest_action'" aria-label="Edit node">send</mat-icon>
                     <mat-icon *ngSwitchCase="'if'" aria-label="Edit node">call_split</mat-icon>
                     <mat-icon *ngSwitchCase="'iftime'" aria-label="Edit node">call_split</mat-icon>

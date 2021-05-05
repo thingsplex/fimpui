@@ -37,12 +37,14 @@ import {tryCatch} from "rxjs/internal-compatibility";
 
 const nodeTypeAlias = {
   "trigger":"Trigger",
+  "http_trigger":" Http/ws",
   "vinc_trigger":"Home event",
   "receive":"Wait event",
   "time_trigger":"Time trigger",
   "wait":"Delay",
   "action":"Action",
   "rest_action":"HTTP msg",
+  "action_http_reply":"Http/ws",
   "if":"If condition",
   "iftime":"Time filter",
   "rate_limit":"Rate limit",

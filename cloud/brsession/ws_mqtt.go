@@ -51,7 +51,7 @@ func NewWsToMqttSession(id string, userConfig user.Configs) *WsToMqttSession {
 	}
 	return ses
 }
-// connect createas new mqtt connection
+// ConnectToMqttBroker creates new mqtt connection
 func (mp *WsToMqttSession) ConnectToMqttBroker() error {
 	var err error
 	if mp.userConfig.MqttServerURI == "" {
@@ -119,7 +119,7 @@ func (mp *WsToMqttSession) IsStale() bool{
 	return false
 }
 
-// StartWsToMqttRouter - consumes WS Fimp messages and publishes them MQTT broker.  Browser -> WS Bridge -> MQTT broker
+// StartWsToSouthboundRouter consumes WS Fimp messages and publishes them MQTT broker.  Browser -> WS Bridge -> MQTT broker
 func (mp *WsToMqttSession) StartWsToSouthboundRouter(wsConn *websocket.Conn) error{
 	if !mp.isConnected {
 		return fmt.Errorf("<brSes> mqtt broker is not connected")

@@ -60,13 +60,13 @@ prep-docker:
 	cp -R static/misc package/docker/static/
 
 package-docker-amd64:prep-docker
-	docker buildx build --platform linux/amd64 -t thingsplex/tplexui:${version} ./package/docker
+	docker buildx build --platform linux/amd64 -t thingsplex/tplexui:${version} -t thingsplex/tplexui:latest ./package/docker
 
 package-docker-arm64:prep-docker
-	docker buildx build --platform linux/arm64 -t thingsplex/tplexui:${version} ./package/docker
+	docker buildx build --platform linux/arm64 -t thingsplex/tplexui:${version} -t thingsplex/tplexui:latest ./package/docker
 
 package-docker-multi:prep-docker
-	docker buildx build --platform linux/arm64,linux/amd64 -t thingsplex/tplexui:${version} ./package/docker --push
+	docker buildx build --platform linux/arm64,linux/amd64 -t thingsplex/tplexui:${version} -t thingsplex/tplexui:latest ./package/docker --push
 
 package-tar:
 	cp fimpui package/tar
