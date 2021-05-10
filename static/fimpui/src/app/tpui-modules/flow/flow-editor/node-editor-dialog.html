@@ -58,7 +58,7 @@
         <time-trigger-node [node]="node" [nodes]="flow.Nodes" > </time-trigger-node>
    </div>
     <div *ngSwitchCase="'http_trigger'">
-      <http-trigger-node [node]="node" [nodes]="flow.Nodes" > </http-trigger-node>
+      <http-trigger-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </http-trigger-node>
     </div>
     <div *ngSwitchCase="'if'">
       <if-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </if-node>

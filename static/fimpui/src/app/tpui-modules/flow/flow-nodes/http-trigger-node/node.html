@@ -30,5 +30,9 @@
     <mat-checkbox [(ngModel)]="node.Config.MapFormParamsToVars" > Automatically map form parameters to variables </mat-checkbox>
   </div>
 
+  <div>
+    <variable-selector [label]="'Output variable'" [variableName]="node.Config.OutputVar.Name" [isGlobal]="node.Config.OutputVar.IsGlobal" [inMemory]="node.Config.OutputVar.InMemory" [valueType]="'object'" [flowId]="flowId" (onSelect)="outputVariableSelected($event)" ></variable-selector>
+  </div>
+
 </div>
 

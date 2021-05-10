@@ -16,6 +16,7 @@ import (
 var (
 	brUpgrader = websocket.Upgrader{
 		Subprotocols: []string{},
+		HandshakeTimeout: time.Second*15,
 		CheckOrigin: func(r *http.Request) bool {
 			return true
 		},
@@ -75,7 +76,6 @@ func (wu *WsNorthBridge) Upgrade(c echo.Context) error {
 	}
 
 	ws, err := brUpgrader.Upgrade(c.Response(), c.Request(), nil)
-
 	if err != nil {
 		log.Error("<MqWsProxy> Can't upgrade . Error:", err)
 		return err

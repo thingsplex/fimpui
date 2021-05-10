@@ -53,7 +53,7 @@ export class SetVariableNodeComponent implements OnInit {
        this.node.Config.DefaultValue.ValueType = "";
 
     this.node.Config.UpdateGlobal = cvar.isGlobal;
-    // this.node.Config.IsTargetVariableInMemory = cvar.InMemory;
+    this.node.Config.IsVariableInMemory = cvar.InMemory;
   }
 }
 

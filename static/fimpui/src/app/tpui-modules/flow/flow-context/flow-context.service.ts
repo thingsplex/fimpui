@@ -3,6 +3,7 @@ import {FimpService} from "app/fimp/fimp.service";
 import {Subject, Subscription} from "rxjs";
 import {FimpMessage, NewFimpMessageFromString} from "../../../fimp/Message";
 import {TableContextRec} from "./model";
+import {ContextVariable} from "./variable-selector.component";
 
 @Injectable()
 export class FlowContextService{
@@ -44,7 +45,7 @@ export class FlowContextService{
   }
 
   private mapContext(result:any,flowId:string) {
-    for (var key in result){
+    for (let key in result){
       let loc = new TableContextRec();
       loc.FlowId = flowId;
       loc.Name = result[key].Name;
@@ -52,23 +53,34 @@ export class FlowContextService{
       loc.UpdatedAt = result[key].UpdatedAt;
       loc.Value = result[key].Variable.Value;
       loc.ValueType = result[key].Variable.ValueType;
+      loc.InMemory = result[key].InMemory;
       loc.IsGlobal = false;
       if (flowId == "global")
         loc.IsGlobal = true;
       this.contextRecords.push(loc)
     }
   }
-
-  public addNewRecord(flowId:string,name:string,description:string,isGlobal:boolean,valType:string){
+  // addNewRecord adds new record to internal array. The data is not sent to backend.
+  public addNewRecord(flowId:string,name:string,description:string,isGlobal:boolean,valType:string,InMemory:boolean){
     let loc = new TableContextRec();
     loc.FlowId = flowId;
     loc.Name = name;
     loc.Description = description;
     loc.ValueType = valType;
     loc.IsGlobal = isGlobal;
+    loc.InMemory = InMemory;
     if (flowId == "global")
       loc.IsGlobal = true;
     this.contextRecords.push(loc)
+  }
+
+  public getVariableByName(name:string,isGlobal:boolean):TableContextRec {
+    for (let v of this.contextRecords) {
+      if (v.Name == name && v.IsGlobal == isGlobal) {
+        return v;
+      }
+    }
+    return null;
   }
 
   public getContextData(flowId:string):TableContextRec[] {

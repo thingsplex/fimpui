@@ -561,6 +561,7 @@ findInputSocketPosition(htmlElement):any {
         node.Config["Name"] = ""
         node.Config["UpdateGlobal"] = false
         node.Config["UpdateInputMsg"] = false
+        node.Config["IsVariableInMemory"] = true
         let variable = {};
         variable["Value"] = 0;
         variable["ValueType"] = "";

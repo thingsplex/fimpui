@@ -31,8 +31,16 @@ export class HttpTriggerNodeComponent implements OnInit {
         "IsSync":true,
         "IsWs":false,
         "MapFormParamsToVars":false,
+        "OutputVar": {"Name":"","InMemory":true,"IsGlobal":false,"Type":"object"}
       }
     }
+  }
+
+  outputVariableSelected(cvar:ContextVariable) {
+    this.node.Config.OutputVar.Name = cvar.Name;
+    this.node.Config.OutputVar.IsGlobal = cvar.isGlobal;
+    this.node.Config.OutputVar.InMemory = cvar.InMemory;
+    this.node.Config.OutputVar.Type = cvar.Type;
   }
 
 }

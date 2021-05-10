@@ -119,7 +119,7 @@ func (mp *WsToMqttSession) IsStale() bool{
 	return false
 }
 
-// StartWsToSouthboundRouter consumes WS Fimp messages and publishes them MQTT broker.  Browser -> WS Bridge -> MQTT broker
+// StartWsToSouthboundRouter consumes WS Fimp messages and publishes them to MQTT broker.  Browser -> WS Bridge -> MQTT broker
 func (mp *WsToMqttSession) StartWsToSouthboundRouter(wsConn *websocket.Conn) error{
 	if !mp.isConnected {
 		return fmt.Errorf("<brSes> mqtt broker is not connected")
@@ -236,6 +236,7 @@ func (mp *WsToMqttSession) onMqttMessage(topic string, addr *fimpgo.Address, iot
 	// Broadcasting MQTT message over all active WS connections
 	mp.wsConnLock.RLock()
 	for _, conn := range mp.wsConn {
+		conn.SetWriteDeadline(time.Now().Add(time.Second*10))
 		err = conn.WriteMessage(websocket.TextMessage, packet)
 		if err != nil {
 			log.Error("<brSes> Write error :", err)

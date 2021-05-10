@@ -5,7 +5,6 @@ import { MatDialog } from "@angular/material/dialog";
 import {FlowContextService} from "./flow-context.service";
 
 export class ContextVariable {
-
   Name : string;
   Type : string;
   Value : any;
@@ -28,23 +27,30 @@ export class VariableSelectorComponent implements OnInit {
     @Input() value : any;
     @Output() onSelect = new EventEmitter<ContextVariable>();
     variableType : string;
-    vars:TableContextRec[];
+    // vars:TableContextRec[];
+    contextDb:TableContextRec[]
+     // public get contextDb():TableContextRec[]   {
+     //   console.log("requesting data from context")
+     //   return this.ctxService.getContextData(this.flowId)
+     // }
 
   ngOnInit() {
     if (!this.mode)
       this.mode = "write";
-    this.loadContext();
+    this.contextDb = this.ctxService.getContextData(this.flowId)
+    // this.loadContext();
+    console.log("selector , inMemory = "+this.inMemory)
   }
   constructor(public dialog: MatDialog, private ctxService: FlowContextService) {
-    this.loadContext();
+    // this.loadContext();
   }
 
-  loadContext() {
-    this.vars = [];
-    if (this.flowId) {
-      this.vars = this.ctxService.getContextData(this.flowId);
-    }
-  }
+  // loadContext() {
+  //   this.vars = [];
+  //   if (this.flowId) {
+  //     this.vars = this.ctxService.getContextData(this.flowId);
+  //   }
+  // }
 
   showContextVariableDialog() {
     console.log("Default value = "+this.value);
@@ -71,29 +77,30 @@ export class VariableSelectorComponent implements OnInit {
       {
         this.variableName = result.Name;
         this.variableType = result.Variable.ValueType;
-        this.ctxService.addNewRecord(this.flowId,this.variableName,"",this.isGlobal,this.variableType);
+        this.inMemory = result.InMemory;
+        this.ctxService.addNewRecord(this.flowId,this.variableName,"",this.isGlobal,this.variableType,this.inMemory);
         this.onSelected();
-        this.loadContext();
+        // this.loadContext();
         this.ctxService.reloadFullContext(this.flowId)
       }
     });
   }
 
-  getVariableByName(name:string,isGlobal:boolean):ContextVariable {
-    for (let v of this.vars) {
-      if(v.Name == name && v.IsGlobal == isGlobal) {
-        let result = new ContextVariable();
-        result.Name = v.Name;
-        result.Type = v.ValueType;
-        result.isGlobal = v.IsGlobal;
-        result.InMemory = v.InMemory;
-        result.Value = v.Value;
-        return result;
-      }
-    }
-    return null;
+  // getVariableByName(name:string,isGlobal:boolean):ContextVariable {
+  //   for (let v of this.vars) {
+  //     if(v.Name == name && v.IsGlobal == isGlobal) {
+  //       let result = new ContextVariable();
+  //       result.Name = v.Name;
+  //       result.Type = v.ValueType;
+  //       result.isGlobal = v.IsGlobal;
+  //       result.InMemory = v.InMemory;
+  //       result.Value = v.Value;
+  //       return result;
+  //     }
+  //   }
+  //   return null;
 
-  }
+  // }
 
   onSelected() {
       var event = new ContextVariable();
@@ -104,14 +111,27 @@ export class VariableSelectorComponent implements OnInit {
       event.InMemory = this.inMemory;
 
      if(this.variableName=="") {
-       var event = new ContextVariable();
+       let event = new ContextVariable();
        event.Name = "";
        this.onSelect.emit(event);
+       return
      }
-     if (this.variableType == undefined){
-       event = this.getVariableByName(this.variableName,this.isGlobal)
 
+     if (this.variableType == undefined){
+       console.log("Getting variable by name , inMemory = "+this.inMemory)
+       let rec = this.ctxService.getVariableByName(this.variableName,this.isGlobal)
+       event.Name = rec.Name;
+       event.Type = rec.ValueType;
+       event.Value = rec.Value;
+       event.InMemory = rec.InMemory;
+       event.isGlobal = rec.IsGlobal;
+
+       this.variableName = rec.Name;
+       this.variableType = rec.ValueType;
+       this.value = rec.Value;
+       this.inMemory = rec.InMemory;
      }
+    console.log("selector emit 2 , inMemory = "+this.inMemory)
      if (event) {
        this.onSelect.emit(event);
      }

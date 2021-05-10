@@ -90,6 +90,6 @@
    </div>
   <br/>
    <b> to variable </b>
-   <variable-selector [label]="'Variable'" [variableName]="node.Config.Name" [isGlobal]="node.Config.UpdateGlobal" [flowId]="flowId" (onSelect)="resultVariableSelected($event)" ></variable-selector>
+   <variable-selector [label]="'Variable'" [variableName]="node.Config.Name" [isGlobal]="node.Config.UpdateGlobal" [inMemory]="node.Config.IsVariableInMemory" [flowId]="flowId" (onSelect)="resultVariableSelected($event)" ></variable-selector>
 
 </div>
