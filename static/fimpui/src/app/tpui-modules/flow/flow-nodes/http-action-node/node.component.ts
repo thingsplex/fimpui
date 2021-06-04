@@ -1,7 +1,8 @@
 import {MetaNode} from "../../flow-editor/flow-editor.component";
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import {ContextVariable} from "../../flow-context/variable-selector.component";
+import * as ace from "ace-builds";
 
 @Component({
   selector: 'http-action-node',
@@ -12,6 +13,7 @@ export class HttpActionNodeComponent implements OnInit {
   @Input() node :MetaNode;
   @Input() nodes:MetaNode[];
   @Input() flowId:string;
+  @ViewChild('nodeCodeEditor') editorEl: ElementRef;
   localVars:any;
   globalVars:any;
 
@@ -23,6 +25,18 @@ export class HttpActionNodeComponent implements OnInit {
 
   }
 
+  ngAfterViewInit() {
+    ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
+
+    const aceEditor = ace.edit(this.editorEl.nativeElement);
+    aceEditor.session.setMode("ace/mode/html");
+    aceEditor.session.setValue(this.node.Config.ResponseTemplate);
+    aceEditor.on("change", () => {
+      this.node.Config.ResponseTemplate = aceEditor.getValue();
+    });
+    // this.transformationTypeChange();
+  }
+
   loadDefaultConfig() {
     if (this.node.Config == null) {
       this.node.Config = {
@@ -30,6 +44,7 @@ export class HttpActionNodeComponent implements OnInit {
         "InputVar": {"Name":"","InMemory":true,"IsGlobal":false,"Type":""},
         "IsWs":false,
         "IsPublishOnly":false,
+        "ResponseTemplate":""
       }
     }
   }
@@ -40,5 +55,13 @@ export class HttpActionNodeComponent implements OnInit {
     this.node.Config.InputVar.InMemory = cvar.InMemory;
     this.node.Config.InputVar.Type = cvar.Type;
   }
+
+  // transformationTypeChange() {
+  //   if (this.node.Config.TransformType == "template") {
+  //     this.editorEl.nativeElement.style.display = 'block';
+  //   }else {
+  //     this.editorEl.nativeElement.style.display = 'none';
+  //   }
+  // }
 
 }

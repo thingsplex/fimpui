@@ -10,7 +10,7 @@ import (
 
 // WsSouthBridge is used only in Cloud version. It's a process that connects to Cloud WS Bridge (instead of MQTT broker) and
 // forwards local MQTT messages to cloud and cloud messages to local MQTT broker .
-// WsSouthBridge (hub) <-> Centrifugo (cloud WS bridge) <-> CloudThingsplex (ws_north_bridge-ws_centrifugo)
+// WsSouthBridge (hub) <-> tprelay <-> CloudThingsplex (ws_north_bridge-ws_centrifugo)
 // The component works directly with local MQTT broker.
 type WsSouthBridge struct {
 	configs *model.Configs
@@ -23,7 +23,7 @@ func NewWsSouthBridge(configs *model.Configs) *WsSouthBridge {
 }
 
 
-// connect createas new mqtt connection
+// ConnectToLocalMqttBroker connect createas new mqtt connection
 func (mp *WsSouthBridge) ConnectToLocalMqttBroker() error {
 	var err error
 	if mp.configs.MqttServerURI == "" {

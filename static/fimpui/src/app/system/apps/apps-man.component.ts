@@ -69,18 +69,32 @@ export class AppsManComponent implements OnInit {
 
   }
 
-  controlApp(name:string,op:string){
-    let val = {
-      "op": op,
-      "app": name,
-      "ver": ""
+  controlApp(name:string,sig:string,op:string){
+    let msg;
+    if (sig!="") {
+      let val = {
+        "deb_url": name,
+        "sig_url": sig,
+      }
+      console.log("Installing "+name);
+      this.snackBar.open('Installing signed the app '+name+'....',"",{duration:3000});
+      msg  = new FimpMessage("fhbutler","cmd.app.install_signed","str_map",val,null,null)
+      msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
+    }else {
+      let val = {
+        "op": op,
+        "app": name,
+        "ver": ""
+      }
+      console.log("Installing "+name);
+      this.snackBar.open('Installing the app '+name+'....',"",{duration:3000});
+      msg  = new FimpMessage("fhbutler","cmd.app.ctrl","str_map",val,null,null)
+      msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
     }
-    console.log("Installing "+name);
-    this.snackBar.open('Installing the app '+name+'....',"",{duration:3000});
-    let msg  = new FimpMessage("fhbutler","cmd.app.ctrl","str_map",val,null,null)
-    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
+
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
   }
+
 
   setLogLevel(name:string,level:string,appType:string) {
       console.log("Setting application log level . Service"+name+" level="+level)

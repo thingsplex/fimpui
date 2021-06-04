@@ -17,6 +17,7 @@
   <div *ngIf="node.Config.IsWs" style="margin-bottom: 5px" >
     <mat-checkbox [(ngModel)]="node.Config.IsPublishOnly" > Standalone publish operation. </mat-checkbox>
   </div>
-
+  <p> Response template:</p>
+  <div #nodeCodeEditor style="width: 750px;height: 400px;"></div>
 </div>
 

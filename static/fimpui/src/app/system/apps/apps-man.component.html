@@ -57,8 +57,12 @@
             <mat-label>Application name</mat-label>
             <input matInput #appName type="text"  placeholder="">
           </mat-form-field>
+          <mat-form-field style="margin-right: 10px;width: 150px">
+            <mat-label>Signature</mat-label>
+            <input matInput #appSig type="text"  placeholder="">
+          </mat-form-field>
 
-          <button mat-raised-button (click)="controlApp(appName.value,'install')" color="primary" > Install </button>
+          <button mat-raised-button (click)="controlApp(appName.value,appSig.value,'install')" color="primary" > Install </button>
           <p>
             <mat-form-field style="margin-right: 10px;width: 100px"  >
               <mat-label> App type </mat-label>

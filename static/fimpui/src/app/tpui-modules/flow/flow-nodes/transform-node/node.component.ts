@@ -25,7 +25,7 @@ export class TransformNodeComponent implements OnInit {
     ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
 
     const aceEditor = ace.edit(this.editorEl.nativeElement);
-    aceEditor.session.setMode("ace/mode/html");
+    aceEditor.session.setMode("ace/mode/json");
     aceEditor.session.setValue(this.node.Config.Template);
     aceEditor.on("change", () => {
       this.node.Config.Template = aceEditor.getValue();
