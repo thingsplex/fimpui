@@ -29,7 +29,45 @@
   <div style="margin-bottom: 5px" >
     <mat-checkbox [(ngModel)]="node.Config.MapFormParamsToVars" > Automatically map form parameters to variables </mat-checkbox>
   </div>
+  <mat-divider style="margin-top: 10px;margin-bottom: 10px"></mat-divider>
+  <mat-form-field class="value-selector" >
+    <mat-select #nodeTypeInput  placeholder="Authentication method" [(ngModel)]="node.Config.AuthConfig.AuthMethod">
+      <mat-option value="none">None</mat-option>
+      <mat-option value="bearer">Bearer token</mat-option>
+      <mat-option value="basic">Basic</mat-option>
+      <mat-option value="header-token">Header token</mat-option>
+      <mat-option value="query-token">Query token</mat-option>
+    </mat-select>
+  </mat-form-field>
 
+  <div *ngIf="node.Config.AuthConfig.AuthMethod=='bearer' || node.Config.AuthConfig.AuthMethod=='header-token' || node.Config.AuthConfig.AuthMethod=='query-token'" style="margin-bottom: 5px" >
+    <mat-form-field style="width: 100%">
+      <input matInput [(ngModel)]="node.Config.AuthConfig.AuthToken" placeholder="Token" >
+    </mat-form-field>
+    <div *ngIf="node.Config.AuthConfig.AuthMethod=='header-token'" style="margin-bottom: 5px" >
+      <mat-form-field style="width: 100%">
+        <input matInput [(ngModel)]="node.Config.AuthConfig.AuthCustomParamName" placeholder="Custom header" >
+      </mat-form-field>
+    </div>
+    <div *ngIf="node.Config.AuthConfig.AuthMethod=='query-token'" style="margin-bottom: 5px" >
+      <mat-form-field style="width: 100%">
+        <input matInput [(ngModel)]="node.Config.AuthConfig.AuthCustomParamName" placeholder="Custom query parameter" >
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div *ngIf="node.Config.AuthConfig.AuthMethod=='basic'" style="margin-bottom: 5px" >
+    <mat-form-field style="width: 100%">
+      <input matInput [(ngModel)]="node.Config.AuthConfig.AuthUsername" placeholder="Username" >
+    </mat-form-field>
+    <mat-form-field style="width: 100%">
+      <input matInput [(ngModel)]="node.Config.AuthConfig.AuthPassword" placeholder="Password" >
+    </mat-form-field>
+  </div>
+
+
+
+  <mat-divider style="margin-top: 5px;margin-bottom: 10px"></mat-divider>
   <div>
     <variable-selector [label]="'Output variable'" [variableName]="node.Config.OutputVar.Name" [isGlobal]="node.Config.OutputVar.IsGlobal" [inMemory]="node.Config.OutputVar.InMemory" [valueType]="'object'" [flowId]="flowId" (onSelect)="outputVariableSelected($event)" ></variable-selector>
   </div>

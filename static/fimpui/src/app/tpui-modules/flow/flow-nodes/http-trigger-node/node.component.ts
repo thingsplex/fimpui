@@ -31,7 +31,8 @@ export class HttpTriggerNodeComponent implements OnInit {
         "IsSync":true,
         "IsWs":false,
         "MapFormParamsToVars":false,
-        "OutputVar": {"Name":"","InMemory":true,"IsGlobal":false,"Type":"object"}
+        "OutputVar": {"Name":"","InMemory":true,"IsGlobal":false,"Type":"object"},
+        "AuthConfig":{"AuthMethod":"none","AuthToken":"","AuthUsername":"","AuthPassword":"","AuthCustomParamName":""}
       }
     }
   }

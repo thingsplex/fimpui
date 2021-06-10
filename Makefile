@@ -1,9 +1,9 @@
-version="1.1.8"
+version="1.1.9"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
 remote_host = "fh@cube.local"
-reprepo_host = ""
+reprepo_host = "reprepro@archive.futurehome.no"
 
 build-js:
 	-mkdir -p package/debian/opt/fimpui/static/fimpui

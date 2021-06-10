@@ -1,0 +1,28 @@
+.flow {
+  padding: 20px;
+}
+
+.chart-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: left;
+}
+
+.example-card {
+  /*width: 1200px;*/
+  min-width: 500px;
+}
+
+.example-header-image {
+  background-size: cover;
+}
+.open-chip {
+  color: green
+}
+md-chip {
+  cursor: pointer;
+}
+.conf-radio-button {
+  padding-right: 10px;
+}

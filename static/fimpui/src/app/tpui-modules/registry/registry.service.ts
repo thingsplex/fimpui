@@ -34,9 +34,21 @@ export class ThingsRegistryService{
   private lastRequestId:string;
   private thingsQueryRequestId:string;
   private devicesQueryRequestId:string;
+
+  public get isLoaded():boolean  {
+    if (this.services.length == 0 && this.locations.length == 0 && this.things.length == 0 && this.devices.length == 0)
+      return false
+    else
+       return true
+  }
+
   constructor(private fimp: FimpService, private fimpMeta: FimpApiMetadataService) {
     console.log("registry service constructor")
-    this.fimp.getConnStateObservable().subscribe((state: any) => {
+    if (this.fimp.isConnected()) {
+      console.log("---------Loading registry ----------------------")
+      this.configureFimpListener()
+      this.loadAllComponents();
+    }else this.fimp.getConnStateObservable().subscribe((state: any) => {
         console.log(" reg: FimpService onConnect . State = ",state);
         if (this.fimp.isConnected()) {
           console.log("---------Loading registry ----------------------")
