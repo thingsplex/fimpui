@@ -13,7 +13,7 @@ import {SimplePieChartComponent} from "../../analytics/charts/simple-pie-chart.c
 })
 export class ConnectorsComponent implements OnInit {
 
-  connectors : any[];
+  public connectors : any[];
 
   private connSub : Subscription;
   private globalSub : Subscription;
@@ -55,7 +55,7 @@ export class ConnectorsComponent implements OnInit {
   }
 
   loadAllConnectorInstances() {
-    let msg  = new FimpMessage("tpflow","evt.flow.connector_instances_report","null",null,null,null)
+    let msg  = new FimpMessage("tpflow","cmd.flow.get_connector_instances","null",null,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);

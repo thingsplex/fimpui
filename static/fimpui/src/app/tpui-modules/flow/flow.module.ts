@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlowOverviewComponent } from './flow-overview/flow-overview.component';
+import { ConnectorsComponent } from './connectors/connectors.component';
 import { FlowContextComponent } from './flow-context/flow-context.component';
 import { FlowLibComponent } from './flow-lib/flow-lib.component';
 import { VariableSelectorComponent } from './flow-context/variable-selector.component';
@@ -93,6 +94,7 @@ import {HttpTriggerNodeComponent} from "./flow-nodes/http-trigger-node/node.comp
      FlowLogDialog,
      IfTimeNodeComponent,
     RateLimitNodeComponent,
+     ConnectorsComponent,
     // SignInDialog,
     // FirebaseAuthCheckComponent,
      VariableSelectorComponent,
