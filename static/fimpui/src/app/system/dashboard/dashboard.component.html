@@ -65,6 +65,41 @@
            <button mat-raised-button (click)="syncSiteStruct()" color="primary" > Sync site structure</button>
            <button mat-raised-button (click)="getRoutes()" color="primary" > Get routes </button>
          </mat-card-actions>
+
+         <div *ngIf="!cbInfo">
+           <p> Hub is not registered.</p>
+           <mat-form-field style="margin-right: 10px;width: 150px">
+             <mat-label>Hub id</mat-label>
+             <input matInput #hubId type="text"  placeholder="">
+           </mat-form-field>
+           <mat-form-field style="margin-right: 10px;width: 150px">
+             <mat-label>SigKey</mat-label>
+             <input matInput #sigKey type="text"  placeholder="">
+           </mat-form-field>
+           <mat-form-field style="margin-right: 10px;width: 50px">
+             <mat-label>Env</mat-label>
+             <input matInput #env type="text"  placeholder="">
+           </mat-form-field>
+           <mat-form-field style="margin-right: 10px;width: 70px">
+             <mat-label>Model</mat-label>
+             <input matInput #model type="text"  placeholder="">
+           </mat-form-field>
+           <mat-form-field style="margin-right: 10px;width: 70px">
+             <mat-label>Hard v</mat-label>
+             <input matInput #hardV type="text"  placeholder="">
+           </mat-form-field>
+           <mat-form-field style="margin-right: 10px;width: 70px">
+             <mat-label>Soft v</mat-label>
+             <input matInput #softV type="text"  placeholder="">
+           </mat-form-field>
+           <p>
+             <mat-form-field style="margin-right: 10px;width: 250px">
+               <mat-label>Reg endpoint</mat-label>
+               <input matInput #hubRegUrl type="text"  placeholder="">
+             </mat-form-field>
+           </p>
+           <button mat-raised-button (click)="registerHub(hubId.value,sigKey.value,env.value,hubRegUrl.value,model.value,hardV.value,softV.value)"  color="primary" > Register </button>
+         </div>
     </mat-card>
 
     <mat-card class="card">

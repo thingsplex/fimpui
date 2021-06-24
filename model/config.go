@@ -45,7 +45,7 @@ func NewConfigs(workDir string) *Configs {
 	conf := &Configs{WorkDir: workDir}
 	conf.path = filepath.Join(workDir,"data","config.json")
 	if !utils.FileExists(conf.path) {
-		log.Info("Config file doesn't exist.Loading default config")
+		fmt.Println("Config file doesn't exist.Loading default config")
 		defaultConfigFile := filepath.Join(workDir,"defaults","config.json")
 		err := utils.CopyFile(defaultConfigFile,conf.path)
 		if err != nil {
@@ -72,6 +72,12 @@ func (cf * Configs) LoadFromFile() error {
 		cf.DeploymentMode = DeploymentModeLocal
 	}
 
+	mqttUri := os.Getenv("MQTT_URL")
+	if mqttUri != "" {
+		fmt.Println("Loading mqtt server URI from MQTT_URL")
+		cf.MqttServerURI = mqttUri
+		cf.SaveToFile()
+	}
 	return nil
 }
 

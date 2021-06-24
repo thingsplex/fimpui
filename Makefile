@@ -53,11 +53,13 @@ configure-dev-js:
 
 
 prep-docker:
-	cp fimpui package/docker
 	cp VERSION package/docker
 	cp -R static/fimpui/dist package/docker/static/fimpui/
 	cp -R static/help package/docker/static/
 	cp -R static/misc package/docker/static/
+
+install-to-local-docker:build-go-amd64 prep-docker
+	docker build --build-arg TARGETARCH=amd64 -t thingsplex/tplexui:${version} -t thingsplex/tplexui:latest ./package/docker
 
 package-docker-amd64:prep-docker
 	docker buildx build --platform linux/amd64 -t thingsplex/tplexui:${version} -t thingsplex/tplexui:latest ./package/docker
@@ -145,6 +147,6 @@ run :
 	go run main.go -c var/
 
 docker-run :
-	docker run -p 8081:8081 --name tplexui thingsplex/tplexui:$(version)
+	docker run -p 8081:8081 --name tplexui thingsplex/tplexui:latest
 
 .phony : clean

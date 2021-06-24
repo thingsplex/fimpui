@@ -80,6 +80,28 @@ export class SystemDashboardComponent implements OnInit {
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg);
   }
 
+  registerHub(hubId,sigKey,env,hubRegUrl,model,hardV,softV){
+    console.log("Register hub")
+    if (!env) {
+      env = "beta"
+    }
+
+    let payload = {
+        "hub_id": hubId,
+        "signed_hub_id": "",
+        "reg_api_url":hubRegUrl,
+        "env_name":env,
+        "sign_key": sigKey,
+        "manufacturer": "fh",
+        "model": model,
+        "hw_version": hardV,
+        "sw_version": softV
+    }
+    console.dir(payload)
+    let msg  = new FimpMessage("clbridge","cmd.hub.start_cloud_registration","str_map",payload,null,null)
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg);
+  }
 
   requestCBDiagnosticReport(){
     console.log("Remove device")

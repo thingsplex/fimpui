@@ -18,29 +18,12 @@
           <input matInput placeholder="Local bind address" [(ngModel)]="conn.Config.BindAddress" >
         </mat-form-field>
 
-        <div style="margin-bottom: 10px;margin-top: 10px" >
-          <mat-checkbox [(ngModel)]="conn.Config.IsTunEnabled" > Is cloud tunnel enabled</mat-checkbox>
+        <div style="margin-bottom: 15px;margin-top: 10px" >
+          <mat-checkbox [(ngModel)]="conn.Config.IsLocalServEnabled" > Is local http server enabled</mat-checkbox>
         </div>
-        <p>
-          <mat-form-field class="input-field">
-            <input matInput placeholder="Tunnel id" [(ngModel)]="conn.Config.TunAddress" >
-          </mat-form-field>
-        </p>
-       <p>
-        <mat-form-field class="input-field">
-          <input matInput placeholder="Tunnel token" [(ngModel)]="conn.Config.TunEdgeToken" >
-        </mat-form-field>
-       </p>
-        <p>
-          <mat-form-field class="input-field">
-            <input matInput placeholder="Tunnel cloud endpoint" [(ngModel)]="conn.Config.TunCloudEndpoint" >
-          </mat-form-field>
-        </p>
-
-
-        <mat-divider style="margin-top: 10px;margin-bottom: 10px"></mat-divider>
+        <p>Authentication</p>
         <mat-form-field class="value-selector" >
-          <mat-select #nodeTypeInput  placeholder="Authentication method" [(ngModel)]="conn.Config.AuthConfig.AuthMethod">
+          <mat-select #nodeTypeInput  placeholder="Authentication method" [(ngModel)]="conn.Config.GlobalAuth.AuthMethod">
             <mat-option value="none">None</mat-option>
             <mat-option value="bearer">Bearer token</mat-option>
             <mat-option value="basic">Basic</mat-option>
@@ -49,39 +32,57 @@
           </mat-select>
         </mat-form-field>
 
-        <div *ngIf="conn.Config.AuthConfig.AuthMethod=='bearer' || conn.Config.AuthConfig.AuthMethod=='header-token' || conn.Config.AuthConfig.AuthMethod=='query-token'" style="margin-bottom: 5px" >
-          <mat-form-field style="width: 100%">
-            <input matInput [(ngModel)]="conn.Config.AuthConfig.AuthToken" placeholder="Token" >
+        <div *ngIf="conn.Config.GlobalAuth.AuthMethod=='bearer' || conn.Config.GlobalAuth.AuthMethod=='header-token' || conn.Config.GlobalAuth.AuthMethod=='query-token'" style="margin-bottom: 5px" >
+          <mat-form-field style="width: 250px">
+            <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthToken" placeholder="Token" >
           </mat-form-field>
-          <div *ngIf="conn.Config.AuthConfig.AuthMethod=='header-token'" style="margin-bottom: 5px" >
-            <mat-form-field style="width: 100%">
-              <input matInput [(ngModel)]="conn.Config.AuthConfig.AuthCustomParamName" placeholder="Custom header" >
+          <div *ngIf="conn.Config.GlobalAuth.AuthMethod=='header-token'" style="margin-bottom: 5px" >
+            <mat-form-field style="width: 250px">
+              <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthCustomParamName" placeholder="Custom header" >
             </mat-form-field>
           </div>
-          <div *ngIf="conn.Config.AuthConfig.AuthMethod=='query-token'" style="margin-bottom: 5px" >
-            <mat-form-field style="width: 100%">
-              <input matInput [(ngModel)]="conn.Config.AuthConfig.AuthCustomParamName" placeholder="Custom query parameter" >
+          <div *ngIf="conn.Config.GlobalAuth.AuthMethod=='query-token'" style="margin-bottom: 5px" >
+            <mat-form-field style="width: 250px">
+              <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthCustomParamName" placeholder="Custom query parameter" >
             </mat-form-field>
           </div>
         </div>
 
-        <div *ngIf="conn.Config.AuthConfig.AuthMethod=='basic'" style="margin-bottom: 5px" >
-          <mat-form-field style="width: 100%">
-            <input matInput [(ngModel)]="conn.Config.AuthConfig.AuthUsername" placeholder="Username" >
+        <div *ngIf="conn.Config.GlobalAuth.AuthMethod=='basic'" style="margin-bottom: 5px" >
+          <mat-form-field style="width: 250px">
+            <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthUsername" placeholder="Username" >
           </mat-form-field>
-          <mat-form-field style="width: 100%">
-            <input matInput [(ngModel)]="conn.Config.AuthConfig.AuthPassword" placeholder="Password" >
+          <mat-form-field style="width: 250px">
+            <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthPassword" placeholder="Password" >
           </mat-form-field>
         </div>
 
-
+        <p>Cloud tunnel configuration</p>
+        <div style="margin-bottom: 10px;margin-top: 10px" >
+          <mat-checkbox [(ngModel)]="conn.Config.IsTunEnabled" > Is cloud tunnel enabled</mat-checkbox>
+        </div>
+        <p>
+          <mat-form-field class="input-field">
+            <input matInput placeholder="Tunnel id" [(ngModel)]="conn.Config.TunAddress" >
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="input-field">
+            <input matInput placeholder="Tunnel token" [(ngModel)]="conn.Config.TunEdgeToken" >
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="input-field">
+            <input matInput placeholder="Tunnel cloud endpoint" [(ngModel)]="conn.Config.TunCloudEndpoint" >
+          </mat-form-field>
+        </p>
 
         <mat-divider style="margin-top: 5px;margin-bottom: 10px"></mat-divider>
 
 
       </div>
       <mat-card-actions>
-        <button mat-raised-button (click)="updateProcess()"> Save </button>
+        <button mat-raised-button (click)="updateHttConnectorConfig(conn)"> Save </button>
       </mat-card-actions>
     </mat-card-content>
   </mat-card>
