@@ -25,10 +25,16 @@
   <div style="margin-bottom: 5px" >
     <mat-checkbox [(ngModel)]="node.Config.IsWs" > Enable websocket support. </mat-checkbox>
   </div>
-
   <div style="margin-bottom: 5px" >
     <mat-checkbox [(ngModel)]="node.Config.MapFormParamsToVars" > Automatically map form parameters to variables </mat-checkbox>
   </div>
+
+  <div style="margin-bottom: 5px">
+    <mat-form-field style="width: 100%">
+      <input matInput [(ngModel)]="node.Config.Alias" placeholder="Flow Id alias" (change)="onAliasChange()" >
+    </mat-form-field>
+  </div>
+
   <mat-divider style="margin-top: 10px;margin-bottom: 10px"></mat-divider>
   <mat-form-field class="value-selector" >
     <mat-select #nodeTypeInput  placeholder="Authentication method" [(ngModel)]="node.Config.AuthConfig.AuthMethod">
@@ -70,6 +76,11 @@
   <mat-divider style="margin-top: 5px;margin-bottom: 10px"></mat-divider>
   <div>
     <variable-selector [label]="'Output variable'" [variableName]="node.Config.OutputVar.Name" [isGlobal]="node.Config.OutputVar.IsGlobal" [inMemory]="node.Config.OutputVar.InMemory" [valueType]="'object'" [flowId]="flowId" (onSelect)="outputVariableSelected($event)" ></variable-selector>
+  </div>
+
+  <div>
+   <p> Local endpoint : <a href="{{localUrl}}" target="_blank">{{localUrl}} </a></p>
+   <p> Public endpoint : <a href="{{globalUrl}}" target="_blank"> {{globalUrl}} </a></p>
   </div>
 
 </div>

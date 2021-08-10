@@ -5,6 +5,7 @@ import {FimpService} from "../../../fimp/fimp.service";
 import {Subscription} from "rxjs";
 import {FimpMessage, NewFimpMessageFromString} from "../../../fimp/Message";
 import {SimplePieChartComponent} from "../../analytics/charts/simple-pie-chart.component";
+import {ConnectorsService} from "../connectors/connectors.service";
 
 @Component({
   selector: 'flow-overview',
@@ -35,7 +36,7 @@ export class FlowOverviewComponent implements OnInit {
   private connSub : Subscription;
   private globalSub : Subscription;
 
-  constructor(public dialog: MatDialog,private fimp : FimpService) {
+  constructor(public dialog: MatDialog,private fimp : FimpService,private connSvc : ConnectorsService) {
     this.filter = "RUNNING"
   }
 

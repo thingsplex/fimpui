@@ -45,7 +45,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 // import {MsgDetailsDialog} from "../timeline/timeline.component";
 import {FlowPropsDialog} from "./flow-editor/flow-props-editor.component";
 import {MatMenuModule} from '@angular/material/menu';
-import { FlowContextService } from './flow-context/flow-context.service';
+import {FlowContextService } from './flow-context/flow-context.service';
+import {ConnectorsService } from './connectors/connectors.service';
 import {IfTimeNodeComponent} from "./flow-nodes/if-time-node/node.component";
 import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.component";
 import {TimetoolsNodeComponent} from "./flow-nodes/timetools-node/node.component";
@@ -129,7 +130,7 @@ import {HttpTriggerNodeComponent} from "./flow-nodes/http-trigger-node/node.comp
     SceneTriggerNodeComponent
 
   ],
-  providers:[FlowContextService],
+  providers:[FlowContextService,ConnectorsService],
   exports:[JsonInputComponent],
   entryComponents: [FlowSourceDialog,FlowLogDialog,FlowRunDialog,FlowPropsDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,HelpDialog,RecordEditorDialog] // SignInDialog
 })
