@@ -80,7 +80,7 @@
 
   <div>
    <p> Local endpoint : <a href="{{localUrl}}" target="_blank">{{localUrl}} </a></p>
-   <p> Public endpoint : <a href="{{globalUrl}}" target="_blank"> {{globalUrl}} </a></p>
+   <p *ngIf="connector.Config.IsTunEnabled"> Public endpoint : <a href="{{globalUrl}}" target="_blank"> {{globalUrl}} </a></p>
   </div>
 
 </div>

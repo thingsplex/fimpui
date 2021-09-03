@@ -44,7 +44,7 @@ const nodeTypeAlias = {
   "wait":"Delay",
   "action":"Action",
   "rest_action":"HTTP msg",
-  "action_http_reply":"Http/ws",
+  "action_http_reply":"Http reply",
   "if":"If condition",
   "iftime":"Time filter",
   "rate_limit":"Rate limit",

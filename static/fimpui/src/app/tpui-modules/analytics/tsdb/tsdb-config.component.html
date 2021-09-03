@@ -122,8 +122,28 @@
             <input  matInput placeholder="Site Id" [(ngModel)]="selectedProcData.SiteId" >
           </mat-form-field>
         <br/>
+
+        <mat-form-field class="example-full-width" style="height: 35px;margin: 10px;width: 400px"  >
+          <mat-label> Profile </mat-label>
+          <mat-select matNativeControl [(value)]="selectedProcData.Profile"  placeholder="Storage profile" >
+            <mat-option value="optimized">Optimized</mat-option>
+            <mat-option value="simple">Simple</mat-option>
+            <mat-option value="raw">Raw</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <br/>
+        <mat-form-field class="example-full-width" style="height: 35px;margin: 10px;width: 400px"  >
+          <mat-label> Storage type </mat-label>
+          <mat-select matNativeControl [(value)]="selectedProcData.StorageType"  placeholder="Storage type" >
+            <mat-option value="influxdb">InfluxDb v 1.7.x</mat-option>
+            <mat-option value="influxdbV2">InfluxDb v 2.x</mat-option>
+            <mat-option value="csv">Csv file</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br/>
         <mat-form-field class="example-full-width" style="width: 400px">
-          <input  matInput placeholder="Profile" [(ngModel)]="selectedProcData.Profile" >
+          <input  matInput placeholder="Storage path" [(ngModel)]="selectedProcData.StoragePath" >
         </mat-form-field>
         <div style="margin-bottom: 5px;margin-top: 10px" >
           <mat-checkbox [(ngModel)]="selectedProcData.Autostart" >Auto start</mat-checkbox>

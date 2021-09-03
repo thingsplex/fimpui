@@ -33,11 +33,11 @@ export class FlowContextService{
       if (fimpMsg.service == "tpflow" ){
         if (fimpMsg.mtype == "evt.flow.ctx_records_report") {
           if (fimpMsg.val) {
-            if (this.contextQueryRequestId == fimpMsg.corid) {
+            // if (this.contextQueryRequestId == fimpMsg.corid) {
               this.mapContext(fimpMsg.val,this.lastRequestFlowId);
               if (this.lastRequestFlowId != "global")
                   this.requestContext("global");
-            }
+            // }
           }
         }
       }
@@ -45,8 +45,13 @@ export class FlowContextService{
   }
 
   private mapContext(result:any,flowId:string) {
+    let isGlobal = false
+    if (flowId == "global")
+      isGlobal = true
     for (let key in result){
-      let loc = new TableContextRec();
+      let loc = this.getVariableByName(result[key].Name,isGlobal);
+      if (loc == null)
+          loc = new TableContextRec();
       loc.FlowId = flowId;
       loc.Name = result[key].Name;
       loc.Description = result[key].Description;
@@ -54,9 +59,7 @@ export class FlowContextService{
       loc.Value = result[key].Variable.Value;
       loc.ValueType = result[key].Variable.ValueType;
       loc.InMemory = result[key].InMemory;
-      loc.IsGlobal = false;
-      if (flowId == "global")
-        loc.IsGlobal = true;
+      loc.IsGlobal = isGlobal;
       this.contextRecords.push(loc)
     }
   }
@@ -99,7 +102,7 @@ export class FlowContextService{
     let val = {"flow_id":flowId};
     let msg  = new FimpMessage("tpflow","cmd.flow.ctx_get_records","str_map",val,null,null)
     msg.src = "tplex-ui";
-    this.contextQueryRequestId = msg.uid;
+    // this.contextQueryRequestId = msg.uid;
     this.lastRequestFlowId = flowId;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
