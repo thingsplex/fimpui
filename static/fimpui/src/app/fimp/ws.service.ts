@@ -61,6 +61,7 @@ export class WsFimpService {
       }
 
       new_uri += "//" + loc.hostname+ ":8081/ws-bridge";
+      // new_uri += "//" + loc.host+ "/ws-bridge";
       this.connState = "connecting"
       this.websocket = new WebSocket(new_uri); //dummy echo websocket service
       this.websocket.onopen =  (evt) => {

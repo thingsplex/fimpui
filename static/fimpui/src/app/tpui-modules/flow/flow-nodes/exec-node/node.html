@@ -12,7 +12,7 @@
       <textarea    mat-autosize wrap="off" minRows="6" matInput [(ngModel)]="node.Config.ScriptBody" > </textarea>
     </mat-form-field>
   </div>
-  <div #nodeCodeEditor style="width: 750px;height: 400px;"></div>
+  <div #nodeCodeEditor style="width: 90vw;height: 90vh;"></div>
   <div *ngIf="node.Config.ExecType!='golang'">
     <variable-selector [label]="'Input variable'" [variableName]="node.Config.InputVariableName" [isGlobal]="node.Config.IsInputVariableGlobal" [flowId]="flowId" (onSelect)="inputVariableSelected($event)" ></variable-selector>
     <variable-selector [label]="'Output variable'" [variableName]="node.Config.OutputVariableName" [isGlobal]="node.Config.IsOutputVariableGlobal" [flowId]="flowId" (onSelect)="outputVariableSelected($event)" ></variable-selector>

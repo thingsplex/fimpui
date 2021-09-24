@@ -217,7 +217,7 @@ export class ThingsRegistryService{
       return []
   }
 
-  getServiceByAddress(address:string) {
+    getServiceByAddress(address:string) {
     if (this.services)
       return this.services.filter(service => address.indexOf(service.address)>=0)
     else

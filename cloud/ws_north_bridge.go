@@ -30,7 +30,7 @@ var (
 // Once both parties acknowledge that the WebSocket connection should be closed, the TCP connection is torn down.
 
 
-//WsNorthBridge accepts WS connections from UI Browser clients.
+//WsNorthBridge accepts WS connections from UI Browser clients. And forwards them either to MQTT broker or to WS bridge
 type WsNorthBridge struct {
 	auth           *user.Auth
 	sessions       map[string]*brsession.WsToMqttSession

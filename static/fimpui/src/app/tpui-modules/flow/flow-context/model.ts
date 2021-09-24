@@ -18,4 +18,5 @@ export class TableContextRec {
   ValueType:string;
   InMemory:boolean;
   IsGlobal:boolean;
+  Type : number;
 }

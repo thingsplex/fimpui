@@ -1,4 +1,4 @@
-<div>
+<div >
   <variable-selector [label]="'Input variable'" [variableName]="node.Config.InputVar.Name" [isGlobal]="node.Config.InputVar.IsGlobal" [inMemory]="node.Config.InputVar.InMemory" [valueType]="'object'" [flowId]="flowId" (onSelect)="inputVariableSelected($event)" ></variable-selector>
 
   <mat-form-field class="value-selector" >
@@ -18,6 +18,6 @@
     <mat-checkbox [(ngModel)]="node.Config.IsPublishOnly" > Standalone publish operation. </mat-checkbox>
   </div>
   <p> Response template:</p>
-  <div #nodeCodeEditor style="width: 750px;height: 400px;"></div>
+  <div #nodeCodeEditor style="width: 100vw;height: 100vh;"></div>
 </div>
 

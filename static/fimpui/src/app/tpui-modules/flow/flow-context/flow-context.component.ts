@@ -12,6 +12,7 @@ import {RecordEditorDialog} from "./record-editor-dialog.component";
 import {TableContextRec} from "./model"
 import {FimpService} from "../../../fimp/fimp.service";
 import {FimpMessage, NewFimpMessageFromString} from "../../../fimp/Message";
+import {ThingsRegistryService} from "../../registry/registry.service";
 
 
 @Component({
@@ -23,18 +24,18 @@ export class FlowContextComponent implements OnInit {
   @Input() isEmbedded : boolean;
   @Input() flowId : string;
   loadMode : string
-  displayedColumns = ['name','description','valueType','inMemory','value','updatedAt','action'];
+  displayedColumns = ['name','description','value','valueType','inMemory','updatedAt','action'];
   dataSource: FlowContextDataSource | null;
   dialogRef : any;
   private globalSub : Subscription;
-  constructor(private fimp : FimpService,public dialog: MatDialog) {
+  constructor(private fimp : FimpService,public dialog: MatDialog,public regService: ThingsRegistryService) {
   }
   ngOnInit() {
     this.configureFimpListener();
     if (!this.flowId) {
       this.flowId = "global";
     }
-    this.dataSource = new FlowContextDataSource(this.fimp,this.flowId);
+    this.dataSource = new FlowContextDataSource(this.fimp,this.flowId,this.regService);
     // console.log("Is embedded = "+this.isEmbedded);
     if (this.isEmbedded) {
       this.loadMode = "local"
@@ -122,7 +123,7 @@ export class FlowContextComponent implements OnInit {
 
 export class FlowContextDataSource extends DataSource<any> {
   ctxRecordsObs = new BehaviorSubject<TableContextRec[]>([]);
-  constructor(private fimp : FimpService,private flowId:string) {
+  constructor(private fimp : FimpService,private flowId:string,public regService: ThingsRegistryService) {
     super();
     this.getData(flowId);
   }
@@ -149,6 +150,7 @@ export class FlowContextDataSource extends DataSource<any> {
 
   mapContext(result:any,flowId:string):TableContextRec[] {
     let contexts : TableContextRec[] = [];
+
     for (var key in result){
             let loc = new TableContextRec();
             loc.FlowId = flowId;
@@ -158,6 +160,23 @@ export class FlowContextDataSource extends DataSource<any> {
             loc.Value = result[key].Variable.Value;
             loc.ValueType = result[key].Variable.ValueType;
             loc.InMemory = result[key].InMemory;
+            loc.Type = result[key].Type;
+
+            if (loc.Type == 1) {
+              try {
+                let ss = loc.Name.split("@")
+                console.log("Searching service by "+ss[1])
+
+                let svc =  this.regService.getServiceByAddress("/"+ss[1])
+                console.dir(svc);
+                let tloc = this.regService.getLocationById(svc[0].location_id)
+                loc.Description = svc[0].alias + " at "+tloc[0].alias;
+              }catch (e) {
+                console.dir(e);
+              }
+
+            }
+
             contexts.push(loc)
             console.log("Value = "+loc.Value)
      }
