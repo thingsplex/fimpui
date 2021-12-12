@@ -25,13 +25,13 @@ build-go:
 	go build -ldflags="-X main.Version=${version}" -o fimpui
 
 build-go-amd64:
-	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.Version=${version}" -o package/docker/build/amd64/fimpui
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.Version=${version}" -o package/docker/build/amd64/fimpui
 
 build-go-arm64:
-	GOOS=linux GOARCH=arm64 go build -ldflags="-s -w -X main.Version=${version}" -o package/docker/build/arm64/fimpui
+	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.Version=${version}" -o package/docker/build/arm64/fimpui
 
 build-go-x86:
-	GOOS=linux GOARCH=386 go build -ldflags="-s -w main.Version=${version}" -o fimpui
+	GOOS=linux GOARCH=386 CGO_ENABLED=0 go build -ldflags="-s -w main.Version=${version}" -o fimpui
 
 clean-deb:
 	find package/debian -name ".DS_Store" -delete
