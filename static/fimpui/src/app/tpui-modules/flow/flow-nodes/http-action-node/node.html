@@ -1,0 +1,23 @@
+<div >
+  <variable-selector [label]="'Input variable'" [variableName]="node.Config.InputVar.Name" [isGlobal]="node.Config.InputVar.IsGlobal" [inMemory]="node.Config.InputVar.InMemory" [valueType]="'object'" [flowId]="flowId" (onSelect)="inputVariableSelected($event)" ></variable-selector>
+
+  <mat-form-field class="value-selector" >
+    <mat-select #nodeTypeInput  placeholder="Response payload format" [(ngModel)]="node.Config.ResponsePayloadFormat">
+      <mat-option value="json">json</mat-option>
+      <mat-option value="html">html</mat-option>
+      <mat-option value="xml">xml</mat-option>
+      <mat-option value="fimp">fimp</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div style="margin-bottom: 5px" >
+    <mat-checkbox [(ngModel)]="node.Config.IsWs" > Enable websocket support. </mat-checkbox>
+  </div>
+
+  <div *ngIf="node.Config.IsWs" style="margin-bottom: 5px" >
+    <mat-checkbox [(ngModel)]="node.Config.IsPublishOnly" > Standalone publish operation. </mat-checkbox>
+  </div>
+  <p> Response template:</p>
+  <div #nodeCodeEditor style="width: 100vw;height: 100vh;"></div>
+</div>
+

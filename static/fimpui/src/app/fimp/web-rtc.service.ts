@@ -86,10 +86,7 @@ export class WebRtcService {
     }else {
       console.log("Session can't be restarted either local or remote desciptor are empty")
     }
-
-
   }
-
 
   startWrtcSession(sd:string) {
     if (sd === '') {

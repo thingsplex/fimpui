@@ -28,9 +28,8 @@ export class SystemDashboardComponent implements OnInit {
   }
   ngAfterViewInit() {
     console.log("Dashboard initialized");
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       // console.log(msg.payload.toString());
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == "clbridge" )
       {
         if(fimpMsg.mtype == "evt.clbridge.diagnostics_report" )
@@ -71,35 +70,56 @@ export class SystemDashboardComponent implements OnInit {
     console.log("Sync site struct")
     let msg  = new FimpMessage("clbridge","cmd.site.sync","string","full",null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg);
   }
 
   getRoutes() {
     console.log("Sync site struct")
     let msg  = new FimpMessage("clbridge","cmd.clbridge.get_routes_report","string","full",null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg);
   }
 
+  registerHub(hubId,sigKey,env,hubRegUrl,model,hardV,softV){
+    console.log("Register hub")
+    if (!env) {
+      env = "beta"
+    }
 
+    let payload = {
+        "hub_id": hubId,
+        "signed_hub_id": "",
+        "reg_api_url":hubRegUrl,
+        "env_name":env,
+        "sign_key": sigKey,
+        "manufacturer": "fh",
+        "model": model,
+        "hw_version": hardV,
+        "sw_version": softV
+    }
+    console.dir(payload)
+    let msg  = new FimpMessage("clbridge","cmd.hub.start_cloud_registration","str_map",payload,null,null)
+    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg);
+  }
 
   requestCBDiagnosticReport(){
     console.log("Remove device")
     let msg  = new FimpMessage("clbridge","cmd.clbridge.get_diagnostics","string","full",null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:clbridge/ad:1",msg);
   }
 
   requestButlerSystemReport(){
     let msg  = new FimpMessage("fhbutler","cmd.systemos.get_system_report","string","",null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
   }
 
   requestButlerActivitySystemReport(){
     let msg  = new FimpMessage("fhbutler","cmd.systemos.get_activity_report","string","",null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
   }
 
   ngOnDestroy() {

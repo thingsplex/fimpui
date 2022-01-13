@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/alivinco/thingsplex/model"
+	"github.com/alivinco/thingsplex/user"
 	"github.com/alivinco/thingsplex/utils"
 	"github.com/futurehomeno/fimpgo"
 	"github.com/futurehomeno/fimpgo/discovery"
@@ -24,11 +25,12 @@ type AppControlApiRouter struct {
 	instanceId   string
 	appLifecycle *edgeapp.Lifecycle
 	configs      *model.Configs
-	auth         *Auth
+	auth         *user.Auth
+	userProfiles *user.ProfilesDB
 }
 
-func NewAppControlApiRouter(mqt *fimpgo.MqttTransport, appLifecycle *edgeapp.Lifecycle, configs *model.Configs, auth *Auth) *AppControlApiRouter {
-	fc := AppControlApiRouter{inboundMsgCh: make(fimpgo.MessageCh, 5), mqt: mqt, appLifecycle: appLifecycle, configs: configs,auth: auth}
+func NewAppControlApiRouter(mqt *fimpgo.MqttTransport, appLifecycle *edgeapp.Lifecycle, configs *model.Configs, auth *user.Auth,profiles *user.ProfilesDB) *AppControlApiRouter {
+	fc := AppControlApiRouter{inboundMsgCh: make(fimpgo.MessageCh, 5), mqt: mqt, appLifecycle: appLifecycle, configs: configs,auth: auth,userProfiles: profiles}
 	if mqt!=nil {
 		fc.mqt.RegisterChannel("ch1", fc.inboundMsgCh)
 	}
@@ -93,9 +95,9 @@ func (fc *AppControlApiRouter) routeFimpMessage(newMsg *fimpgo.Message) {
 				}
 				uiConfig.Val.Default = fmt.Sprintf("http://%s:8081",ip)
 			}
-			configState := FimpConfigInterface{AuthType: fc.auth.AuthType}
+			configState := FimpConfigInterface{AuthType: fc.auth.GlobalAuthType}
 
-			if fc.auth.AuthType == AuthTypeCode {
+			if fc.auth.GlobalAuthType == user.AuthTypeCode {
 
 				if uiConfig := manifest.GetAppConfig("one_time_code");uiConfig != nil {
 					uiConfig.Hidden = true // This is temp flag
@@ -156,15 +158,31 @@ func (fc *AppControlApiRouter) routeFimpMessage(newMsg *fimpgo.Message) {
 				return
 			}
 			state := "ok"
-			if  conf.AuthType == AuthTypePassword {
+			if  conf.AuthType == user.AuthTypePassword {
 				if conf.Username != "" && conf.Password != "" {
-					fc.auth.AddUser(conf.Username,conf.Password)
+					isNewUser := fc.userProfiles.UpsertUserProfile(conf.Username,conf.Password,conf.AuthType)
+					if isNewUser {
+						userConf := user.Configs{
+							MqttServerURI:         fc.configs.MqttServerURI,
+							MqttUsername:          fc.configs.MqttUsername,
+							MqttPassword:          fc.configs.MqttPassword,
+							MqttTopicGlobalPrefix: fc.configs.MqttTopicGlobalPrefix,
+							MqttClientIdPrefix:    fc.configs.MqttClientIdPrefix,
+							TlsCertDir:            fc.configs.TlsCertDir,
+							EnableCbSupport:       fc.configs.EnableCbSupport,
+						}
+						fc.userProfiles.UpdateUserConfig(conf.Username,userConf)
+					}
 				}
-				fc.auth.SetAuthType(conf.AuthType)
-				err = fc.auth.SaveUserDB()
-			}else if conf.AuthType == AuthTypeCode || conf.AuthType == AuthTypeNone {
-				fc.auth.SetAuthType(conf.AuthType)
-				err = fc.auth.SaveUserDB()
+				fc.auth.SetGlobalAuthType(conf.AuthType)
+				if fc.configs.GlobalAuthType != conf.AuthType && conf.AuthType != "" {
+					fc.configs.GlobalAuthType = conf.AuthType
+					fc.configs.SaveToFile()
+				}
+				err = fc.userProfiles.SaveUserDB()
+			}else if conf.AuthType == user.AuthTypeCode || conf.AuthType == user.AuthTypeNone {
+				fc.auth.SetGlobalAuthType(conf.AuthType)
+				err = fc.userProfiles.SaveUserDB()
 			}else {
 				state = "error"
 			}

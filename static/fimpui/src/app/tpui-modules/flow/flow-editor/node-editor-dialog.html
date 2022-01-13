@@ -24,6 +24,9 @@
     <div *ngSwitchCase="'rest_action'">
       <rest-action-node *ngIf="node.Ui.nodeType==''" [node]="node" [nodes]="flow.Nodes" > </rest-action-node>
     </div>
+    <div *ngSwitchCase="'action_http_reply'">
+      <http-action-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </http-action-node>
+    </div>
     <div *ngSwitchCase="'set_variable'">
          <set-variable-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </set-variable-node>
     </div>
@@ -35,6 +38,12 @@
     </div>
     <div *ngSwitchCase="'log_action'">
       <log-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </log-node>
+    </div>
+    <div *ngSwitchCase="'timetools'">
+      <timetools-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </timetools-node>
+    </div>
+    <div *ngSwitchCase="'metrics'">
+      <metrics-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </metrics-node>
     </div>
     <div *ngSwitchCase="'rate_limit'">
       <rate-limit-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </rate-limit-node>
@@ -48,6 +57,9 @@
     <div *ngSwitchCase="'time_trigger'">
         <time-trigger-node [node]="node" [nodes]="flow.Nodes" > </time-trigger-node>
    </div>
+    <div *ngSwitchCase="'http_trigger'">
+      <http-trigger-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </http-trigger-node>
+    </div>
     <div *ngSwitchCase="'if'">
       <if-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </if-node>
     </div>

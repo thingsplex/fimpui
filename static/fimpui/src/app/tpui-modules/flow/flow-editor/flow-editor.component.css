@@ -125,5 +125,7 @@ md-chip {
 }
 
 .node-editor-dialog {
-  max-width: 850px;
+  /*max-width: 850px;*/
+  width: 100%;
+  height: 100% ;
 }

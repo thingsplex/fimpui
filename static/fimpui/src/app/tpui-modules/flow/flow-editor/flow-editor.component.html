@@ -29,6 +29,7 @@
         <button mat-menu-item (click)="addNode('vinc_trigger','')">Home event</button>
         <button mat-menu-item (click)="addNode('trigger','scene_trigger')">Scene</button>
         <button mat-menu-item (click)="addNode('time_trigger','')">Time</button>
+        <button mat-menu-item (click)="addNode('http_trigger','')">Http/WS</button>
       </mat-menu>
 
       <mat-menu #actions="matMenu">
@@ -36,6 +37,7 @@
         <button mat-menu-item (click)="addNode('action','notification_action')">Push notification</button>
         <button mat-menu-item (click)="addNode('action','timeline_action')">Publish to timeline</button>
         <button mat-menu-item (click)="addNode('rest_action','')">HTTP request</button>
+        <button mat-menu-item (click)="addNode('action_http_reply','')">HTTP/WS reply</button>
         <button mat-menu-item (click)="addNode('action','vinc_action')">Modes & shortcuts</button>
       </mat-menu>
 
@@ -51,6 +53,9 @@
       <mat-menu #data="matMenu">
         <button mat-menu-item (click)="addNode('set_variable','')">Set variable</button>
         <button mat-menu-item (click)="addNode('transform','')">Transform</button>
+        <button mat-menu-item (click)="addNode('timetools','')">Time tools</button>
+        <button mat-menu-item (click)="addNode('metrics','')">Metrics</button>
+        <button mat-menu-item (click)="addNode('meter','')">Meter</button>
       </mat-menu>
 
       <mat-menu #tools="matMenu">
@@ -58,13 +63,7 @@
         <button mat-menu-item (click)="addNode('log_action','')">Write to log</button>
       </mat-menu>
 
-      <mat-menu #reptiles="matMenu">
-        <button mat-menu-item>Banded Day Gecko</button>
-        <button mat-menu-item>Banded Gila Monster</button>
-        <button mat-menu-item>Black Tree Monitor</button>
-        <button mat-menu-item>Blue Spiny Lizard</button>
-        <button mat-menu-item disabled>Velociraptor</button>
-      </mat-menu>
+
       <div id="flowEditorCanvasId" class="drag-area" (drop)="nodeDrop($event)" (dragstart)="nodeDragStart($event)" (dragover)="allowNodeDrop($event)"  >
           <svg id="flow-connections" class = "connections" ></svg>
           <mat-card id = "nodeId_{{node.Id}}" *ngFor="let node of flow.Nodes;let index = index;" class="node-card" [style.left.px]="node.Ui.x" [style.top.px]="node.Ui.y" draggable="true" >
@@ -74,11 +73,13 @@
 
                 <button mat-icon-button [ngSwitch]="node.Type"  (click)="showNodeEditorDialog(flow,node)" color="primary" >
                     <mat-icon *ngSwitchCase="'trigger'" aria-label="Edit node">input</mat-icon>
+                    <mat-icon *ngSwitchCase="'http_trigger'" aria-label="Edit node">input</mat-icon>
                     <mat-icon *ngSwitchCase="'vinc_trigger'" aria-label="Edit node">input</mat-icon>
                     <mat-icon *ngSwitchCase="'receive'" aria-label="Edit node">input</mat-icon>
                     <mat-icon *ngSwitchCase="'time_trigger'" aria-label="Edit node">schedule</mat-icon>
                     <mat-icon *ngSwitchCase="'wait'" aria-label="Edit node">update</mat-icon>
                     <mat-icon *ngSwitchCase="'action'" aria-label="Edit node">send</mat-icon>
+                    <mat-icon *ngSwitchCase="'action_http_reply'" aria-label="Edit node">send</mat-icon>
                     <mat-icon *ngSwitchCase="'rest_action'" aria-label="Edit node">send</mat-icon>
                     <mat-icon *ngSwitchCase="'if'" aria-label="Edit node">call_split</mat-icon>
                     <mat-icon *ngSwitchCase="'iftime'" aria-label="Edit node">call_split</mat-icon>
@@ -86,6 +87,9 @@
                     <mat-icon *ngSwitchCase="'loop'" aria-label="Edit node">loop</mat-icon>
                     <mat-icon *ngSwitchCase="'set_variable'" aria-label="Edit node">edit</mat-icon>
                     <mat-icon *ngSwitchCase="'transform'" aria-label="Edit node">transform</mat-icon>
+                    <mat-icon *ngSwitchCase="'timetools'" aria-label="Time tools">transform</mat-icon>
+                    <mat-icon *ngSwitchCase="'metrics'" aria-label="Metrics">transform</mat-icon>
+                    <mat-icon *ngSwitchCase="'meter'" aria-label="Meter">transform</mat-icon>
                     <mat-icon *ngSwitchCase="'exec'" aria-label="Exec node">flash_on</mat-icon>
                     <mat-icon *ngSwitchCase="'log_action'" aria-label="Log node">edit</mat-icon>
                     <mat-icon *ngSwitchDefault aria-label="Edit node">build</mat-icon>

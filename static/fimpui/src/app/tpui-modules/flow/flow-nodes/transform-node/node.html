@@ -12,7 +12,7 @@
       <br>
       <div>
         <mat-form-field style="width: 200px">
-          <mat-select    style="width: 200px" placeholder="Transformation type"[(ngModel)]="node.Config.TransformType" >
+          <mat-select    style="width: 200px" placeholder="Transformation type"[(ngModel)]="node.Config.TransformType" (selectionChange)="transformationTypeChange()" >
             <mat-option value = "calc">Calculate</mat-option>
             <mat-option value = "map">Map</mat-option>
             <mat-option value = "jpath">Json Path</mat-option>
@@ -23,7 +23,7 @@
       </div>
       <div style="margin-top: 10px;">
           <div *ngIf="node.Config.TransformType!='jpath' && node.Config.TransformType!='xpath'">
-            <variable-selector [label]="'Result'" [variableName]="node.Config.TargetVariableName" [isGlobal]="node.Config.IsTargetVariableGlobal" [flowId]="flowId" (onSelect)="resultVariableSelected($event)" ></variable-selector>
+            <variable-selector [label]="'Result'" [variableName]="node.Config.TargetVariableName" [isGlobal]="node.Config.IsTargetVariableGlobal" [inMemory]="node.Config.IsTargetVariableInMemory" [flowId]="flowId" (onSelect)="resultVariableSelected($event)" ></variable-selector>
           </div>
           <div>
             <variable-selector [label]="'Left variable'" [variableName]="node.Config.LVariableName" [isGlobal]="node.Config.IsLVariableGlobal" [flowId]="flowId" (onSelect)="lVariableSelected($event)" ></variable-selector>
@@ -168,10 +168,8 @@
          </div>
          <button mat-raised-button (click)="addXPathMapping(node)" >Add </button>
       </div>
-      <div *ngIf="node.Config.TransformType=='template'">
-        <mat-form-field  style="width: 100%">
-          <textarea  mat-autosize  minRows="4" matInput placeholder="Template body" [(ngModel)]="node.Config.Template" > </textarea>
-        </mat-form-field>
-      </div>
+
+       <div #nodeCodeEditor style="width: 750px;height: 400px;"></div>
+
   <br>
  </div>

@@ -1,13 +1,14 @@
 <div style="margin-bottom: 10px">
-  Rate limit :
-  <mat-form-field class="node-transition-field" style="width: 60px">
-    <input matInput type="number" [(ngModel)]="node.Config.Limit" placeholder="Limit" >
-  </mat-form-field>
-  requests per
+
+  Minimum time interval between events:
   <mat-form-field class="node-transition-field" style="width: 80px">
-    <input matInput type="number" [(ngModel)]="node.Config.TimeInterval" placeholder="Time interval" >
+    <input matInput type="number" [(ngModel)]="node.Config.TimeInterval" placeholder="" >
   </mat-form-field>
-  seconds
+  seconds.
+  Burst limit :
+  <mat-form-field class="node-transition-field" style="width: 60px">
+    <input matInput type="number" [(ngModel)]="node.Config.Limit" placeholder="Burst limit" >
+  </mat-form-field>
   <div>
     When event exceeds rate limit ,
   <mat-form-field class="value-selector" style="width: 100px" >

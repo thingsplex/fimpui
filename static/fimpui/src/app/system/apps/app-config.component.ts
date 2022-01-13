@@ -70,8 +70,7 @@ export class AppConfigComponent implements OnInit {
     });
 
 
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "fhbutler" )
       {
         if(fimpMsg.mtype == "evt.app.ctrl_report" )
@@ -146,7 +145,7 @@ export class AppConfigComponent implements OnInit {
     }
     let msg  = new FimpMessage("fhbutler","cmd.app.ctrl","str_map",val,null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:fhbutler/ad:1",msg);
     this.snackRef = this.snackBar.open('Controlling application...',"");
   }
 
@@ -156,7 +155,7 @@ export class AppConfigComponent implements OnInit {
 
     let msg  = new FimpMessage(this.app.fimpServiceName,"cmd.app.get_manifest","string","manifest_state",null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg);
   }
 
   remapManifest() {
@@ -180,7 +179,7 @@ export class AppConfigComponent implements OnInit {
     }
     let msg  = new FimpMessage(this.app.fimpServiceName,"cmd.config.extended_set","object",val,null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg);
     this.snackRef = this.snackBar.open('Saving configurations...',"");
   }
 
@@ -189,7 +188,7 @@ export class AppConfigComponent implements OnInit {
     this.lastError = "";
     let msg  = new FimpMessage(this.app.fimpServiceName,msgType,"string",val,null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg);
     this.snackRef = this.snackBar.open('Executing config action ....',"");
   }
 
@@ -203,7 +202,7 @@ export class AppConfigComponent implements OnInit {
     };
     let msg  = new FimpMessage(this.app.fimpServiceName,"cmd.auth.login","object",val,null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg);
     this.snackRef = this.snackBar.open('Authenticating...',"");
     //snackRef.dismiss();
     //this.snackBar.open('Flow is saved',"",{duration:1000});
@@ -222,7 +221,7 @@ export class AppConfigComponent implements OnInit {
 
     let msg  = new FimpMessage(this.app.fimpServiceName,"cmd.auth.set_tokens","object",val,null,null)
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplexui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+this.appResourceType+"/rn:"+this.app.fimpServiceName+"/ad:1",msg);
     this.snackRef = this.snackBar.open('Authenticating...',"");
   }
 

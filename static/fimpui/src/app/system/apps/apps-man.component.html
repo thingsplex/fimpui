@@ -45,7 +45,7 @@
                 <ng-container *ngIf="!app.isInPlaygrounds"> <span style="color:#c9302c">No</span> </ng-container></td>
               <td>
                 <mat-chip-list>
-                  <mat-chip class="open-chip" [routerLink]="['/system/app-config',app.name,app.version]">Configure & Control</mat-chip>
+                  <mat-chip class="open-chip" style="width: 170px" [routerLink]="['/system/app-config',app.name,app.version]">Configure & Control</mat-chip>
                 </mat-chip-list>
               </td>
             </tr>
@@ -57,9 +57,20 @@
             <mat-label>Application name</mat-label>
             <input matInput #appName type="text"  placeholder="">
           </mat-form-field>
+          <mat-form-field style="margin-right: 10px;width: 150px">
+            <mat-label>Signature</mat-label>
+            <input matInput #appSig type="text"  placeholder="">
+          </mat-form-field>
 
-          <button mat-raised-button (click)="controlApp(appName.value,'install')" color="primary" > Install </button>
+          <button mat-raised-button (click)="controlApp(appName.value,appSig.value,'install')" color="primary" > Install </button>
           <p>
+            <mat-form-field style="margin-right: 10px;width: 100px"  >
+              <mat-label> App type </mat-label>
+              <mat-select matNativeControl #appType  placeholder="App type" >
+                <mat-option value="app">Application</mat-option>
+                <mat-option value="ad">Adapter</mat-option>
+              </mat-select>
+            </mat-form-field>
             <mat-form-field>
               <mat-label>Application service name</mat-label>
               <input matInput #appServiceName type="text"  placeholder="">
@@ -75,7 +86,7 @@
                 <mat-option value="fatal">Fatal</mat-option>
               </mat-select>
             </mat-form-field>
-            <button mat-raised-button (click)="setLogLevel(appServiceName.value,logLevel.value)" color="primary" > Set log level </button>
+            <button mat-raised-button (click)="setLogLevel(appServiceName.value,logLevel.value,appType.value)" color="primary" > Set log level </button>
           </p>
         </mat-card-content>
          <mat-card-actions>

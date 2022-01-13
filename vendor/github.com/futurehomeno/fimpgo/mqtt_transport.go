@@ -40,7 +40,7 @@ type Message struct {
 	Topic   string
 	Addr    *Address
 	Payload *FimpMessage
-	//RawPayload []byte
+	RawPayload []byte
 }
 
 type FimpFilter struct {
@@ -96,6 +96,7 @@ func NewMqttTransport(serverURI, clientID, username, password string, cleanSessi
 	mh.mqttOptions.SetAutoReconnect(true)
 	mh.mqttOptions.SetConnectionLostHandler(mh.onConnectionLost)
 	mh.mqttOptions.SetOnConnectHandler(mh.onConnect)
+	mh.mqttOptions.SetWriteTimeout(time.Second*30)
 	//create and start a client using the above ClientOptions
 	mh.client = MQTT.NewClient(mh.mqttOptions)
 	mh.pubQos = pubQos
@@ -360,10 +361,16 @@ func (mh *MqttTransport) onMessage(_ MQTT.Client, msg MQTT.Message) {
 		log.Error("<MqttAd> Error processing address :", err)
 		return
 	}
+	var fimpMsg *FimpMessage
 
-	fimpMsg, err := NewMessageFromBytes(msg.Payload())
+	if addr.PayloadType == DefaultPayload {
+		fimpMsg, err = NewMessageFromBytes(msg.Payload())
+	} else {
+		// This means binary payload , for instance compressed message
+	}
+
 	if mh.msgHandler != nil {
-		if err == nil {
+		if err == nil  {
 			mh.msgHandler(topic, addr, fimpMsg, msg.Payload())
 		} else {
 			log.Debug(string(msg.Payload()))
@@ -379,10 +386,16 @@ func (mh *MqttTransport) onMessage(_ MQTT.Client, msg MQTT.Message) {
 		if !mh.isChannelInterested(i, topic, addr, fimpMsg) {
 			continue
 		}
-		msg := Message{Topic: topic, Addr: addr, Payload: fimpMsg}
+		var fmsg Message
+		if addr.PayloadType == DefaultPayload {
+			fmsg = Message{Topic: topic, Addr: addr, Payload: fimpMsg}
+		}else {
+			// message receiver should do decompressions
+			fmsg = Message{Topic: topic, Addr: addr, RawPayload: msg.Payload()}
+		}
 		timer := time.NewTimer(time.Second * time.Duration(mh.receiveChTimeout))
 		select {
-		case mh.subChannels[i] <- &msg:
+		case mh.subChannels[i] <- &fmsg:
 			timer.Stop()
 			// send to channel
 		case <-timer.C:
@@ -409,13 +422,19 @@ func (mh *MqttTransport) isChannelInterested(chanName string, topic string, addr
 		// no filters has been set
 		return true
 	}
-
-	if utils.RouteIncludesTopic(filter.Topic, topic) &&
-		(msg.Service == filter.Service || filter.Service == "*") &&
-		(msg.Type == filter.Interface || filter.Interface == "*") {
-		return true
-
+	if msg != nil {
+		if utils.RouteIncludesTopic(filter.Topic, topic) &&
+			(msg.Service == filter.Service || filter.Service == "*") &&
+			(msg.Type == filter.Interface || filter.Interface == "*") {
+			return true
+		}
+	}else {
+		// It means binary payload , and message can't be parsed
+		if utils.RouteIncludesTopic(filter.Topic, topic) {
+			return true
+		}
 	}
+
 	return false
 }
 

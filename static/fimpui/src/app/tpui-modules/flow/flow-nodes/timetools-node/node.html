@@ -1,0 +1,19 @@
+<div>
+  <mat-form-field class="value-selector" >
+    <mat-select #nodeTypeInput  placeholder="Operation" [(ngModel)]="node.Config.Operation">
+      <mat-option value="stopwatch">stopwatch</mat-option>
+      <mat-option value="now_full">timestamp in seconds</mat-option>
+      <mat-option value="now_full_RFC3339">timestamp as string</mat-option>
+      <mat-option value="now_year">current year</mat-option>
+      <mat-option value="now_month">current month</mat-option>
+      <mat-option value="now_day">current day</mat-option>
+      <mat-option value="now_hour">current hour</mat-option>
+      <mat-option value="now_min">current minute</mat-option>
+      <mat-option value="now_sec">current second</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <variable-selector [label]="'Result variable'" [variableName]="node.Config.TargetVariableName" [isGlobal]="node.Config.IsTargetVariableGlobal" [inMemory]="true" [valueType]="'int'" [value]="0" [flowId]="flowId" (onSelect)="inputVariableSelected($event)" ></variable-selector>
+
+</div>
+

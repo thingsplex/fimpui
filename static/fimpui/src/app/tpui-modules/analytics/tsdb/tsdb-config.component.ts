@@ -36,8 +36,7 @@ export class TsdbConfigComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "ecollector"  ){
         if (fimpMsg.mtype == "evt.ecprocess.proc_list_report") {
           if (fimpMsg.val) {
@@ -85,7 +84,7 @@ export class TsdbConfigComponent implements OnInit {
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 
   loadDBObjects() {
@@ -93,13 +92,13 @@ export class TsdbConfigComponent implements OnInit {
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
 
     msg  = new FimpMessage("ecollector","cmd.tsdb.get_measurements","str_map",{"proc_id":"1"},null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 
   selectProc(procConfig:any) {
@@ -157,7 +156,7 @@ export class TsdbConfigComponent implements OnInit {
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 
   addProc() {
@@ -165,7 +164,7 @@ export class TsdbConfigComponent implements OnInit {
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 
   updateProcess() {
@@ -174,7 +173,7 @@ export class TsdbConfigComponent implements OnInit {
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 
   deleteDbObject(type:string,name:string) {
@@ -183,6 +182,6 @@ export class TsdbConfigComponent implements OnInit {
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 }

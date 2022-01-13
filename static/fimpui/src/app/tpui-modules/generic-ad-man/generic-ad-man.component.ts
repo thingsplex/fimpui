@@ -26,7 +26,7 @@ export class GenericAdManComponent implements OnInit {
   reloadListOfDevices(){
     if (this.adapter != undefined) {
       let msg  = new FimpMessage(this.adapter,"cmd.network.get_all_nodes","null",null,null,null)
-      this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+this.adapter+"/ad:1",msg.toString());
+      this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+this.adapter+"/ad:1",msg);
     }
 
   }
@@ -54,13 +54,13 @@ export class GenericAdManComponent implements OnInit {
     console.log("Remove device")
     let val = {"address":address.toString()}
     let msg  = new FimpMessage(this.adapter,"cmd.thing.delete","str_map",val,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+this.adapter+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+this.adapter+"/ad:1",msg);
 
   }
 
   generateExclusionReport(address:string){
     let msg  = new FimpMessage(this.adapter,"evt.thing.exclusion_report","object",{"address":String(address)},null,null)
-    this.fimp.publish("pt:j1/mt:evt/rt:ad/rn:"+this.adapter+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:evt/rt:ad/rn:"+this.adapter+"/ad:1",msg);
 
   }
 
@@ -81,9 +81,7 @@ export class GenericAdManComponent implements OnInit {
        this.discover();
     }
 
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      console.log(msg.payload.toString());
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == this.adapter ){
         if(fimpMsg.mtype == "evt.network.all_nodes_report" )
         {
@@ -147,9 +145,8 @@ export class AddGenericDeviceDialog implements OnInit, OnDestroy  {
   }
   ngOnInit(){
     this.messages = [];
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
 
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
       if (fimpMsg.service == this.adapter )
       {
         if(fimpMsg.mtype == "evt.thing.inclusion_report" )
@@ -178,11 +175,11 @@ export class AddGenericDeviceDialog implements OnInit, OnDestroy  {
     var props = new Map<string,string>();
     props["template_name"] = this.customTemplateName;
     let msg  = new FimpMessage(this.adapter,"cmd.thing.inclusion","bool",true,props,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+this.adapter+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+this.adapter+"/ad:1",msg);
   }
   stopInclusion(){
     let msg  = new FimpMessage(this.adapter,"cmd.thing.inclusion","bool",false,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+this.adapter+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+this.adapter+"/ad:1",msg);
     this.dialogRef.close();
   }
 

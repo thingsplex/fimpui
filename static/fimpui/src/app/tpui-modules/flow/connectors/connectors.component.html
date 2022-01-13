@@ -1,0 +1,90 @@
+<nav mat-tab-nav-bar>
+    <a mat-tab-link [routerLink]="['/flow/overview']" >Flows</a>
+    <a mat-tab-link [routerLink]="['/flow/context']" >Context</a>
+    <a mat-tab-link [routerLink]="['/flow/connectors']" >Connectors</a>
+</nav>
+<div class="flow">
+  <h1>Connectors</h1>
+  <mat-card style="margin: 5px" *ngFor="let conn of connectors">
+    <mat-card-header>
+      <!--<div mat-card-avatar class="example-header-image"></div>-->
+      <mat-card-title><h4>Connector {{conn.Name}}  </h4></mat-card-title>
+      <mat-card-subtitle>State : {{conn.State}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content >
+
+      <div  class="tsdb-config-card" *ngIf="conn.Plugin=='httpserver'">
+        <mat-form-field class="input-field">
+          <input matInput placeholder="Local bind address" [(ngModel)]="conn.Config.BindAddress" >
+        </mat-form-field>
+
+        <div style="margin-bottom: 15px;margin-top: 10px" >
+          <mat-checkbox [(ngModel)]="conn.Config.IsLocalServEnabled" > Is local http server enabled</mat-checkbox>
+        </div>
+        <p>Authentication</p>
+        <mat-form-field class="value-selector" >
+          <mat-select #nodeTypeInput  placeholder="Authentication method" [(ngModel)]="conn.Config.GlobalAuth.AuthMethod">
+            <mat-option value="none">None</mat-option>
+            <mat-option value="bearer">Bearer token</mat-option>
+            <mat-option value="basic">Basic</mat-option>
+            <mat-option value="header-token">Header token</mat-option>
+            <mat-option value="query-token">Query token</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="conn.Config.GlobalAuth.AuthMethod=='bearer' || conn.Config.GlobalAuth.AuthMethod=='header-token' || conn.Config.GlobalAuth.AuthMethod=='query-token'" style="margin-bottom: 5px" >
+          <mat-form-field style="width: 250px">
+            <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthToken" placeholder="Token" >
+          </mat-form-field>
+          <div *ngIf="conn.Config.GlobalAuth.AuthMethod=='header-token'" style="margin-bottom: 5px" >
+            <mat-form-field style="width: 250px">
+              <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthCustomParamName" placeholder="Custom header" >
+            </mat-form-field>
+          </div>
+          <div *ngIf="conn.Config.GlobalAuth.AuthMethod=='query-token'" style="margin-bottom: 5px" >
+            <mat-form-field style="width: 250px">
+              <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthCustomParamName" placeholder="Custom query parameter" >
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div *ngIf="conn.Config.GlobalAuth.AuthMethod=='basic'" style="margin-bottom: 5px" >
+          <mat-form-field style="width: 250px">
+            <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthUsername" placeholder="Username" >
+          </mat-form-field>
+          <mat-form-field style="width: 250px">
+            <input matInput [(ngModel)]="conn.Config.GlobalAuth.AuthPassword" placeholder="Password" >
+          </mat-form-field>
+        </div>
+
+        <p>Cloud tunnel configuration</p>
+        <div style="margin-bottom: 10px;margin-top: 10px" >
+          <mat-checkbox [(ngModel)]="conn.Config.IsTunEnabled" > Is cloud tunnel enabled</mat-checkbox>
+        </div>
+        <p>
+          <mat-form-field class="input-field">
+            <input matInput placeholder="Tunnel id" [(ngModel)]="conn.Config.TunAddress" >
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="input-field">
+            <input matInput placeholder="Tunnel token" [(ngModel)]="conn.Config.TunEdgeToken" >
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="input-field">
+            <input matInput placeholder="Tunnel cloud endpoint" [(ngModel)]="conn.Config.TunCloudEndpoint" >
+          </mat-form-field>
+        </p>
+
+        <mat-divider style="margin-top: 5px;margin-bottom: 10px"></mat-divider>
+
+
+      </div>
+      <mat-card-actions>
+        <button mat-raised-button (click)="updateHttConnectorConfig(conn)"> Save </button>
+      </mat-card-actions>
+    </mat-card-content>
+  </mat-card>
+
+</div>

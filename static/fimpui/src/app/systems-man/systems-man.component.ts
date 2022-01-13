@@ -32,9 +32,7 @@ export class SystemsManComponent implements OnInit {
     }else {
       this.discover();
     }
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      console.log(msg.payload.toString());
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if(fimpMsg.mtype == "evt.system.connect_params_report" )
         {
           this.configKeys = [];
@@ -85,7 +83,7 @@ export class SystemsManComponent implements OnInit {
       instance_id = res.instance_id;
     }
     let msg  = new FimpMessage(service,"cmd.system.connect","str_map",this.configParams,null,null);
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg);
   }
 
   public getConnParams(service:string) {
@@ -100,7 +98,7 @@ export class SystemsManComponent implements OnInit {
       instance_id = res.instance_id;
     }
     let msg  = new FimpMessage(service,"cmd.system.get_connect_params","null",null,null,null);
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg);
  }
 
   public setConfigParam(service:string,name:string,value:string) {
@@ -117,7 +115,7 @@ export class SystemsManComponent implements OnInit {
     let configs = {};
     configs[name] = value;
     let msg  = new FimpMessage(service,"cmd.config.set","str_map",configs,null,null);
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg);
   }
 
   public setLogLevel(service:string,level:string) {
@@ -132,7 +130,7 @@ export class SystemsManComponent implements OnInit {
       instance_id = res.instance_id;
     }
     let msg  = new FimpMessage(service,"cmd.log.set_level","string",level,null,null);
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg);
   }
 
   public set(name:string,value:string) {
@@ -146,7 +144,7 @@ export class SystemsManComponent implements OnInit {
     }
     let configs = {name:value};
     let msg  = new FimpMessage(service,"cmd.config.set","str_map",configs,null,null);
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg);
   }
 
 
@@ -162,7 +160,7 @@ export class SystemsManComponent implements OnInit {
       instance_id = res.instance_id;
     }
     let msg  = new FimpMessage(service,"cmd.system.disconnect","null",null,null,null);
-    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg);
  }
  // Force system syncronization .
  public sync(service:string) {
@@ -177,7 +175,7 @@ export class SystemsManComponent implements OnInit {
      instance_id = res.instance_id;
    }
   let msg  = new FimpMessage(service,"cmd.system.sync","null",null,null,null);
-   this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg.toString());
+   this.fimp.publish("pt:j1/mt:cmd/rt:"+rt+"/rn:"+service+"/ad:"+instance_id,msg);
   }
 
   public getDiscoveredResourceObject(name:string):any {

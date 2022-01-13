@@ -1,0 +1,25 @@
+.table-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  min-width: 700px;
+}
+.card {
+  max-width: 1100px;
+  margin: 20px;
+
+}
+.chart-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.mat-cell:nth-child(0), .mat-header-cell:nth-child(0) {
+    flex: 0 0 250px;
+}
+
+.conf-radio-button {
+  padding-right: 10px;
+}

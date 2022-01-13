@@ -5,6 +5,19 @@ import {Subject, Subscription} from "rxjs";
 import {FimpMessage, NewFimpMessageFromString} from "../../fimp/Message";
 import {FimpApiMetadataService} from "../../fimp/fimp-api-metadata.service";
 
+export interface Thing {
+
+}
+
+export interface Device {
+  id  : number ;
+  thing_id : number;
+  location_id : number;
+  alias : string;
+  type : string;
+  location_alias : string;
+}
+
 @Injectable()
 export class ThingsRegistryService{
 
@@ -21,11 +34,24 @@ export class ThingsRegistryService{
   private lastRequestId:string;
   private thingsQueryRequestId:string;
   private devicesQueryRequestId:string;
+
+  public get isLoaded():boolean  {
+    if (this.services.length == 0 && this.locations.length == 0 && this.things.length == 0 && this.devices.length == 0)
+      return false
+    else
+       return true
+  }
+
   constructor(private fimp: FimpService, private fimpMeta: FimpApiMetadataService) {
     console.log("registry service constructor")
-    this.fimp.mqtt.state.subscribe((state: any) => {
+    if (this.fimp.isConnected()) {
+      console.log("---------Loading registry ----------------------")
+      this.configureFimpListener()
+      this.loadAllComponents();
+    }else this.fimp.getConnStateObservable().subscribe((state: any) => {
         console.log(" reg: FimpService onConnect . State = ",state);
         if (this.fimp.isConnected()) {
+          console.log("---------Loading registry ----------------------")
           this.configureFimpListener()
           this.loadAllComponents();
         }
@@ -36,8 +62,7 @@ export class ThingsRegistryService{
   }
 
   configureFimpListener() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "tpflow" ){
         if (fimpMsg.mtype == "evt.registry.locations_report") {
           if (fimpMsg.val) {
@@ -58,6 +83,7 @@ export class ThingsRegistryService{
               this.devices = fimpMsg.val;
               this.registryStateSource.next("devicesLoaded");
               this.notifyRegistryState();
+              console.log("Things loaded !!!!!")
             }
           }
         } else if (fimpMsg.mtype == "evt.registry.services_report") {
@@ -69,6 +95,7 @@ export class ThingsRegistryService{
             // console.dir(this.services);
             this.registryStateSource.next("servicesLoaded");
             this.notifyRegistryState();
+            console.log("Services loaded !!!!!")
           }
         }
       }
@@ -83,7 +110,7 @@ export class ThingsRegistryService{
   }
 
   loadServices() {
-
+    console.log("reg: Requesting services")
     let val = {
         "filter_without_alias": "",
         "location_id": "",
@@ -94,31 +121,33 @@ export class ThingsRegistryService{
     msg.src = "tplex-ui"
     this.lastRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
   loadLocations() {
     console.log("reg: Requesting locations")
-    let msg  = new FimpMessage("tpflow","cmd.registry.get_locations","str_map",null,null,null)
+    let msg  = new FimpMessage("tpflow","cmd.registry.get_locations","str_map",{},null,null)
     msg.src = "tplex-ui"
     this.lastRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   loadThings() {
-    let msg  = new FimpMessage("tpflow","cmd.registry.get_things","str_map",null,null,null)
+    console.log("reg: Requesting things")
+    let msg  = new FimpMessage("tpflow","cmd.registry.get_things","str_map",{},null,null)
     msg.src = "tplex-ui"
     this.thingsQueryRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   loadDevices() {
-    let msg  = new FimpMessage("tpflow","cmd.registry.get_devices","str_map",null,null,null)
+    console.log("reg: Requesting devices")
+    let msg  = new FimpMessage("tpflow","cmd.registry.get_devices","str_map",{},null,null)
     msg.src = "tplex-ui"
     this.devicesQueryRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   notifyRegistryState() {
@@ -156,7 +185,7 @@ export class ThingsRegistryService{
       return []
   }
 
-  getDevicesForThing(thingId:number) {
+  getDevicesForThing(thingId:number):Device[] {
     if(this.devices)
       return this.devices.filter(device => device.thing_id == thingId)
     else
@@ -188,7 +217,7 @@ export class ThingsRegistryService{
       return []
   }
 
-  getServiceByAddress(address:string) {
+    getServiceByAddress(address:string) {
     if (this.services)
       return this.services.filter(service => address.indexOf(service.address)>=0)
     else
@@ -280,17 +309,17 @@ export class ThingsRegistryService{
         if (svcMeta) {
           svc.alias = svcMeta.label;
         }
-        for (let intf of svc.interfaces) {
-          let intfMeta = this.fimpMeta.getInterfaceMetaByName(intf.msg_t);
-          if (intfMeta) {
-            intf["alias"] = intfMeta.label
-            if (intf.val_t == "") {
-              intf["val_t"] = intfMeta.type
+        if (svc.interfaces) {
+          for (let intf of svc.interfaces) {
+            let intfMeta = this.fimpMeta.getInterfaceMetaByName(intf.msg_t);
+            if (intfMeta) {
+              intf["alias"] = intfMeta.label
+              if (intf.val_t == "") {
+                intf["val_t"] = intfMeta.type
+              }
             }
           }
-
         }
-
       }
     }
   }

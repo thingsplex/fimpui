@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"github.com/alivinco/thingsplex/api"
+	"github.com/alivinco/thingsplex/user"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"io/ioutil"
@@ -36,11 +36,11 @@ var (
 type WsUpgrader struct {
 	BrokerAddress string
 	IsSSL         bool
-	auth          *api.Auth
+	auth          *user.Auth
 	certDir       string
 }
 
-func NewWsUpgrader(mqttServerURI string, auth *api.Auth,certDir string ) *WsUpgrader {
+func NewWsUpgrader(mqttServerURI string, auth *user.Auth,certDir string ) *WsUpgrader {
 	upg := &WsUpgrader{auth: auth,certDir: certDir}
 	upg.UpdateBrokerConfig(mqttServerURI)
 	return upg
@@ -57,11 +57,11 @@ func (wu *WsUpgrader) UpdateBrokerConfig(mqttServerURI string) {
 	}
 	wu.IsSSL = isSSL
 }
-
+// Upgrade - the method is invoked by Echo on web request. This is the place where we convert HTTP request into WS connection
 func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 	defer func() {
 		if r := recover(); r != nil {
-			log.Error("!!!!!!!!!!! Mqtt WS proxy (Upgrade) crashed with panic!!!!!!!!!!!!!!!")
+			log.Error("!!!!!!!!!!! WS-MQTT proxy (Upgrade) crashed with panic!!!!!!!!!!!!!!!")
 		}
 	}()
 	if !wu.auth.IsRequestAuthenticated(c, true) {
@@ -74,6 +74,8 @@ func (wu *WsUpgrader) Upgrade(c echo.Context) error {
 		log.Error("<MqWsProxy> Can't upgrade . Error:", err)
 		return err
 	}
+
+
 
 	log.Info("<MqWsProxy> Upgraded ")
 	session := MqttWsProxySession{wsConn: ws, isSSL: wu.IsSSL,certDir: wu.certDir}

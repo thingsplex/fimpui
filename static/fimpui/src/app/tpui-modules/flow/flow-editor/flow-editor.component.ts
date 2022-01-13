@@ -37,12 +37,14 @@ import {tryCatch} from "rxjs/internal-compatibility";
 
 const nodeTypeAlias = {
   "trigger":"Trigger",
+  "http_trigger":" Http/ws",
   "vinc_trigger":"Home event",
   "receive":"Wait event",
   "time_trigger":"Time trigger",
   "wait":"Delay",
   "action":"Action",
   "rest_action":"HTTP msg",
+  "action_http_reply":"Http reply",
   "if":"If condition",
   "iftime":"Time filter",
   "rate_limit":"Rate limit",
@@ -53,8 +55,9 @@ const nodeTypeAlias = {
   "log_action":"Log action",
   "notification_action":"Notification",
   "timeline_action":"Timeline",
-  "vinc_action":"Home mode"
-
+  "vinc_action":"Home mode",
+  "timetools": "Time tools",
+  "metrics": "Metrics"
 }
 
 export class MetaNode {
@@ -124,7 +127,7 @@ export class FlowEditorComponent implements OnInit {
     if (this.fimp.isConnected())
       this.loadFlow(this.id);
     else
-      this.connSub = this.fimp.mqtt.onConnect.subscribe((message: any) => {
+      this.connSub = this.fimp.getConnStateObservable().subscribe((message: any) => {
         this.loadFlow(this.id);
       });
   }
@@ -137,8 +140,7 @@ export class FlowEditorComponent implements OnInit {
   }
 
   configureFimpListener() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "tpflow" && fimpMsg.corid ==this.lastRequestId ){
         if (fimpMsg.mtype == "evt.flow.definition_report") {
           if (fimpMsg.val) {
@@ -150,10 +152,21 @@ export class FlowEditorComponent implements OnInit {
             this.canvasInitHeight = canvas.clientHeight;
           }
         }else if(fimpMsg.mtype == "evt.flow.update_report") {
-          this.snackBar.open('Flow is saved',"",{duration:1000});
+          if (fimpMsg.val == "ok") {
+            this.snackBar.open('Flow is saved',"",{duration:1000});
+          }else {
+            this.snackBar.open('ERROR!!! Flow can not be initialized ',"",{duration:3000});
+            console.log(fimpMsg.val)
+            let dialogRef = this.dialog.open(HelpDialog,{
+              // height: '95%',
+              width: '400px',
+              data:fimpMsg.val
+            });
+          }
+
         }
       }else {
-        this.updateUiValue(msg.topic,fimpMsg);
+        this.updateUiValue(fimpMsg.topic,fimpMsg);
       }
     });
   }
@@ -163,7 +176,7 @@ export class FlowEditorComponent implements OnInit {
     msg.src = "tplex-ui"
     this.lastRequestId = msg.uid;
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   updateUiValue(topic:string,fimpMsg : FimpMessage) {
@@ -199,7 +212,7 @@ export class FlowEditorComponent implements OnInit {
      msg.src = "tplex-ui"
      this.lastRequestId = msg.uid;
      msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+     this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
   runFlow() {
     let node:MetaNode;
@@ -244,7 +257,7 @@ export class FlowEditorComponent implements OnInit {
     let msg  = new FimpMessage("tpflow","cmd.flow.ctrl","str_map",val,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
  getNewNodeId():string {
@@ -548,6 +561,7 @@ findInputSocketPosition(htmlElement):any {
         node.Config["Name"] = ""
         node.Config["UpdateGlobal"] = false
         node.Config["UpdateInputMsg"] = false
+        node.Config["IsVariableInMemory"] = true
         let variable = {};
         variable["Value"] = 0;
         variable["ValueType"] = "";
@@ -785,7 +799,7 @@ export class FlowLogDialog {
     let msg  = new FimpMessage("tpflow","cmd.flow.get_log","str_map",val,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:tpflow/ad:1",msg);
   }
 
   ngOnDestroy() {
@@ -795,8 +809,7 @@ export class FlowLogDialog {
   }
 
   configureFimpListener() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "tpflow" ){
         if (fimpMsg.mtype == "evt.flow.log_report") {
           if (fimpMsg.val) {
@@ -887,27 +900,7 @@ export class ContextDialog {
   localContext :string ;
   globalContext : string;
   constructor(public dialogRef: MatDialogRef<ContextDialog>,@Inject(MAT_DIALOG_DATA) public data: Flow,private http : HttpClient) {
-    //  this.http
-    //   .get(BACKEND_ROOT+'/fimp/api/flow/context/'+data.Id)
-    //   .map(function(res: Response){
-    //     let body = res.json();
-    //     return body;
-    //   }).subscribe ((result) => {
-    //      this.localContext = JSON.stringify(result, null, 2);
-    //   });
-    //
-    // this.http
-    //   .get(BACKEND_ROOT+'/fimp/api/flow/context/global')
-    //   .map(function(res: Response
-    //     let body = res.json();
-    //     return body;
-    //   }).subscribe ((result) => {
-    //      this.globalContext = JSON.stringify(result, null, 2);
-    //   });
 
-
-    // this.localContext = JSON.stringify(data, null, 2)
-    // this.globalContext = JSON.stringify(data, null, 2)
   }
 
 }
@@ -922,22 +915,14 @@ export class FlowRunDialog {
   actionData : MetaNode;
 
   constructor(public dialogRef: MatDialogRef<FlowRunDialog>,@Inject(MAT_DIALOG_DATA) public data: MetaNode,private fimp:FimpService,public snackBar: MatSnackBar) {
-    // data.Config. = {"Value":true,"ValueType":msgTypeToValueTypeMap[data.ServiceInterface]}
-    // this.valueType = msgTypeToValueTypeMap[data.ServiceInterface];
-    // this.actionData = new MetaNode();
-    // this.actionData.Address = data.Address;
-    // this.actionData.Id = data.Id;
-    // this.actionData.Service = data.Service;
-    // this.actionData.ServiceInterface = data.ServiceInterface;
-    // this.actionData.Type = data.Type;
-    // this.actionData.Config = {"Value":true,"ValueType":data.Config.ValueFilter.ValueType}
+
     this.valueType = data.Config.ValueFilter.ValueType
 
   }
 
   run(){
     let msg  = new FimpMessage(this.data.Service,this.data.ServiceInterface,this.valueType,this.value,null,null)
-    this.fimp.publish(this.data.Address,msg.toString());
+    this.fimp.publish(this.data.Address,msg);
     let snackBarRef = this.snackBar.open('Message was sent',"",{duration:1000});
   }
 }
@@ -950,16 +935,13 @@ export class FlowRunDialog {
 export class HelpDialog {
   actionData : MetaNode;
   public url: SafeResourceUrl;
-  constructor(public dialogRef: MatDialogRef<FlowRunDialog>,@Inject(MAT_DIALOG_DATA) public data: MetaNode,private sanitizer: DomSanitizer) {
-
+  public errorText : string;
+  constructor(public dialogRef: MatDialogRef<FlowRunDialog>,@Inject(MAT_DIALOG_DATA) public data: any,private sanitizer: DomSanitizer) {
+    this.errorText = data;
   }
   ngOnInit() {
-    let urlString = "/fimp/help/node-"+this.data.Type+".html";
-    if (this.data.Ui.nodeType) {
-      urlString = "/fimp/help/node-"+this.data.Type+"-"+this.data.Ui.nodeType+".html"
-    }
-    console.log("Loading help from "+urlString);
-    this.url = this.url = this.sanitizer.bypassSecurityTrustResourceUrl(urlString); (3)
+
+
   }
 
 }

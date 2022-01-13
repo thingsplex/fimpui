@@ -154,6 +154,8 @@ export class LineChartComponent implements OnInit  {
               console.log("No device for id = ",val.tags.dev_id)
             }
             break;
+          case "dev_type":
+            label = val.tags.dev_type;
         }
       }
 
@@ -230,8 +232,7 @@ export class LineChartComponent implements OnInit  {
     this.canvasElement.nativeElement.style.height = this._height;
 
     this.initChart();
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
       if (fimpMsg.service == "ecollector" && fimpMsg.corid ==this.lastRequestId ){
         if (fimpMsg.mtype == "evt.tsdb.query_report" || fimpMsg.mtype == "evt.tsdb.data_points_report") {
           if (fimpMsg.val) {
@@ -252,34 +253,34 @@ export class LineChartComponent implements OnInit  {
       this.globalSub.unsubscribe();
   }
 
-  queryDataOld() {
-    let fillMode = "null";
-    if (!this.dataProcFunc)
-      this.dataProcFunc = "mean";
-    if (this.fillGaps)
-      fillMode = "previous"; // null/linear/previous
-    console.log("Measurement = "+this.measurement);
-    let query = ""
-    if (!this.measurement && !this.query)
-      return
-      // query = "SELECT last(value) AS last_value FROM \"default_20w\".\"sensor_temp.evt.sensor.report\" WHERE time > now()-48h  GROUP BY  location_id FILL(null)"
-    if (this.filterByTopic!=undefined) {
-      query = "SELECT value FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' FILL("+fillMode+")"
-    }else {
-      query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" GROUP BY time("+this.groupByTime+"), "+this.groupByTag+" FILL("+fillMode+")"
-    }
-    if (this.groupByTime != "none" && this.filterByTopic!=undefined) {
-      query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' GROUP BY time("+this.groupByTime+") FILL("+fillMode+")"
-
-    }
-    if(this.query != undefined && this.query != "")
-      query = this.query
-    let msg  = new FimpMessage("ecollector","cmd.tsdb.query","str_map",{"query":query},null,null)
-    msg.src = "tplex-ui"
-    msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
-    this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
-  }
+  // queryDataOld() {
+  //   let fillMode = "null";
+  //   if (!this.dataProcFunc)
+  //     this.dataProcFunc = "mean";
+  //   if (this.fillGaps)
+  //     fillMode = "previous"; // null/linear/previous
+  //   console.log("Measurement = "+this.measurement);
+  //   let query = ""
+  //   if (!this.measurement && !this.query)
+  //     return
+  //     // query = "SELECT last(value) AS last_value FROM \"default_20w\".\"sensor_temp.evt.sensor.report\" WHERE time > now()-48h  GROUP BY  location_id FILL(null)"
+  //   if (this.filterByTopic!=undefined) {
+  //     query = "SELECT value FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' FILL("+fillMode+")"
+  //   }else {
+  //     query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" GROUP BY time("+this.groupByTime+"), "+this.groupByTag+" FILL("+fillMode+")"
+  //   }
+  //   if (this.groupByTime != "none" && this.filterByTopic!=undefined) {
+  //     query = "SELECT "+this.dataProcFunc+"(\"value\") AS \"mean_value\" FROM \"default_20w\".\""+this.measurement+"\" WHERE time > now()-"+this.timeFromNow+" and topic='"+this.filterByTopic+"' GROUP BY time("+this.groupByTime+") FILL("+fillMode+")"
+  //
+  //   }
+  //   if(this.query != undefined && this.query != "")
+  //     query = this.query
+  //   let msg  = new FimpMessage("ecollector","cmd.tsdb.query","str_map",{"query":query},null,null)
+  //   msg.src = "tplex-ui"
+  //   msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
+  //   this.lastRequestId = msg.uid;
+  //   this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
+  // }
 
   queryData() {
     let fillMode = "null";
@@ -306,11 +307,15 @@ export class LineChartComponent implements OnInit  {
       "transform_function":this.dataTransformFunc,
       "filters":this.filters
     }
-    let msg  = new FimpMessage("ecollector","cmd.tsdb.get_data_points","object",request,null,null)
+    let intf = "cmd.tsdb.get_data_points";
+    if (this.measurement == "electricity_meter_energy_sampled") {
+      intf = "cmd.tsdb.get_energy_data_points"
+    }
+    let msg  = new FimpMessage("ecollector",intf,"object",request,null,null)
     msg.src = "tplex-ui"
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1"
     this.lastRequestId = msg.uid;
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:ecollector/ad:1",msg);
   }
 
 

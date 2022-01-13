@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlowOverviewComponent } from './flow-overview/flow-overview.component';
+import { ConnectorsComponent } from './connectors/connectors.component';
 import { FlowContextComponent } from './flow-context/flow-context.component';
 import { FlowLibComponent } from './flow-lib/flow-lib.component';
 import { VariableSelectorComponent } from './flow-context/variable-selector.component';
@@ -44,9 +45,14 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 // import {MsgDetailsDialog} from "../timeline/timeline.component";
 import {FlowPropsDialog} from "./flow-editor/flow-props-editor.component";
 import {MatMenuModule} from '@angular/material/menu';
-import { FlowContextService } from './flow-context/flow-context.service';
+import {FlowContextService } from './flow-context/flow-context.service';
+import {ConnectorsService } from './connectors/connectors.service';
 import {IfTimeNodeComponent} from "./flow-nodes/if-time-node/node.component";
 import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.component";
+import {TimetoolsNodeComponent} from "./flow-nodes/timetools-node/node.component";
+import {MetricsNodeComponent} from "./flow-nodes/metrics-node/node.component";
+import {HttpActionNodeComponent} from "./flow-nodes/http-action-node/node.component";
+import {HttpTriggerNodeComponent} from "./flow-nodes/http-trigger-node/node.component";
 
 @NgModule({
   imports: [
@@ -89,6 +95,7 @@ import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.componen
      FlowLogDialog,
      IfTimeNodeComponent,
     RateLimitNodeComponent,
+     ConnectorsComponent,
     // SignInDialog,
     // FirebaseAuthCheckComponent,
      VariableSelectorComponent,
@@ -112,6 +119,10 @@ import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.componen
      TransformNodeComponent,
      ExecNodeComponent,
      LogNodeComponent,
+     TimetoolsNodeComponent,
+     MetricsNodeComponent,
+     HttpActionNodeComponent,
+     HttpTriggerNodeComponent,
      WaitNodeComponent,
      VincTriggerNodeComponent,
      VincActionNodeComponent,
@@ -119,7 +130,7 @@ import {RateLimitNodeComponent} from "./flow-nodes/rate-limit-node/node.componen
     SceneTriggerNodeComponent
 
   ],
-  providers:[FlowContextService],
+  providers:[FlowContextService,ConnectorsService],
   exports:[JsonInputComponent],
   entryComponents: [FlowSourceDialog,FlowLogDialog,FlowRunDialog,FlowPropsDialog,ServiceLookupDialog,ContextDialog,NodeEditorDialog,HelpDialog,RecordEditorDialog] // SignInDialog
 })

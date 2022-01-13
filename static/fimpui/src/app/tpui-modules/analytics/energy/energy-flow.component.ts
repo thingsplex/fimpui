@@ -10,6 +10,7 @@ import {AnalyticsSettingsService} from "../charts/settings.service";
 import {FimpService} from "../../../fimp/fimp.service";
 import {Subscription} from "rxjs";
 import {NewFimpMessageFromString} from "../../../fimp/Message";
+import {BACKEND_ROOT} from "../../../globals";
 
 export interface EnergyRecord {
   deviceId : number;
@@ -33,8 +34,10 @@ export class EnergyFlowComponent implements OnInit {
   importFilter = {"tags":{"dir":"import"}}
   toTime :string = "";
   fromTime:string = "";
+  backendRootUrl : string = BACKEND_ROOT;
   @Input() pMaxValue:number;
   @Input() productionMeterId:number;
+  @Input() gridMeterDeviceType:string; // han or inverter
   globalSub : Subscription;
   thingAlias : string = "";
 
@@ -46,12 +49,27 @@ export class EnergyFlowComponent implements OnInit {
   consumptionLineVisibility: string = "hidden";
   productionToConsumptionLineVisibility: string = "hidden";
   productionLineVisibility: string = "hidden";
+  detailedPowerOverviewVisibility : string = "hidden";
 
+  batteryChargingVisibility : string = "hidden";
+  batteryDischargingVisibility : string = "hidden";
+
+
+  // Grid import and export
   importPower : number = 0;
   exportPower : number = 0;
-
+  // Solar or wind production
   productionPower : number = 0;
+  // Household consumption
   consumptionPower : number = 0;
+
+  // Battery charge controller;
+  batteryOpPower : number = 0;
+  batteryOpState : string = "Charging"; // "Discharging"
+
+  batteryLevel : number = 0;
+  batteryHealth: number = 0;
+  batteryTemp : number = 0;
 
   constructor(private registry:ThingsRegistryService,private fimp : FimpService,private settings:AnalyticsSettingsService) {
     this.eData = [
@@ -62,6 +80,7 @@ export class EnergyFlowComponent implements OnInit {
   }
   ngOnInit() {
     console.log("eFlow - Production meter id =",this.productionMeterId);
+    // this.setDemoMode();
   }
 
   ngOnDestroy() {
@@ -69,10 +88,32 @@ export class EnergyFlowComponent implements OnInit {
       this.globalSub.unsubscribe();
   }
 
+  setDemoMode() {
+    this.importPower =  100;
+    this.exportPower =  100;
+    this.productionPower = 1000;
+    this.consumptionPower = 900;
+    this.batteryOpPower = 100;
+    this.batteryLevel = 90;
+    this.batteryHealth = 95;
+    this.batteryTemp = 25;
+    this.calculateConsumption();
+    this.updateFlowLines();
+    this.calculatePowerDistribution();
+  }
+
+  toggleDetailedPowerGridVisibility() {
+    console.log("toggle button pressed")
+    if (this.detailedPowerOverviewVisibility == "hidden")
+      this.detailedPowerOverviewVisibility = "visible"
+    else
+      this.detailedPowerOverviewVisibility = "hidden"
+  }
+
   ngAfterViewInit() {
-    this.globalSub = this.fimp.getGlobalObservable().subscribe((msg) => {
-      let fimpMsg = NewFimpMessageFromString(msg.payload.toString());
-      if (fimpMsg.service == "meter_elec" || fimpMsg.service == "sensor_power" ){
+    this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
+      if (fimpMsg.service == "meter_elec" || fimpMsg.service == "sensor_power" || fimpMsg.service == "inverter_grid_conn" ||
+        fimpMsg.service == "inverter_solar_conn" || fimpMsg.service == "inverter_consumer_conn" || fimpMsg.service == "battery_charge_ctrl" ){
         let importPower:number = 0;
         let exportPower:number = 0;
         if (fimpMsg.mtype == "evt.meter_ext.report") {
@@ -95,26 +136,29 @@ export class EnergyFlowComponent implements OnInit {
           exportPower = Math.abs(importPower);
           importPower = 0;
         }
-        let t = this.registry.getServiceByAddress(msg.topic)
+        let t = this.registry.getServiceByAddress(fimpMsg.topic)
         if(t.length > 0) {
           let dev = this.registry.getDeviceById(t[0].container_id)
           if(dev) {
-            if (dev.id == this.productionMeterId) {
+            if (dev.id == this.productionMeterId || fimpMsg.service == "inverter_solar_conn") {
               this.productionPower = exportPower;
               console.log("Production report "+this.productionPower)
               this.calculateConsumption();
               this.updateFlowLines();
               this.calculatePowerDistribution();
-            }else if (dev.type == "meter.main_elec") {
+            }else if (( dev.type == "meter.main_elec" && this.gridMeterDeviceType == "han") || fimpMsg.service == "inverter_grid_conn" && this.gridMeterDeviceType == "inverter") {
               this.thingAlias = dev.alias
               this.importPower = importPower;
               this.exportPower = exportPower;
-              if (this.productionPower==0 && this.exportPower>0) // This is the case if production meter is not present
+              if (this.productionPower == 0 && this.exportPower > 0) // This is the case if production meter is not present
                 this.productionPower = this.exportPower;
               this.calculateConsumption();
               this.updateFlowLines();
               this.calculatePowerDistribution();
               this.dataSource[0].power = importPower;
+
+            }else if (fimpMsg.service == "battery_charge_ctrl")  {
+
             }else {
               let rec : EnergyRecord = {deviceId:dev.id,name:dev.alias,type:dev.type,power:importPower,powerRatio:0,eMonth:0,eToday:0,eWeek:0}
               this.updateEnergyDataRecord(rec);

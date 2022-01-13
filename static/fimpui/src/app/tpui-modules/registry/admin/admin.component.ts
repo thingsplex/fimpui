@@ -18,7 +18,7 @@ export class AdminComponent implements OnInit {
 
   public vinculumSyncRooms(){
     let msg  = new FimpMessage("tpflow","cmd.registry.sync_rooms","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg);
     setTimeout( ()=> {
       this.registry.loadAllComponents()
     },1000)
@@ -41,19 +41,19 @@ export class AdminComponent implements OnInit {
     msg.resp_to = "pt:j1/mt:rsp/rt:app/rn:tplex-ui/ad:1";
     msg.src = "tplex-ui";
 
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:vinculum/ad:1",msg);
   }
 
   public vinculumSyncDevices(){
     let msg  = new FimpMessage("tpflow","cmd.registry.sync_devices","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg);
   }
 
 
   public clearRegistry(){
     // let val = {"id":this.thingId,"alias":this.alias,"location_id":this.locationId}
     let msg  = new FimpMessage("tpflow","cmd.registry.factory_reset","null",null,null,null)
-    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:cmd/rt:app/rn:registry/ad:1",msg);
   }
 
   public reindexRegistry(){
@@ -63,6 +63,6 @@ export class AdminComponent implements OnInit {
     let val = {"address":address};
     let msg  = new FimpMessage(adapter,"evt.thing.exclusion_report","object",val,null,null);
     let topicAdapter = adapter.replace("zwave-ad","zw");
-    this.fimp.publish("pt:j1/mt:evt/rt:ad/rn:"+topicAdapter+"/ad:1",msg.toString());
+    this.fimp.publish("pt:j1/mt:evt/rt:ad/rn:"+topicAdapter+"/ad:1",msg);
   }
 }

@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/alivinco/thingsplex/user"
 	"github.com/alivinco/thingsplex/utils"
 	"github.com/futurehomeno/fimpgo/edgeapp"
 	"github.com/labstack/gommon/log"
@@ -13,6 +14,11 @@ import (
 )
 
 const ServiceName = "tplexui"
+
+const DeploymentModeLocal = "local"
+const DeploymentModeCloud = "cloud"
+const DeploymentModeCloudAwsIot = "cloud_aws_iot"
+
 
 type Configs struct {
 	path                  string
@@ -30,13 +36,16 @@ type Configs struct {
 	ConfiguredBy          string `json:"configured_by"`
 	CookieKey             string `json:"cookie_key"`
 	TlsCertDir            string `json:"tls_cert_dir"`
+	EnableCbSupport       bool   `json:"enable_cb_support"`
+	GlobalAuthType        string `json:"global_auth_type"`
+	DeploymentMode        string `json:"deployment_mode"`
 }
 
 func NewConfigs(workDir string) *Configs {
 	conf := &Configs{WorkDir: workDir}
 	conf.path = filepath.Join(workDir,"data","config.json")
 	if !utils.FileExists(conf.path) {
-		log.Info("Config file doesn't exist.Loading default config")
+		fmt.Println("Config file doesn't exist.Loading default config")
 		defaultConfigFile := filepath.Join(workDir,"defaults","config.json")
 		err := utils.CopyFile(defaultConfigFile,conf.path)
 		if err != nil {
@@ -55,6 +64,19 @@ func (cf * Configs) LoadFromFile() error {
 	err = json.Unmarshal(configFileBody, cf)
 	if err != nil {
 		return err
+	}
+	if cf.GlobalAuthType == "" {
+		cf.GlobalAuthType = user.AuthTypeUnknown
+	}
+	if cf.DeploymentMode == "" {
+		cf.DeploymentMode = DeploymentModeLocal
+	}
+
+	mqttUri := os.Getenv("MQTT_URL")
+	if mqttUri != "" {
+		fmt.Println("Loading mqtt server URI from MQTT_URL")
+		cf.MqttServerURI = mqttUri
+		cf.SaveToFile()
 	}
 	return nil
 }
