@@ -13,6 +13,7 @@ require (
 	github.com/sirupsen/logrus v1.3.0
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/net v0.0.0-20200226121028-0de0cce0169b
+	golang.org/x/sys v0.0.0-20220422013727-9388b58f7150 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 

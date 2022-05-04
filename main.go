@@ -24,9 +24,9 @@ import (
 )
 
 type SystemInfo struct {
-	Version    string
-	WsMqttPort int
-	Username   string
+	Version      string
+	WsMqttPort   int
+	Username     string
 	GlobalPrefix string
 	OnlineUsers  int
 }
@@ -39,6 +39,7 @@ type LoginRequest struct {
 }
 
 var Version string
+
 // SetupLog configures default logger
 // Supported levels : info , degug , warn , error
 func SetupLog(logfile string, level string) {
@@ -61,10 +62,9 @@ func SetupLog(logfile string, level string) {
 	}
 }
 
-func ConfigureTpFlowApi(configs *model.Configs,e *echo.Echo)  {
+func ConfigureTpFlowApi(configs *model.Configs, e *echo.Echo) {
 	return
 }
-
 
 func main() {
 	// pprof server
@@ -82,8 +82,8 @@ func main() {
 		fmt.Println("Work dir = ", workDir)
 	}
 	configs := model.NewConfigs(workDir)
-	if err := configs.LoadFromFile();err != nil {
-		log.Error("<main> Failed to load configs from file . Err:",err)
+	if err := configs.LoadFromFile(); err != nil {
+		log.Error("<main> Failed to load configs from file . Err:", err)
 		return
 	}
 	SetupLog(configs.LogFile, configs.LogLevel)
@@ -91,7 +91,7 @@ func main() {
 	log.Info("---------------------------------------------")
 
 	log.Info("<main> Started")
-	log.Info("<main> Global broker address:",configs.MqttServerURI)
+	log.Info("<main> Global broker address:", configs.MqttServerURI)
 	//-------------------------------------
 
 	sysInfo := SystemInfo{Version: Version}
@@ -112,9 +112,9 @@ func main() {
 
 	authType := configs.GlobalAuthType
 
-	log.Info("<main> Global GlobalAuthType is = ",authType)
+	log.Info("<main> Global GlobalAuthType is = ", authType)
 	if authType == user.AuthTypeUnknown {
-		isNewUser := userProfiles.UpsertUserProfile("unknown","",authType)
+		isNewUser := userProfiles.UpsertUserProfile("unknown", "", authType)
 		if isNewUser {
 			userConf := user.Configs{
 				MqttServerURI:         configs.MqttServerURI,
@@ -125,25 +125,25 @@ func main() {
 				TlsCertDir:            configs.TlsCertDir,
 				EnableCbSupport:       configs.EnableCbSupport,
 			}
-			userProfiles.UpdateUserConfig("unknown",userConf)
+			userProfiles.UpdateUserConfig("unknown", userConf)
 		}
 	}
 
-	auth := user.NewAuth(authType,userProfiles)
+	auth := user.NewAuth(authType, userProfiles)
 
 	lifecycle := edgeapp.NewAppLifecycle()
 	lifecycle.SetConfigState(edgeapp.ConfigStateConfigured)
-	lifecycle.SetAppState(edgeapp.AppStateRunning,nil)
+	lifecycle.SetAppState(edgeapp.AppStateRunning, nil)
 	lifecycle.SetConnectionState(edgeapp.ConnStateConnected)
 
-	controlApi := api.NewAppControlApiRouter(nil,lifecycle,configs,auth,userProfiles)
+	controlApi := api.NewAppControlApiRouter(nil, lifecycle, configs, auth, userProfiles)
 	if !configs.IsDevMode {
 		controlApi.Start()
-	}else {
+	} else {
 		log.Info("Starting in DEV mode")
 	}
 
-	wsBridge := cloud.NewWsNorthBridge(auth,userProfiles)
+	wsBridge := cloud.NewWsNorthBridge(auth, userProfiles)
 
 	//wsSouthBridge := cloud.NewWsSouthBridge(configs)
 	//wsSouthBridge.ConnectToMqttBroker()
@@ -153,25 +153,25 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	log.Info("My outbound IP = ",utils.GetOutboundIP())
+	log.Info("My outbound IP = ", utils.GetOutboundIP())
 
 	if configs.CookieKey == "" {
 		cookie := securecookie.GenerateRandomKey(32)
-		configs.CookieKey =  base64.StdEncoding.EncodeToString(cookie)
+		configs.CookieKey = base64.StdEncoding.EncodeToString(cookie)
 		configs.SaveToFile()
 	}
 
- 	bCookie,err := base64.StdEncoding.DecodeString(configs.CookieKey)
+	bCookie, err := base64.StdEncoding.DecodeString(configs.CookieKey)
 	if err != nil {
-		log.Error("Can't decode cookie.Err:",err.Error())
+		log.Error("Can't decode cookie.Err:", err.Error())
 	}
 	e.Use(session.Middleware(sessions.NewCookieStore(bCookie)))
 
-	e.GET("/fimp/login",  func(c echo.Context) error {
-		c.Response().Header().Set("Cache-Control","no-store")
+	e.GET("/fimp/login", func(c echo.Context) error {
+		c.Response().Header().Set("Cache-Control", "no-store")
 		if auth.GlobalAuthType == user.AuthTypeUnknown {
 			c.Redirect(http.StatusMovedPermanently, "/fimp/auth-config")
-		}else {
+		} else {
 			c.File("static/misc/login.html")
 		}
 		return nil
@@ -194,11 +194,11 @@ func main() {
 	e.GET("/fimp/logout", func(c echo.Context) error {
 		log.Info("UserProfile logged out")
 		auth.LogoutUsers(c)
-		c.Response().Header().Set("Cache-Control","no-store")
+		c.Response().Header().Set("Cache-Control", "no-store")
 		return c.HTML(http.StatusOK, "UserProfile has been logged out from the system")
 	})
 
- 	// signup request
+	// signup request
 	e.POST("/fimp/auth-config", func(c echo.Context) error {
 		req := LoginRequest{}
 		if err := c.Bind(&req); err != nil {
@@ -206,7 +206,7 @@ func main() {
 		}
 		// TODO : If user disables password , it has to be also logged out.
 		log.Info("Auth config request from user ", req.Username)
-		if auth.IsRequestAuthenticated(c,false) || auth.GlobalAuthType == user.AuthTypeUnknown {
+		if auth.IsRequestAuthenticated(c, false) || auth.GlobalAuthType == user.AuthTypeUnknown {
 
 			if req.AuthType != configs.GlobalAuthType && req.AuthType != "" {
 				auth.SetGlobalAuthType(req.AuthType)
@@ -214,7 +214,7 @@ func main() {
 				configs.SaveToFile()
 			}
 
-			if req.AuthType == user.AuthTypeNone{
+			if req.AuthType == user.AuthTypeNone {
 				c.Redirect(http.StatusMovedPermanently, "/fimp/analytics/dashboard")
 			}
 
@@ -222,7 +222,7 @@ func main() {
 				return c.HTML(http.StatusOK, "Passwords don't match. Try again.")
 			}
 
-			isNewUser := userProfiles.UpsertUserProfile(req.Username, req.Password,req.AuthType)
+			isNewUser := userProfiles.UpsertUserProfile(req.Username, req.Password, req.AuthType)
 			if isNewUser {
 				userConf := user.Configs{
 					MqttServerURI:         configs.MqttServerURI,
@@ -233,12 +233,12 @@ func main() {
 					TlsCertDir:            configs.TlsCertDir,
 					EnableCbSupport:       configs.EnableCbSupport,
 				}
-				userProfiles.UpdateUserConfig(req.Username,userConf)
+				userProfiles.UpdateUserConfig(req.Username, userConf)
 			}
 
 			err := userProfiles.SaveUserDB()
 			if err != nil {
-				log.Error("<main> Can't save new user to disk. Err:",err.Error())
+				log.Error("<main> Can't save new user to disk. Err:", err.Error())
 			}
 
 			auth.SaveUserToSession(c, req.Username)
@@ -250,14 +250,14 @@ func main() {
 	})
 
 	e.GET("/fimp/system-info", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 
 		sinfo := sysInfo
 		if auth.GlobalAuthType == user.AuthTypeNone {
 			sinfo.Username = "unknown"
-		}else {
+		} else {
 			sinfo.Username = auth.GetUsername(c)
 		}
 		userProf := userProfiles.GetUserProfileByName(sinfo.Username)
@@ -269,7 +269,7 @@ func main() {
 		return c.JSON(http.StatusOK, sinfo)
 	})
 	e.GET("/fimp/api/configs", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 		username := auth.GetUsername(c)
@@ -285,14 +285,14 @@ func main() {
 	})
 
 	e.POST("/fimp/api/configs", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 
 		username := auth.GetUsername(c)
-		req:= model.Configs{}
+		req := model.Configs{}
 		if err := c.Bind(&req); err != nil {
-			log.Error("Invalid configuration request format .Err:",err.Error())
+			log.Error("Invalid configuration request format .Err:", err.Error())
 			return fmt.Errorf("invalid request format")
 		}
 
@@ -316,16 +316,16 @@ func main() {
 			MqttTopicGlobalPrefix: req.MqttTopicGlobalPrefix,
 			MqttClientIdPrefix:    req.MqttClientIdPrefix,
 			TlsCertDir:            req.TlsCertDir,
-			EnableCbSupport:	   req.EnableCbSupport,
+			EnableCbSupport:       req.EnableCbSupport,
 		}
 
 		uprof := userProfiles.GetUserProfileByName(username)
 		if uprof == nil {
-			return fmt.Errorf("no configuration for user %s",username)
+			return fmt.Errorf("no configuration for user %s", username)
 		}
 		uprof.Configs = userConf
 		userProfiles.SaveUserDB()
-		log.Info("<main> Configurations saved for user",username)
+		log.Info("<main> Configurations saved for user", username)
 		wsBridge.ReloadUserConfig(username)
 
 		return c.JSON(http.StatusOK, configs)
@@ -351,7 +351,7 @@ func main() {
 	//})
 
 	e.GET("/fimp/api/get-apps-from-playgrounds", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 		resp, err := http.Get("https://app-store.s3-eu-west-1.amazonaws.com/registry/list.json")
@@ -361,7 +361,7 @@ func main() {
 	})
 
 	e.GET("/fimp/api/get-site-info", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 		siteId := utils.GetFhSiteId("")
@@ -375,9 +375,8 @@ func main() {
 		return c.JSON(http.StatusOK, siteInfoResponse)
 	})
 
-
 	e.GET("/fimp/api/zwave/products/list-local-templates", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 		templateType := c.QueryParam("type")
@@ -401,7 +400,7 @@ func main() {
 	})
 
 	e.GET("/fimp/api/zwave/products/template", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 		templateType := c.QueryParam("type")
@@ -425,7 +424,7 @@ func main() {
 	})
 
 	e.POST("/fimp/api/zwave/products/template-op/:operation/:name", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 		operation := c.Param("operation")
@@ -444,7 +443,7 @@ func main() {
 	})
 
 	e.DELETE("/fimp/api/zwave/products/template/:type/:name", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 		templateType := c.Param("type")
@@ -468,7 +467,7 @@ func main() {
 	})
 
 	e.POST("/fimp/api/zwave/products/template/:type/:name", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 		templateType := c.Param("type")
@@ -496,7 +495,7 @@ func main() {
 	})
 
 	e.GET("/debug/mem", func(c echo.Context) error {
-		if !auth.IsRequestAuthenticated(c,true) {
+		if !auth.IsRequestAuthenticated(c, true) {
 			return nil
 		}
 		memStats := runtime.MemStats{}
@@ -538,6 +537,7 @@ func main() {
 	e.Static("/fimp/help", "static/help/")
 	e.Static("/fimp/misc", "static/misc/")
 	e.Static("/fimp/libs", "static/libs/")
+	e.Static("/fimp/flow-editor", "static/flow-editor/")
 
 	e.Logger.Debug(e.Start(fmt.Sprintf(":%d", port)))
 	//e.Shutdown(context.Background())
