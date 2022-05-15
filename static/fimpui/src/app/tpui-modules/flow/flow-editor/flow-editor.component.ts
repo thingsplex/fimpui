@@ -41,6 +41,8 @@ const nodeTypeAlias = {
   "vinc_trigger":"Home event",
   "receive":"Wait event",
   "time_trigger":"Time trigger",
+  "websocket_client_trigger":"Websocket client trigger",
+  "websocket_client_action":"Websocket client action",
   "wait":"Delay",
   "action":"Action",
   "rest_action":"HTTP msg",

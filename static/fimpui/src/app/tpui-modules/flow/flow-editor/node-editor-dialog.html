@@ -56,7 +56,19 @@
     </div>
     <div *ngSwitchCase="'time_trigger'">
         <time-trigger-node [node]="node" [nodes]="flow.Nodes" > </time-trigger-node>
-   </div>
+    </div>
+    <div *ngSwitchCase="'websocket_client_trigger'">
+      <websocket-client-trigger-node [node]="node" [nodes]="flow.Nodes" > </websocket-client-trigger-node>
+    </div>
+    <div *ngSwitchCase="'websocket_client_action'">
+      <websocket-client-action-node [node]="node" [nodes]="flow.Nodes" > </websocket-client-action-node>
+    </div>
+    <div *ngSwitchCase="'mqtt_client_action'">
+      <mqtt-client-action-node [node]="node" [nodes]="flow.Nodes" > </mqtt-client-action-node>
+    </div>
+    <div *ngSwitchCase="'mqtt_client_trigger'">
+      <mqtt-client-trigger-node [node]="node" [noWdes]="flow.Nodes" > </mqtt-client-trigger-node>
+    </div>
     <div *ngSwitchCase="'http_trigger'">
       <http-trigger-node [node]="node" [nodes]="flow.Nodes" [flowId]="flow.Id" > </http-trigger-node>
     </div>

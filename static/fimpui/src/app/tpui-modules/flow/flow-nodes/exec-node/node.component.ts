@@ -20,6 +20,7 @@ export class ExecNodeComponent implements OnInit {
 
   localVars:any;
   globalVars:any;
+  aceEditor:any;
   constructor(public dialog: MatDialog) {
   }
 
@@ -39,11 +40,16 @@ export class ExecNodeComponent implements OnInit {
     // ace.config.set('basePath', 'https://pagecdn.io/lib/ace/1.4.12');
     ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
 
-    const aceEditor = ace.edit(this.editorEl.nativeElement);
-    aceEditor.session.setMode("ace/mode/golang");
-    aceEditor.session.setValue(this.node.Config.ScriptBody);
-    aceEditor.on("change", () => {
-      this.node.Config.ScriptBody = aceEditor.getValue();
+    this.aceEditor = ace.edit(this.editorEl.nativeElement);
+    if (this.node.Config.ExecType =='golang') {
+      this.aceEditor.session.setMode("ace/mode/golang");
+    }else if (this.node.Config.ExecType =='python') {
+      this.aceEditor.session.setMode("ace/mode/python");
+    }
+
+    this.aceEditor.session.setValue(this.node.Config.ScriptBody);
+    this.aceEditor.on("change", () => {
+      this.node.Config.ScriptBody = this.aceEditor.getValue();
     });
   }
 
@@ -105,7 +111,15 @@ export class ExecNodeComponent implements OnInit {
         "}\n"
     }
   }
-
+  scriptTypeSelected(event) {
+    console.log(event);
+    if (this.node.Config.ExecType =='golang') {
+      this.aceEditor.getSession().setMode("ace/mode/golang");
+    }else if (this.node.Config.ExecType =='python') {
+      console.log("setting python mode");
+      this.aceEditor.getSession().session.setMode("ace/mode/python");
+    }
+  }
   inputVariableSelected(cvar:ContextVariable) {
     this.node.Config.InputVariableName = cvar.Name;
     this.node.Config.IsInputVariableGlobal = cvar.isGlobal;

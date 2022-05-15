@@ -14,7 +14,7 @@ import {ConnectorsService} from "./connectors.service";
 })
 export class ConnectorsComponent implements OnInit {
 
-  public connectors : any[];
+  public connectors : any[] = [];
 
   private connSub : Subscription;
   private globalSub : Subscription;

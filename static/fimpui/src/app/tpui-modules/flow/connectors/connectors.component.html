@@ -78,9 +78,16 @@
         </p>
 
         <mat-divider style="margin-top: 5px;margin-bottom: 10px"></mat-divider>
+      </div>
 
+      <div  class="tsdb-config-card" *ngIf="conn.Plugin=='websocket-client'">
+        <mat-form-field class="input-field">
+          <input matInput placeholder="Endpoint URI" [(ngModel)]="conn.Config.WsServerURI" >
+        </mat-form-field>
 
       </div>
+
+
       <mat-card-actions>
         <button mat-raised-button (click)="updateHttConnectorConfig(conn)"> Save </button>
       </mat-card-actions>

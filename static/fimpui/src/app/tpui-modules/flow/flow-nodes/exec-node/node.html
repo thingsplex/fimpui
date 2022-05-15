@@ -1,19 +1,20 @@
 <div>
   <mat-form-field class="value-selector" >
-    <mat-select #nodeTypeInput  placeholder="Value type" [(ngModel)]="node.Config.ExecType">
+    <mat-select #nodeTypeInput  placeholder="Value type" [(ngModel)]="node.Config.ExecType" (selectionChange)="scriptTypeSelected($event)" >
       <mat-option value="golang">Golang script</mat-option>
+      <mat-option value="cmd">Command </mat-option>
+      <mat-option value="sh-cmd">Shell command</mat-option>
+      <mat-option value="python">Python script</mat-option>
     </mat-select>
   </mat-form-field>
   <div>
     <mat-form-field *ngIf="node.Config.ExecType=='cmd' || node.Config.ExecType=='sh-cmd' " style="width: 400px">
       <input matInput [(ngModel)]="node.Config.Command" placeholder="Command">
     </mat-form-field>
-    <mat-form-field *ngIf="node.Config.ExecType=='python' || node.Config.ExecType=='golangg'"  style="width: 600px">
-      <textarea    mat-autosize wrap="off" minRows="6" matInput [(ngModel)]="node.Config.ScriptBody" > </textarea>
-    </mat-form-field>
+
   </div>
   <div #nodeCodeEditor style="width: 90vw;height: 90vh;"></div>
-  <div *ngIf="node.Config.ExecType!='golang'">
+  <div *ngIf="node.Config.ExecType=='python' || node.Config.ExecType=='golang'">
     <variable-selector [label]="'Input variable'" [variableName]="node.Config.InputVariableName" [isGlobal]="node.Config.IsInputVariableGlobal" [flowId]="flowId" (onSelect)="inputVariableSelected($event)" ></variable-selector>
     <variable-selector [label]="'Output variable'" [variableName]="node.Config.OutputVariableName" [isGlobal]="node.Config.IsOutputVariableGlobal" [flowId]="flowId" (onSelect)="outputVariableSelected($event)" ></variable-selector>
     <div style="margin-bottom: 5px" >

@@ -53,6 +53,10 @@ import {TimetoolsNodeComponent} from "./flow-nodes/timetools-node/node.component
 import {MetricsNodeComponent} from "./flow-nodes/metrics-node/node.component";
 import {HttpActionNodeComponent} from "./flow-nodes/http-action-node/node.component";
 import {HttpTriggerNodeComponent} from "./flow-nodes/http-trigger-node/node.component";
+import {WebsocketClientTriggerNodeComponent} from "./flow-nodes/websocket-client-trigger-node/node.component";
+import {WebsocketClientActionNodeComponent} from "./flow-nodes/websocket-client-action-node/node.component";
+import {MqttClientActionNodeComponent} from "./flow-nodes/mqtt-client-action-node/node.component";
+import {MqttClientTriggerNodeComponent} from "./flow-nodes/mqtt-client-trigger-node/node.component";
 
 @NgModule({
   imports: [
@@ -127,7 +131,11 @@ import {HttpTriggerNodeComponent} from "./flow-nodes/http-trigger-node/node.comp
      VincTriggerNodeComponent,
      VincActionNodeComponent,
      RecordEditorDialog,
-    SceneTriggerNodeComponent
+    SceneTriggerNodeComponent,
+    WebsocketClientTriggerNodeComponent,
+    WebsocketClientActionNodeComponent,
+    MqttClientActionNodeComponent,
+    MqttClientTriggerNodeComponent
 
   ],
   providers:[FlowContextService,ConnectorsService],
