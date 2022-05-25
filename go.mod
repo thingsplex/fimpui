@@ -1,7 +1,7 @@
 module github.com/alivinco/thingsplex
 
 require (
-	github.com/buger/jsonparser v1.0.0
+	github.com/buger/jsonparser v1.1.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/futurehomeno/fimpgo v1.6.2-0.20210104174133-e8b2ee10f6ac
 	github.com/gorilla/securecookie v1.1.1
