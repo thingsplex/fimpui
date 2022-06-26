@@ -34,46 +34,24 @@ export class WebsocketClientActionNodeComponent implements OnInit {
       console.dir(this.connector)
 
     }
-    this.onAliasChange()
   }
 
   loadDefaultConfig() {
     if (this.node.Config == null) {
       this.node.Config = {
-        "PayloadFormat": "json",
-        "Method": "GET",
-        "IsSync":true,
-        "IsWs":false,
-        "MapFormParamsToVars":false,
-        "Alias":"",
-        "OutputVar": {"Name":"","InMemory":true,"IsGlobal":false,"Type":"object"},
-        "AuthConfig":{"AuthMethod":"none","AuthToken":"","AuthUsername":"","AuthPassword":"","AuthCustomParamName":""}
+        "ConnectorID": "",
+        "WsPayloadType": "json",
+        "RequestTemplate": "",
+        "InputVar": {"Name":"","InMemory":true,"IsGlobal":false,"Type":"object"},
       }
     }
   }
 
   outputVariableSelected(cvar:ContextVariable) {
-    this.node.Config.OutputVar.Name = cvar.Name;
-    this.node.Config.OutputVar.IsGlobal = cvar.isGlobal;
-    this.node.Config.OutputVar.InMemory = cvar.InMemory;
-    this.node.Config.OutputVar.Type = cvar.Type;
-  }
-
-  onAliasChange() {
-    console.log("Alias has changed")
-    let alias = this.flowId;
-    if (this.node.Config.Alias) {
-      alias = this.node.Config.Alias;
-    }else if (!this.node.Config.IsWs) {
-      alias = alias+"_"+this.node.Id;
-    }
-    let resourceType = "rest"
-    if (this.node.Config.IsWs)
-      resourceType = "ws"
-
-
-    this.localUrl = "http://"+this.hostname+this.connector.Config.BindAddress +"/flow/"+alias+"/"+resourceType;
-    this.globalUrl = "https://tun.thingsplex.com/cloud/"+this.connector.Config.TunAddress+"/flow/"+alias+"/"+resourceType+"?tptun_token="+this.connector.Config.TunEdgeToken;
+    this.node.Config.InputVar.Name = cvar.Name;
+    this.node.Config.InputVar.IsGlobal = cvar.isGlobal;
+    this.node.Config.InputVar.InMemory = cvar.InMemory;
+    this.node.Config.InputVar.Type = cvar.Type;
   }
 
 }

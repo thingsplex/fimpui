@@ -13,8 +13,6 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-divider style="margin-top: 10px;margin-bottom: 10px"></mat-divider>
-
   <mat-divider style="margin-top: 5px;margin-bottom: 10px"></mat-divider>
   <div>
     <variable-selector [label]="'Output variable'" [variableName]="node.Config.OutputVar.Name" [isGlobal]="node.Config.OutputVar.IsGlobal" [inMemory]="node.Config.OutputVar.InMemory" [valueType]="'object'" [flowId]="flowId" (onSelect)="outputVariableSelected($event)" ></variable-selector>

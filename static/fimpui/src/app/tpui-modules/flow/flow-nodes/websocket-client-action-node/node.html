@@ -1,14 +1,9 @@
 <div>
-   <mat-form-field class="value-selector" >
-    <mat-select #nodeTypeInput  placeholder="HTTP method" [(ngModel)]="node.Config.Method">
-      <mat-option value="GET">Get</mat-option>
-      <mat-option value="POST">Post</mat-option>
-      <mat-option value="PUT">PUT</mat-option>
-      <mat-option value="PATCH">PATCH</mat-option>
-      <mat-option value="DELETE">DELETE</mat-option>
-    </mat-select>
-  </mat-form-field>
-
+  <div style="margin-bottom: 5px">
+    <mat-form-field style="width: 100%">
+      <input matInput [(ngModel)]="node.Config.ConnectorID" placeholder="Connector id"/>
+    </mat-form-field>
+  </div>
   <mat-form-field class="value-selector" >
     <mat-select #nodeTypeInput  placeholder="Payload format" [(ngModel)]="node.Config.PayloadFormat">
       <mat-option value="json">json</mat-option>
@@ -18,70 +13,12 @@
     </mat-select>
   </mat-form-field>
 
-  <div style="margin-bottom: 5px" >
-    <mat-checkbox [(ngModel)]="node.Config.IsSync" > Enable synchronous interaction.The flow will respond to the caller </mat-checkbox>
-  </div>
-
-  <div style="margin-bottom: 5px" >
-    <mat-checkbox [(ngModel)]="node.Config.IsWs" > Enable websocket support. </mat-checkbox>
-  </div>
-  <div style="margin-bottom: 5px" >
-    <mat-checkbox [(ngModel)]="node.Config.MapFormParamsToVars" > Automatically map form parameters to variables </mat-checkbox>
-  </div>
-
-  <div style="margin-bottom: 5px">
-    <mat-form-field style="width: 100%">
-      <input matInput [(ngModel)]="node.Config.Alias" placeholder="Flow Id alias" (change)="onAliasChange()" >
-    </mat-form-field>
-  </div>
-
   <mat-divider style="margin-top: 10px;margin-bottom: 10px"></mat-divider>
-  <mat-form-field class="value-selector" >
-    <mat-select #nodeTypeInput  placeholder="Authentication method" [(ngModel)]="node.Config.AuthConfig.AuthMethod">
-      <mat-option value="none">None</mat-option>
-      <mat-option value="bearer">Bearer token</mat-option>
-      <mat-option value="basic">Basic</mat-option>
-      <mat-option value="header-token">Header token</mat-option>
-      <mat-option value="query-token">Query token</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <div *ngIf="node.Config.AuthConfig.AuthMethod=='bearer' || node.Config.AuthConfig.AuthMethod=='header-token' || node.Config.AuthConfig.AuthMethod=='query-token'" style="margin-bottom: 5px" >
-    <mat-form-field style="width: 100%">
-      <input matInput [(ngModel)]="node.Config.AuthConfig.AuthToken" placeholder="Token" >
-    </mat-form-field>
-    <div *ngIf="node.Config.AuthConfig.AuthMethod=='header-token'" style="margin-bottom: 5px" >
-      <mat-form-field style="width: 100%">
-        <input matInput [(ngModel)]="node.Config.AuthConfig.AuthCustomParamName" placeholder="Custom header" >
-      </mat-form-field>
-    </div>
-    <div *ngIf="node.Config.AuthConfig.AuthMethod=='query-token'" style="margin-bottom: 5px" >
-      <mat-form-field style="width: 100%">
-        <input matInput [(ngModel)]="node.Config.AuthConfig.AuthCustomParamName" placeholder="Custom query parameter" >
-      </mat-form-field>
-    </div>
-  </div>
-
-  <div *ngIf="node.Config.AuthConfig.AuthMethod=='basic'" style="margin-bottom: 5px" >
-    <mat-form-field style="width: 100%">
-      <input matInput [(ngModel)]="node.Config.AuthConfig.AuthUsername" placeholder="Username" >
-    </mat-form-field>
-    <mat-form-field style="width: 100%">
-      <input matInput [(ngModel)]="node.Config.AuthConfig.AuthPassword" placeholder="Password" >
-    </mat-form-field>
-  </div>
-
-
 
   <mat-divider style="margin-top: 5px;margin-bottom: 10px"></mat-divider>
   <div>
-    <variable-selector [label]="'Output variable'" [variableName]="node.Config.OutputVar.Name" [isGlobal]="node.Config.OutputVar.IsGlobal" [inMemory]="node.Config.OutputVar.InMemory" [valueType]="'object'" [flowId]="flowId" (onSelect)="outputVariableSelected($event)" ></variable-selector>
+    <variable-selector [label]="'Input variable'" [variableName]="node.Config.InputVar.Name" [isGlobal]="node.Config.InputVar.IsGlobal" [inMemory]="node.Config.InputVar.InMemory" [valueType]="'object'" [flowId]="flowId" (onSelect)="outputVariableSelected($event)" ></variable-selector>
   </div>
 
-  <div>
-   <p> Local endpoint : <a href="{{localUrl}}" target="_blank">{{localUrl}} </a></p>
-   <p *ngIf="connector.Config.IsTunEnabled"> Public endpoint : <a href="{{globalUrl}}" target="_blank"> {{globalUrl}} </a></p>
-  </div>
 
 </div>
-
