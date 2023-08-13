@@ -87,13 +87,12 @@
               <mat-option value="version"> Get firmware version </mat-option>
               <mat-option value="time"> Set zigbee time</mat-option>
               <mat-option value="factory_reset">Factory reset</mat-option>
-              <mat-option value="nwk_info"> Get network info</mat-option>
               <mat-option value="form_network"> Form new network</mat-option>
-              <mat-option value="frst">Reset to factory default</mat-option>
               <mat-option value="get_stack_trace">Get stack strace</mat-option>
               <mat-option value="get_goroutine_num">Get num of running goroutines</mat-option>
-              <mat-option value="get_active_status">Get active status</mat-option>
-              <mat-option value="reload_templates">Reload templates</mat-option>
+              <mat-option value="save_device_list">Save device list</mat-option>
+              <mat-option value="errors">Read SoC errors</mat-option>
+              <mat-option value="upload">Upload firmware</mat-option>
             </mat-select>
           </mat-form-field>
           <button mat-raised-button color="accent" (click)="runZigbeeNetCommand(zcommand.value)">Run</button>
@@ -235,7 +234,6 @@
         </div>
 
         <br/>
-        <button mat-raised-button color="accent" (click)="runZigbeeNetCommand('upload')" style="margin-bottom: 10px">Update firmware</button>
 
       </div>
    </mat-card-actions>

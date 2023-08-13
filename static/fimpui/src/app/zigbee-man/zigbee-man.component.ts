@@ -59,7 +59,7 @@ export class ZigbeeManComponent implements OnInit {
   }
 
   reloadZigbeeDevices(){
-    let msg  = new FimpMessage("zigbee","cmd.network.get_all_nodes","null",null,null,null)
+    let msg  = new FimpMessage("zigbee","cmd.custom.nwk_info","null",null,null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
   }
 
