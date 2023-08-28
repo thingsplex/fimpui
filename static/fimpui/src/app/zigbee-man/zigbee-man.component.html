@@ -15,14 +15,13 @@
       <thead>
         <tr>
           <th style="width: 70px">Address</th>
-          <th style="width: 120px">Location</th>
           <th style="width: 150px">Name</th>
           <th style="width: 200px"></th>
         </tr>
       </thead>
       <tbody>
       <tr *ngFor="let node of nodes">
-        <td> {{node.address}}</td><td> {{node.location}} </td><td> {{node.name}} </td><td></td>
+        <td> {{node.address}}</td><td> {{node.name}} </td><td></td>
         <td>
           <mat-icon *ngIf="node.power_source=='ac'" >power</mat-icon>
           <mat-icon *ngIf="node.power_source=='dc'" >battery_std</mat-icon>
@@ -103,6 +102,11 @@
             <mat-label>Run with param </mat-label>
             <mat-select #zcommand_with_val value="16px" >
               <mat-option value="delete_by_address"> Delete device by nwk address </mat-option>
+              <mat-option value="delete_by_UDID"> Delete device by UDID </mat-option>
+              <mat-option value="node_info"> Get node info </mat-option>
+              <mat-option value="disc_capabilities"> Discover capabilities </mat-option>
+              <mat-option value="report_attrs"> Report cached attributes </mat-option>
+              <mat-option value="refresh_attrs"> Refresh attributes </mat-option>
             </mat-select>
           </mat-form-field>
           <input #param mat-input-element size="4" style="font-size:20px;margin-left: 5px" />
@@ -125,6 +129,7 @@
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
             Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
             Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Manufacturer Code <input name="manu_code" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
           <form #fWriteAttr="ngForm" (ngSubmit)="writeAttribute(fWriteAttr.value)">
@@ -133,6 +138,7 @@
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
             Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
             Attribute ID <input name="attr_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Manufacturer Code <input name="manu_code" pattern="\d+" mat-input-element size="4" ngModel>
             Type
             <mat-select id="type_select" name="type" ngModel>
               <mat-option *ngFor="let type of dataTypes" [value]="type">{{type}}</mat-option>
@@ -167,14 +173,14 @@
           </form>
 
           <form #fBind="ngForm" (ngSubmit)="bind(fBind.value)">
-            <button mat-raised-button type="submit" [disabled]="fBind.invalid" color="accent">Bind</button>
+            <button mat-raised-button type="submit" [disabled]="fBind.invalid" color="accent">Bind to host</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
             Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
           <form #fUnbind="ngForm" (ngSubmit)="unbind(fUnbind.value)">
-            <button mat-raised-button type="submit" [disabled]="fUnbind.invalid" color="accent">Unbind</button>
+            <button mat-raised-button type="submit" [disabled]="fUnbind.invalid" color="accent">Unbind from host</button>
             UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
             Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
             Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
@@ -229,6 +235,57 @@
             <mat-select name="cluster_id" class="select-cluster" ngModel>
               <mat-option *ngFor="let cluster of groupBindClusters" [value]="cluster.id">{{cluster.name}}</mat-option>
             </mat-select>
+          </form>
+
+          <form #fBindHostGroup="ngForm" (ngSubmit)="bindHostToGroup(fBindHostGroup.value)">
+            <button mat-raised-button type="submit" [disabled]="fBindHostGroup.invalid" color="accent">Bind Host to Group</button>
+            Group ID <input name="group_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fUnbindHostGroup="ngForm" (ngSubmit)="unbindHostFromGroup(fUnbindHostGroup.value)">
+            <button mat-raised-button type="submit" [disabled]="fUnbindHostGroup.invalid" color="accent">Unbind Host from Group</button>
+            Group ID <input name="group_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
+          </form>
+
+          <form #fSendCommand="ngForm" (ngSubmit)="sendCommand(fSendCommand.value)">
+            <button mat-raised-button type="submit" [disabled]="fSendCommand.invalid" color="accent">Send Command</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
+            Command ID <input name="cmd_id" pattern="\d+" mat-input-element size="4" ngModel>
+            Manufacturer Specific <input name="manu_specific" pattern="\d+" mat-input-element size="4" ngModel>
+            Payload <input name="payload" type="checkbox" mat-input-element ngModel>
+          </form>
+
+          <form #fDiscoverAttr="ngForm" (ngSubmit)="discoverAttributes(fDiscoverAttr.value)">
+            <button mat-raised-button type="submit" [disabled]="fDiscoverAttr.invalid" color="accent">Write Attribute</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
+            Manufacturer Specific <input name="manu_specific" type="checkbox" mat-input-element ngModel>
+          </form>
+
+          <form #fDiscoverGenCmd="ngForm" (ngSubmit)="discoverGenCmd(fDiscoverGenCmd.value)">
+            <button mat-raised-button type="submit" [disabled]="fDiscoverGenCmd.invalid" color="accent">Discover generated commands</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
+            Manufacturer Specific <input name="manu_specific" type="checkbox" mat-input-element ngModel>
+          </form>
+
+          <form #fDiscoverRecCmd="ngForm" (ngSubmit)="discoverRecCmd(fDiscoverRecCmd.value)">
+            <button mat-raised-button type="submit" [disabled]="fDiscoverRecCmd.invalid" color="accent">Discover received commands</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
+            Endpoint <input name="ep" pattern="\d+" mat-input-element size="4" ngModel>
+            Cluster ID <input name="cluster_id" list="clusters" pattern="\d+" mat-input-element size="4" ngModel>
+            Manufacturer Specific <input name="manu_specific" type="checkbox" mat-input-element ngModel>
+          </form>
+
+          <form #fOtaInstall="ngForm" (ngSubmit)="otaInstall(fOtaInstall.value)">
+            <button mat-raised-button type="submit" [disabled]="fOtaInstall.invalid" color="accent">OTA Install</button>
+            UDID <input name="udid" pattern="\d+" mat-input-element size="4" ngModel>
           </form>
 
         </div>

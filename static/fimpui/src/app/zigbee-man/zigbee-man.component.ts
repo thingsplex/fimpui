@@ -50,10 +50,11 @@ export class ZigbeeManComponent implements OnInit {
   ]
 
   dataTypes: string[] = [
-    "data16", "data32", "data64", "bool",
+    "data8", "data16", "data32", "data64", "bool",
     "uint8", "uint16", "uint24", "uint32", "uint48", "uint64",
     "int8", "int16", "int32", "int64",
     "enum8", "enum16",
+    "single", "double", "semi",
   ]
   constructor(public dialog: MatDialog,private fimp:FimpService,private snackBar: MatSnackBar,public registry:ThingsRegistryService) {
   }
@@ -197,6 +198,74 @@ export class ZigbeeManComponent implements OnInit {
       form[key] = parseInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.unbind_group", "object", form, null, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
+  }
+
+  bindHostToGroup(form: Object) {
+    for (const key in form) {
+      form[key] = parseInt(form[key])
+    }
+    let msg = new FimpMessage("zigbee", "cmd.custom.bind_host_group", "object", form, null, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
+  }
+
+  unbindHostFromGroup(form: Object) {
+    for (const key in form) {
+      form[key] = parseInt(form[key])
+    }
+    let msg = new FimpMessage("zigbee", "cmd.custom.unbind_host_group", "object", form, null, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
+  }
+
+  sendCommand(form: Object) {
+    for (const key in form) {
+      if (key === "manu_specific" || key === "payload") {
+        continue
+      }
+      form[key] = parseInt(form[key])
+    }
+    let msg = new FimpMessage("zigbee", "cmd.custom.cluster_cmd", "object", form, null, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
+  }
+
+  discoverAttributes(form: Object) {
+    for (const key in form) {
+      if (key === 'manu_specific') {
+        continue
+      }
+      form[key] = parseInt(form[key])
+    }
+    let msg = new FimpMessage("zigbee", "cmd.custom.disc_attrs", "object", form, null, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
+  }
+
+  discoverGenCmd(form: Object) {
+    for (const key in form) {
+      if (key === 'manu_specific') {
+        continue
+      }
+      form[key] = parseInt(form[key])
+    }
+    let msg = new FimpMessage("zigbee", "cmd.custom.disc_gen_cmds", "object", form, null, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
+  }
+
+  discoverRecCmd(form: Object) {
+    for (const key in form) {
+      if (key === 'manu_specific') {
+        continue
+      }
+      form[key] = parseInt(form[key])
+    }
+    let msg = new FimpMessage("zigbee", "cmd.custom.disc_rec_cmds", "object", form, null, null)
+    this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
+  }
+
+  otaInstall(form: Object) {
+    for (const key in form) {
+      form[key] = parseInt(form[key])
+    }
+    let msg = new FimpMessage("zigbee", "cmd.custom.ota_install", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
