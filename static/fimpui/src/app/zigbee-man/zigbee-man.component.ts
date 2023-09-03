@@ -59,6 +59,12 @@ export class ZigbeeManComponent implements OnInit {
   constructor(public dialog: MatDialog,private fimp:FimpService,private snackBar: MatSnackBar,public registry:ThingsRegistryService) {
   }
 
+  /** Check whether a string is a hex or an int and return the parsed value */
+  parseStringAsInt(str: string) {
+    const radix = str.startsWith("0x") ? 16 : 10;
+    return parseInt(str.substring(2), radix);
+  }
+
   reloadZigbeeDevices(){
     let msg  = new FimpMessage("zigbee","cmd.custom.nwk_info","null",null,null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
@@ -66,7 +72,6 @@ export class ZigbeeManComponent implements OnInit {
 
   addDevice(){
     console.log("Add device")
-
     let dialogRef = this.dialog.open(AddZigbeeDeviceDialog, {
       height: '400px',
       width: '600px',
@@ -87,22 +92,20 @@ export class ZigbeeManComponent implements OnInit {
 
   pingDevice(address:string){
     console.log("Ping device")
-    let msg  = new FimpMessage("zigbee","cmd.custom.ping_device","int", parseInt(address), null,null)
+    let msg  = new FimpMessage("zigbee","cmd.custom.ping_device","int", this.parseStringAsInt(address), null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
-
   }
 
   discoverDevice(address:string){
     console.log("Discover device")
-    let msg  = new FimpMessage("zigbee","cmd.custom.discovery","int", parseInt(address), null,null)
+    let msg  = new FimpMessage("zigbee","cmd.custom.discovery","int", this.parseStringAsInt(address), null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
-
   }
 
   readAttribute(form: Object) {
     console.log("Read attribute")
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.read_attribute", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -114,7 +117,7 @@ export class ZigbeeManComponent implements OnInit {
       if (key === 'type') {
         continue
       }
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.write_attribute", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -123,7 +126,7 @@ export class ZigbeeManComponent implements OnInit {
   readRepConfig(form: Object) {
     console.log("Read reporting config")
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.read_reporting_config", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -135,7 +138,7 @@ export class ZigbeeManComponent implements OnInit {
       if (key === 'type') {
         continue
       }
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.write_reporting_config", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -144,7 +147,7 @@ export class ZigbeeManComponent implements OnInit {
   bind(form: Object) {
     console.log("Bind message")
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.bind", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -153,7 +156,7 @@ export class ZigbeeManComponent implements OnInit {
   unbind(form: Object) {
     console.log("Unbind message")
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.unbind", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -161,14 +164,14 @@ export class ZigbeeManComponent implements OnInit {
 
   getBindList(form: Object) {
     console.log("Bind list message")
-    let msg = new FimpMessage("zigbee", "cmd.custom.get_bind_list", "int", parseInt(form["udid"]), null, null)
+    let msg = new FimpMessage("zigbee", "cmd.custom.get_bind_list", "int", this.parseStringAsInt(form["udid"]), null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   bindDevices(form: Object) {
     console.log("Bind devices message")
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.bind_devices", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -177,7 +180,7 @@ export class ZigbeeManComponent implements OnInit {
   unbindDevices(form: Object) {
     console.log("Unbind devices message")
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.unbind_devices", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -186,7 +189,7 @@ export class ZigbeeManComponent implements OnInit {
   bindGroup(form: Object) {
     console.log("Bind group message")
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.bind_group", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -195,7 +198,7 @@ export class ZigbeeManComponent implements OnInit {
   unbindGroup(form: Object) {
     console.log("Unbind group message")
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.unbind_group", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -203,7 +206,7 @@ export class ZigbeeManComponent implements OnInit {
 
   bindHostToGroup(form: Object) {
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.bind_host_group", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -211,7 +214,7 @@ export class ZigbeeManComponent implements OnInit {
 
   unbindHostFromGroup(form: Object) {
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.unbind_host_group", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -222,7 +225,7 @@ export class ZigbeeManComponent implements OnInit {
       if (key === "manu_specific" || key === "payload") {
         continue
       }
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.cluster_cmd", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -233,7 +236,7 @@ export class ZigbeeManComponent implements OnInit {
       if (key === 'manu_specific') {
         continue
       }
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.disc_attrs", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -244,7 +247,7 @@ export class ZigbeeManComponent implements OnInit {
       if (key === 'manu_specific') {
         continue
       }
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.disc_gen_cmds", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -255,7 +258,7 @@ export class ZigbeeManComponent implements OnInit {
       if (key === 'manu_specific') {
         continue
       }
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.disc_rec_cmds", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -263,7 +266,7 @@ export class ZigbeeManComponent implements OnInit {
 
   otaInstall(form: Object) {
     for (const key in form) {
-      form[key] = parseInt(form[key])
+      form[key] = this.parseStringAsInt(form[key])
     }
     let msg = new FimpMessage("zigbee", "cmd.custom.ota_install", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
@@ -333,7 +336,7 @@ export class ZigbeeManComponent implements OnInit {
 
   runZigbeeNetCommandParam(cmd: string, param: string) {
     var props = new Map<string, string>();
-    let msg = new FimpMessage("zigbee", "cmd.custom." + cmd, "int", parseInt(param), props, null)
+    let msg = new FimpMessage("zigbee", "cmd.custom." + cmd, "int", this.parseStringAsInt(param), props, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
     this.snackBar.open('Command was sent', "", {duration: 2000});
   }
