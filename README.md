@@ -1,29 +1,55 @@
 # FIMPUI
 
-### Build Static Files
-```shell
-make build-js
-```
+### Essential Setup
+__On MacOS__
 
-### Run Angular dev app
-```shell
-ng serve
-```
-Then open http://localhost:4200
+- Install Python2
+- Create an alias for `python`
+  ```shell
+  alias python=python3
+  ```
 
-### Run Go Server
+- Install required compilers
+  ```shell
+  xcode-select --install
+  ```
+
+__Install Node 13__
+  ```shell
+  nvm install 13
+  nvm use 13
+  node -v
+  ```
+
+__Install required NPM packages__
+  ```shell
+  cd static/fimpui && npm install
+  ```
+
+### Run Locally
+__Build Static Files__
+  ```shell
+  make build-ng
+  ```
+
+__Run Go Server__
+
 Set server config in `var/data/config.json` and then:
 
 ```shell
 make run
 ```
 
+You can now visit `localhost:8081` in your browser.
+
+_Note:_ You will not get hot reloading and your html/ts/css changes will not be reflected until you run `make build-ng` again.
+
 ### Create Debian Package
 ```shell
 make deb-arm
 ```
 
-### Rsync static files for deverlopment
+### Rsync static files for development
 ```shell
 GOOS=linux GOARCH=arm GOARM=6 go build -o thingsplex_arm
 rsync -a static/fimpui/dist fh@aleks.local:~/thingsplex/static/fimpui/
