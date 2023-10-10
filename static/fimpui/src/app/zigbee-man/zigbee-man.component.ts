@@ -61,8 +61,9 @@ export class ZigbeeManComponent implements OnInit {
 
   /** Check whether a string is a hex or an int and return the parsed value */
   parseStringAsInt(str: string) {
-    const radix = str.startsWith("0x") ? 16 : 10;
-    return parseInt(str.substring(2), radix);
+    const isHex = str.startsWith("0x");
+    const radix = isHex ? 16 : 10;
+    return parseInt(isHex?str.substring(2):str, radix);
   }
 
   reloadZigbeeDevices(){
@@ -398,7 +399,4 @@ export class AddZigbeeDeviceDialog implements OnInit, OnDestroy  {
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
     this.dialogRef.close();
   }
-
-
-
 }

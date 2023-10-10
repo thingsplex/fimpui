@@ -22,7 +22,7 @@ md-chip {
   cursor: pointer;
 }
 
-input, #type_select {
+input, .type-select {
   font-size: 20px;
   margin-left: 5px;
   margin-right: 10px
@@ -74,7 +74,7 @@ input.ng-invalid {
   border: thin solid lightgrey;
 }
 
-#type_select {
+.type-select {
   width: 100px;
   padding: 3px 5px;
   border: thin solid lightgrey;
