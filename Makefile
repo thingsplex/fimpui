@@ -5,11 +5,9 @@ arch="armhf"
 remote_host = "fh@cube.local"
 reprepo_host = "reprepro@archive.futurehome.no"
 
-build-ng:
-	cd static/fimpui; ng build --prod --deploy-url=/fimp/static/
-
-build-js: build-ng
+build-js:
 	-mkdir -p package/debian/opt/fimpui/static/fimpui
+	cd static/fimpui; ng build --prod --deploy-url=/fimp/static/
 	cp -R static/fimpui/dist package/debian/opt/fimpui/static/fimpui/
 	cp -R static/help package/debian/opt/fimpui/static/
 	cp -R static/misc package/debian/opt/fimpui/static/
