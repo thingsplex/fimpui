@@ -3,7 +3,6 @@ import {FimpService} from "app/fimp/fimp.service";
 import {FimpMessage} from '../fimp/Message';
 import {Subscription} from "rxjs";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-// import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ThingsRegistryService} from "../tpui-modules/registry/registry.service";
 
@@ -59,11 +58,21 @@ export class ZigbeeManComponent implements OnInit {
   constructor(public dialog: MatDialog,private fimp:FimpService,private snackBar: MatSnackBar,public registry:ThingsRegistryService) {
   }
 
+  isString = value => typeof value === 'string' || value instanceof String;
+
   /** Check whether a string is a hex or an int and return the parsed value */
   parseStringAsInt(str: string) {
-    const isHex = str.startsWith("0x");
-    const radix = isHex ? 16 : 10;
-    return parseInt(isHex?str.substring(2):str, radix);
+    if (!this.isString(str)) {
+      return str
+    }
+    try {
+      const isHex = str.startsWith("0x");
+      const radix = isHex ? 16 : 10;
+      return parseInt(isHex ? str.substring(2) : str, radix);
+    } catch (e) {
+      console.log(`Failed to parse {str}`);
+      console.log(e);
+    }
   }
 
   reloadZigbeeDevices(){
@@ -246,7 +255,7 @@ export class ZigbeeManComponent implements OnInit {
   discoverGenCmd(form: Object) {
     for (const key in form) {
       if (key === 'manu_specific') {
-        continue
+        form[key] = Boolean(form[key])
       }
       form[key] = this.parseStringAsInt(form[key])
     }
