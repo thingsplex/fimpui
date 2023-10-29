@@ -75,6 +75,22 @@ export class ZigbeeManComponent implements OnInit {
     }
   }
 
+  parseForm(form: Object) {
+    for (const key in form) {
+      switch (key) {
+        case 'manu_specific':
+          form[key] = Boolean(form[key])
+          break
+        case 'type':
+        case 'payload':
+          break
+        default:
+          form[key] = this.parseStringAsInt(form[key])
+      }
+    }
+    return form
+  }
+
   reloadZigbeeDevices(){
     let msg  = new FimpMessage("zigbee","cmd.custom.nwk_info","null",null,null,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
@@ -114,60 +130,42 @@ export class ZigbeeManComponent implements OnInit {
 
   readAttribute(form: Object) {
     console.log("Read attribute")
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.read_attribute", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   writeAttribute(form: Object) {
     console.log("Write attribute")
-    for (const key in form) {
-      if (key === 'type') {
-        continue
-      }
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.write_attribute", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   readRepConfig(form: Object) {
     console.log("Read reporting config")
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.read_reporting_config", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   writeRepConfig(form: Object) {
     console.log("Write reporting config")
-    for (const key in form) {
-      if (key === 'type') {
-        continue
-      }
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.write_reporting_config", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   bind(form: Object) {
     console.log("Bind message")
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.bind", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   unbind(form: Object) {
     console.log("Unbind message")
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.unbind", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
@@ -180,104 +178,70 @@ export class ZigbeeManComponent implements OnInit {
 
   bindDevices(form: Object) {
     console.log("Bind devices message")
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.bind_devices", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   unbindDevices(form: Object) {
     console.log("Unbind devices message")
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.unbind_devices", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   bindGroup(form: Object) {
     console.log("Bind group message")
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.bind_group", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   unbindGroup(form: Object) {
     console.log("Unbind group message")
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.unbind_group", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   bindHostToGroup(form: Object) {
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.bind_host_group", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   unbindHostFromGroup(form: Object) {
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.unbind_host_group", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   sendCommand(form: Object) {
-    for (const key in form) {
-      if (key === "manu_specific" || key === "payload") {
-        continue
-      }
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.cluster_cmd", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   discoverAttributes(form: Object) {
-    for (const key in form) {
-      if (key === 'manu_specific') {
-        continue
-      }
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.disc_attrs", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   discoverGenCmd(form: Object) {
-    for (const key in form) {
-      if (key === 'manu_specific') {
-        form[key] = Boolean(form[key])
-      }
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.disc_gen_cmds", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   discoverRecCmd(form: Object) {
-    for (const key in form) {
-      if (key === 'manu_specific') {
-        continue
-      }
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.disc_rec_cmds", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
 
   otaInstall(form: Object) {
-    for (const key in form) {
-      form[key] = this.parseStringAsInt(form[key])
-    }
+    form = this.parseForm(form);
     let msg = new FimpMessage("zigbee", "cmd.custom.ota_install", "object", form, null, null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1", msg);
   }
