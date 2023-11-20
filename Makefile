@@ -1,4 +1,4 @@
-version="1.1.12"
+version="1.1.13"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -7,7 +7,7 @@ reprepo_host = "reprepro@archive.futurehome.no"
 
 build-js:
 	-mkdir -p package/debian/opt/fimpui/static/fimpui
-	cd static/fimpui;ng build --prod --deploy-url=/fimp/static/
+	cd static/fimpui; ng build --prod --deploy-url=/fimp/static/
 	cp -R static/fimpui/dist package/debian/opt/fimpui/static/fimpui/
 	cp -R static/help package/debian/opt/fimpui/static/
 	cp -R static/misc package/debian/opt/fimpui/static/
@@ -37,19 +37,20 @@ clean-deb:
 	find package/debian -name ".DS_Store" -delete
 
 clean:
+	@echo "$(version)"
 	-rm -R package/debian/opt/fimpui/static/fhcore/*
 	-rm -R package/debian/opt/fimpui/static/fimpui/dist/*
 	-rm package/debian/opt/fimpui/fimpui
 	-rm fimpui
 
 configure-arm:
-	python ./scripts/config_env.py prod $(version) armhf
+	python3 ./scripts/config_env.py prod $(version) armhf
 
 configure-amd64:
-	python ./scripts/config_env.py prod $(version) amd64
+	python3 ./scripts/config_env.py prod $(version) amd64
 
 configure-dev-js:
-	python ./scripts/config_env.py dev $(version) armhf
+	python3 ./scripts/config_env.py dev $(version) armhf
 
 
 prep-docker:
@@ -101,6 +102,7 @@ tar-mac-amd64: clean configure-amd64 build-js build-go-mac-amd64 package-tar
 
 deb-arm : clean configure-arm build-js build-go-arm package-deb-doc
 	mv package/debian.deb package/build/fimpui_$(version)_armhf.deb
+	@echo "Created package/build/fimpui_$(version)_armhf.deb"
 
 deb-amd : configure-amd64 build-js build-go-amd64 package-deb-doc
 	mv package/debian.deb package/build/fimpui_$(version)_amd64.deb
@@ -137,8 +139,8 @@ start-mqtt-broker:
 stop-mqtt-broker:
 	docker stop vernemq
 
-start-dev-webserver:
-	cd static/fimpui;ng serve
+serve: configure-dev-js
+	cd static/fimpui; ng serve
 
 publish-reprepo:
 	scp package/build/fimpui_$(version)_armhf.deb $(reprepo_host):~/apps

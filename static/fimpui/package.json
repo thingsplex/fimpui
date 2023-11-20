@@ -27,7 +27,7 @@
     "@angular/platform-browser-dynamic": "^10.0.2",
     "@angular/platform-server": "^10.0.2",
     "@angular/router": "^10.0.2",
-    "@ngtools/webpack": "^1.9.0",
+    "@ngtools/webpack": "^10.0.0",
     "@swimlane/ngx-datatable": "^17.0.0",
     "ace-builds": "^1.4.12",
     "angular-gauge": "^3.1.3",

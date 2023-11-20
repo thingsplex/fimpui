@@ -24,11 +24,10 @@ export class GenericAdManComponent implements OnInit {
 
 
   reloadListOfDevices(){
-    if (this.adapter != undefined) {
+    if (this.adapter != undefined && this.adapter != "zigbee") {
       let msg  = new FimpMessage(this.adapter,"cmd.network.get_all_nodes","null",null,null,null)
       this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:"+this.adapter+"/ad:1",msg);
     }
-
   }
 
   discover() {
