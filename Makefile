@@ -1,4 +1,4 @@
-version="1.1.12"
+version="1.1.13"
 version_file=VERSION
 working_dir=$(shell pwd)
 arch="armhf"
@@ -37,6 +37,7 @@ clean-deb:
 	find package/debian -name ".DS_Store" -delete
 
 clean:
+	@echo "$(version)"
 	-rm -R package/debian/opt/fimpui/static/fhcore/*
 	-rm -R package/debian/opt/fimpui/static/fimpui/dist/*
 	-rm package/debian/opt/fimpui/fimpui
@@ -138,8 +139,8 @@ start-mqtt-broker:
 stop-mqtt-broker:
 	docker stop vernemq
 
-start-dev-webserver:
-	cd static/fimpui;ng serve
+serve: configure-dev-js
+	cd static/fimpui; ng serve
 
 publish-reprepo:
 	scp package/build/fimpui_$(version)_armhf.deb $(reprepo_host):~/apps

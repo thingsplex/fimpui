@@ -76,18 +76,20 @@ make run
 
 __Check Backend Root__
 
-Check that `static/fimpui/src/app/globals.ts` has:
+
+__Run ng server__
+```shell
+make serve
+```
+You can now visit `localhost:4200` in your browser.
+
+__Note:__
+
+This also makes sure that `static/fimpui/src/app/globals.ts` has the following. If the webpage keeps reloading then check this line is correct.
 
 ```js
 BACKEND_ROOT = "http://localhost:8081";
 ```
-
-__Run ng server__
-```shell
-# Inside static/fimpui
-ng serve
-```
-You can now visit `localhost:4200` in your browser.
 
 ### Create Debian Package
 You need to be running Docker with Debian image available.

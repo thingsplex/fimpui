@@ -252,50 +252,49 @@ export class ZigbeeManComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.globalSub = this.fimp.getGlobalObservable().subscribe((fimpMsg) => {
-      if (fimpMsg.service == "zigbee" )
-        {
-        if(fimpMsg.mtype == "evt.network.all_nodes_report" )
-        {
-          this.nodes = fimpMsg.val;
-          for (let n of this.nodes) {
-            let things = this.registry.getThingByAddress("zigbee",n.address);
-            if (things.length>0) {
-              n["location"] = things[0].location_alias;
-              n["name"] = things[0].alias;
+      if (fimpMsg.service == "zigbee") {
+        switch (fimpMsg.mtype) {
+          case "evt.network.all_nodes_report":
+            this.nodes = fimpMsg.val;
+            for (let n of this.nodes) {
+              let things = this.registry.getThingByAddress("zigbee", n.address);
+              if (things.length > 0) {
+                n["location"] = things[0].location_alias;
+                n["name"] = things[0].alias;
+              }
             }
-          }
-          localStorage.setItem("zigbeeNodesList", JSON.stringify(this.nodes));
-        }else if (fimpMsg.mtype == "evt.thing.exclusion_report" || fimpMsg.mtype == "evt.thing.inclusion_report"){
+            localStorage.setItem("zigbeeNodesList", JSON.stringify(this.nodes));
+            break;
+
+          case "evt.thing.exclusion_report":
+          case "evt.thing.inclusion_report":
             console.log("Reloading nodes 2");
             this.reloadZigbeeDevices();
+            break;
         }
 
         if (fimpMsg.mtype == "evt.thing.exclusion_report") {
-          // Simple message.
-          let snackBarRef = this.snackBar.open('Device deleted',"",{
+          let snackBarRef = this.snackBar.open('Device deleted', "", {
             duration: 5000
           });
         }
       }
-      //this.messages.push("topic:"+msg.topic," payload:"+msg.payload);
     });
 
-    // Let's load nodes list from cache otherwise reload nodes from zwave-ad .
-    if (localStorage.getItem("zigbeeNodesList")==null){
+    // Let's load nodes list from cache otherwise reload nodes from zigbee-ad .
+    if (localStorage.getItem("zigbeeNodesList") == null) {
       this.reloadZigbeeDevices();
-    }else {
+    } else {
       this.nodes = JSON.parse(localStorage.getItem("zigbeeNodesList"));
     }
-
   }
-  changeChannel(channel:number) {
+
+  changeChannel(channel: number) {
     channel = Number(channel)
     var props = new Map<string,string>();
     let msg  = new FimpMessage("zigbee","cmd.custom.channel","int",channel,props,null)
     this.fimp.publish("pt:j1/mt:cmd/rt:ad/rn:zigbee/ad:1",msg);
-
     let snackBarRef = this.snackBar.open('Command was sent',"",{
       duration: 2000
     });
